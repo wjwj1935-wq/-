@@ -245,7 +245,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 26</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 27</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -292,7 +292,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=26,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=27,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -343,7 +343,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -362,7 +362,7 @@ function defaults(){
 }
 let S=defaults();
 let dirty=false;        // 제품 글을 직접 고쳤는지(새 글이 덮어쓰기 전에 물어봐요)
-const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:false,check:true};
+const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:false,check:true,autoFix:true};
 const isProductText=p=>/^(hero|concept|zoom\.items)\./.test(p)||(/^faq\.items\.\d+\./.test(p)&&!!(S.faq.items[+p.split('.')[2]]||{}).p);
 
 /* 글 틀 채우기(무료) */
@@ -613,8 +613,11 @@ function newItem(path,l){
 }
 /* ---------- 지시문(구글에 보내는 글) ---------- */
 function promptOf(j){
-  const base='첨부한 사진 속 "'+(S.name||'이 제품')+'" 제품을 기준으로 이미지를 만들어 주세요.\n'
-    +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 레버의 길이·굵기·끝 모양, 받침의 크기와 모양, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n글자, 로고, 워터마크는 넣지 마세요.\n';
+  const spec=String(S.spec||'').trim().slice(0,900);
+  const base='첨부한 사진 속 "'+(S.name||'이 제품')+'" 제품이 이 작업의 정답(기준)입니다. 이 제품을 그대로 옮겨서 이미지를 만들어 주세요.\n'
+    +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 흔한 손잡이처럼 단순하게 바꾸거나 비슷한 다른 손잡이를 새로 만들지 마세요. 레버의 길이·굵기·끝 모양과 윗면의 굴곡(움푹 파인 곳 포함), 레버와 받침을 잇는 목 부분, 받침의 크기·두께·테두리, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n'
+    +(spec?'이 제품의 특징(사진과 함께 반드시 지킬 것):\n'+spec+'\n':'')
+    +'글자, 로고, 워터마크는 넣지 마세요.\n';
   if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 짙은 남색~검정 스튜디오 배경에 이 제품 하나만 화면 위쪽 60% 영역에 크게(레버와 받침이 모두 잘리지 않게), 약간 비스듬한 각도로 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
   if(j.kind==='concept')return base+'장면: 어두운 남회색 스튜디오 배경에 이 제품 하나만 중앙에 크게(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
   const it=S.colors.items[j.i],sc=(it.scene||j.name).trim(),vw=CAMS[it.view||'f']||CAMS.f,dir=it.flip?'오른쪽':'왼쪽',fr=DOORF[it.door]||'';
@@ -632,6 +635,8 @@ function jobs(){
 const gList=()=>jobs().filter(j=>!hasPhoto(getP(j.key)));      // 비어 있는 칸만 만들어요(이미 있는 칸은 돈을 쓰지 않아요)
 
 /* ---------- 왼쪽 네 단계 ---------- */
+const extraCtl=i=>{const p=S.extra&&S.extra[i],m=p&&PH.get(p.id),k='extra.'+i;
+  return '<div class="pc" data-pk="'+k+'"><div class="pc-top"><div class="thumb" data-drop="'+k+'" style="width:72px;height:72px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'바꾸기':'넣기')+'<input type="file" accept="image/*" hidden data-file="'+k+'"></label>'+(m?'<button class="btn sm ghost" type="button" data-act="pclear" data-p="'+k+'">지우기</button>':'')+'</div></div></div>';};
 function p1(){
   const m=S.src&&PH.get(S.src.id);
   return '<p class="hint">제품 이름과 사진 한 장만 넣고 위의 <b>한 번에 만들기</b>를 누르세요. 글, 이미지, 저장까지 이어져요.</p>'
@@ -639,6 +644,9 @@ function p1(){
     +fld.text('sellName','판매 상품명 (스마트스토어 등 · 모든 제품이 같아요)',{ph:STD_NAME})+'<div><button class="btn sm" type="button" data-act="copysell">상품명 복사</button></div>'
     +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label></div></div></div></div>'
     +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷과 이미지 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
+    +'<div class="f"><span>다른 각도 사진 (선택 · 최대 2장) — 옆면·정면 실제 사진을 더 넣을수록 AI가 실제 모양을 더 정확히 따라 그려요</span><div class="acts">'+extraCtl(0)+extraCtl(1)+'</div></div>'
+    +fld.area('spec','제품 특징 메모 (구글에 같이 보내요 · 틀린 곳은 고쳐 주세요)',{rows:6,ph:'비워 두면 이미지를 만들기 직전에 클로드가 사진을 보고 적어요(클로드 키가 있을 때). 직접 적어도 돼요. 예: 레버 윗면 끝쪽에 엄지가 닿는 움푹한 곳이 있어요.'})
+    +'<div class="acts"><button class="btn sm" type="button" data-act="specai">클로드가 사진 보고 적기 (약 1센트)</button></div><div class="msg" id="specMsg" aria-live="polite"></div>'
     +fld.area('memo','아는 내용 (선택)',{rows:2,ph:'확실한 것만 적어요. 재질, 색상, 크기, 구성품 등. 적지 않은 사양은 글에 넣지 않아요.'});
 }
 function p2(){
@@ -660,7 +668,8 @@ function p2(){
        +'<div class="acts"><button class="btn sm" type="button" id="cCheck">연결 확인 (무료)</button></div>'
        +'<div class="msg'+(C.cls?' '+C.cls:'')+'" id="cMsg" aria-live="polite">'+esc(C.msg||(C.key.trim()?'':'키가 없어도 글은 무료 틀로 만들어져요.'))+'</div>')
     +'<label class="chk"><input type="checkbox" id="useAI"'+(UI.useAI?' checked':'')+'> 글을 클로드가 새로 쓰기 (기본은 무료 틀)</label>'
-    +'<label class="chk"><input type="checkbox" id="useChk"'+(UI.check?' checked':'')+'> 만든 사진을 원본과 비교해 손잡이 모양 검수 (장당 1센트 안팎 예상)</label></div>'
+    +'<label class="chk"><input type="checkbox" id="useChk"'+(UI.check?' checked':'')+'> 만든 사진을 원본과 비교해 손잡이 모양 검수 (장당 1센트 안팎 예상)</label>'
+    +'<label class="chk"><input type="checkbox" id="useFix"'+(UI.autoFix?' checked':'')+'> 달라 보이는 칸은 정밀 모델로 한 번 더 자동으로 만들기 (칸마다 약 $'+(priceOf(G.modelHi)||'0.13')+')</label></div>'
     +'<p class="cost">키는 이 창에만 두고 글·사진·작업 저장 파일에는 들어가지 않아요. 키는 구글·클로드에서 회사가 직접 발급하고, 쓴 만큼 요금이 들어요.</p>';
 }
 const chkLine=p=>p&&p.chk?(p.chk.ok?'<div class="cost" style="color:var(--ok)">검수: 원본과 같은 손잡이로 보여요</div>':'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 손잡이가 원본과 달라 보여요'+(p.chk.issues.length?' — '+esc(p.chk.issues.join(' / ')):'')+' (AI 판단이라 틀릴 수 있어요)</div>'):'';
@@ -752,11 +761,29 @@ const flagged=()=>jobs().filter(j=>{const p=getP(j.key);return p&&p.chk&&!p.chk.
 function costLine(){const l=gList();return '구글로 만들 빈 칸 <b>'+l.length+'장</b>'+estText(l.length,null,true);}
 const spentText=()=>G.made?'이번에 구글로 만든 이미지 '+G.made+'장'+(G.spent?' · 약 $'+G.spent.toFixed(2)+' (대략)':''):'';
 function updInfo(){const a=$('#gSpent'),b=$('#costLine');if(a)a.textContent=spentText();if(b)b.innerHTML=costLine();}
-let REF={id:'',b64:''};
-async function refB64(){
+/* 구글에 같이 보내는 기준 사진: ① 제품 전체 ② 다른 각도 사진(넣었다면) ③ 원본에서 레버 끝·목 부분을 원래 해상도로 자른 확대 사진
+   (구글이 작은 사진 한 장만 보면 손잡이를 흔한 모양으로 단순하게 그려서, 실제 모양이 잘 보이는 사진을 더 보내요) */
+let REF={sig:'',val:null};
+const detailIdx=()=>[0,1].filter(i=>{const it=S.zoom.items[i];return it&&!it.photo&&(it.z||1)>=1.3;});
+async function cropRef(it){
+  const m=PH.get(S.src.id),g=geom(m,736,560,it),sx=-g.x/g.sw*m.w,sy=-g.y/g.sh*m.h,sw=736/g.sw*m.w,sh=560/g.sh*m.h;
+  const bmp=await createImageBitmap(m.blob),k=Math.min(1,896/Math.max(sw,sh)),c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(sw*k));c.height=Math.max(1,Math.round(sh*k));
+  const cg=c.getContext('2d');cg.fillStyle='#fff';cg.fillRect(0,0,c.width,c.height);cg.drawImage(bmp,sx,sy,sw,sh,0,0,c.width,c.height);
+  return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.88)));
+}
+async function buildRefs(){
   if(!hasPhoto(S.src))throw {status:-1,message:'1단계의 제품 사진을 먼저 넣어 주세요.'};
-  if(REF.id===S.src.id)return REF.b64;
-  const b=await toB64(await shrink(PH.get(S.src.id).blob,1024,.85));REF={id:S.src.id,b64:b};return b;
+  const ex=(S.extra||[]).filter(hasPhoto),di=detailIdx();
+  const sig=[S.src.id,ex.map(p=>p.id).join(','),di.map(i=>{const it=S.zoom.items[i];return [it.fx,it.fy,it.z].join(':');}).join(',')].join('|');
+  if(REF.sig===sig&&REF.val)return REF.val;
+  const imgs=[await toB64(await shrink(PH.get(S.src.id).blob,1024,.85))],notes=['첨부 사진 1: 실제 제품 전체 사진입니다(이것이 정답 기준).'];
+  for(const p of ex)imgs.push(await toB64(await shrink(PH.get(p.id).blob,1024,.85)));
+  if(ex.length)notes.push('첨부 사진 2~'+(1+ex.length)+': 같은 제품을 다른 각도에서 찍은 실제 사진입니다. 제품 모양을 입체적으로 이해하는 데 쓰세요.');
+  const from=imgs.length+1;
+  for(const i of di)imgs.push(await cropRef(S.zoom.items[i]));
+  if(di.length)notes.push('첨부 사진 '+from+(di.length>1?'~'+(from+di.length-1):'')+': 같은 제품의 확대 사진입니다('+di.map(i=>i?'레버와 목이 만나는 부분':'레버 끝 부분').join(' / ')+'). 이 부분의 윤곽, 움푹 파인 곳, 굴곡, 이음매를 그대로 따라 그리세요.');
+  REF={sig,val:{imgs,note:'\n'+notes.join('\n'),sig}};return REF.val;
 }
 async function gCheck(){
   const key=G.key.trim();if(!key){gMsg('키를 붙여 넣어 주세요.','err');return;}
@@ -788,15 +815,27 @@ function gErr(e){
   return '연결하지 못했어요. 인터넷 연결을 확인해 주세요.';
 }
 async function gOne(j,signal,opts){
-  const model=((opts&&opts.model)||G.model).trim(),prompt=promptOf(j),ck=hashStr(model+'|'+prompt+'|'+(S.src&&S.src.id));
+  const model=((opts&&opts.model)||G.model).trim(),refs=await buildRefs();
+  let prompt=promptOf(j)+refs.note;
+  const cur=getP(j.key);   // 다시 만들 때는 검수에서 지적된 점을 알려 줘요
+  if(opts&&opts.fresh&&cur&&cur.chk&&!cur.chk.ok&&cur.chk.issues.length)prompt+='\n이전에 만든 이미지는 원본과 이렇게 달랐습니다: '+cur.chk.issues.join(' / ')+'. 이번에는 원본 사진과 똑같이 바로잡아 주세요.';
+  const ck=hashStr(model+'|'+prompt+'|'+refs.sig);
   if(!(opts&&opts.fresh)&&G.cache.has(ck))return {blob:G.cache.get(ck),cached:true};   // 같은 요청은 다시 돈을 쓰지 않아요(다시 만들기는 예외)
-  const body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:await refB64()}}]}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:ASPECT[j.kind]||'1:1'},candidateCount:1}};
+  const body={contents:[{parts:[{text:prompt}].concat(refs.imgs.map(d=>({inline_data:{mime_type:'image/jpeg',data:d}})))}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:ASPECT[j.kind]||'1:1'},candidateCount:1}};
   const r=await fetch(GBASE+'/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',signal,headers:{'x-goog-api-key':G.key.trim(),'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok){let t='';try{const d=await r.json();t=d&&d.error&&d.error.message||'';}catch(e){}throw {status:r.status,message:t};}
   const d=await r.json(),parts=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts)||[],part=parts.find(x=>x.inlineData||x.inline_data);
   if(!part)throw {status:0,blocked:true,message:(d.promptFeedback&&d.promptFeedback.blockReason)||(d.candidates&&d.candidates[0]&&d.candidates[0].finishReason)||'EMPTY'};
   const id=part.inlineData||part.inline_data,bin=atob(id.data),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
   const blob=new Blob([u8],{type:id.mimeType||id.mime_type||'image/png'});G.cache.set(ck,blob);return {blob,model};
+}
+async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
+  let nx=0,done=0,err='';
+  const wk=async()=>{while(!err&&!(signal&&signal.aborted)){const i=nx++;if(i>=list.length)return;
+    try{const r=await gOne(list[i],signal,{model:G.modelHi,fresh:true});await setPhoto(list[i].key,r.blob,{ai:true});done++;G.made++;G.spent+=priceOf(r.model);refresh();updInfo();}
+    catch(e){if(e&&e.name==='AbortError')return;err=gErr(e);}}};
+  await Promise.all(Array.from({length:Math.min(3,list.length)},wk));
+  return {done,err};
 }
 async function gRun(list,opts){
   const o=opts||{};
@@ -818,21 +857,37 @@ async function gRun(list,opts){
       }
     }
   };
+  if(!String(S.spec||'').trim()&&hasPhoto(S.src)&&await claudeReady(1)){   // 특징 메모가 비어 있으면 만들기 전에 클로드가 사진을 보고 적어요(실패해도 이미지는 만들어요)
+    if(o.onPhase)o.onPhase('제품 특징 적는 중…');if(!o.quiet)gMsg('제품 특징을 클로드가 적는 중이에요…');
+    try{await writeSpec(ctl.signal);S.specAuto=true;}catch(e){}
+  }
   if(!o.quiet)gMsg('0 / '+total+' 만드는 중이에요…');
+  if(o.onPhase)o.onPhase('0 / '+total);
   await Promise.all(Array.from({length:Math.min(par,total)},worker));
   if(!halt&&ctl.signal.aborted)stopped='멈췄어요.';
-  let chk=null;
+  let chk=null,retried=0;
   if(!halt&&!ctl.signal.aborted&&done>0){if(o.onPhase)o.onPhase('손잡이 모양 검수 중…');if(!o.quiet)gMsg('손잡이 모양을 검수하는 중이에요…');chk=await runChecks(list,ctl.signal).catch(()=>null);}
+  // 원본과 달라 보이는 칸은 정밀 모델로 한 번 더 만들고 다시 검수해요(지적된 점도 같이 알려 줘요)
+  if(chk&&!chk.skipped&&chk.bad>0&&UI.autoFix&&G.modelHi&&(o.model||G.model).trim()!==G.modelHi&&!halt&&!ctl.signal.aborted){
+    const bad=flagged().filter(j=>list.some(x=>x.key===j.key));
+    if(bad.length){
+      if(o.onPhase)o.onPhase('달라 보이는 '+bad.length+'칸을 정밀 모델로 다시 만드는 중…');if(!o.quiet)gMsg('달라 보이는 '+bad.length+'칸을 정밀 모델로 다시 만드는 중이에요…');
+      const rr=await regenBad(bad,ctl.signal);retried=rr.done;if(rr.err&&!stopped)stopped=rr.err;
+      if(rr.done&&!ctl.signal.aborted){if(o.onPhase)o.onPhase('다시 만든 칸 검수 중…');chk=await runChecks(bad,ctl.signal).catch(()=>chk);if(chk)chk.bad=flagged().length;}
+    }
+  }
   G.busy=false;G.ctl=null;const sec=Math.round((Date.now()-t0)/1000);
   if(!o.quiet){renderSide();refresh();
-    gMsg(done+'장 만들었어요. ('+sec+'초)'+(cachedN?' 이미 만든 결과 '+cachedN+'장은 다시 요청하지 않았어요.':'')+(chk&&chk.bad?' 손잡이가 원본과 달라 보이는 칸이 '+chk.bad+'개 있어요. 아래 \'달라 보이는 칸만 정밀 모델로 다시\'를 눌러 보세요.':'')+(chk&&chk.err?' (검수: '+chk.err+')':'')+(stopped?' '+stopped:''),stopped&&stopped!=='멈췄어요.'?'err':'ok');}
+    gMsg(done+'장 만들었어요. ('+sec+'초)'+(cachedN?' 이미 만든 결과 '+cachedN+'장은 다시 요청하지 않았어요.':'')+(retried?' 달라 보이던 '+retried+'칸은 정밀 모델로 다시 만들었어요.':'')+(chk&&chk.bad?' 손잡이가 원본과 달라 보이는 칸이 '+chk.bad+'개 있어요. 아래 \'달라 보이는 칸만 정밀 모델로 다시\'를 눌러 보세요.':'')+(chk&&chk.err?' (검수: '+chk.err+')':'')+(stopped?' '+stopped:''),stopped&&stopped!=='멈췄어요.'?'err':'ok');}
   return {done,total,cachedN,stopped,sec,chk};
 }
+// 검수에서 달라 보이면 정밀 모델로 한 번 더 만들 때 늘어날 수 있는 최대 요금 안내(클로드 검수가 켜져 있을 때만)
+const fixNote=n=>{const p=priceOf(G.modelHi);if(!(UI.autoFix&&UI.check&&G.modelHi&&p&&n&&(C.key.trim()||window.claude)))return '';return ' 검수에서 원본과 달라 보이면 정밀 모델로 한 번 더 만들어서, 최대 약 $'+(p*n).toFixed(2)+'까지 더 들 수 있어요.';};
 function gAsk(list,opts){                      // 돈이 드는 일은 한 번 물어봐요
   if(G.state!=='on'){gMsg('먼저 2단계에서 구글 키를 넣고 연결을 확인해 주세요.','err');UI.open.add('p2');renderSide();return;}
   if(!list.length){gMsg('만들 칸이 없어요. 이미 모두 채워져 있어요.','err');return;}
   if(!hasPhoto(S.src)){gMsg('1단계의 제품 사진을 먼저 넣어 주세요.','err');return;}
-  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=list.length+'장을 만들어요('+((opts&&opts.model)||G.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estText(list.length,opts&&opts.model)+' 계속할까요?';$('#gConfirm').hidden=false;
+  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=list.length+'장을 만들어요('+((opts&&opts.model)||G.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estText(list.length,opts&&opts.model)+(((opts&&opts.model)||G.model)!==G.modelHi?fixNote(list.length):'')+' 계속할까요?';$('#gConfirm').hidden=false;
 }
 
 /* 색상 칸 구성: 10칸(기본) / 5칸(비용 절약) */
@@ -887,7 +942,7 @@ async function claude(prompt,o){
   if(!C.key.trim())throw {code:'unavailable'};
   const content=[];for(const b of imgs)content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await toB64(b)}});content.push({type:'text',text:prompt});
   let r;
-  try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:o.signal,headers:cHeaders(),body:JSON.stringify({model:(C.model||'').trim()||CMODEL,max_tokens:o.max||2000,messages:[{role:'user',content}]})});}
+  try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:o.signal,headers:cHeaders(),body:JSON.stringify({model:o.model||(C.model||'').trim()||CMODEL,max_tokens:o.max||2000,messages:[{role:'user',content}]})});}
   catch(e){if(e&&e.name==='AbortError')throw {code:'cancelled'};throw {code:'api_error',text:'클로드에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.'};}
   if(!r.ok){let m='';try{const d=await r.json();m=d&&d.error&&d.error.message||'';}catch(e){}throw {code:'api_error',status:r.status,text:cErr(r.status,m)};}
   const d=await r.json();return parseJsonLoose((d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n'));
@@ -945,10 +1000,17 @@ function applyAbout(r){
   return {n,unclear:(Array.isArray(r.unclear)?r.unclear:[]).map(x=>t(String(x),120)).filter(Boolean).slice(0,6)};
 }
 /* 손잡이 모양 검수: 만든 사진이 원본과 같은 손잡이인지 작은 모델이 한 번 비교해요(AI 판단이라 틀릴 수 있어요) */
-const CHK_PROMPT='첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 비교하세요. 비교할 것: 레버의 길이·굵기·끝 모양, 받침(원판)의 크기·모양, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경 차이는 무시하세요. 확실히 다른 점이 있을 때만 ok를 false로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';
+const chkPrompt=()=>{const sp=String(S.spec||'').trim().slice(0,900);
+  return '첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 꼼꼼히 비교하세요.'
+  +(sp?'\n원본 제품의 특징 메모(이 특징이 빠졌거나 바뀌었으면 다른 제품입니다):\n'+sp+'\n':' ')
+  +'비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(원판)의 크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
+let chkModel='claude-sonnet-5-5';   // 검수는 사진을 더 정확히 보는 모델로(없으면 기본 모델로 물러나요)
 async function checkOne(j,signal){
   const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
-  const r=await claude(CHK_PROMPT,{signal,max:300,images:[await shrink(PH.get(S.src.id).blob,640,.8),await shrink(m.blob,640,.8)]});
+  const imgs=[await shrink(PH.get(S.src.id).blob,800,.85),await shrink(m.blob,800,.85)];
+  let r;
+  try{r=await claude(chkPrompt(),{signal,max:400,images:imgs,model:(C.model||'').trim()?'':chkModel});}
+  catch(e){if(e&&e.status===404&&chkModel){chkModel='';r=await claude(chkPrompt(),{signal,max:400,images:imgs,model:''});}else throw e;}
   if(!r||typeof r!=='object'||typeof r.ok!=='boolean')return false;
   const cur=getP(j.key);if(!cur||cur.id!==p.id)return false;   // 그 사이 사진이 바뀌었으면 버려요
   cur.chk={ok:r.ok,issues:(Array.isArray(r.issues)?r.issues:[]).map(x=>String(x).slice(0,100)).filter(Boolean).slice(0,3)};return true;
@@ -960,6 +1022,16 @@ async function runChecks(list,signal){
   const wk=async()=>{while(!stop&&!(signal&&signal.aborted)){const i=nx++;if(i>=L2.length)return;try{if(await checkOne(L2[i],signal))n++;}catch(e){if(e&&(e.name==='AbortError'||e.code==='cancelled'))return;stop=true;err=(e&&e.text)||ASK_ERR[e&&e.code]||'검수를 하지 못했어요.';}}};
   await Promise.all(Array.from({length:Math.min(3,L2.length)},wk));
   refresh();return {n,bad:flagged().length,err};
+}
+
+/* 제품 특징 메모: 클로드가 사진을 보고, 이미지 AI가 틀리기 쉬운 이 제품만의 모양을 글로 적어요(구글에 같이 보내요) */
+const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
+async function writeSpec(signal){
+  if(!hasPhoto(S.src))throw {code:'unavailable'};
+  const r=await claude(SPEC_PROMPT,{signal,max:900,images:[await shrink(PH.get(S.src.id).blob,1024,.88)]});
+  const sp=String(r&&r.spec||'').trim().slice(0,700);if(!sp)throw {code:'invalid_json'};
+  const nv=(Array.isArray(r.never)?r.never:[]).map(x=>String(x).trim().slice(0,120)).filter(Boolean).slice(0,3);
+  S.spec=sp+(nv.length?'\n※ 이렇게 그리면 틀려요: '+nv.join(' / '):'');
 }
 
 /* ============ 확대 위치 자동 맞춤(컴퓨터가 원본에서 손잡이를 찾아요 · 무료) ============ */
@@ -1281,7 +1353,7 @@ async function runOne(go){
   const aiOn=UI.useAI&&await claudeReady(1),on=G.state==='on',list=on?gList():[],why=[];
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(aiOn&&askKey()===lastAsk)why.push('같은 이름·메모·사진으로 이미 한 번 짰어요. 다시 짜면 클로드 사용량이 또 들어요.');
-  if(list.length)why.push('구글로 이미지 '+list.length+'장을 만들어요('+G.model+'). 요금이 들 수 있어요.'+estText(list.length));
+  if(list.length)why.push('구글로 이미지 '+list.length+'장을 만들어요('+G.model+'). 요금이 들 수 있어요.'+estText(list.length)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button><button class="btn primary" id="onGo" type="button">시작</button></div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);$('#onGo').focus();return;
@@ -1317,6 +1389,7 @@ async function runOne(go){
 /* ============ 버튼과 입력 처리(한 곳에 모아요) ============ */
 async function putPhoto(path,file,ai){
   try{await setPhoto(path,file,ai?{ai:true}:{});}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
+  if(path==='src'&&S.specAuto){S.spec='';S.specAuto=false;}   // 사진이 바뀌면 클로드가 적었던 특징 메모는 지워요(직접 적은 건 남겨요)
   let zoomOk=null;if(path==='src')zoomOk=await autoZoom();   // 제품 사진을 넣자마자 확대 3곳을 손잡이 위치에 맞춰요(무료)
   renderSide();refresh();
   if(zoomOk===true)toast('확대 3곳을 제품 위치에 맞췄어요.',2600);
@@ -1339,6 +1412,14 @@ const ACT={
   up(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i>0){[l[i],l[i-1]]=[l[i-1],l[i]];renderSide();refresh();}},
   dn(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i<l.length-1){[l[i],l[i+1]]=[l[i+1],l[i]];renderSide();refresh();}},
   pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
+  async specai(){
+    const say=(t,c)=>{const e=$('#specMsg');if(e){e.textContent=t;e.className='msg'+(c?' '+c:'');}};
+    if(!hasPhoto(S.src)){say('제품 사진을 먼저 넣어 주세요.','err');return;}
+    if(!(await claudeReady(1))){say('클로드 키를 2단계에서 넣어 주세요. 키가 없으면 직접 적어도 돼요.','err');return;}
+    say('클로드가 사진을 보고 적는 중이에요…');
+    try{await writeSpec();S.specAuto=true;renderSide();refresh();say('적었어요. 틀린 곳이 있으면 고쳐 주세요.','ok');}
+    catch(e){say((e&&e.text)||ASK_ERR[e&&e.code]||'적지 못했어요. 한 번 더 눌러 주세요.','err');}
+  },
   copyp(b){copy(promptOf(jobs()[+b.dataset.i]),'지시문을 복사했어요. AI 스튜디오에 원본 사진과 함께 붙여 넣으세요.');},
   tplfill(){
     const run=async()=>{tplFill();await autoZoom();renderSide();refresh();toast('틀로 글을 채웠어요. 무료예요.');};
@@ -1385,7 +1466,7 @@ side.addEventListener('click',e=>{
 });
 const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
-  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},
+  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
@@ -1400,7 +1481,7 @@ side.addEventListener('change',e=>{
 });
 side.addEventListener('input',e=>{
   const t=e.target,d=t.dataset;
-  if(d.k!==undefined){setP(d.k,t.value);if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name')syncPrompts();refresh();}
+  if(d.k!==undefined){setP(d.k,t.value);if(d.k==='spec')S.specAuto=false;if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name')syncPrompts();refresh();}
   else if(d.s){setP(d.s,Number(t.value)/100);if(t.nextElementSibling)t.nextElementSibling.textContent=t.value;refresh();}
   else if(t.id==='gKey'){G.key=t.value;if(G.state!=='idle')G.state='idle';saveKey();chip();}
   else if(t.id==='gModel'){G.model=t.value;G.auto=false;}
