@@ -241,7 +241,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 21</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 22</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -288,7 +288,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=21,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=22,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -999,7 +999,7 @@ async function findParts(blob){
 async function autoZoom(){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   let P;try{P=await findParts(m.blob);}catch(e){return false;}
-  const Wc=736/Math.max(736/m.w,552/m.h),lenSrc=P.len*(m.w/P.w),cap=clamp(m.w/700,1.6,4);   // 확대해도 흐려지지 않게 원본 크기에 맞춰요
+  const Wc=736/Math.max(736/m.w,560/m.h),lenSrc=P.len*(m.w/P.w),cap=clamp(m.w/700,1.6,4);   // 확대해도 흐려지지 않게 원본 크기에 맞춰요
   const mk=(pt,fr)=>({fx:+clamp(pt.x/P.w,.05,.95).toFixed(3),fy:+clamp(pt.y/P.h,.05,.95).toFixed(3),z:+clamp(Wc/(lenSrc*fr),1.6,cap).toFixed(2)});
   [mk(P.p1,.3),mk(P.p2,.32),mk(P.p3,.28)].forEach((z,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],z);});
   return true;
@@ -1283,7 +1283,13 @@ async function runOne(go){
 /* ============ 버튼과 입력 처리(한 곳에 모아요) ============ */
 async function putPhoto(path,file,ai){
   try{await setPhoto(path,file,ai?{ai:true}:{});}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
+  let zoomOk=null;if(path==='src')zoomOk=await autoZoom();   // 제품 사진을 넣자마자 확대 3곳을 손잡이 위치에 맞춰요(무료)
   renderSide();refresh();
+  if(zoomOk===true)toast('확대 3곳을 제품 위치에 맞췄어요.',2600);
+  else if(zoomOk===false){   // 못 찾으면 기본 자리(위·아래 구석) 대신 사진 가운데 쪽을 보여 줘요
+    [[.5,.4],[.5,.5],[.5,.6]].forEach((v,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],{fx:v[0],fy:v[1],z:1.6});});
+    refresh();toast('제품 위치를 못 찾았어요. 확대 칸의 슬라이더로 맞춰 주세요.',3600);
+  }
 }
 async function copy(text,msg){
   try{await navigator.clipboard.writeText(text);toast(msg);return;}catch(e){}
