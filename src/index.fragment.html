@@ -117,6 +117,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bfig{margin:0}
 .bfig .bimg{aspect-ratio:1/1;border-radius:10px;background:var(--panel-2) center/contain no-repeat;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:12px}
 .bfig figcaption{font-size:12px;text-align:center;margin-top:4px;color:var(--mute);font-weight:700}
+.bfig .btn{width:100%;margin-top:4px}
+.bfig .cost{font-size:11px}
 .job pre{margin:6px 0 0;white-space:pre-wrap;font:inherit;font-size:13px;color:var(--mute);background:var(--panel-2);border-radius:8px;padding:8px 10px}
 .aitag{font-size:12px;color:var(--mute);cursor:pointer}
 
@@ -248,7 +250,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 31</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 32</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -295,7 +297,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=31,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=32,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -347,7 +349,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -663,10 +665,12 @@ const sheetOn=()=>genMode()==='sheet'&&sheetIdx().length>=4;
 const sheetG=()=>Math.max(2,Math.ceil(Math.sqrt(sheetIdx().length)));
 const whiteIdx=()=>S.colors.items.findIndex(it=>!isHand(it)&&/화이트|흰색/.test(String(it.label||'')+String(it.scene||'')));
 const baseReady=()=>!!S.baseOk&&hasPhoto(S.base);
+const baseN=()=>clamp(Math.round(+(S.baseN||3)),1,4);              // 기준 사진 후보 장수(최고급: 정밀 모델·큰 크기로 여러 장 → 사장님이 골라요)
+const candList=()=>(S.baseCands||[]).filter(hasPhoto);
 function jobs(){
   const j=[{key:'hero.photo',name:'첫 화면 사진',ratio:'세로 4:5',kind:'hero'},{key:'concept.photo',name:'소개 사진',ratio:'가로 3:2',kind:'concept'}];
   if(genMode()==='base'){
-    j.push({key:'base',name:'기준 설치 사진 (흰 문)',ratio:'정사각 1:1 · 먼저 확인',kind:'base'});
+    j.push({key:'base',name:'기준 설치 사진 (흰 문)',ratio:'최고급 · 후보 '+baseN()+'장',kind:'base'});
     S.colors.items.forEach((it,i)=>j.push({key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:i===whiteIdx()?'기준 사진 그대로':'기준 사진에서 '+(isHand(it)?'손만 더해요':'문 색만 바꿔요'),kind:'edit',i}));
     return j;
   }
@@ -676,6 +680,7 @@ function jobs(){
 }
 const needJob=j=>j.kind==='sheet'?sheetIdx().some(i=>!hasPhoto(S.colors.items[i].photo))
   :j.kind==='edit'?(baseReady()&&j.i!==whiteIdx()&&!hasPhoto(getP(j.key)))   // 편집 칸은 기준 사진을 확정한 뒤에만 만들어요
+  :j.kind==='base'?(!hasPhoto(S.base)&&!candList().length)                   // 후보가 있으면 사장님이 고를 차례라 더 만들지 않아요
   :!hasPhoto(getP(j.key));
 const gList=()=>jobs().filter(needJob);      // 비어 있는 칸만 만들어요(이미 있는 칸은 돈을 쓰지 않아요)
 
@@ -720,14 +725,21 @@ function p2(){
 }
 const chkLine=p=>p&&p.chk?(p.chk.ok?'<div class="cost" style="color:var(--ok)">검수: 원본과 같은 손잡이로 보여요</div>':'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 손잡이가 원본과 달라 보이거나 잘려 보여요'+(p.chk.issues.length?' — '+esc(p.chk.issues.join(' / ')):'')+' (AI 판단이라 틀릴 수 있어요)</div>'):'';
 function baseRow(j,idx,on){                   // ① 기준 설치 사진: 실물과 나란히 보고 확정해요
-  const p=S.base,m=p&&PH.get(p.id),sm=S.src&&PH.get(S.src.id);
-  const big=(u,cap)=>'<figure class="bfig"><div class="bimg"'+(u?' style="background-image:url('+u+')"':'')+'>'+(u?'':'아직 없어요')+'</div><figcaption>'+cap+'</figcaption></figure>';
+  const p=S.base,m=p&&PH.get(p.id),sm=S.src&&PH.get(S.src.id),cs=S.baseCands||[],cn=candList().length,N=baseN();
+  const big=(u,cap,extra)=>'<figure class="bfig"><div class="bimg"'+(u?' style="background-image:url('+u+')"':'')+'>'+(u?'':'아직 없어요')+'</div><figcaption>'+cap+'</figcaption>'+(extra||'')+'</figure>';
+  const rec=cs.findIndex(c=>hasPhoto(c)&&c.chk&&c.chk.ok);   // 검수가 실물과 같다고 본 첫 후보를 추천(★)
+  let body;
+  if(m)body='<div class="bcmp">'+big(sm&&sm.url,'실물 사진 (1단계)')+big(m.url,S.baseOk?'기준 사진 (확정)':'기준 사진')+'</div>'+chkLine(p)
+    +(!S.baseOk?'<div class="acts"><button class="btn sm primary" type="button" data-act="baseok">실물과 같아요 · 이 사진으로 확정</button></div>':'');
+  else if(cn)body='<p class="hint"><b>후보 '+cn+'장</b> 중에서 실물과 가장 같은 사진의 <b>\'이 후보로 확정\'</b>을 누르세요.'+(rec>=0?' 검수가 실물과 같다고 본 후보에 ★가 붙어 있어요.':'')+' 모두 다르면 \'후보 다시 만들기\'를 누르세요.</p>'
+    +'<div class="bcmp">'+big(sm&&sm.url,'실물 사진')+cs.map((c,k)=>hasPhoto(c)?big(PH.get(c.id).url,'후보 '+(k+1)+(k===rec?' ★ 추천':''),chkLine(c)+'<button class="btn sm primary" type="button" data-act="basepick" data-k="'+k+'">이 후보로 확정</button>'):'').join('')+'</div>';
+  else body='<div class="bcmp">'+big(sm&&sm.url,'실물 사진 (1단계)')+big('','기준 사진')+'</div>';
   return '<div class="job base'+(S.baseOk&&m?' ok':'')+'" data-pk="base"><div class="meta">'
-    +'<div class="nm">① 기준 설치 사진 <span class="ratio">흰 문 · 정사각 1:1</span>'+(S.baseOk&&m?'<span class="done">확정</span>':'')+'</div>'
-    +'<p class="hint">문 색상 칸은 모두 이 사진에서 <b>문 색만 바꿔서</b> 만들어요. 그래서 손잡이를 다시 그리지 않고 모든 칸이 같아요. 이 사진의 손잡이가 실물과 같은지 나란히 놓고 꼭 확인하세요.</p>'
-    +'<div class="bcmp">'+big(sm&&sm.url,'실물 사진 (1단계)')+big(m&&m.url,'기준 사진')+'</div>'+chkLine(p)
-    +(m&&!S.baseOk?'<div class="acts"><button class="btn sm primary" type="button" data-act="baseok">실물과 같아요 · 이 사진으로 확정</button></div>':'')
-    +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'구글로 만들기')+estJobs([j],null,true)+'</button>':'')
+    +'<div class="nm">① 기준 설치 사진 <span class="ratio">흰 문 · 최고급(정밀 모델·큰 크기)</span>'+(S.baseOk&&m?'<span class="done">확정</span>':'')+'</div>'
+    +'<p class="hint">문 색상 칸은 모두 이 사진에서 <b>문 색만 바꿔서</b> 만들어요. 그래서 이 한 장은 비용이 더 들어도 정밀 모델·큰 크기로 후보를 여러 장 만들고, 사장님이 실물과 가장 같은 걸 골라요.</p>'
+    +body
+    +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m||cn?'후보 다시 만들기':'후보 만들기')+' ('+N+'장'+estJobs([j],null,true)+')</button>':'')
+    +'<label class="chk">후보 <select data-basen="1">'+[1,2,3,4].map(n=>'<option value="'+n+'"'+(n===N?' selected':'')+'>'+n+'장</option>').join('')+'</select></label>'
     +'<label class="btn sm">문에 단 실제 사진 넣기 (가장 정확)<input type="file" accept="image/*" hidden data-file="base"></label>'
     +'<button class="btn sm" type="button" data-act="copyp" data-i="'+idx+'">지시문 복사</button></div>'
     +'<details><summary class="aitag">지시문 보기</summary><pre data-j="'+idx+'">'+esc(promptOf(j))+'</pre></details>'
@@ -821,11 +833,13 @@ const priceOf=model=>{const m=MPRICE.find(x=>x[0].test(model||''));return m?m[1]
 function estText(n,model,short){const p=priceOf(model||G.model);if(!p||!n)return '';const t='약 $'+(p*n).toFixed(2);return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준 · 1K 크기).';}
 // 시트(큰 크기 한 장)는 같은 모델이라도 장당 값이 더 높아요(대략)
 const priceSheet=model=>/pro-image/.test(model||'')?priceOf(model):(/gemini-3(\.\d+)?-flash-image/.test(model||'')?0.101:priceOf(model)*1.5);
-const priceJob=(j,model)=>{const m=model||(j&&j.kind==='base'&&G.modelHi)||(j&&j.kind==='edit'&&G.modelEdit)||G.model;return j&&j.kind==='sheet'?priceSheet(m):priceOf(m);};
+const priceJob=(j,model)=>{const m=model||(j&&(j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j&&j.kind==='edit'&&G.modelEdit)||G.model;const p=j&&j.kind==='sheet'?priceSheet(m):priceOf(m);return j&&j.kind==='base'&&!model?p*baseN():p;};   // 기준 사진은 후보 장수만큼
+const mNote=(l,m)=>(m||G.model)+(!m&&G.modelHi&&l.some(j=>j.kind==='base'||j.kind==='hero')?' · 기준 사진·첫 화면은 최고급 '+G.modelHi:'')+(!m&&G.modelEdit&&l.some(j=>j.kind==='edit')?' · 문 색 바꾸기는 '+G.modelEdit:'');
+const nImgs=l=>l.reduce((s,j)=>s+(j.kind==='base'?baseN():1),0);   // 실제로 만들 이미지 장수(기준 사진은 후보 장수만큼)
 function estJobs(list,model,short){
   const tot=list.reduce((s,j)=>s+(priceJob(j,model)||0),0);if(!tot||!list.length)return '';
   const t='약 $'+tot.toFixed(2),sh=list.some(j=>j.kind==='sheet');
-  return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준 · 1K 크기'+(sh?', 시트는 큰 크기라 더 비싸게 잡았어요':'')+').';
+  return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준'+(sh?', 시트는 큰 크기라 더 비싸게 잡았어요':'')+').';
 }
 const verOf=n=>{const m=String(n).match(/gemini-(\d+(?:\.\d+)?)/);return m?parseFloat(m[1]):0;};
 const bestOf=a=>a.slice().sort((x,y)=>(/preview/.test(x)-/preview/.test(y))||(verOf(y)-verOf(x)))[0]||'';   // 정식 출시 먼저, 같으면 높은 버전
@@ -900,15 +914,15 @@ function gErr(e){
   return '연결하지 못했어요. 인터넷 연결을 확인해 주세요.';
 }
 async function gOne(j,signal,opts){
-  const model=((opts&&opts.model)||(j.kind==='base'&&G.modelHi)||(j.kind==='edit'&&G.modelEdit)||G.model).trim(),refs=j.kind==='edit'?await baseRef():await buildRefs();
+  const model=((opts&&opts.model)||((j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j.kind==='edit'&&G.modelEdit)||G.model).trim(),refs=j.kind==='edit'?await baseRef():await buildRefs();   // 기준 사진·첫 화면은 최고급(정밀 모델)
   let prompt=promptOf(j)+refs.note;
   const cur=getP(j.key);   // 다시 만들 때는 검수에서 지적된 점을 알려 줘요
   if(opts&&opts.fresh&&cur&&cur.chk&&!cur.chk.ok&&cur.chk.issues.length)prompt+='\n이전에 만든 이미지는 원본과 이렇게 달랐습니다: '+cur.chk.issues.join(' / ')+'. 이번에는 원본 사진과 똑같이 바로잡아 주세요.';
-  const ck=hashStr(model+'|'+prompt+'|'+refs.sig);
+  const ck=hashStr(model+'|'+prompt+'|'+refs.sig+'|'+((opts&&opts.variant)||0));
   if(!(opts&&opts.fresh)&&G.cache.has(ck))return {blob:G.cache.get(ck),cached:true};   // 같은 요청은 다시 돈을 쓰지 않아요(다시 만들기는 예외)
   const reqParts=[{text:prompt}].concat(refs.imgs.map(d=>({inline_data:{mime_type:'image/jpeg',data:d}})));
   const cfg={aspectRatio:ASPECT[j.kind]||'1:1'};
-  if(j.kind==='sheet'&&/gemini-3/.test(model))cfg.imageSize='2K';   // 시트는 칸마다 선명하도록 큰 크기로(이 모델이 크기 지정을 못 받으면 아래에서 기본 크기로 다시 보내요)
+  if((j.kind==='sheet'||j.kind==='base'||j.kind==='hero')&&/gemini-3/.test(model))cfg.imageSize='2K';   // 시트는 칸마다 선명하도록 큰 크기로(이 모델이 크기 지정을 못 받으면 아래에서 기본 크기로 다시 보내요)
   const send=c=>fetch(GBASE+'/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',signal,headers:{'x-goog-api-key':G.key.trim(),'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:reqParts}],generationConfig:{responseModalities:['IMAGE'],imageConfig:c,candidateCount:1}})});
   let r=await send(cfg);
   if(r.status===400&&cfg.imageSize){const c2=Object.assign({},cfg);delete c2.imageSize;r=await send(c2);}
@@ -959,9 +973,14 @@ async function applySheet(blob){
   const idx=sheetIdx(),tiles=await sliceSheet(blob,sheetG());
   for(let k=0;k<idx.length;k++)if(tiles[k])await setPhoto('colors.items.'+idx[k]+'.photo',tiles[k],{ai:true});
 }
+async function setBaseCands(blobs){            // 기준 사진 후보: 큰 PNG는 JPG로 바꿔 저장해요(저장 공간 절약)
+  S.base=null;S.baseOk=false;S.baseCands=[];
+  for(let k=0;k<blobs.length;k++){S.baseCands.push(null);await setPhoto('baseCands.'+k,await toJpegBlob(blobs[k],.93),{ai:true});}
+  gc();
+}
 async function putResult(j,blob,extra){       // 만든 이미지를 칸에 넣어요(시트면 칸별로 잘라서도 넣어요)
   if(j.kind==='sheet'){await setPhoto(j.key,await toJpegBlob(blob,.92),extra);await applySheet(blob);}
-  else if(j.kind==='base'){await setPhoto('base',blob,extra);S.baseOk=false;}   // 새 기준 사진은 사장님이 다시 확인·확정해야 해요
+  else if(j.kind==='base')await setBaseCands([blob]);   // 새 기준 사진은 후보로 넣고, 사장님이 골라 확정해요
   else await setPhoto(j.key,blob,extra);
 }
 async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
@@ -982,8 +1001,14 @@ async function gRun(list,opts){
     while(!halt&&!ctl.signal.aborted){
       const i=next++;if(i>=total)return;const j=list[i];
       try{
-        const r=await gOne(j,ctl.signal,o);await putResult(j,r.blob,{ai:true});done++;
-        if(r.cached)cachedN++;else{G.made++;G.spent+=priceJob(j,r.model);}
+        if(j.kind==='base'){   // 기준 사진: 후보 여러 장을 동시에 만들어요(하나라도 되면 그걸로 골라요)
+          const rs=await Promise.allSettled(Array.from({length:baseN()},(_,k)=>gOne(j,ctl.signal,Object.assign({},o,{fresh:true,variant:k+1})))),ok=rs.filter(x=>x.status==='fulfilled').map(x=>x.value);
+          if(!ok.length)throw rs[0].reason;
+          await setBaseCands(ok.map(x=>x.blob));done++;G.made+=ok.length;ok.forEach(x=>{G.spent+=priceOf(x.model);});
+        }else{
+          const r=await gOne(j,ctl.signal,o);await putResult(j,r.blob,{ai:true});done++;
+          if(r.cached)cachedN++;else{G.made++;G.spent+=priceJob(j,r.model);}
+        }
         consec=0;refresh();updInfo();if(o.onTick)o.onTick(done,total);if(!o.quiet)gMsg(done+' / '+total+' 만들었어요…');
       }catch(e){
         if(e&&e.name==='AbortError')return;
@@ -1001,6 +1026,11 @@ async function gRun(list,opts){
   await Promise.all(Array.from({length:Math.min(par,total)},worker));
   if(!halt&&ctl.signal.aborted)stopped='멈췄어요.';
   let chk=null,retried=0;
+  if(!halt&&!ctl.signal.aborted&&list.some(j=>j.kind==='base')&&candList().length&&UI.check&&await claudeReady(2)){   // 기준 사진 후보를 실물과 비교해서 추천(★)을 붙여요
+    if(o.onPhase)o.onPhase('기준 사진 후보 검수 중…');if(!o.quiet)gMsg('기준 사진 후보를 실물과 비교하는 중이에요…');
+    for(let k=0;k<(S.baseCands||[]).length;k++){const c=S.baseCands[k];if(!hasPhoto(c)||c.chk)continue;try{await checkOne({key:'baseCands.'+k,kind:'base'},ctl.signal);}catch(e){break;}}
+    refresh();
+  }
   if(!halt&&!ctl.signal.aborted&&done>0){if(o.onPhase)o.onPhase('손잡이 모양 검수 중…');if(!o.quiet)gMsg('손잡이 모양을 검수하는 중이에요…');chk=await runChecks(list,ctl.signal).catch(()=>null);}
   // 원본과 달라 보이는 칸은 정밀 모델로 한 번 더 만들고 다시 검수해요(지적된 점도 같이 알려 줘요)
   if(chk&&!chk.skipped&&chk.bad>0&&UI.autoFix&&G.modelHi&&(o.model||G.model).trim()!==G.modelHi&&!halt&&!ctl.signal.aborted){
@@ -1022,7 +1052,7 @@ function gAsk(list,opts){                      // 돈이 드는 일은 한 번 �
   if(G.state!=='on'){gMsg('먼저 2단계에서 구글 키를 넣고 연결을 확인해 주세요.','err');UI.open.add('p2');renderSide();return;}
   if(!list.length){gMsg('만들 칸이 없어요. 이미 모두 채워져 있어요.','err');return;}
   if(!hasPhoto(S.src)){gMsg('1단계의 제품 사진을 먼저 넣어 주세요.','err');return;}
-  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=list.length+'장을 만들어요('+((opts&&opts.model)||G.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estJobs(list,opts&&opts.model)+(((opts&&opts.model)||G.model)!==G.modelHi?fixNote(list.length):'')+' 계속할까요?';$('#gConfirm').hidden=false;
+  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=nImgs(list)+'장을 만들어요('+mNote(list,opts&&opts.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estJobs(list,opts&&opts.model)+(((opts&&opts.model)||G.model)!==G.modelHi?fixNote(list.length):'')+' 계속할까요?';$('#gConfirm').hidden=false;
 }
 
 /* 색상 칸 구성: 10칸(기본) / 5칸(비용 절약) */
@@ -1491,7 +1521,7 @@ async function runOne(go){
   const aiOn=UI.useAI&&await claudeReady(1),on=G.state==='on',list=on?gList():[],why=[];
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(aiOn&&askKey()===lastAsk)why.push('같은 이름·메모·사진으로 이미 한 번 짰어요. 다시 짜면 클로드 사용량이 또 들어요.');
-  if(list.length)why.push('구글로 이미지 '+list.length+'장을 만들어요('+G.model+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
+  if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button><button class="btn primary" id="onGo" type="button">시작</button></div></div>';
@@ -1521,9 +1551,9 @@ async function runOne(go){
   if(ctl.signal.aborted){veil.hidden=true;toast('멈췄어요.');return;}
   const bad=tErr||((imgRes&&imgRes.stopped&&imgRes.stopped!=='멈췄어요.')?imgRes.stopped:'');
   if(bad){const m=$('#oMsg');if(m){m.className='msg err';m.textContent=bad;}const b=$('#oStop');if(b){b.textContent='닫기';b.onclick=()=>{veil.hidden=true;};}return;}
-  if(genMode()==='base'&&hasPhoto(S.base)&&!S.baseOk){   // 기준 사진은 사장님이 확인해야 해서 여기서 멈춰요
+  if(genMode()==='base'&&!baseReady()&&(hasPhoto(S.base)||candList().length)){   // 기준 사진은 사장님이 골라 확정해야 해서 여기서 멈춰요
     veil.hidden=true;UI.open.add('p3');setTab('edit');renderSide();
-    toast('① 기준 설치 사진을 만들었어요. 3단계에서 실물과 같은지 보고 \'확정\'을 누른 뒤 \'한 번에 만들기\'를 한 번 더 누르면 나머지 문 색상을 만들어요.',8000);
+    toast('① 기준 설치 사진 후보를 만들었어요. 3단계에서 실물과 가장 같은 후보의 \'이 후보로 확정\'을 누른 뒤 \'한 번에 만들기\'를 한 번 더 누르면 나머지 문 색상을 만들어요.',9000);
     const b=$('[data-pk="base"]',side);if(b)b.scrollIntoView({block:'center'});return;
   }
   if(imgRes&&imgRes.done){showExport('다 만들었어요. ('+sec+'초) 비어 있는 칸을 확인하고 저장하세요.');const g=$('#exGo');if(g)g.focus();}
@@ -1536,7 +1566,8 @@ function clearMade(){
   let made=0,extra=0,kept=0;
   const wipe=path=>{const p=getP(path);if(!hasPhoto(p))return;if(p.ai){setP(path,null);made++;}else kept++;};
   wipe('hero.photo');wipe('concept.photo');wipe('sheetImg');
-  if(hasPhoto(S.base)){S.base=null;made++;}S.baseOk=false;   // 기준 사진도 옛 제품 것이라 지워요
+  if(hasPhoto(S.base)){S.base=null;made++;}S.baseOk=false;   // 기준 사진과 후보도 옛 제품 것이라 지워요
+  made+=candList().length;S.baseCands=[];
   S.colors.items.forEach((it,i)=>wipe('colors.items.'+i+'.photo'));
   (S.extra||[]).forEach((p,i)=>{if(hasPhoto(p)){setP('extra.'+i,null);extra++;}});
   G.cache.clear();gc();
@@ -1544,7 +1575,7 @@ function clearMade(){
 }
 async function putPhoto(path,file,ai){
   const hadSrc=path==='src'&&hasPhoto(S.src);
-  try{await setPhoto(path,file,ai?{ai:true}:{});if(path==='sheetImg')await applySheet(file);if(path==='base')S.baseOk=false;}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
+  try{await setPhoto(path,file,ai?{ai:true}:{});if(path==='sheetImg')await applySheet(file);if(path==='base'){S.baseOk=false;S.baseCands=[];gc();}}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
   if(path==='src'&&S.specAuto){S.spec='';S.specAuto=false;}   // 사진이 바뀌면 클로드가 적었던 특징 메모는 지워요(직접 적은 건 남겨요)
   const cl=hadSrc&&UI.clearOnNew?clearMade():null;
   let zoomOk=null;if(path==='src')zoomOk=await autoZoom();   // 제품 사진을 넣자마자 확대 3곳을 손잡이 위치에 맞춰요(무료)
@@ -1604,6 +1635,10 @@ const ACT={
   gone(b){regen(jobs()[+b.dataset.i]);},
   gonehi(b){regen(jobs()[+b.dataset.i],{model:G.modelHi,fresh:true});},
   gfix(){const l=flagged();if(l.length)gAsk(l,{model:G.modelHi||G.model,fresh:true});},
+  basepick(b){                                // 후보 중 하나를 기준 사진으로 확정(나머지 후보는 지워요)
+    const c=S.baseCands&&S.baseCands[+b.dataset.k];if(!hasPhoto(c))return;
+    S.base=Object.assign({},c);S.baseCands=[];ACT.baseok();
+  },
   baseok(){                                   // 기준 사진 확정: 흰 문 칸에 그대로 넣고, 나머지 문 색상은 이 사진에서 문 색만 바꿔 만들어요
     if(!hasPhoto(S.base))return;
     S.baseOk=true;let n=0;
@@ -1657,6 +1692,7 @@ side.addEventListener('change',e=>{
   else if(d.view!==undefined){S.colors.items[+d.view].view=t.value;renderSide();refresh();}
   else if(d.dir!==undefined){S.colors.items[+d.dir].flip=t.value==='R';renderSide();refresh();}
   else if(d.ic!==undefined){S.zoom.items[+d.ic].ic=t.value;refresh();}
+  else if(d.basen!==undefined){S.baseN=+t.value;renderSide();updInfo();}
 });
 side.addEventListener('input',e=>{
   const t=e.target,d=t.dataset;
