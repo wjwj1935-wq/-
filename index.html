@@ -113,6 +113,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .job .ratio{font-size:12px;font-weight:700;color:var(--mute);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
 .job .done{font-size:12px;color:var(--ok);font-weight:700}
 .job details{grid-column:1/-1}
+.job.base{grid-template-columns:1fr;border:2px solid var(--accent,#2b59c3)}
+.job.base.ok{border-color:var(--ok)}
+.bcmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bfig{margin:0}
+.bfig .bimg{aspect-ratio:1/1;border-radius:10px;background:var(--panel-2) center/contain no-repeat;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:12px}
+.bfig figcaption{font-size:12px;text-align:center;margin-top:4px;color:var(--mute);font-weight:700}
 .job pre{margin:6px 0 0;white-space:pre-wrap;font:inherit;font-size:13px;color:var(--mute);background:var(--panel-2);border-radius:8px;padding:8px 10px}
 .aitag{font-size:12px;color:var(--mute);cursor:pointer}
 
@@ -245,7 +251,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 30</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 31</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -292,7 +298,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=30,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=31,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -344,7 +350,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -619,9 +625,21 @@ function promptOf(j){
     +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 흔한 손잡이처럼 단순하게 바꾸거나 비슷한 다른 손잡이를 새로 만들지 마세요. 레버의 길이·굵기·끝 모양과 윗면의 굴곡(움푹 파인 곳 포함), 레버와 받침을 잇는 목 부분, 받침의 크기·두께·테두리, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n'
     +(spec?'이 제품의 특징(사진과 함께 반드시 지킬 것):\n'+spec+'\n':'')
     +'글자, 로고, 워터마크는 넣지 마세요.\n';
-  if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 짙은 남색~검정 스튜디오 배경에 이 제품 하나만 화면 위쪽 60% 영역에 크게(레버와 받침이 모두 잘리지 않게), 약간 비스듬한 각도로 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
-  if(j.kind==='concept')return base+'장면: 어두운 남회색 스튜디오 배경에 이 제품 하나만 중앙에 크게(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
+  if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 짙은 남색~검정 스튜디오 배경에 이 제품 하나만 화면 위쪽 60% 영역에 크게(레버와 받침이 모두 잘리지 않게) 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
+  if(j.kind==='concept')return base+'장면: 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 어두운 남회색 스튜디오 배경에 이 제품 하나만 중앙에 크게(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
   const real='실제 인테리어 사진처럼 사실적으로. 손잡이 받침은 문에 단단히 붙어 있고, 받침과 레버 아래·옆으로 부드러운 접촉 그림자가 드리우게. 금속 표면에는 은은한 하이라이트, 배경은 살짝 흐리게(얕은 심도), 창가의 자연스러운 실내 빛. ';
+  if(j.kind==='base'){   // 기준 설치 사진: 이 한 장을 사장님이 확인·확정하면, 나머지 문 색상은 이 사진에서 문 색만 바꿔요
+    const w=S.colors.items[whiteIdx()]||{scene:'깨끗한 흰색 실내 문',view:'l',door:'groove',flip:false};
+    const vw=CAMS[w.view||'l']||CAMS.l,d=w.flip?'오른쪽':'왼쪽',f=DOORF[w.door]||'';
+    return base+'장면: '+String(w.scene||'깨끗한 흰색 실내 문').trim()+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도. 이 사진은 다른 문 색상 사진을 만드는 기준이 되니, 손잡이를 첨부 사진과 특히 정확하게 똑같이 그려 주세요.\n'
+      +FRAME+'\n카메라: '+vw+'.\n손잡이 방향: 받침에서 레버가 화면 '+d+'으로 뻗게. 레버 끝이 화면 '+d+' 가장자리에서 충분히 떨어져 보이게.\n'+(f?'문: '+f+'.\n':'')+real+'비율은 정사각형 1:1.';
+  }
+  if(j.kind==='edit'){   // 확정한 기준 사진을 편집: 손잡이는 그대로, 문 색(또는 손)만 바꿔요. 손잡이를 새로 그리지 않아서 칸마다 같아요.
+    const c=S.colors.items[j.i],sc=String(c.scene||c.label).trim(),f=DOORF[c.door]||'';
+    const keep='절대 바꾸지 말 것: 손잡이(레버·목·받침)의 모양·크기·위치·각도·금속 색과 결, 손잡이 그림자의 위치와 모양, 카메라 구도와 화면 비율, 빛의 방향. 손잡이 부분은 첨부 사진의 픽셀을 그대로 두세요. 새 물체, 글자, 로고를 넣지 마세요.';
+    if(isHand(c))return '첨부한 사진(사진 1)을 편집하세요. 이 사진의 문과 손잡이는 정답이고 그대로 둡니다.\n더할 것: '+sc+'. 자연스러운 한 손(손가락 5개)이 이 레버를 위에서 잡아 아래로 누르는 순간을 더하세요. 손만 보이고 얼굴·몸은 나오지 않게. 손이 가리는 부분 말고는 레버가 그대로 보이게.\n'+keep+'\n비율은 정사각형 1:1.';
+    return '첨부한 사진(사진 1)을 편집하세요. 이 사진은 정답이고, 바꿀 것은 문뿐입니다.\n바꿀 것: 문짝과 문틀의 색과 재질을 "'+sc+'"(으)로 바꾸세요.'+(f?' '+f+'.':'')+' 문 색이 바뀌어도 빛과 그림자, 문 표면의 자연스러운 질감은 실제 사진처럼 보이게.\n'+keep+'\n비율은 정사각형 1:1.';
+  }
   if(j.kind==='sheet'){
     const idx=sheetIdx(),g=sheetG(),blank=g*g-idx.length;
     const cells=idx.map((ci,k)=>{const c=S.colors.items[ci],cam=(CAMS[c.view||'f']||CAMS.f).split('.')[0],d=c.flip?'오른쪽':'왼쪽',f=DOORF[c.door]||'';
@@ -636,20 +654,32 @@ function promptOf(j){
   return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도.\n'+FRAME+'\n카메라: '+vw+'.\n손잡이 방향: 받침에서 레버가 화면 '+dir+'으로 뻗게. 레버 끝이 화면 '+dir+' 가장자리에서 충분히 떨어져 보이게.\n'+(fr?'문: '+fr+'.\n':'')
     +real+'손잡이 모양과 마감은 첨부 사진과 똑같이 유지하고, 문의 색과 질감만 위 설명대로 바꿔 주세요. 비율은 정사각형 1:1.';
 }
-const ASPECT={hero:'4:5',concept:'3:2',color:'1:1',sheet:'1:1'};
+const ASPECT={hero:'4:5',concept:'3:2',color:'1:1',sheet:'1:1',base:'1:1',edit:'1:1'};
 /* 시트 방식: 문 색상 여러 칸을 구글에 "한 장짜리 시트"로 만들게 하고, 프로그램이 칸별로 잘라 써요(자르기는 무료).
    손이 나오는 사용 컷은 시트에 안 넣고 따로 만들어요. */
 const isHand=it=>/손/.test(String(it.scene||it.label||'').trim());
 const sheetIdx=()=>S.colors.items.map((it,i)=>isHand(it)?-1:i).filter(i=>i>=0);
-const sheetOn=()=>!!S.colors.sheet&&sheetIdx().length>=4;
+/* 문 색상 만드는 방식: base = 기준 설치 사진 1장(사장님 확정) → 나머지는 그 사진에서 문 색만 편집(추천·손잡이가 칸마다 같아요)
+   each = 칸마다 새로 그리기, sheet = 여러 칸을 시트 한 장으로 */
+const genMode=()=>S.colors.gen||(S.colors.sheet?'sheet':'base');
+const sheetOn=()=>genMode()==='sheet'&&sheetIdx().length>=4;
 const sheetG=()=>Math.max(2,Math.ceil(Math.sqrt(sheetIdx().length)));
+const whiteIdx=()=>S.colors.items.findIndex(it=>!isHand(it)&&/화이트|흰색/.test(String(it.label||'')+String(it.scene||'')));
+const baseReady=()=>!!S.baseOk&&hasPhoto(S.base);
 function jobs(){
   const j=[{key:'hero.photo',name:'첫 화면 사진',ratio:'세로 4:5',kind:'hero'},{key:'concept.photo',name:'소개 사진',ratio:'가로 3:2',kind:'concept'}];
+  if(genMode()==='base'){
+    j.push({key:'base',name:'기준 설치 사진 (흰 문)',ratio:'정사각 1:1 · 먼저 확인',kind:'base'});
+    S.colors.items.forEach((it,i)=>j.push({key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:i===whiteIdx()?'기준 사진 그대로':'기준 사진에서 '+(isHand(it)?'손만 더해요':'문 색만 바꿔요'),kind:'edit',i}));
+    return j;
+  }
   if(sheetOn())j.push({key:'sheetImg',name:'문 색상 시트 ('+sheetIdx().length+'칸을 한 장으로)',ratio:'정사각 1:1 · 큰 크기',kind:'sheet'});
   S.colors.items.forEach((it,i)=>{if(sheetOn()&&!isHand(it))return;j.push({key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:'정사각 1:1',kind:'color',i});});
   return j;
 }
-const needJob=j=>j.kind==='sheet'?sheetIdx().some(i=>!hasPhoto(S.colors.items[i].photo)):!hasPhoto(getP(j.key));
+const needJob=j=>j.kind==='sheet'?sheetIdx().some(i=>!hasPhoto(S.colors.items[i].photo))
+  :j.kind==='edit'?(baseReady()&&j.i!==whiteIdx()&&!hasPhoto(getP(j.key)))   // 편집 칸은 기준 사진을 확정한 뒤에만 만들어요
+  :!hasPhoto(getP(j.key));
 const gList=()=>jobs().filter(needJob);      // 비어 있는 칸만 만들어요(이미 있는 칸은 돈을 쓰지 않아요)
 
 /* ---------- 왼쪽 네 단계 ---------- */
@@ -692,10 +722,28 @@ function p2(){
     +'<p class="cost">키는 이 창에만 두고 글·사진·작업 저장 파일에는 들어가지 않아요. 키는 구글·클로드에서 회사가 직접 발급하고, 쓴 만큼 요금이 들어요.</p>';
 }
 const chkLine=p=>p&&p.chk?(p.chk.ok?'<div class="cost" style="color:var(--ok)">검수: 원본과 같은 손잡이로 보여요</div>':'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 손잡이가 원본과 달라 보이거나 잘려 보여요'+(p.chk.issues.length?' — '+esc(p.chk.issues.join(' / ')):'')+' (AI 판단이라 틀릴 수 있어요)</div>'):'';
+function baseRow(j,idx,on){                   // ① 기준 설치 사진: 실물과 나란히 보고 확정해요
+  const p=S.base,m=p&&PH.get(p.id),sm=S.src&&PH.get(S.src.id);
+  const big=(u,cap)=>'<figure class="bfig"><div class="bimg"'+(u?' style="background-image:url('+u+')"':'')+'>'+(u?'':'아직 없어요')+'</div><figcaption>'+cap+'</figcaption></figure>';
+  return '<div class="job base'+(S.baseOk&&m?' ok':'')+'" data-pk="base"><div class="meta">'
+    +'<div class="nm">① 기준 설치 사진 <span class="ratio">흰 문 · 정사각 1:1</span>'+(S.baseOk&&m?'<span class="done">확정</span>':'')+'</div>'
+    +'<p class="hint">문 색상 칸은 모두 이 사진에서 <b>문 색만 바꿔서</b> 만들어요. 그래서 손잡이를 다시 그리지 않고 모든 칸이 같아요. 이 사진의 손잡이가 실물과 같은지 나란히 놓고 꼭 확인하세요.</p>'
+    +'<div class="bcmp">'+big(sm&&sm.url,'실물 사진 (1단계)')+big(m&&m.url,'기준 사진')+'</div>'+chkLine(p)
+    +(m&&!S.baseOk?'<div class="acts"><button class="btn sm primary" type="button" data-act="baseok">실물과 같아요 · 이 사진으로 확정</button></div>':'')
+    +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'구글로 만들기')+estJobs([j],null,true)+'</button>':'')
+    +'<label class="btn sm">문에 단 실제 사진 넣기 (가장 정확)<input type="file" accept="image/*" hidden data-file="base"></label>'
+    +'<button class="btn sm" type="button" data-act="copyp" data-i="'+idx+'">지시문 복사</button></div>'
+    +'<details><summary class="aitag">지시문 보기</summary><pre data-j="'+idx+'">'+esc(promptOf(j))+'</pre></details>'
+    +'</div></div>';
+}
 function p3(){
   const on=G.state==='on',cm=colorMode(),fl=flagged(),hasAi=jobs().some(j=>{const p=getP(j.key);return p&&p.ai&&hasPhoto(p);});
   const rows=jobs().map((j,idx)=>{
+    if(j.kind==='base')return baseRow(j,idx,on);
     const p=getP(j.key),m=p&&PH.get(p.id),it=j.kind==='color'?S.colors.items[j.i]:null;
+    if(j.kind==='edit'&&(!baseReady()||j.i===whiteIdx()))   // 기준 사진 확정 전이거나 흰 문 칸(기준 사진 그대로)이면 만들기 버튼 없이 보여 줘요
+      return '<div class="job" data-pk="'+j.key+'"><div class="thumb"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'대기')+'</div><div class="meta"><div class="nm">'+esc(j.name)+' <span class="ratio">'+j.ratio+'</span>'+(m?'<span class="done">완료</span>':'')+'</div>'+chkLine(p)
+        +'<p class="cost">'+(j.i===whiteIdx()?'기준 사진을 확정하면 이 칸에 그대로 들어가요.':'기준 사진을 확정하면 만들 수 있어요.')+'</p></div></div>';
     return '<div class="job" data-pk="'+j.key+'"><div class="thumb" data-drop="'+j.key+'"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'끌어다<br>놓기')+'</div>'
       +'<div class="meta"><div class="nm">'+esc(j.name)+' <span class="ratio">'+j.ratio+'</span>'+(m?'<span class="done">완료</span>':'')+'</div>'+chkLine(p)
       +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'AI로 만들기')+'</button>':'')
@@ -706,7 +754,9 @@ function p3(){
       +'</div><details><summary class="aitag">지시문 보기</summary><pre data-j="'+idx+'">'+esc(promptOf(j))+'</pre></details></div>';
   }).join('');
   return '<label class="f"><span>문 색상 칸 구성 (구글 이미지 장수가 달라져요)</span><select id="colorMode"><option value="full"'+(cm==='full'?' selected':'')+'>10칸 · 참고 페이지와 같은 구성</option><option value="lite"'+(cm==='lite'?' selected':'')+'>5칸 · 비용 절약 (화이트, 월넛, 라이트 그레이, 블랙, 사용 컷)</option></select></label>'
-    +'<label class="f"><span>문 색상 사진 만드는 방식 (구글 요청 횟수와 비용이 달라져요)</span><select id="colorGen"><option value="each"'+(sheetOn()?'':' selected')+'>한 칸씩 · 칸마다 구글 1장 (디테일 가장 좋음, 비용 많음)</option><option value="sheet"'+(sheetOn()?' selected':'')+'>시트 한 장으로 · 여러 칸을 구글 1장으로 만들고 프로그램이 잘라요 (비용 크게 줄어요)</option></select></label>'
+    +'<label class="f"><span>문 색상 사진 만드는 방식</span><select id="colorGen">'
+      +[['base','기준 사진 1장 확정 → 문 색만 바꾸기 (추천 · 손잡이가 모든 칸에서 같아요)'],['each','한 칸씩 새로 그리기 (칸마다 손잡이가 달라질 수 있어요)'],['sheet','시트 한 장으로 (가장 싸지만 칸마다 손잡이가 달라질 수 있어요)']].map(o=>'<option value="'+o[0]+'"'+(genMode()===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
+    +(genMode()==='base'?'<p class="hint"><b>순서:</b> ① 기준 설치 사진 1장을 만들고(또는 문에 단 실제 사진을 넣고) ② 실물과 같은지 보고 <b>확정</b>을 누르면 ③ 나머지 문 색상은 그 사진에서 <b>문 색만</b> 바꿔서 만들어요. 확정 전에는 나머지 칸에 돈을 쓰지 않아요.'+(G.modelEdit?' 문 색 바꾸기는 값싼 모델('+esc(G.modelEdit)+')로 해요.':'')+'</p>':'')
     +(sheetOn()?'<p class="hint"><b>시트 방식:</b> 구글에 문 색상 '+sheetIdx().length+'칸이 들어간 시트 1장을 만들게 하고, 프로그램이 칸별로 자르는 건 무료예요. 칸 하나하나는 크기가 작아지고, 칸 모양이 어긋나면 잘릴 수 있어요. 먼저 <b>1장만 시험</b>(시트 1장)으로 칸 품질을 확인해 보세요. 사용 컷은 손이 나와서 따로 만들어요. 구글 AI 스튜디오 웹에서 직접 만든 시트도 \'사진 넣기\'로 넣으면 자동으로 잘라요.</p>':'')
     +'<p class="hint">문 색상 칸은 구글이 "문에 달린 사진"으로 만들어요. 손잡이 모양은 1단계 원본 그대로 두고 문 색과 카메라 각도만 바뀌어요. 처음에는 <b>1장만 시험</b>해 보고 나머지를 만드세요.</p>'
     +'<p class="cost" id="costLine">'+costLine()+'</p><p class="cost" id="gSpent">'+esc(spentText())+'</p>'
@@ -763,7 +813,7 @@ $('#blankChip').addEventListener('click',()=>{const n=needs()[0];if(!n)return;se
 
 /* ============ 구글: 키 연결, 이미지 만들기 ============ */
 const GBASE='https://generativelanguage.googleapis.com/v1beta',GKEY='wj-gk';
-const G={key:'',remember:false,model:'gemini-3.1-flash-image',modelHi:'',models:[],auto:true,par:5,made:0,spent:0,state:'idle',msg:'',cls:'',busy:false,ctl:null,cache:new Map()};
+const G={key:'',remember:false,model:'gemini-3.1-flash-image',modelHi:'',modelEdit:'',models:[],auto:true,par:5,made:0,spent:0,state:'idle',msg:'',cls:'',busy:false,ctl:null,cache:new Map()};
 try{const k=localStorage.getItem(GKEY);if(k){G.key=k;G.remember=true;}}catch(e){}
 const saveKey=()=>{try{G.remember&&G.key?localStorage.setItem(GKEY,G.key):localStorage.removeItem(GKEY);}catch(e){}};
 function gMsg(t,c){G.msg=t;G.cls=c||'';const m=$('#gMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
@@ -774,9 +824,9 @@ const priceOf=model=>{const m=MPRICE.find(x=>x[0].test(model||''));return m?m[1]
 function estText(n,model,short){const p=priceOf(model||G.model);if(!p||!n)return '';const t='약 $'+(p*n).toFixed(2);return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준 · 1K 크기).';}
 // 시트(큰 크기 한 장)는 같은 모델이라도 장당 값이 더 높아요(대략)
 const priceSheet=model=>/pro-image/.test(model||'')?priceOf(model):(/gemini-3(\.\d+)?-flash-image/.test(model||'')?0.101:priceOf(model)*1.5);
-const priceJob=(j,model)=>j&&j.kind==='sheet'?priceSheet(model||G.model):priceOf(model||G.model);
+const priceJob=(j,model)=>{const m=model||(j&&j.kind==='base'&&G.modelHi)||(j&&j.kind==='edit'&&G.modelEdit)||G.model;return j&&j.kind==='sheet'?priceSheet(m):priceOf(m);};
 function estJobs(list,model,short){
-  const m=model||G.model,tot=list.reduce((s,j)=>s+(priceJob(j,m)||0),0);if(!tot||!list.length)return '';
+  const tot=list.reduce((s,j)=>s+(priceJob(j,model)||0),0);if(!tot||!list.length)return '';
   const t='약 $'+tot.toFixed(2),sh=list.some(j=>j.kind==='sheet');
   return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준 · 1K 크기'+(sh?', 시트는 큰 크기라 더 비싸게 잡았어요':'')+').';
 }
@@ -785,7 +835,8 @@ const bestOf=a=>a.slice().sort((x,y)=>(/preview/.test(x)-/preview/.test(y))||(ve
 function pickModels(names){
   const img=names.filter(n=>/image/i.test(n)&&!/imagen|live|tts|audio|embed/i.test(n));
   const std=bestOf(img.filter(n=>/flash-image/.test(n)&&!/lite/.test(n)&&verOf(n)>=3))||bestOf(img.filter(n=>/lite-image/.test(n)))||bestOf(img.filter(n=>/gemini-2\.5-flash-image/.test(n)))||bestOf(img);
-  return {img,std,hi:bestOf(img.filter(n=>/pro-image/.test(n)))||std};
+  // edit: 기준 사진에서 문 색만 바꾸는 "편집"은 쉬운 일이라 값싼 모델(2.5 Flash Image)이 있으면 그걸 써요
+  return {img,std,hi:bestOf(img.filter(n=>/pro-image/.test(n)))||std,edit:bestOf(img.filter(n=>/gemini-2\.5-flash-image/.test(n)))||std};
 }
 const flagged=()=>jobs().filter(j=>{const p=getP(j.key);return p&&p.chk&&!p.chk.ok;});
 function costLine(){const l=gList();return '구글로 만들 빈 칸 <b>'+l.length+'장</b>'+estJobs(l,null,true);}
@@ -801,6 +852,13 @@ async function cropRef(it){
   c.width=Math.max(1,Math.round(sw*k));c.height=Math.max(1,Math.round(sh*k));
   const cg=c.getContext('2d');cg.fillStyle='#fff';cg.fillRect(0,0,c.width,c.height);cg.drawImage(bmp,sx,sy,sw,sh,0,0,c.width,c.height);
   return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.88)));
+}
+let BREF={id:'',val:null};
+async function baseRef(){                     // 편집 칸은 확정한 기준 사진 한 장만 보내요(원본 제품 사진을 같이 보내면 손잡이를 다시 그리려 해요)
+  if(!hasPhoto(S.base))throw {status:-1,message:'먼저 3단계에서 기준 설치 사진을 만들고 확정해 주세요.'};
+  if(BREF.id===S.base.id&&BREF.val)return BREF.val;
+  const b=await toB64(await shrink(PH.get(S.base.id).blob,1024,.9));
+  BREF={id:S.base.id,val:{imgs:[b],note:'',sig:'base:'+S.base.id}};return BREF.val;
 }
 async function buildRefs(){
   if(!hasPhoto(S.src))throw {status:-1,message:'1단계의 제품 사진을 먼저 넣어 주세요.'};
@@ -825,8 +883,8 @@ async function gCheck(){
       try{let d=await r.json(),pg=0;for(;;){names=names.concat((d.models||[]).filter(m=>!m.supportedGenerationMethods||m.supportedGenerationMethods.includes('generateContent')).map(m=>String(m.name||'').replace(/^models\//,'')));
         if(!d.nextPageToken||++pg>=4)break;const r2=await fetch(GBASE+'/models?pageSize=1000&pageToken='+encodeURIComponent(d.nextPageToken),H);if(!r2.ok)break;d=await r2.json();}}catch(e){}
       const pk=pickModels(names);G.models=pk.img;
-      if(pk.std){if(G.auto)G.model=pk.std;G.modelHi=pk.hi;gMsg('연결됐어요. 이미지 모델을 자동으로 골랐어요 → 기본: '+G.model+' · 어려운 칸 다시 만들기: '+(G.modelHi||G.model)+'.','ok');}
-      else{G.modelHi='';gMsg('연결됐어요. 이미지 모델 목록은 확인하지 못해서 \''+G.model+'\'을 써요. 오류가 나면 모델 이름을 바꿔 주세요.','ok');}
+      if(pk.std){if(G.auto)G.model=pk.std;G.modelHi=pk.hi;G.modelEdit=pk.edit;gMsg('연결됐어요. 이미지 모델을 자동으로 골랐어요 → 기본: '+G.model+' · 기준 사진·어려운 칸: '+(G.modelHi||G.model)+' · 문 색 바꾸기(편집): '+(G.modelEdit||G.model)+'.','ok');}
+      else{G.modelHi='';G.modelEdit='';gMsg('연결됐어요. 이미지 모델 목록은 확인하지 못해서 \''+G.model+'\'을 써요. 오류가 나면 모델 이름을 바꿔 주세요.','ok');}
     }else if([400,401,403].includes(r.status)){G.state='off';gMsg('키가 맞지 않아요. 다시 복사해서 붙여 넣어 주세요.','err');}
     else{G.state='off';gMsg('구글에서 오류가 왔어요('+r.status+'). 잠시 뒤 다시 눌러 주세요.','err');}
   }catch(e){G.state='blocked';G.msg='';G.cls='';}
@@ -845,7 +903,7 @@ function gErr(e){
   return '연결하지 못했어요. 인터넷 연결을 확인해 주세요.';
 }
 async function gOne(j,signal,opts){
-  const model=((opts&&opts.model)||G.model).trim(),refs=await buildRefs();
+  const model=((opts&&opts.model)||(j.kind==='base'&&G.modelHi)||(j.kind==='edit'&&G.modelEdit)||G.model).trim(),refs=j.kind==='edit'?await baseRef():await buildRefs();
   let prompt=promptOf(j)+refs.note;
   const cur=getP(j.key);   // 다시 만들 때는 검수에서 지적된 점을 알려 줘요
   if(opts&&opts.fresh&&cur&&cur.chk&&!cur.chk.ok&&cur.chk.issues.length)prompt+='\n이전에 만든 이미지는 원본과 이렇게 달랐습니다: '+cur.chk.issues.join(' / ')+'. 이번에는 원본 사진과 똑같이 바로잡아 주세요.';
@@ -906,6 +964,7 @@ async function applySheet(blob){
 }
 async function putResult(j,blob,extra){       // 만든 이미지를 칸에 넣어요(시트면 칸별로 잘라서도 넣어요)
   if(j.kind==='sheet'){await setPhoto(j.key,await toJpegBlob(blob,.92),extra);await applySheet(blob);}
+  else if(j.kind==='base'){await setPhoto('base',blob,extra);S.baseOk=false;}   // 새 기준 사진은 사장님이 다시 확인·확정해야 해요
   else await setPhoto(j.key,blob,extra);
 }
 async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
@@ -1080,6 +1139,7 @@ function applyAbout(r){
 }
 /* 손잡이 모양 검수: 만든 사진이 원본과 같은 손잡이인지 작은 모델이 한 번 비교해요(AI 판단이라 틀릴 수 있어요) */
 const chkPrompt=kind=>{const sp=String(S.spec||'').trim().slice(0,900);
+  if(kind==='edit')return '첫 번째 사진은 사장님이 확정한 기준 사진이고, 두 번째 사진은 첫 번째 사진에서 문 색(또는 손)만 바꾼 편집본입니다. 두 번째 사진의 손잡이(레버·목·받침)가 첫 번째와 모양·크기·위치·각도·금속 색까지 같은지 비교하세요. 문 색과 재질이 바뀐 것은 정상이니 무시하고, 손이 레버 일부를 가리는 것도 괜찮습니다. 손잡이 모양이 달라졌거나, 다른 손잡이로 바뀌었거나, 화면 밖으로 잘렸으면 ok를 false로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';
   return '첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 꼼꼼히 비교하세요.'
   +(kind==='sheet'?' 두 번째 사진은 여러 칸(문 색상별)을 이어 붙인 시트입니다. 모든 칸의 손잡이를 각각 원본과 비교하고, 한 칸이라도 다르거나 잘려 있으면 ok를 false로 하며 issues에 몇 번째 칸인지(왼쪽에서 오른쪽, 위에서 아래 순서)를 적으세요. 칸 구분선이 칸 안쪽을 심하게 침범해 칸이 잘려 보여도 false입니다.':'')
   +(sp?'\n원본 제품의 특징 메모(이 특징이 빠졌거나 바뀌었으면 다른 제품입니다):\n'+sp+'\n':' ')
@@ -1087,10 +1147,11 @@ const chkPrompt=kind=>{const sp=String(S.spec||'').trim().slice(0,900);
 let chkModel='claude-sonnet-5-5';   // 검수는 사진을 더 정확히 보는 모델로(없으면 기본 모델로 물러나요)
 async function checkOne(j,signal){
   const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
-  const imgs=[await shrink(PH.get(S.src.id).blob,800,.85),await shrink(m.blob,j.kind==='sheet'?1400:800,.85)];
+  const ed=j.kind==='edit'&&hasPhoto(S.base);   // 편집 칸은 확정한 기준 사진과 비교해요(비슷한 두 장 비교라 값싼 기본 모델로 충분해요)
+  const imgs=[await shrink(PH.get(ed?S.base.id:S.src.id).blob,800,.85),await shrink(m.blob,j.kind==='sheet'?1400:800,.85)];
   let r;
-  try{r=await claude(chkPrompt(j.kind),{signal,max:400,images:imgs,model:(C.model||'').trim()?'':chkModel});}
-  catch(e){if(e&&e.status===404&&chkModel){chkModel='';r=await claude(chkPrompt(j.kind),{signal,max:400,images:imgs,model:''});}else throw e;}
+  try{r=await claude(chkPrompt(ed?'edit':j.kind),{signal,max:400,images:imgs,model:((C.model||'').trim()||ed)?'':chkModel});}
+  catch(e){if(e&&e.status===404&&chkModel&&!ed){chkModel='';r=await claude(chkPrompt(j.kind),{signal,max:400,images:imgs,model:''});}else throw e;}
   if(!r||typeof r!=='object'||typeof r.ok!=='boolean')return false;
   const cur=getP(j.key);if(!cur||cur.id!==p.id)return false;   // 그 사이 사진이 바뀌었으면 버려요
   cur.chk={ok:r.ok,issues:(Array.isArray(r.issues)?r.issues:[]).map(x=>String(x).slice(0,100)).filter(Boolean).slice(0,3)};return true;
@@ -1434,6 +1495,7 @@ async function runOne(go){
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(aiOn&&askKey()===lastAsk)why.push('같은 이름·메모·사진으로 이미 한 번 짰어요. 다시 짜면 클로드 사용량이 또 들어요.');
   if(list.length)why.push('구글로 이미지 '+list.length+'장을 만들어요('+G.model+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
+  if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button><button class="btn primary" id="onGo" type="button">시작</button></div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);$('#onGo').focus();return;
@@ -1462,6 +1524,11 @@ async function runOne(go){
   if(ctl.signal.aborted){veil.hidden=true;toast('멈췄어요.');return;}
   const bad=tErr||((imgRes&&imgRes.stopped&&imgRes.stopped!=='멈췄어요.')?imgRes.stopped:'');
   if(bad){const m=$('#oMsg');if(m){m.className='msg err';m.textContent=bad;}const b=$('#oStop');if(b){b.textContent='닫기';b.onclick=()=>{veil.hidden=true;};}return;}
+  if(genMode()==='base'&&hasPhoto(S.base)&&!S.baseOk){   // 기준 사진은 사장님이 확인해야 해서 여기서 멈춰요
+    veil.hidden=true;UI.open.add('p3');setTab('edit');renderSide();
+    toast('① 기준 설치 사진을 만들었어요. 3단계에서 실물과 같은지 보고 \'확정\'을 누른 뒤 \'한 번에 만들기\'를 한 번 더 누르면 나머지 문 색상을 만들어요.',8000);
+    const b=$('[data-pk="base"]',side);if(b)b.scrollIntoView({block:'center'});return;
+  }
   if(imgRes&&imgRes.done){showExport('다 만들었어요. ('+sec+'초) 비어 있는 칸을 확인하고 저장하세요.');const g=$('#exGo');if(g)g.focus();}
   else{veil.hidden=true;toast(on?'글을 채웠어요('+sec+'초).':'글을 채웠어요('+sec+'초). 이미지는 2단계에서 구글 키를 연결하면 만들어져요.',3800);}
 }
@@ -1472,6 +1539,7 @@ function clearMade(){
   let made=0,extra=0,kept=0;
   const wipe=path=>{const p=getP(path);if(!hasPhoto(p))return;if(p.ai){setP(path,null);made++;}else kept++;};
   wipe('hero.photo');wipe('concept.photo');wipe('sheetImg');
+  if(hasPhoto(S.base)){S.base=null;made++;}S.baseOk=false;   // 기준 사진도 옛 제품 것이라 지워요
   S.colors.items.forEach((it,i)=>wipe('colors.items.'+i+'.photo'));
   (S.extra||[]).forEach((p,i)=>{if(hasPhoto(p)){setP('extra.'+i,null);extra++;}});
   G.cache.clear();gc();
@@ -1479,7 +1547,7 @@ function clearMade(){
 }
 async function putPhoto(path,file,ai){
   const hadSrc=path==='src'&&hasPhoto(S.src);
-  try{await setPhoto(path,file,ai?{ai:true}:{});if(path==='sheetImg')await applySheet(file);}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
+  try{await setPhoto(path,file,ai?{ai:true}:{});if(path==='sheetImg')await applySheet(file);if(path==='base')S.baseOk=false;}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
   if(path==='src'&&S.specAuto){S.spec='';S.specAuto=false;}   // 사진이 바뀌면 클로드가 적었던 특징 메모는 지워요(직접 적은 건 남겨요)
   const cl=hadSrc&&UI.clearOnNew?clearMade():null;
   let zoomOk=null;if(path==='src')zoomOk=await autoZoom();   // 제품 사진을 넣자마자 확대 3곳을 손잡이 위치에 맞춰요(무료)
@@ -1535,10 +1603,18 @@ const ACT={
   gCheck,
   gAll(){gAsk(gList());},
   gStop(){if(G.ctl)G.ctl.abort();},
-  gtest(){const l=gList(),j=l.find(x=>x.kind==='sheet')||l.find(x=>x.kind==='color')||l[0];if(j)gAsk([j]);else gMsg('만들 빈 칸이 없어요.','err');},
+  gtest(){const l=gList(),j=l.find(x=>x.kind==='base')||l.find(x=>x.kind==='sheet')||l.find(x=>x.kind==='color')||l[0];if(j)gAsk([j]);else gMsg('만들 빈 칸이 없어요.','err');},
   gone(b){regen(jobs()[+b.dataset.i]);},
   gonehi(b){regen(jobs()[+b.dataset.i],{model:G.modelHi,fresh:true});},
   gfix(){const l=flagged();if(l.length)gAsk(l,{model:G.modelHi||G.model,fresh:true});},
+  baseok(){                                   // 기준 사진 확정: 흰 문 칸에 그대로 넣고, 나머지 문 색상은 이 사진에서 문 색만 바꿔 만들어요
+    if(!hasPhoto(S.base))return;
+    S.baseOk=true;let n=0;
+    S.colors.items.forEach(it=>{if(hasPhoto(it.photo)&&it.photo.ai){it.photo=null;n++;}});   // 이전 방식으로 만든 칸은 새 기준과 섞이지 않게 지워요
+    const w=whiteIdx();if(w>=0)S.colors.items[w].photo=Object.assign({},S.base,{chk:null});
+    gc();renderSide();refresh();
+    toast('기준 사진을 확정했어요.'+(n?' 이전에 만든 문 색상 '+n+'칸은 지웠어요.':'')+' 이제 \'빈 칸 모두 만들기\'나 \'한 번에 만들기\'를 누르면 나머지 문 색상을 만들어요.',5200);
+  },
   async grecheck(){   // 이미 만든 사진을 새 기준(잘림 포함)으로 다시 검수해요
     if(G.busy)return;
     if(!UI.check){gMsg('2단계에서 "만든 사진을 원본과 비교해 검수"를 켜 주세요.','err');UI.open.add('p2');renderSide();return;}
@@ -1573,7 +1649,7 @@ const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
   useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useClear(t){UI.clearOnNew=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
-  colorGen(t){S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast(S.colors.sheet?'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요. 이미 만든 칸은 그대로 남아요.':'한 칸씩 만드는 방식으로 바꿨어요.',3200);},
+  colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
 side.addEventListener('change',e=>{
