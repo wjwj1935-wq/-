@@ -241,13 +241,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 19</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 20</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
       <button class="chip" id="blankChip" type="button" title="눌러서 첫 빈 칸으로 이동"></button>
       <button class="btn primary" id="btnOne" type="button">한 번에 만들기</button>
       <button class="btn" id="btnExport" type="button">이미지로 저장</button>
+      <button class="btn" id="btnShort" type="button">숏폼 영상</button>
       <button class="btn" id="btnNew" type="button">새 제품</button>
       <button class="btn" id="btnSave" type="button">작업 저장</button>
       <button class="btn" id="btnLoad" type="button">불러오기</button>
@@ -287,7 +288,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=19,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=20,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -693,11 +694,13 @@ function p4(){
    +subp('s-colors','문 색상(COLORS)','<p class="hint">제목·설명·칸 이름은 모든 제품이 같이 써요. 사진은 3단계에서 만들어요.</p>'+fld.text('colors.eyebrow','작은 제목')+fld.text('colors.title','제목',{req:1})+fld.area('colors.body','설명 글',{rows:2,req:1})+fld.area('colors.note','맨 아래 작은 글',{rows:2})
      +listItems('colors.items',S.colors.items,(it,i,b)=>fld.text(b+'.label','이름',{req:1})+fld.text(b+'.scene','지시문에 들어갈 장면 설명'),{title:it=>esc(it.label||'문 색상'),add:'문 색상 칸 추가'}))
    +subp('s-about','회사 소개(ABOUT US)','<div class="tip">회사 공통 내용이에요. 한 번 입력하면 새 제품을 시작해도 그대로 남아요. 숫자·특허·연혁은 사실이라 틀리면 안 되니 직접 확인해서 입력해 주세요. 비워 두면 이미지에서 빠져요.</div>'
+     +'<div class="blk"><h3>방법 1 · 자료를 붙여 넣으면 클로드가 칸에 맞춰 정리해요 (선택)</h3><label class="f"><span>특허증·등록증·회사 소개글 등을 그대로 붙여 넣으세요</span><textarea id="aboutPaste" rows="6" placeholder="예) 특허 제 10-1234567 호 방문 손잡이용 … 등록일 2023.05.12 …\n2017년 문 손잡이 제조 시작 …"></textarea></label><div class="acts"><button class="btn sm primary" type="button" data-act="aboutai">클로드로 칸에 정리하기</button></div><div class="msg" id="aboutMsg" aria-live="polite"></div><p class="cost">클로드가 지어내지 않도록 자료에 적힌 내용만 옮기게 해요. 그래도 <b>번호와 날짜는 꼭 직접 확인</b>해 주세요. 클로드 키가 필요해요.</p></div>'
+     +'<b class="hint">방법 2 · 아래 칸에 직접 적기</b>'
      +fld.text('about.eyebrow','작은 제목')+fld.text('about.title','제목',{req:1})+fld.area('about.body','회사 소개 글',{rows:4,req:1})
-     +'<b class="hint">숫자 3칸</b>'+listItems('about.stats',a.stats,(s,i,b)=>'<div class="row2">'+fld.text(b+'.v','숫자',{req:1})+fld.text(b+'.l','이름',{req:1})+'</div>',{title:(s,i)=>'숫자 '+(i+1),add:'숫자 칸 추가'})
-     +'<b class="hint">특허 카드</b>'+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1})+fld.text(b+'.meta','등록일·권리자 (선택)')+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
-     +fld.text('about.growTitle','소제목')+listItems('about.grow',a.grow,(g,i,b)=>'<div class="row2">'+fld.text(b+'.badge','동그라미 글(두 글자)',{req:1})+fld.text(b+'.title','제목',{req:1})+'</div>'+fld.text(b+'.body','설명'),{title:(g,i)=>'실적 '+(i+1),add:'실적 추가'})
-     +fld.text('about.tlTitle','연혁 소제목')+listItems('about.tl',a.tl,(t,i,b)=>fld.text(b+'.year','해')+fld.area(b+'.text','그해 등록한 내용 (한 줄에 하나)',{rows:2,req:1}),{title:(t,i)=>esc(t.year)+'년',add:'연도 추가'})
+     +'<b class="hint">숫자 3칸</b>'+listItems('about.stats',a.stats,(s,i,b)=>'<div class="row2">'+fld.text(b+'.v','숫자',{req:1,ph:'예: 11'})+fld.text(b+'.l','이름',{req:1,ph:'예: 등록 특허'})+'</div>',{title:(s,i)=>'숫자 '+(i+1),add:'숫자 칸 추가'})
+     +'<b class="hint">특허 카드</b>'+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1,ph:'예: 방문 손잡이용 …'})+fld.text(b+'.meta','등록일·권리자 (선택)',{ph:'예: 2023.05.12 · 우진글로벌'})+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
+     +fld.text('about.growTitle','소제목')+listItems('about.grow',a.grow,(g,i,b)=>'<div class="row2">'+fld.text(b+'.badge','동그라미 글(두 글자)',{req:1,ph:'예: 인증'})+fld.text(b+'.title','제목',{req:1,ph:'예: 시험 성적서 보유'})+'</div>'+fld.text(b+'.body','설명',{ph:'확인된 내용만'}),{title:(g,i)=>'실적 '+(i+1),add:'실적 추가'})
+     +fld.text('about.tlTitle','연혁 소제목')+listItems('about.tl',a.tl,(t,i,b)=>fld.text(b+'.year','해')+fld.area(b+'.text','그해 등록한 내용 (한 줄에 하나)',{rows:2,req:1,ph:'예: 방문 손잡이 특허 등록'}),{title:(t,i)=>esc(t.year)+'년',add:'연도 추가'})
      +fld.text('about.foot','맨 아래 줄')+fld.area('about.note','작은 주석 (선택)',{rows:2}))
    +subp('s-guide','설치 안내(GUIDE)',fld.text('guide.eyebrow','작은 제목')+fld.text('guide.title','제목',{req:1})+fld.text('guide.time','설치 시간 (확인된 값만 · 비우면 안 나와요)',{ph:'예: 설치 약 2분'})+listItems('guide.steps',S.guide.steps,(s,i,b)=>fld.text(b,'순서 글',{req:1}),{title:(s,i)=>(i+1)+'번',add:'순서 추가'}))
    +subp('s-faq','자주 묻는 질문(FAQ)','<p class="hint">대부분 모든 제품이 같은 질문이에요. 이 제품에만 해당하는 질문은 "이 제품 전용"에 체크해 두세요.</p>'+fld.text('faq.eyebrow','작은 제목')+fld.text('faq.title','제목',{req:1})+listItems('faq.items',S.faq.items,(q,i,b)=>fld.text(b+'.q','질문',{req:1})+fld.area(b+'.a','답',{rows:3,req:1})+'<label class="chk"><input type="checkbox" data-chk="'+b+'.p"'+(q.p?' checked':'')+'> 이 제품 전용 질문 (새 제품을 시작하면 지워져요)</label>',{title:(q,i)=>'질문 '+(i+1)+(q.p?' · 이 제품 전용':''),add:'질문 추가'}))
@@ -916,6 +919,26 @@ async function askText(signal){
   const imgs=hasPhoto(S.src)&&await claudeReady(1)?[await shrink(PH.get(S.src.id).blob,768,.8)]:[];
   applyPlan(await claude(planPrompt(),{signal,images:imgs,max:2000}));dirty=false;lastAsk=askKey();
 }
+/* 회사 소개: 자료를 붙여 넣으면 칸에 맞춰 정리(적힌 사실만 옮기고, 지어내지 않아요) */
+function aboutPrompt(text){
+  return '당신은 상세페이지 \'회사 소개\' 칸을 정리하는 도우미입니다. 아래 자료는 '+CO.name+'('+CO.place+', 문 손잡이·도어락 제조사)가 직접 준 회사 자료입니다.\n'
+   +'규칙: 1) 자료에 적힌 사실만 쓰고, 없는 내용은 절대 지어내지 마세요. 2) 특허 번호, 날짜, 연도, 숫자는 자료의 글자를 그대로 복사하세요(바꾸거나 계산하지 마세요). 3) 칸에 맞는 자료가 없으면 그 칸은 빈 목록이나 빈 글로 두세요. 4) 과장 표현(최고, 최초, 유일)은 쓰지 마세요. 5) 쉬운 한국어, 짧은 문장.\n'
+   +'칸 설명: body=회사 소개 글 2~3줄(자료에 있을 때만) / stats=큰 숫자 카드 최대 3개(예: v=11, l=등록 특허) / patents=특허 카드(no=번호, title=이름, meta=등록일·권리자) / grow=성장·실적 카드(badge=두 글자, title, body) / tl=연도별 기록(year=연도, text=그해 내용, 여러 개면 \\n으로 나눔) / unclear=자료가 불분명해서 비워 둔 것\n\n자료:\n----\n'
+   +String(text).slice(0,6000)+'\n----\n\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"body":"","stats":[{"v":"","l":""}],"patents":[{"no":"","title":"","meta":""}],"grow":[{"badge":"","title":"","body":""}],"tl":[{"year":"","text":""}],"unclear":[""]}';
+}
+function applyAbout(r){
+  if(!r||typeof r!=='object')throw {code:'invalid_json'};
+  const A=S.about,t=(v,n)=>typeof v==='string'&&v.trim()?v.trim().slice(0,n||200):'';let n=0;
+  const b=t(r.body,300);if(b){A.body=b;n++;}
+  (Array.isArray(r.stats)?r.stats:[]).slice(0,3).forEach((x,i)=>{const v=t(x&&x.v,16),l=t(x&&x.l,30);if(v&&l){if(!A.stats[i])A.stats[i]={v:'',l:''};A.stats[i].v=v;A.stats[i].l=l;n++;}});
+  const pats=(Array.isArray(r.patents)?r.patents:[]).map(x=>({no:t(x&&x.no,40),title:t(x&&x.title,80),meta:t(x&&x.meta,80)})).filter(x=>x.no||x.title).slice(0,6);
+  if(pats.length){A.patents=pats.map(x=>Object.assign({badge:'등록\n완료'},x));n+=pats.length;}
+  const grow=(Array.isArray(r.grow)?r.grow:[]).map(x=>({badge:t(x&&x.badge,6),title:t(x&&x.title,40),body:t(x&&x.body,120)})).filter(x=>x.title).slice(0,4);
+  if(grow.length){A.grow=grow;n+=grow.length;}
+  (Array.isArray(r.tl)?r.tl:[]).forEach(x=>{const y=t(x&&x.year,8),tx=t(x&&x.text,200);if(!y||!tx)return;const row=A.tl.find(z=>String(z.year)===y);if(row)row.text=tx;else A.tl.push({year:y,text:tx});n++;});
+  A.tl.sort((a,c)=>String(a.year).localeCompare(String(c.year)));
+  return {n,unclear:(Array.isArray(r.unclear)?r.unclear:[]).map(x=>t(String(x),120)).filter(Boolean).slice(0,6)};
+}
 /* 손잡이 모양 검수: 만든 사진이 원본과 같은 손잡이인지 작은 모델이 한 번 비교해요(AI 판단이라 틀릴 수 있어요) */
 const CHK_PROMPT='첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 비교하세요. 비교할 것: 레버의 길이·굵기·끝 모양, 받침(원판)의 크기·모양, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경 차이는 무시하세요. 확실히 다른 점이 있을 때만 ok를 false로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';
 async function checkOne(j,signal){
@@ -1029,8 +1052,191 @@ async function runExport(){
   }catch(e){exMsg(e&&e.code==='cancel'?'멈췄어요.':e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':(e&&e.message)||'저장하지 못했어요. 한 번 더 눌러 주세요.');}
   finally{host.remove();EX.busy=false;const g=$('#exGo'),c=$('#exClose');if(g)g.disabled=false;if(c)c.textContent='닫기';}
 }
-veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy)veil.hidden=true;});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy)veil.hidden=true;});
+veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!SV.busy)veil.hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!SV.busy)veil.hidden=true;});
+
+/* ============ 숏폼 영상: 만든 상세페이지의 사진과 글로 세로 영상(9:16)을 만들어요 (무료 · 내 컴퓨터가 그려서 녹화) ============ */
+const SV={sec:20,h:1920,sub:true,audio:null,busy:false,cancel:false,url:'',ext:'webm'};
+const SV_PRI=['화이트 도어','월넛 우드 도어','블랙 도어','사용 컷','라이트 그레이 도어','아이보리 도어','베이지 도어','차콜 도어','오크 도어','체리 도어'];
+const SV_PLAN={15:{hero:2.4,concept:0,zoom:1.6,col:1.1,nCol:4,out:2.4},20:{hero:2.6,concept:1.8,zoom:2,col:1.1,nCol:6,out:2.6},30:{hero:3,concept:2.2,zoom:2.6,col:1.3,nCol:10,out:3}};
+async function svScenes(sec){
+  const P=SV_PLAN[sec],bmp=p=>createImageBitmap(PH.get(p.id).blob),out=[];
+  if(hasPhoto(S.hero.photo))out.push({kind:'hero',img:await bmp(S.hero.photo),dur:P.hero,tag:S.hero.badge||STD_NAME,cap:S.hero.title});
+  if(P.concept&&hasPhoto(S.concept.photo))out.push({kind:'concept',img:await bmp(S.concept.photo),dur:P.concept,tag:'CONCEPT',cap:S.concept.title});
+  for(const it of S.zoom.items){
+    const own=hasPhoto(it.photo)?it.photo:null,ph=own||(hasPhoto(S.src)?S.src:null);if(!ph)continue;
+    out.push({kind:'zoom',img:await bmp(ph),dur:P.zoom,tag:it.tag||'확대',cap:it.title,z:own?1.25:clamp((it.z||2)*.85,1.5,3.2),fx:own?.5:(it.fx!=null?it.fx:.5),fy:own?.5:(it.fy!=null?it.fy:.5)});
+  }
+  const cols=S.colors.items.filter(it=>hasPhoto(it.photo));
+  const pick=SV_PRI.map(l=>cols.find(it=>it.label===l)).filter(Boolean).concat(cols.filter(it=>!SV_PRI.includes(it.label))).slice(0,P.nCol);
+  for(const it of cols.filter(it=>pick.includes(it)))out.push({kind:'color',img:await bmp(it.photo),dur:P.col,tag:'문 색상',cap:it.label});
+  const last=out.find(x=>x.kind==='hero')||out[0];
+  if(out.length)out.push({kind:'outro',img:last.img,dur:P.out,tag:S.sellName||STD_NAME,cap:S.cta.title||'우리 집 문에 달아 보세요',sub:'자세한 내용은 상세페이지에서'});
+  return out;
+}
+const svRR=(g,x,y,w,h,r)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();};
+function svWrap(g,text,maxW){
+  const out=[];
+  for(const para of String(text||'').split('\n')){
+    let line='';
+    for(const w of para.split(' ')){
+      const t=line?line+' '+w:w;
+      if(g.measureText(t).width<=maxW||!line){line=t;if(g.measureText(line).width>maxW){let cur='';for(const ch of line){if(g.measureText(cur+ch).width>maxW&&cur){out.push(cur);cur=ch;}else cur+=ch;}line=cur;}}
+      else{out.push(line);line=w;}
+    }
+    if(line)out.push(line);
+  }
+  return out.slice(0,3);
+}
+function svPrep(sc,W,H){                         // 장면마다 한 번만: 흐린 배경 + 틀 그림자 + 글 줄바꿈
+  const k=W/1080,bg=document.createElement('canvas');bg.width=W;bg.height=H;const g=bg.getContext('2d');
+  const s=Math.max(W/sc.img.width,H/sc.img.height);
+  try{g.filter='blur('+Math.round(42*k)+'px)';}catch(e){}
+  g.drawImage(sc.img,(W-sc.img.width*s)/2,(H-sc.img.height*s)/2,sc.img.width*s,sc.img.height*s);g.filter='none';
+  g.fillStyle=sc.kind==='outro'?'rgba(8,14,34,.74)':'rgba(8,14,34,.64)';g.fillRect(0,0,W,H);
+  sc.fw=1008*k;
+  if(sc.kind!=='outro'){
+    sc.fh=(sc.kind==='zoom'||sc.kind==='color'?1008:clamp(Math.round(1008*sc.img.height/sc.img.width),560,1180))*k;
+    sc.fy0=((sc.kind==='hero'?830:800)*k)-sc.fh/2;sc.fx0=(W-sc.fw)/2;
+    g.save();svRR(g,sc.fx0,sc.fy0,sc.fw,sc.fh,28*k);g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=60*k;g.shadowOffsetY=22*k;g.fillStyle='#000';g.fill();g.restore();
+  }
+  g.font='800 '+Math.round((sc.kind==='outro'?78:66)*k)+'px "Noto Sans KR",sans-serif';
+  sc.lines=svWrap(g,sc.cap,960*k);
+  g.font='700 '+Math.round(42*k)+'px "Noto Sans KR",sans-serif';
+  sc.subLines=sc.sub?svWrap(g,sc.sub,960*k):[];
+  sc.bg=bg;
+}
+function svScene(g,W,H,sc,u,showSub,alpha){
+  const k=W/1080;g.save();g.globalAlpha=alpha;
+  g.drawImage(sc.bg,0,0,W,H);
+  const p=clamp(u/sc.dur,0,1),e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+  if(sc.kind!=='outro'){
+    const s=1+((sc.kind==='zoom'?sc.z:1.1)-1)*e,fxc=sc.kind==='zoom'?.5+(sc.fx-.5)*e:.5,fyc=sc.kind==='zoom'?.5+(sc.fy-.5)*e:.5;
+    g.save();svRR(g,sc.fx0,sc.fy0,sc.fw,sc.fh,28*k);g.clip();
+    const kk=Math.max(sc.fw/sc.img.width,sc.fh/sc.img.height)*s,dw=sc.img.width*kk,dh=sc.img.height*kk;
+    const ox=clamp(sc.fw/2-fxc*dw,sc.fw-dw,0),oy=clamp(sc.fh/2-fyc*dh,sc.fh-dh,0);
+    g.drawImage(sc.img,sc.fx0+ox,sc.fy0+oy,dw,dh);g.restore();
+  }
+  g.textBaseline='alphabetic';g.textAlign='left';
+  g.fillStyle='rgba(255,255,255,.9)';g.font='800 '+Math.round(36*k)+'px "Noto Sans KR",sans-serif';g.fillText('우진글로벌',60*k,96*k);   // 위쪽 이름
+  if(showSub){
+    const ta=clamp(u/.35,0,1),dy=(1-ta)*34*k;g.globalAlpha=alpha*ta;
+    g.textAlign='center';
+    if(sc.kind==='outro'){
+      let y=760*k+dy;g.font='800 '+Math.round(78*k)+'px "Noto Sans KR",sans-serif';g.fillStyle='#fff';g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=18*k;
+      for(const l of sc.lines){g.fillText(l,W/2,y);y+=100*k;}
+      g.shadowBlur=0;
+      const tag=String(sc.tag||''),tw=Math.min(960*k,g.measureText(tag).width+0);g.font='800 '+Math.round(44*k)+'px "Noto Sans KR",sans-serif';
+      const bw=Math.min(980*k,g.measureText(tag).width+90*k);y+=24*k;
+      g.fillStyle='#2a56a3';svRR(g,(W-bw)/2,y-52*k,bw,76*k,38*k);g.fill();g.fillStyle='#fff';g.fillText(tag,W/2,y);
+      y+=110*k;g.font='700 '+Math.round(42*k)+'px "Noto Sans KR",sans-serif';g.fillStyle='rgba(255,255,255,.85)';
+      for(const l of sc.subLines){g.fillText(l,W/2,y);y+=60*k;}
+    }else{
+      const fb=sc.fy0+sc.fh;let y=fb+96*k+dy;
+      const tag=String(sc.tag||'').split('\n')[0];
+      if(tag){g.font='800 '+Math.round(34*k)+'px "Noto Sans KR",sans-serif';const bw=Math.min(900*k,g.measureText(tag).width+70*k);
+        g.fillStyle='#2a56a3';svRR(g,(W-bw)/2,y-44*k,bw,62*k,31*k);g.fill();g.fillStyle='#fff';g.fillText(tag,W/2,y);y+=96*k;}
+      g.font='800 '+Math.round(66*k)+'px "Noto Sans KR",sans-serif';g.fillStyle='#fff';g.shadowColor='rgba(0,0,0,.55)';g.shadowBlur=14*k;
+      for(const l of sc.lines){g.fillText(l,W/2,y);y+=84*k;}
+      g.shadowBlur=0;
+    }
+  }
+  g.restore();
+}
+function svFrame(g,W,H,scs,starts,D,t,showSub){
+  g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle='#0b1226';g.fillRect(0,0,W,H);
+  let i=scs.length-1;for(let j=0;j<scs.length;j++){if(t<starts[j]+scs[j].dur){i=j;break;}}
+  const u=clamp(t-starts[i],0,scs[i].dur),F=.28;
+  svScene(g,W,H,scs[i],u,showSub,1);
+  if(i<scs.length-1&&u>scs[i].dur-F)svScene(g,W,H,scs[i+1],0,showSub,clamp((u-(scs[i].dur-F))/F,0,1));
+  g.globalAlpha=1;g.fillStyle='rgba(255,255,255,.9)';g.fillRect(0,0,W*clamp(t/D,0,1),Math.max(4,Math.round(8*W/1080)));   // 위쪽 진행 막대
+}
+function svMime(withAudio){
+  const c=withAudio?['video/mp4;codecs=avc1.640028,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']
+                   :['video/mp4;codecs=avc1.640028','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  return window.MediaRecorder?(c.find(m=>MediaRecorder.isTypeSupported(m))||''):'';
+}
+function svPost(){
+  return (S.sellName||STD_NAME)+'\n문에 달았을 때의 모습을 먼저 보고 고르세요.\n문 색상별 연출 사진과 확대 사진으로 디자인을 정확하게 확인해 보세요.\n자세한 내용은 상세페이지에서 확인해 주세요.\n\n#방문손잡이 #문손잡이 #레버손잡이 #도어핸들 #인테리어소품 #우진글로벌';
+}
+function svMsg(t,c){const m=$('#svMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
+function showShort(){
+  const nImg=[S.hero.photo,S.concept.photo,...S.colors.items.map(i=>i.photo)].filter(hasPhoto).length;
+  const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
+  veil.hidden=false;
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="숏폼 영상 만들기"><h2>숏폼 영상 만들기 · 세로 9:16</h2>'
+   +'<p class="hint">지금 만든 상세페이지의 사진과 글로 영상을 만들어요. 인스타그램 릴스, 유튜브 쇼츠, 틱톡에 올리기 좋은 세로 영상이에요. 무료예요(내 컴퓨터가 그려서 녹화해요).</p>'
+   +(nImg?'':'<div class="confirm" style="display:block">먼저 3단계에서 이미지를 만들어 주세요. 사진이 있어야 영상이 만들어져요.</div>')
+   +'<div class="opts"><b class="hint">길이</b>'+radio('svsec',15,SV.sec,'15초 · 짧게')+radio('svsec',20,SV.sec,'20초 · 추천')+radio('svsec',30,SV.sec,'30초 · 문 색상을 모두')+'</div>'
+   +'<div class="opts"><b class="hint">화질</b>'+radio('svh',1920,SV.h,'높음 1080×1920 · 추천')+radio('svh',1280,SV.h,'보통 720×1280 · 빠르고 파일이 작아요')+'</div>'
+   +'<label class="chk"><input type="checkbox" id="svSub"'+(SV.sub?' checked':'')+'> 자막(제목) 넣기</label>'
+   +'<label class="f"><span>음악 (선택 · 내가 사용 허락을 받은 음악 파일만 넣으세요)</span><input type="file" id="svAudio" accept="audio/*"></label>'
+   +'<canvas id="svCanvas" style="display:none;width:216px;border-radius:14px;align-self:center;background:#0b1226"></canvas>'
+   +'<video id="svVideo" controls playsinline hidden style="width:216px;border-radius:14px;align-self:center;background:#000"></video>'
+   +'<div class="bar" id="svBar" hidden><i></i></div><div class="msg" id="svMsg" aria-live="polite"></div>'
+   +(aiCount()?'<div class="tip">AI로 만든 사진이 들어 있어요. 올릴 때 각 서비스의 \'AI로 만든 콘텐츠\' 표시 규칙을 확인하세요(바뀔 수 있어요).</div>':'')
+   +'<div class="acts"><button class="btn" id="svClose" type="button">닫기</button><button class="btn" id="svPost" type="button">게시글 문구 복사</button><button class="btn" id="svSave" type="button" hidden>영상 저장</button><button class="btn primary" id="svGo" type="button"'+(nImg?'':' disabled')+'>영상 만들기</button></div></div>';
+  $('#svClose').onclick=()=>{if(SV.busy){SV.cancel=true;}else veil.hidden=true;};
+  $('#svPost').onclick=()=>copy(svPost(),'게시글 문구를 복사했어요. 영상을 올릴 때 붙여 넣으세요.');
+  $('#svGo').onclick=svMake;
+  $('#svSave').onclick=async()=>{if(SV.blob)await saveFile(safeName()+'_숏폼.'+SV.ext,SV.blob);};
+  $('#svSub').onchange=e=>{SV.sub=e.target.checked;};
+  $('#svAudio').onchange=e=>{SV.audio=(e.target.files&&e.target.files[0])||null;};
+  $$('input[type=radio]',veil).forEach(r=>r.onchange=()=>{if(r.name==='svsec')SV.sec=Number(r.value);else SV.h=Number(r.value);});
+}
+async function svMake(){
+  if(SV.busy)return;
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){svMsg('이 브라우저에서는 영상을 만들 수 없어요. 최신 Chrome으로 열어 주세요.','err');return;}
+  SV.busy=true;SV.cancel=false;$('#svGo').disabled=true;$('#svSave').hidden=true;$('#svClose').textContent='멈추기';
+  const H=SV.h,W=Math.round(H*9/16),k=W/1080;let actx=null;
+  try{
+    svMsg('사진과 글꼴을 준비하는 중이에요…');
+    try{await document.fonts.load('800 66px "Noto Sans KR"','가나다라 0123');await document.fonts.load('700 42px "Noto Sans KR"','가나다라');await document.fonts.ready;}catch(e){}
+    const scs=await svScenes(SV.sec);if(!scs.length)throw new Error('사진이 없어요. 먼저 이미지를 만들어 주세요.');
+    scs.forEach(sc=>svPrep(sc,W,H));
+    const starts=[];let D=0;for(const sc of scs){starts.push(D);D+=sc.dur;}
+    const cv=$('#svCanvas');cv.width=W;cv.height=H;cv.style.display='block';const g=cv.getContext('2d');
+    svFrame(g,W,H,scs,starts,D,0,SV.sub);
+    const stream=cv.captureStream(30);let src=null,gain=null;
+    if(SV.audio){
+      try{actx=new (window.AudioContext||window.webkitAudioContext)();await actx.resume();
+        const buf=await actx.decodeAudioData(await SV.audio.arrayBuffer()),dest=actx.createMediaStreamDestination();
+        src=actx.createBufferSource();src.buffer=buf;src.loop=true;gain=actx.createGain();gain.gain.value=.8;src.connect(gain);gain.connect(dest);
+        stream.addTrack(dest.stream.getAudioTracks()[0]);}
+      catch(e){svMsg('음악 파일을 읽지 못해서 음악 없이 만들어요.');src=null;}
+    }
+    const mime=svMime(!!src);
+    const rec=new MediaRecorder(stream,Object.assign({videoBitsPerSecond:H>=1920?9e6:5e6},mime?{mimeType:mime}:{}));
+    const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+    const stopped=new Promise(ok=>{rec.onstop=ok;});
+    rec.start(400);
+    if(src){src.start();const T0=actx.currentTime;gain.gain.setValueAtTime(.8,T0+Math.max(0,D-1));gain.gain.linearRampToValueAtTime(0,T0+D);}
+    const t0=performance.now();
+    svMsg('만드는 중이에요… 영상 길이만큼 걸려요. 이 창을 닫거나 다른 탭으로 가지 마세요.');
+    await new Promise(done=>{
+      const tick=()=>{
+        if(SV.cancel){done();return;}
+        const t=(performance.now()-t0)/1000;
+        svFrame(g,W,H,scs,starts,D,Math.min(t,D),SV.sub);
+        const b=$('#svBar');if(b){b.hidden=false;b.firstElementChild.style.width=Math.round(Math.min(t/D,1)*100)+'%';}
+        if(t>=D){done();return;}
+        requestAnimationFrame(tick);
+      };tick();
+    });
+    await new Promise(r=>setTimeout(r,180));
+    if(rec.state!=='inactive')rec.stop();await stopped;
+    if(src){try{src.stop();}catch(e){}}if(actx)try{await actx.close();}catch(e){}
+    if(SV.cancel){svMsg('멈췄어요.');}
+    else{
+      const type=(mime||'video/webm').split(';')[0],blob=new Blob(chunks,{type});
+      if(SV.url)try{URL.revokeObjectURL(SV.url);}catch(e){}
+      SV.blob=blob;SV.url=URL.createObjectURL(blob);SV.ext=type.includes('mp4')?'mp4':'webm';
+      const v=$('#svVideo');v.src=SV.url;v.hidden=false;cv.style.display='none';$('#svSave').hidden=false;
+      svMsg('영상이 완성됐어요. ('+Math.round(D)+'초 · '+(blob.size/1048576).toFixed(1)+'MB · '+SV.ext+') 아래 "영상 저장"을 눌러 주세요.'+(SV.ext==='webm'?' 인스타그램은 mp4가 편해요. webm이면 CapCut 같은 무료 프로그램에 넣어 mp4로 저장하세요.':''),'ok');
+    }
+  }catch(e){svMsg((e&&e.message)||'영상을 만들지 못했어요. 한 번 더 눌러 주세요.','err');if(actx)try{await actx.close();}catch(x){}}
+  finally{SV.busy=false;const go=$('#svGo'),c=$('#svClose');if(go)go.disabled=false;if(c)c.textContent='닫기';}
+}
 
 /* ============ 한 번에 만들기: 글과 이미지를 동시에 → 저장 창 ============ */
 let oneBusy=false;
@@ -1101,6 +1307,17 @@ const ACT={
   genok(){$('#genConfirm').hidden=true;const f=pendingGen;pendingGen=null;if(f)f();},
   genno(){$('#genConfirm').hidden=true;pendingGen=null;},
   async autozoom(){const ok=await autoZoom();UI.open.add('s-zoom');renderSide();refresh();toast(ok?'확대 3곳을 제품 위치에 맞췄어요.':'제품 위치를 찾지 못했어요. 슬라이더로 직접 맞춰 주세요.',3000);},
+  async aboutai(){
+    const text=($('#aboutPaste')||{}).value||'',say=(x,c)=>{const m=$('#aboutMsg');if(m){m.textContent=x;m.className='msg'+(c?' '+c:'');}};
+    if(!text.trim()){say('자료를 먼저 붙여 넣어 주세요.','err');return;}
+    if(!(await claudeReady(0))){say('클로드 키가 필요해요. 2단계에서 클로드 키를 넣고 연결 확인을 해 주세요.','err');return;}
+    say('정리하는 중이에요…');
+    try{
+      const res=applyAbout(await claude(aboutPrompt(text),{max:2000}));
+      UI.open.add('p4');UI.open.add('s-about');renderSide();refresh();
+      const m=$('#aboutMsg');if(m){m.className='msg ok';m.textContent=res.n?res.n+'칸을 채웠어요. 번호와 날짜는 꼭 직접 확인해 주세요.'+(res.unclear.length?' 비워 둔 것: '+res.unclear.join(' / '):''):'채울 내용을 찾지 못했어요. 자료에 특허 번호나 연도가 들어 있는지 확인해 주세요.';}
+    }catch(e){say((e&&e.text)||ASK_ERR[e&&e.code]||'정리하지 못했어요. 한 번 더 눌러 주세요.','err');}
+  },
   gCheck,
   gAll(){gAsk(gList());},
   gStop(){if(G.ctl)G.ctl.abort();},
@@ -1157,6 +1374,7 @@ side.addEventListener('drop',e=>{const t=e.target.closest('.thumb');if(!t||!t.da
 /* 윗줄 버튼 */
 $('#btnOne').onclick=()=>runOne(false);
 $('#btnExport').onclick=()=>{EX.busy=false;EX.cancel=false;showExport();};
+$('#btnShort').onclick=()=>showShort();
 $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>$('#loadFile').click();
 $('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
