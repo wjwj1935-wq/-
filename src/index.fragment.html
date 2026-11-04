@@ -182,6 +182,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .zin .cr{position:absolute}
 .pg .zin img{max-width:none}
 .pg .zin .rb{position:absolute;border:3px solid #e5384f;background:rgba(229,56,79,.1)}
+.pg .zin.c-tr{left:auto;right:20px}
+.pg .zin.c-bl{top:auto;bottom:20px}
+.pg .zin.c-br{left:auto;top:auto;right:20px;bottom:20px}
+.pg .zp.tagl .ztag{right:auto;left:20px}
 .pg .zi h3{margin:24px 0 8px;text-align:center;font-size:28px;font-weight:800;letter-spacing:-.02em}
 .pg .zi p{margin:0 auto;max-width:620px;text-align:center;font-size:19px;line-height:1.7;color:var(--pg-mute)}
 
@@ -238,7 +242,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 23</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 24</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -285,7 +289,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=23,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=24,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -458,7 +462,7 @@ async function loadWork(f){
     const z=await JSZip.loadAsync(f),st=fromSaved(JSON.parse(await z.file('state.json').async('string')));if(!st)throw new Error('v');
     const idx=JSON.parse(await z.file('photos/index.json').async('string'));
     for(const it of idx){const fl=z.file('photos/'+it.id+'.bin');if(!fl)continue;const blob=new Blob([await fl.async('blob')],{type:it.type||'image/jpeg'});remember(it.id,blob,it.w,it.h);await idb.put(it.id,{blob,w:it.w,h:it.h});}
-    S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();renderSide();refresh();toast('작업을 불러왔어요.');
+    S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();else await ensureMask();renderSide();refresh();toast('작업을 불러왔어요.');
   }catch(err){toast('이 파일은 불러올 수 없어요. 이 프로그램에서 저장한 zip인지 확인해 주세요.',3500);}
 }
 
@@ -494,15 +498,16 @@ function renderPage(ex){
   const sm=S.src&&PH.get(S.src.id);
   const zi=S.zoom.items.map((it,i)=>{
     const own=it.photo&&PH.get(it.photo.id);if(ex&&!sm&&!own)return '';
-    let ph,inset='';
+    let ph,inset='',icv='tl';
     if(own){const g2=geom(own,736,560,it.photo);ph='<div class="pb" style="width:736px;height:560px;background-image:url('+own.url+');background-size:'+g2.sw+'px '+g2.sh+'px;background-position:'+g2.x+'px '+g2.y+'px"></div>';}
     else if(sm){const g=geom(sm,736,560,it);
       ph='<div class="pb" style="width:736px;height:560px;background-image:url('+sm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>';
       const IN=176,c=Math.min(IN/sm.w,IN/sm.h),cw=sm.w*c,ch=sm.h*c,cx=(IN-cw)/2,cy=(IN-ch)/2;
       const l=clamp(-g.x/g.sw,0,1),t=clamp(-g.y/g.sh,0,1),wf=clamp(736/g.sw,0,1),hf=clamp(560/g.sh,0,1);
-      inset='<div class="zin"><div class="cr" style="left:'+cx+'px;top:'+cy+'px;width:'+cw+'px;height:'+ch+'px"><img src="'+sm.url+'" alt="" style="display:block;width:'+cw+'px;height:'+ch+'px"><div class="rb" style="left:'+(l*cw)+'px;top:'+(t*ch)+'px;width:'+(wf*cw)+'px;height:'+(hf*ch)+'px"></div></div></div>';
+      icv=it.ic&&it.ic!=='auto'?it.ic:pickCorner(g);   // 작은 사진 자리: 직접 고르지 않았으면 손잡이를 안 가리는 구석
+      inset=icv==='none'?'':'<div class="zin c-'+icv+'"><div class="cr" style="left:'+cx+'px;top:'+cy+'px;width:'+cw+'px;height:'+ch+'px"><img src="'+sm.url+'" alt="" style="display:block;width:'+cw+'px;height:'+ch+'px"><div class="rb" style="left:'+(l*cw)+'px;top:'+(t*ch)+'px;width:'+(wf*cw)+'px;height:'+(hf*ch)+'px"></div></div></div>';
     }else ph='<div class="pb ph-empty" data-jump="src" style="width:736px;height:560px">'+ILLUS+'<span>1단계에서 제품 사진을 넣으면 여기에 확대돼요</span></div>';
-    return '<div class="zi"><div class="zp">'+ph+inset+'<span class="ztag"'+J('zoom.items.'+i+'.tag')+'>'+esc(it.tag)+'</span></div>'
+    return '<div class="zi"><div class="zp'+(icv==='tr'?' tagl':'')+'">'+ph+inset+'<span class="ztag"'+J('zoom.items.'+i+'.tag')+'>'+esc(it.tag)+'</span></div>'
       +'<h3'+J('zoom.items.'+i+'.title')+'>'+T('zoom.items.'+i+'.title',it.title,{req:1,ph:'항목 제목'})+'</h3>'
       +(it.body||!ex?'<p'+J('zoom.items.'+i+'.body')+'>'+T('zoom.items.'+i+'.body',it.body,{req:1,ph:'설명 글'})+'</p>':'')+'</div>';
   }).join('');
@@ -687,7 +692,7 @@ function p4(){
    +subp('s-concept','소개(CONCEPT)',fld.text('concept.eyebrow','작은 제목')+fld.text('concept.title','제목',{req:1})+fld.area('concept.body','설명 글 (비워도 돼요)',{rows:3}))
    +subp('s-zoom','확대(ZOOM)',fld.text('zoom.eyebrow','작은 제목')+fld.text('zoom.title','제목',{req:1})+fld.area('zoom.body','설명 글',{rows:2,req:1})
      +'<p class="hint">제목·설명은 모든 제품이 같이 써요. 확대 컷은 1단계 원본 사진을 잘라 써요. 문에 설치한 실제 사진을 넣으면 그 사진을 써요.</p>'
-     +listItems('zoom.items',S.zoom.items,(it,i,b)=>fld.text(b+'.tag','표시')+fld.text(b+'.title','제목',{req:1})+fld.area(b+'.body','설명 글',{rows:2,req:1})+'<details class="pos" open><summary>어디를 확대할까요</summary>'+sliders(b)+'</details><div class="f"><span>문에 설치한 실제 확대 사진 (선택)</span>'+photoCtl(b+'.photo','사진 넣기')+'</div>',{title:(it,i)=>'확대 '+(i+1),add:'확대 항목 추가'}))
+     +listItems('zoom.items',S.zoom.items,(it,i,b)=>fld.text(b+'.tag','표시')+fld.text(b+'.title','제목',{req:1})+fld.area(b+'.body','설명 글',{rows:2,req:1})+'<details class="pos" open><summary>어디를 확대할까요</summary>'+sliders(b)+'<label class="chk">작은 원본 사진 자리 <select data-ic="'+i+'">'+[['auto','손잡이를 안 가리는 곳 (자동)'],['tl','왼쪽 위'],['tr','오른쪽 위'],['bl','왼쪽 아래'],['br','오른쪽 아래'],['none','보이지 않게']].map(o=>'<option value="'+o[0]+'"'+((it.ic||'auto')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label></details><div class="f"><span>문에 설치한 실제 확대 사진 (선택)</span>'+photoCtl(b+'.photo','사진 넣기')+'</div>',{title:(it,i)=>'확대 '+(i+1),add:'확대 항목 추가'}))
    +subp('s-colors','문 색상(COLORS)','<p class="hint">제목·설명·칸 이름은 모든 제품이 같이 써요. 사진은 3단계에서 만들어요.</p>'+fld.text('colors.eyebrow','작은 제목')+fld.text('colors.title','제목',{req:1})+fld.area('colors.body','설명 글',{rows:2,req:1})+fld.area('colors.note','맨 아래 작은 글',{rows:2})
      +listItems('colors.items',S.colors.items,(it,i,b)=>fld.text(b+'.label','이름',{req:1})+fld.text(b+'.scene','지시문에 들어갈 장면 설명'),{title:it=>esc(it.label||'문 색상'),add:'문 색상 칸 추가'}))
    +subp('s-about','회사 소개(ABOUT US)','<div class="tip">회사 공통 내용이에요. 한 번 입력하면 새 제품을 시작해도 그대로 남아요. 숫자·특허·연혁은 사실이라 틀리면 안 되니 직접 확인해서 입력해 주세요. 비워 두면 이미지에서 빠져요.</div>'
@@ -993,12 +998,36 @@ async function findParts(blob){
   let mx=-1,mn=1e9,k3=0;for(let i=0;i<n;i++)if(A(i)>=.7){if(ys[i]>mx)mx=ys[i];if(ys[i]<mn)mn=ys[i];k3++;}
   if(!k3)throw new Error('제품 위치를 찾지 못했어요.');
   let lx=0,ln=0;for(let i=0;i<n;i++)if(A(i)>=.7&&ys[i]>=mx-(mx-mn)*.3){lx+=xs[i];ln++;}
-  return {p1,p2,p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h};
+  const mask=new Uint8Array(N);for(let p=0;p<N;p++)if(lab[p]===best)mask[p]=1;   // 제품이 차지한 자리(작은 사진이 안 가리게 쓰여요)
+  return {p1,p2,p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h,mask};
+}
+let PM=null;   // 제품 모양 기억(어느 사진 것인지 id와 함께)
+async function ensureMask(){
+  const m=S.src&&PH.get(S.src.id);if(!m)return false;
+  if(PM&&PM.id===S.src.id)return true;
+  try{const P=await findParts(m.blob);PM={id:S.src.id,w:P.w,h:P.h,m:P.mask};return true;}catch(e){PM=null;return false;}
+}
+// 작은 원본 사진을 네 구석 중 손잡이를 가장 덜 가리는 곳에 놓아요(왼쪽 위 → 왼쪽 아래 → 오른쪽 아래 → 오른쪽 위 순서로 우선)
+function pickCorner(g){
+  if(!PM||!S.src||PM.id!==S.src.id)return 'tl';
+  const l=-g.x/g.sw,t=-g.y/g.sh,wf=736/g.sw,hf=560/g.sh,IN=188,M=20,E=736-M-IN,F=560-M-IN,pos={tl:[M,M],bl:[M,F],br:[E,F],tr:[E,M]},fr={};
+  for(const k in pos){
+    const x=pos[k][0],y=pos[k][1];
+    const x0=Math.max(0,Math.floor((l+x/736*wf)*PM.w)),x1=Math.min(PM.w,Math.ceil((l+(x+IN)/736*wf)*PM.w));
+    const y0=Math.max(0,Math.floor((t+y/560*hf)*PM.h)),y1=Math.min(PM.h,Math.ceil((t+(y+IN)/560*hf)*PM.h));
+    let c=0;for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++)if(PM.m[yy*PM.w+xx])c++;
+    fr[k]=c/Math.max(1,(x1-x0)*(y1-y0));
+  }
+  if(fr.tl<.01)return 'tl';
+  let best='tl',bv=fr.tl;
+  [['bl',0],['br',0],['tr',.03]].forEach(a=>{const v=fr[a[0]]+a[1];if(v<bv-.004){bv=v;best=a[0];}});   // 오른쪽 위는 "확대 N" 표와 자리가 겹쳐서 마지막
+  return best;
 }
 async function autoZoom(){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   let P;try{P=await findParts(m.blob);}catch(e){return false;}
   const Wc=736/Math.max(736/m.w,560/m.h),lenSrc=P.len*(m.w/P.w),cap=clamp(m.w/700,1.6,4);   // 확대해도 흐려지지 않게 원본 크기에 맞춰요
+  PM={id:S.src.id,w:P.w,h:P.h,m:P.mask};
   const mk=(pt,fr)=>({fx:+clamp(pt.x/P.w,.05,.95).toFixed(3),fy:+clamp(pt.y/P.h,.05,.95).toFixed(3),z:+clamp(Wc/(lenSrc*fr),1.6,cap).toFixed(2)});
   [mk(P.p1,.3),mk(P.p2,.32),mk(P.p3,.28)].forEach((z,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],z);});
   return true;
@@ -1361,6 +1390,7 @@ side.addEventListener('change',e=>{
   else if(d.file){const f=t.files&&t.files[0];t.value='';if(f)putPhoto(d.file,f,d.ai==='1');}
   else if(d.view!==undefined){S.colors.items[+d.view].view=t.value;renderSide();refresh();}
   else if(d.dir!==undefined){S.colors.items[+d.dir].flip=t.value==='R';renderSide();refresh();}
+  else if(d.ic!==undefined){S.zoom.items[+d.ic].ic=t.value;refresh();}
 });
 side.addEventListener('input',e=>{
   const t=e.target,d=t.dataset;
@@ -1414,6 +1444,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
   await idb.open();await restore();
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
   if(zoomUntouched()&&await autoZoom()){renderSide();refresh();toast('확대 3곳을 제품 위치에 맞췄어요.',2600);}   // 예전 기본 자리가 저장돼 있던 작업도 한 번 맞춰요
+  else if(await ensureMask())refresh();                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
   if(G.key.trim())gCheck();                                  // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
   checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
