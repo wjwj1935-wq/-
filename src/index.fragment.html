@@ -242,7 +242,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 28</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 29</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -289,7 +289,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=28,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=29,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -360,7 +360,7 @@ function defaults(){
 }
 let S=defaults();
 let dirty=false;        // 제품 글을 직접 고쳤는지(새 글이 덮어쓰기 전에 물어봐요)
-const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:false,check:true,autoFix:true};
+const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:false,check:true,autoFix:true,clearOnNew:true};
 const isProductText=p=>/^(hero|concept|zoom\.items)\./.test(p)||(/^faq\.items\.\d+\./.test(p)&&!!(S.faq.items[+p.split('.')[2]]||{}).p);
 
 /* 글 틀 채우기(무료) */
@@ -641,6 +641,7 @@ function p1(){
     +fld.text('name','제품 이름',{ph:'예: 메탈 방문 손잡이',req:1})
     +fld.text('sellName','판매 상품명 (스마트스토어 등 · 모든 제품이 같아요)',{ph:STD_NAME})+'<div><button class="btn sm" type="button" data-act="copysell">상품명 복사</button></div>'
     +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label></div></div></div></div>'
+    +'<label class="chk"><input type="checkbox" id="useClear"'+(UI.clearOnNew?' checked':'')+'> 제품 사진을 바꾸면 이전에 만든 이미지와 다른 각도 사진을 지워요 (새 사진으로 다시 만들 수 있게)</label>'
     +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷과 이미지 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
     +'<div class="f"><span>다른 각도 사진 (선택 · 최대 2장) — 옆면·정면 실제 사진을 더 넣을수록 AI가 실제 모양을 더 정확히 따라 그려요</span><div class="acts">'+extraCtl(0)+extraCtl(1)+'</div></div>'
     +fld.area('spec','제품 특징 메모 (구글에 같이 보내요 · 틀린 곳은 고쳐 주세요)',{rows:6,ph:'비워 두면 이미지를 만들기 직전에 클로드가 사진을 보고 적어요(클로드 키가 있을 때). 직접 적어도 돼요. 예: 레버 윗면 끝쪽에 엄지가 닿는 움푹한 곳이 있어요.'})
@@ -1386,12 +1387,25 @@ async function runOne(go){
 }
 
 /* ============ 버튼과 입력 처리(한 곳에 모아요) ============ */
+// 새 제품 사진으로 바꿀 때: 이전 사진으로 만든 이미지(구글·AI로 만든 것)와 다른 각도 사진을 지워요. 직접 넣은 실제 사진은 남겨요.
+function clearMade(){
+  let made=0,extra=0,kept=0;
+  const wipe=path=>{const p=getP(path);if(!hasPhoto(p))return;if(p.ai){setP(path,null);made++;}else kept++;};
+  wipe('hero.photo');wipe('concept.photo');
+  S.colors.items.forEach((it,i)=>wipe('colors.items.'+i+'.photo'));
+  (S.extra||[]).forEach((p,i)=>{if(hasPhoto(p)){setP('extra.'+i,null);extra++;}});
+  G.cache.clear();gc();
+  return {made,extra,kept};
+}
 async function putPhoto(path,file,ai){
+  const hadSrc=path==='src'&&hasPhoto(S.src);
   try{await setPhoto(path,file,ai?{ai:true}:{});}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
   if(path==='src'&&S.specAuto){S.spec='';S.specAuto=false;}   // 사진이 바뀌면 클로드가 적었던 특징 메모는 지워요(직접 적은 건 남겨요)
+  const cl=hadSrc&&UI.clearOnNew?clearMade():null;
   let zoomOk=null;if(path==='src')zoomOk=await autoZoom();   // 제품 사진을 넣자마자 확대 3곳을 손잡이 위치에 맞춰요(무료)
   renderSide();refresh();
-  if(zoomOk===true)toast('확대 3곳을 제품 위치에 맞췄어요.',2600);
+  if(cl&&(cl.made||cl.extra)){toast('새 사진으로 바꿨어요. 이전 사진으로 만든 이미지 '+cl.made+'장'+(cl.extra?'과 다른 각도 사진 '+cl.extra+'장':'')+'을 지웠어요.'+(cl.kept?' 직접 넣은 사진 '+cl.kept+'장은 남겨 뒀어요.':'')+' 3단계에서 새로 만드세요.',6000);}
+  else if(zoomOk===true)toast('확대 3곳을 제품 위치에 맞췄어요.',2600);
   else if(zoomOk===false){   // 못 찾으면 기본 자리(위·아래 구석) 대신 사진 가운데 쪽을 보여 줘요
     [[.5,.4],[.5,.5],[.5,.6]].forEach((v,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],{fx:v[0],fy:v[1],z:1.6});});
     refresh();toast('제품 위치를 못 찾았어요. 확대 칸의 슬라이더로 맞춰 주세요.',3600);
@@ -1477,7 +1491,7 @@ side.addEventListener('click',e=>{
 });
 const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
-  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},
+  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useClear(t){UI.clearOnNew=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
