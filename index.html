@@ -241,9 +241,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 18</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 19</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
+      <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
       <button class="chip" id="blankChip" type="button" title="눌러서 첫 빈 칸으로 이동"></button>
       <button class="btn primary" id="btnOne" type="button">한 번에 만들기</button>
       <button class="btn" id="btnExport" type="button">이미지로 저장</button>
@@ -286,7 +287,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=18,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=19,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -560,6 +561,11 @@ function chip(){
   if(n.length){const p=n.filter(x=>x.t==='사진').length;c.textContent='채울 곳 '+n.length+' (사진 '+p+' · 글 '+(n.length-p)+')';}
   $$('[data-cnt]').forEach(e=>{const k=n.filter(x=>x.g===e.dataset.cnt).length;e.textContent=k?k+'곳 비어 있음':'';e.hidden=!k;});
   const st=$('#st1');if(st)st.textContent=hasPhoto(S.src)?'사진 있음':'사진 필요';
+  const kc=$('#keyChip');if(kc){
+    const g=G.state==='on'?'✔ 연결됨':G.state==='off'?'✘ 키 확인 필요':G.key.trim()?'… 확인 전':'– 키 없음';
+    const c=window.claude?'✔ 기본 제공':C.ok?'✔ 연결됨':C.key.trim()?(C.bad?'✘ 키 확인 필요':'… 확인 전'):'– 키 없음';
+    kc.textContent='구글 '+g+' · 클로드 '+c;
+  }
 }
 window.addEventListener('resize',fit);new ResizeObserver(fit).observe(paper);
 function setTab(t){UI.tab=t;document.body.dataset.tab=t;$('#tabEdit').setAttribute('aria-pressed',t==='edit');$('#tabView').setAttribute('aria-pressed',t==='view');if(t==='view')requestAnimationFrame(fit);}
@@ -832,7 +838,7 @@ function setColorMode(m){
 
 /* ============ 클로드: 글 쓰기 · 손잡이 모양 검수 ============ */
 const CK='wj-ck',CMODEL='claude-haiku-5-5';
-const C={key:'',remember:false,model:'',msg:'',cls:''};
+const C={key:'',remember:false,model:'',msg:'',cls:'',ok:false,bad:false};
 try{const k=localStorage.getItem(CK);if(k){C.key=k;C.remember=true;}}catch(e){}
 const saveCKey=()=>{try{C.remember&&C.key?localStorage.setItem(CK,C.key):localStorage.removeItem(CK);}catch(e){}};
 function cMsg(t,c){C.msg=t;C.cls=c||'';const m=$('#cMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
@@ -1108,9 +1114,10 @@ const ACT={
     if(!C.key.trim()){cMsg('클로드 키를 붙여 넣어 주세요.','err');return;}
     cMsg('연결을 확인하는 중이에요. 비용이 들지 않아요…');
     try{const r=await fetch('https://api.anthropic.com/v1/models?limit=1',{headers:cHeaders()});
-      if(r.ok)cMsg('연결됐어요. 글 새로 쓰기와 손잡이 모양 검수에 쓰여요.','ok');
-      else{let m='';try{const d=await r.json();m=d&&d.error&&d.error.message||'';}catch(x){}cMsg(cErr(r.status,m),'err');}
-    }catch(x){cMsg('연결하지 못했어요. 인터넷 연결을 확인해 주세요.','err');}
+      if(r.ok){C.ok=true;C.bad=false;cMsg('연결됐어요. 글 새로 쓰기와 손잡이 모양 검수에 쓰여요.','ok');}
+      else{C.ok=false;C.bad=true;let m='';try{const d=await r.json();m=d&&d.error&&d.error.message||'';}catch(x){}cMsg(cErr(r.status,m),'err');}
+    }catch(x){C.ok=false;C.bad=false;cMsg('연결하지 못했어요. 인터넷 연결을 확인해 주세요.','err');}
+    chip();
   }
 };
 side.addEventListener('click',e=>{
@@ -1137,9 +1144,9 @@ side.addEventListener('input',e=>{
   const t=e.target,d=t.dataset;
   if(d.k!==undefined){setP(d.k,t.value);if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name')syncPrompts();refresh();}
   else if(d.s){setP(d.s,Number(t.value)/100);if(t.nextElementSibling)t.nextElementSibling.textContent=t.value;refresh();}
-  else if(t.id==='gKey'){G.key=t.value;if(G.state!=='idle')G.state='idle';saveKey();}
+  else if(t.id==='gKey'){G.key=t.value;if(G.state!=='idle')G.state='idle';saveKey();chip();}
   else if(t.id==='gModel'){G.model=t.value;G.auto=false;}
-  else if(t.id==='cKey'){C.key=t.value;saveCKey();}
+  else if(t.id==='cKey'){C.key=t.value;C.ok=false;C.bad=false;saveCKey();chip();}
   else if(t.id==='cModel')C.model=t.value;
 });
 function syncPrompts(){const J=jobs();$$('.job pre',side).forEach(p=>{const j=J[+p.dataset.j];if(j)p.textContent=promptOf(j);});}
@@ -1174,6 +1181,8 @@ $('#btnNew').onclick=()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
   await idb.open();await restore();
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
+  if(G.key.trim())gCheck();                                  // 기억해 둔 키는 열 때 무료로 자동 확인해요
+  if(C.key.trim()&&!window.claude)ACT.cCheck();
 })();
 })();
 </script>
