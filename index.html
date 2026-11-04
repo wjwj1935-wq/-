@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}html,body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>손잡이 상세페이지 제작기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&display=swap">
+<style>
+/* 왼쪽: 순서대로 따라가는 작업 칸(1 제품 → 2 키 → 3 만들기 → 4 다듬기), 오른쪽: 860px 상세페이지 실시간 미리보기 */
+:root{
+  --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --bg:#f3f5fa;--panel:#ffffff;--panel-2:#f6f8fc;--line:#d9e0ec;--ink:#14213d;--mute:#586478;
+  --accent:#2a56a3;--accent-ink:#ffffff;--accent-soft:#e6eefb;
+  --need:#ffe480;--need-ink:#5b4600;--ok:#1b7a52;--bad:#b3261e;--stage:#e1e7f1;
+  --shadow:0 1px 2px rgba(16,28,59,.06),0 10px 28px rgba(16,28,59,.08);
+  /* 상세페이지 자체 색(테마와 상관없이 고정) */
+  --pg-ink:#14213d;--pg-mute:#5a6578;--pg-blue:#2a56a3;--pg-navy:#101c3b;--pg-navy-2:#1b2b52;--pg-navy-d:#0b1226;
+  --pg-gold:#d9b45e;--pg-cream:#fbf2d9;--pg-soft:#eef2f8;--pg-line:#dfe5ef;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1320;--panel:#161d2e;--panel-2:#1b2438;--line:#2a3550;--ink:#e8edf7;--mute:#9aa7c0;
+  --accent:#8fb0ee;--accent-ink:#0b1530;--accent-soft:#1f2b46;--need:#4a3d0a;--need-ink:#ffe480;--ok:#5fd0a0;--bad:#ff8a80;--stage:#0a0e19;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1320;--panel:#161d2e;--panel-2:#1b2438;--line:#2a3550;--ink:#e8edf7;--mute:#9aa7c0;
+  --accent:#8fb0ee;--accent-ink:#0b1530;--accent-soft:#1f2b46;--need:#4a3d0a;--need-ink:#ffe480;--ok:#5fd0a0;--bad:#ff8a80;--stage:#0a0e19;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35);color-scheme:dark}
+
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#app{height:100%;display:flex;flex-direction:column;gap:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px}
+
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand h1{margin:0;font-size:19px;font-weight:800;letter-spacing:-.02em}
+.brand small{color:var(--mute);font-size:13px}
+.top-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.btn.sm{min-height:34px;padding:5px 11px;font-size:13px}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:700;background:var(--need);color:var(--need-ink);cursor:pointer;border:0}
+
+.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(340px,470px) minmax(0,1fr);gap:16px}
+.side{overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:2px;min-width:0}
+.stage-wrap{min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px}
+.stage-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;color:var(--mute);font-size:13px}
+.stage{flex:1;min-height:0;overflow:auto;background:var(--stage);border-radius:16px;padding:16px;display:flex;justify-content:center;align-items:flex-start}
+.paper-wrap{flex:none;width:calc(860px*var(--s,1));height:calc(var(--h,1000)*1px*var(--s,1));position:relative}
+.paper{position:absolute;left:0;top:0;transform:scale(var(--s,1));transform-origin:0 0;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+
+.step{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.step>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;font-weight:700;font-size:16px}
+.step>summary::-webkit-details-marker{display:none}
+.step .no{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:14px;font-weight:800}
+.step .st{margin-left:auto;font-size:12px;font-weight:700;color:var(--mute)}
+.step .body{padding:2px 16px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.hint{margin:0;color:var(--mute);font-size:13px}
+.sub{border:1px solid var(--line);border-radius:12px;background:var(--panel-2)}
+.sub>summary{list-style:none;cursor:pointer;padding:11px 14px;font-weight:700;display:flex;gap:8px;align-items:center}
+.sub>summary::-webkit-details-marker{display:none}
+.sub>summary::after{content:"▾";margin-left:auto;color:var(--mute)}
+.sub[open]>summary::after{content:"▴"}
+.sub .body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:12px}
+.sub .cnt{font-size:12px;font-weight:700;color:var(--need-ink);background:var(--need);border-radius:999px;padding:1px 8px}
+.cmn{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px}
+.blk{border:1px solid var(--line);border-radius:12px;background:var(--panel-2);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.blk h3{margin:0;font-size:14px}
+
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f>span{font-size:13px;font-weight:700;color:var(--mute)}
+.f input[type=text],.f input[type=password],.f textarea,.f select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);min-width:0}
+.f textarea{resize:vertical;line-height:1.5}
+.f .blank{background:var(--need);border-color:#d3a800;color:var(--need-ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{border:1px solid var(--line);border-radius:11px;background:var(--panel);padding:10px;display:flex;flex-direction:column;gap:10px}
+.item-h{display:flex;align-items:center;gap:6px}
+.item-h b{font-size:13px}
+.item-h .sp{flex:1}
+.ib{min-width:34px;min-height:34px;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer}
+.ib:hover{border-color:var(--accent)}
+
+.pc{display:flex;flex-direction:column;gap:8px}
+.pc-top{display:flex;gap:10px;align-items:center}
+.thumb{flex:none;width:64px;height:64px;border-radius:10px;border:1px dashed var(--line);background:var(--panel-2) center/cover no-repeat;display:grid;place-items:center;color:var(--mute);font-size:11px;text-align:center;cursor:pointer;overflow:hidden}
+.thumb.drag{border-color:var(--accent);background-color:var(--accent-soft)}
+.pc-btns{display:flex;gap:6px;flex-wrap:wrap}
+.pos{font-size:13px}
+.pos summary{cursor:pointer;color:var(--accent);font-weight:700}
+.pos .sl{display:grid;grid-template-columns:48px 1fr 44px;gap:8px;align-items:center;margin-top:6px}
+.pos output{font-variant-numeric:tabular-nums;color:var(--mute);text-align:right}
+.chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mute)}
+.chk select{min-height:32px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:2px 6px}
+.flash{animation:flash 1.2s ease 1}
+@keyframes flash{0%,60%{box-shadow:0 0 0 4px var(--accent)}100%{box-shadow:0 0 0 0 transparent}}
+
+.checks{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.msg{font-size:14px;color:var(--mute)}
+.msg.err{color:var(--bad);font-weight:700}
+.msg.ok{color:var(--ok);font-weight:700}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px;border-radius:10px;background:var(--need);color:var(--need-ink);font-size:14px;font-weight:700}
+.tip{padding:10px 12px;border-radius:10px;background:var(--accent-soft);font-size:13px;color:var(--ink)}
+.cost{font-size:12px;color:var(--mute);margin:0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+.job{display:grid;grid-template-columns:64px 1fr;gap:6px 12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}
+.job .meta{display:flex;flex-direction:column;gap:6px;min-width:0}
+.job .nm{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.job .ratio{font-size:12px;font-weight:700;color:var(--mute);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
+.job .done{font-size:12px;color:var(--ok);font-weight:700}
+.job details{grid-column:1/-1}
+.job pre{margin:6px 0 0;white-space:pre-wrap;font:inherit;font-size:13px;color:var(--mute);background:var(--panel-2);border-radius:8px;padding:8px 10px}
+.aitag{font-size:12px;color:var(--mute);cursor:pointer}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;z-index:50;box-shadow:var(--shadow);max-width:90vw}
+.toast[hidden]{display:none}
+.veil{position:fixed;inset:0;background:rgba(8,12,24,.55);z-index:40;display:grid;place-items:center;padding:16px}
+.dlg{width:min(520px,100%);max-height:90%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:14px}
+.dlg h2{margin:0;font-size:18px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt b{display:block;font-size:14px}
+.bar{height:8px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.dlg .acts{justify-content:flex-end}
+.orow{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.orow .od{flex:none;width:10px;height:10px;border-radius:50%;background:var(--line)}
+.orow.run .od{background:var(--accent);animation:pulse 1s ease-in-out infinite}
+.orow.ok .od{background:var(--ok)}.orow.err .od{background:var(--bad)}
+.orow .ost{margin-left:auto;font-size:13px;color:var(--mute);text-align:right;min-width:0}
+.orow.err .ost{color:var(--bad)}
+@keyframes pulse{50%{opacity:.35}}
+.tabs{display:none}
+@media (max-width:900px){
+  .work{grid-template-columns:minmax(0,1fr)}
+  body[data-tab="edit"] .stage-wrap{display:none}
+  body[data-tab="view"] .side{display:none}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tabs .btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .brand small{display:none}
+}
+@media (prefers-reduced-motion:reduce){.flash,.orow.run .od{animation:none}.bar i{transition:none}}
+
+/* ============ 상세페이지(860px) ============ */
+.pg{width:860px;background:#fff;color:var(--pg-ink);font-family:var(--font);line-height:1.5;word-break:keep-all;overflow-wrap:anywhere}
+.pg *{box-sizing:border-box}
+.pg .sec{position:relative;padding:92px 62px}
+.pg .soft{background:var(--pg-soft)}
+.pg .white{background:#fff}
+.pg .head{text-align:center}
+.pg .eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;color:var(--pg-blue)}
+.pg h2{margin:12px 0 20px;font-size:40px;line-height:1.3;font-weight:800;letter-spacing:-.025em}
+.pg .lead{margin:0 auto;max-width:660px;font-size:20px;line-height:1.75;color:var(--pg-mute)}
+.pg .pb{background-repeat:no-repeat;background-color:#e8edf5}
+.pg .r24{border-radius:24px}.pg .r20{border-radius:20px}
+.pg .ph-empty{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:repeating-linear-gradient(135deg,#e4e9f2 0 14px,#dde3ee 14px 28px);color:#7a879d;font-size:17px;font-weight:700;text-align:center;padding:20px}
+.pg .ph-empty svg{width:150px;height:auto;opacity:.85}
+.pg .tmp{position:absolute;right:14px;top:14px;background:rgba(16,28,59,.78);color:#fff;font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px}
+.pg .need{display:inline-block;background:#ffe480;color:#5b4600;font-size:.62em;font-weight:700;letter-spacing:0;padding:.1em .7em;border-radius:6px;outline:2px dashed #d3a800;outline-offset:1px;line-height:1.5;vertical-align:middle;cursor:pointer}
+.pg [data-jump]{cursor:pointer}
+.pg [data-jump]:hover{outline:2px solid rgba(42,86,163,.45);outline-offset:3px;border-radius:6px}
+
+.pg .hero{padding:0;height:1040px;background:var(--pg-navy-d);overflow:hidden}
+.pg .hero .pb{position:absolute;left:0;top:0}
+.pg .hero .ph-empty{background:linear-gradient(160deg,#1b2b52,#0b1226);color:#8da0c6}
+.pg .hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,32,0) 36%,rgba(10,15,32,.6) 62%,rgba(10,15,32,.97) 100%);pointer-events:none}
+.pg .hero .txt{position:absolute;left:62px;right:62px;bottom:76px;color:#fff}
+.pg .badge{display:inline-block;background:var(--pg-blue);color:#fff;font-weight:700;font-size:19px;padding:9px 22px;border-radius:999px}
+.pg h1{margin:24px 0 18px;font-size:54px;line-height:1.27;font-weight:800;letter-spacing:-.03em}
+.pg .hero p{margin:0;font-size:22px;line-height:1.65;color:rgba(255,255,255,.78)}
+.pg .card-ph{margin-top:46px}
+
+.pg .zi{margin-top:56px}
+.pg .zi:first-of-type{margin-top:46px}
+.pg .zp{position:relative;width:736px;height:560px;border-radius:24px;overflow:hidden;background:#e8edf5}
+.pg .zp .pb{position:absolute;left:0;top:0}
+.pg .ztag{position:absolute;right:20px;top:20px;background:var(--pg-blue);color:#fff;font-weight:700;font-size:18px;padding:8px 20px;border-radius:999px}
+.pg .zin{position:absolute;left:20px;top:20px;width:188px;height:188px;background:#fff;border:6px solid #fff;border-radius:18px}
+.pg .zin .cr{position:absolute}
+.pg .zin img{max-width:none}
+.pg .zin .rb{position:absolute;border:3px solid #e5384f;background:rgba(229,56,79,.1)}
+.pg .zi h3{margin:24px 0 8px;text-align:center;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.pg .zi p{margin:0 auto;max-width:620px;text-align:center;font-size:19px;line-height:1.7;color:var(--pg-mute)}
+
+.pg .cgrid{display:grid;grid-template-columns:356px 356px;gap:34px 24px;margin-top:46px}
+.pg .cell{margin:0}
+.pg .cell figcaption{margin-top:14px;text-align:center;font-size:19px;font-weight:700}
+.pg .note{margin:34px 0 0;text-align:center;font-size:15px;color:var(--pg-mute)}
+
+.pg .about{background:var(--pg-navy);color:#fff}
+.pg .about .eyebrow{color:var(--pg-gold)}
+.pg .about h2{color:#fff}
+.pg .about .lead{color:#b8c3dc;max-width:700px}
+.pg .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:46px}
+.pg .stat{background:var(--pg-navy-2);border:1px solid rgba(217,180,94,.28);border-radius:20px;padding:26px 10px;text-align:center}
+.pg .stat b{display:block;font-size:46px;line-height:1.1;font-weight:900;color:var(--pg-gold)}
+.pg .stat span{display:block;margin-top:10px;font-size:16px;font-weight:700;color:#e8edf7}
+.pg .pat{display:flex;gap:20px;align-items:center;margin-top:18px;padding:28px 30px;border-radius:24px;background:var(--pg-cream);border:3px solid #e8cf8c;color:#2a2410}
+.pg .pat:first-of-type{margin-top:30px}
+.pg .pat .pt{flex:1;min-width:0}
+.pg .pat .no{font-size:25px;font-weight:800}
+.pg .pat .nm{margin-top:6px;font-size:18px;font-weight:700}
+.pg .pat .mt{margin-top:6px;font-size:15px;color:#7a6a38}
+.pg .seal{flex:none;width:92px;height:92px;border-radius:50%;background:var(--pg-gold);color:#fff;display:grid;place-items:center;text-align:center;font-weight:800;font-size:18px;line-height:1.25;padding:10px}
+.pg h3.sb{margin:50px 0 20px;text-align:center;font-size:27px;font-weight:800;color:#fff}
+.pg .gr{display:flex;gap:20px;align-items:center;margin-top:14px;padding:22px 24px;border-radius:20px;background:var(--pg-navy-2);border:1px solid rgba(255,255,255,.06)}
+.pg .gr .seal{width:70px;height:70px;font-size:15px}
+.pg .gr b{display:block;font-size:22px}
+.pg .gr span{display:block;margin-top:4px;font-size:16px;color:#aebad6}
+.pg .tl{display:flex;gap:24px;align-items:center;margin-top:12px;padding:18px 24px;border-radius:16px;background:var(--pg-navy-2)}
+.pg .tl .yr{flex:none;width:92px;font-size:30px;font-weight:900;color:var(--pg-gold)}
+.pg .tl .tt{font-size:16px;line-height:1.6;color:#dbe3f3}
+.pg .foot{margin-top:44px;text-align:center;font-size:19px;font-weight:700}
+.pg .fn{margin:12px auto 0;max-width:660px;text-align:center;font-size:14px;line-height:1.7;color:#93a1c2}
+
+.pg .steps{position:relative;margin-top:50px;display:flex;flex-direction:column;gap:28px}
+.pg .steps::before{content:"";position:absolute;left:27px;top:28px;bottom:28px;width:3px;background:#c8d4ea}
+.pg .gs{position:relative;display:flex;gap:26px;align-items:center}
+.pg .gs i{flex:none;width:56px;height:56px;border-radius:50%;background:var(--pg-blue);color:#fff;font-style:normal;font-weight:800;font-size:25px;display:grid;place-items:center;border:5px solid var(--pg-soft)}
+.pg .gs div{font-size:23px;font-weight:700;line-height:1.5}
+.pg .gtime{display:inline-block;margin-top:20px;background:#fff;border:2px solid var(--pg-blue);color:var(--pg-blue);font-weight:800;font-size:22px;padding:8px 24px;border-radius:999px}
+.pg .qa{margin-top:18px;padding:26px 30px;border-radius:22px;background:#fff;border:1px solid #e0e6f1}
+.pg .qa:first-of-type{margin-top:46px}
+.pg .qa .q{display:flex;gap:16px;align-items:center;font-size:22px;font-weight:800}
+.pg .qa .q i{flex:none;width:42px;height:42px;border-radius:50%;background:var(--pg-blue);color:#fff;font-style:normal;font-size:20px;display:grid;place-items:center}
+.pg .qa .a{margin:12px 0 0 58px;font-size:19px;line-height:1.75;color:var(--pg-mute)}
+.pg .nt{padding:70px 62px}
+.pg .nt h3{margin:0 0 26px;text-align:center;font-size:27px;font-weight:800}
+.pg .nt ul{margin:0;padding:26px 34px 26px 52px;border-radius:18px;background:#f2f4f9;display:flex;flex-direction:column;gap:10px;font-size:17px;color:var(--pg-mute);line-height:1.65}
+.pg .cta{padding:100px 62px;background:var(--pg-blue);color:#fff;text-align:center}
+.pg .cta h2{color:#fff;margin:0 0 20px;font-size:42px}
+.pg .cta p{margin:0;font-size:21px;line-height:1.7;color:rgba(255,255,255,.84)}
+.export-host{position:absolute;left:-12000px;top:0;width:860px;pointer-events:none}
+</style>
+
+</head><body>
+<div id="app">
+  <header class="top">
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 17</small></div>
+    <div class="top-actions">
+      <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
+      <button class="chip" id="blankChip" type="button" title="눌러서 첫 빈 칸으로 이동"></button>
+      <button class="btn primary" id="btnOne" type="button">한 번에 만들기</button>
+      <button class="btn" id="btnExport" type="button">이미지로 저장</button>
+      <button class="btn" id="btnNew" type="button">새 제품</button>
+      <button class="btn" id="btnSave" type="button">작업 저장</button>
+      <button class="btn" id="btnLoad" type="button">불러오기</button>
+      <input type="file" id="loadFile" accept=".zip" hidden>
+    </div>
+  </header>
+  <div class="tabs" role="group" aria-label="화면 전환">
+    <button class="btn" id="tabEdit" type="button" aria-pressed="true">만들기</button>
+    <button class="btn" id="tabView" type="button" aria-pressed="false">미리보기</button>
+  </div>
+  <main class="work">
+    <section class="side" id="side" aria-label="작업 칸"></section>
+    <section class="stage-wrap" aria-label="미리보기">
+      <div class="stage-bar">
+        <span>미리보기 · 글자나 사진을 누르면 바로 고칠 수 있어요</span>
+        <span style="flex:1"></span>
+        <button class="btn sm ghost" data-zoom="fit" type="button">화면에 맞춤</button>
+        <button class="btn sm ghost" data-zoom="1" type="button">100%</button>
+      </div>
+      <div class="stage" id="stage"><div class="paper-wrap" id="pw"><div class="paper pg" id="paper"></div></div></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="veil" id="veil" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous"></script>
+<script>
+(()=>{
+'use strict';
+/* ============ 도구 ============ */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nl=s=>esc(s).replace(/\n/g,'<br>');
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
+const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
+const PW=860,LS='wj-dp-v3',VER=17;
+
+/* ============ 고정 내용 ============ */
+const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
+const STD_NAME='고급스러운 메탈 방문 손잡이';
+/* 글 틀(무료): 모양을 설명하는 말을 빼고 짧게. 디자인은 확대 사진으로 확인하게 해요. */
+const TPL={
+  hero:{badge:STD_NAME,title:'우리 집 문에 깔끔하게\n어울리는 손잡이',sub:'문에 달았을 때의 모습을 먼저 보고 고르세요.\n디자인은 확대 사진으로 정확하게 확인해요.'},
+  concept:{title:'고급스러운 메탈 레버',body:''},
+  zoom:[
+    {title:'손이 닿는 레버',body:'레버의 모양과 마감을 크게 확대했어요.\n디자인을 가까이에서 정확하게 확인해 보세요.',fx:.5,fy:.25,z:2},
+    {title:'목과 받침',body:'레버가 받침으로 이어지는 모양이에요.\n문에 닿는 받침의 크기와 모양을 확인해 보세요.',fx:.55,fy:.6,z:2.2},
+    {title:'받침 뒤쪽',body:'받침 뒤쪽 구조도 그대로 보여 드려요.\n가까이에서 마감을 확인해 보세요.',fx:.55,fy:.88,z:2}],
+  faq:{q:'문 열리는 방향이 반대여도 되나요?',a:'좌우 방향이 다르면 판매자에게 확인해 주세요.\n문이 열리는 방향을 알려 주시면 안내해 드려요.'},faqPos:4
+};
+const FAQ_COMMON=[
+  {q:'우리 집 문에 맞나요?',a:'우리나라 방문은 대부분 규격이 비슷해요. 그래도 걱정되면 지금 달린 손잡이와 문 앞면 사진을 판매자에게 보내 주세요. 맞는지 확인해 드려요.'},
+  {q:'잠금 기능이 있나요?',a:'잠금 기능과 관련해서는 판매자에게 확인해 주세요.'},
+  {q:'제품 색상 이름이 궁금해요.',a:'사진 속 제품은 은은한 은회색 계열이에요. 정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'},
+  {q:'혼자 달 수 있나요?',a:'보통 기존 손잡이를 풀고 나사로 고정하는 방식이에요. 구성품과 필요한 공구는 판매자에게 확인해 주세요.'},
+  {q:'교환·반품은 어떻게 하나요?',a:'구매하신 판매 채널의 안내에 따라 교환·반품 내용을 확인해 주세요.'}];
+/* 클로드가 글을 새로 쓸 때 따라 할 이 회사의 기존 두 제품 글(말투·길이 기준) */
+const PLAN_EX=[
+  {name:'줄무늬 레버 손잡이',hero:{badge:'줄무늬 레버 방문 손잡이',title:'우리 집 문에 포인트가 되는\n줄무늬 손잡이',sub:'세로 줄무늬 레버로 문에 포인트를 줘요.\n문에 달았을 때의 모습을 먼저 보고 고르세요.'},
+   concept:{title:'결이 살아 있는 타원형 레버',body:'타원형 레버 위에 세로 줄무늬가 길게 이어져요.\n반짝임이 과하지 않아서 어떤 문에도 부담 없이 어울려요.'},
+   zoom:[{title:'세로 줄무늬 레버 마감',body:'손이 먼저 닿는 레버 부분이에요.\n길게 이어진 세로 줄무늬를 가까이에서 확인해 보세요.'},{title:'원통형 목과 둥근 받침',body:'레버 아래가 원통형 목으로 이어지고,\n둥근 받침이 문 표면 위에 자리 잡아요.'},{title:'받침 뒤쪽 모습',body:'받침 뒤쪽 구조도 그대로 보여 드려요.\n가까이에서 마감을 확인해 보세요.'}],
+   faq:[{q:'줄무늬가 너무 튀지 않나요?',a:'줄무늬 결이 차분해서 부담스럽지 않아요.\n문 색상별 연출 사진으로 어울리는 정도를 먼저 확인해 보세요.'}]},
+  {name:'둥근 레버 손잡이',hero:{badge:'둥근 레버 방문 손잡이',title:'우리 집 문에 깔끔하게\n어울리는 손잡이',sub:'둥근 레버라 부담 없이 쓰기 좋아요.\n문에 달았을 때의 모습을 먼저 보고 고르세요.'},
+   concept:{title:'군더더기 없는 둥근 레버',body:'손에 닿는 부분이 부드럽게 이어지고, 군더더기 없이 단정해요.\n반짝임이 과하지 않은 마감이라 어떤 문에도 어울려요.'},
+   zoom:[{title:'둥글게 마무리한 레버 끝',body:'손이 먼저 닿는 레버 끝이에요.\n둥근 마무리와 매끈한 곡선을 확인해 보세요.'},{title:'이어지는 목과 둥근 받침',body:'레버가 목으로 부드럽게 이어지고,\n둥근 받침이 문 표면 위에 자리 잡아요.'},{title:'받침 뒤쪽 모습',body:'받침 뒤쪽 구조도 그대로 보여 드려요.\n가까이에서 마감을 확인해 보세요.'}],
+   faq:[{q:'문 열리는 방향이 반대여도 되나요?',a:'좌우 방향이 다르면 판매자에게 확인해 주세요.\n문이 열리는 방향을 알려 주시면 안내해 드려요.'}]}
+];
+/* 문 색상 칸(참고 페이지와 같은 10칸) [이름, 문 설명, 문틀, 카메라 각도, 레버가 오른쪽?] */
+const COLOR_DEF=[
+  ['화이트 도어','깨끗한 흰색 실내 문','groove','l',0],['월넛 우드 도어','짙은 월넛 우드 결의 실내 문','seam','c',0],
+  ['라이트 그레이 도어','밝은 회색 실내 문','groove','f',1],['블랙 도어','무광 검정 실내 문','groove','c',1],
+  ['아이보리 도어','아이보리색 실내 문','panel','s',0],['베이지 도어','베이지색 실내 문','panel','l',1],
+  ['차콜 도어','짙은 차콜 회색 실내 문','groove','f',0],['오크 도어','밝은 오크 우드 결의 실내 문','seam','s',1],
+  ['체리 도어','붉은 갈색 체리 우드 결의 실내 문','seam','l',0],['사용 컷','흰색 실내 문에서 한 손으로 레버를 잡아 내리는 장면(손만 보이고 얼굴은 없음)','groove','f',0]];
+const LITE=['화이트 도어','월넛 우드 도어','라이트 그레이 도어','블랙 도어','사용 컷'];   // 비용 절약용 5칸
+const mkColor=([label,scene,door,view,flip])=>({label,scene,door,view,flip:!!flip,photo:null});
+const CAMS={
+  f:'문 앞쪽에서 가까이 찍은 구도. 문과 거의 마주 보되 아주 살짝만 비스듬히. 받침 원판이 화면의 한쪽에 크게 보이게',
+  l:'문의 왼쪽 앞에서 약 30도 비스듬히 찍은 구도. 받침 원판의 두께와 레버가 문에서 떠 있는 입체감, 문 표면이 안쪽으로 깊어지는 원근이 느껴지게',
+  c:'문 바로 앞에서 손잡이를 아주 가까이 확대해 찍은 구도(초근접). 받침이 화면의 절반 가까이 차지하고, 초점은 받침과 레버에, 문 배경은 살짝 흐리게',
+  s:'문의 오른쪽 옆에서 낮은 각도로 비스듬히 찍은 구도. 레버의 옆 두께와 받침이 문에서 튀어나온 높이가 보이고 문 표면이 길게 이어지게'};
+const CAM_NAME={f:'정면',l:'왼쪽 앞에서 비스듬히',c:'가까이 확대',s:'옆면(낮은 각도)'};
+const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 보이게',panel:'몰딩으로 구획된 문틀 패널의 선이 보이게',seam:'문 가장자리와 이음선이 화면 한쪽 끝에 살짝 보이게'};
+
+function defaults(){
+  const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,
+  hero:Object.assign({photo:null},TPL.hero),
+  concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
+  zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
+  colors:{eyebrow:'COLORS',title:'문 색상에 따라 이렇게 어울려요',body:'색상과 결이 다른 문에 달았을 때의 느낌을 미리 보세요.',note:'※ 사진은 연출 이미지예요. 실제 제품과 색상·질감이 조금 다를 수 있어요.',items:COLOR_DEF.map(mkColor)},
+  about:{eyebrow:'ABOUT US',title:'믿을 수 있는 제조사가 직접 공급합니다',
+    body:CO.name+'는 '+CO.place+'에서 문을 지키는 제품을 연구하고 만들어 온 기업이에요.\n집을 지키는 문 하나에도 가족의 안전과 평화를 먼저 생각해요.',
+    stats:[{v:'11',l:'등록 특허'},{v:'3',l:'등록 디자인'},{v:'2017~',l:'문 손잡이를 만들어 온 기록'}],
+    patents:[{no:'',title:'',meta:'',badge:'등록\n완료'},{no:'',title:'',meta:'',badge:'등록\n완료'}],
+    growTitle:'성장하는 우진글로벌',grow:[{badge:'',title:'',body:''},{badge:'',title:'',body:''}],
+    tlTitle:'이렇게 이어 온 등록 기록',tl:[{year:'2017',text:''},{year:'2018',text:''},{year:'2019',text:''},{year:'2021',text:''},{year:'2026',text:''}],
+    foot:CO.name+' · '+CO.place,note:''},
+  guide:{eyebrow:'GUIDE',title:'이렇게 진행돼요',time:'',steps:['기존 손잡이와 나사를 풀어 떼어 내요.','문 앞면의 받침을 문에 먼저 고정해요.','전체와 바깥쪽 손잡이를 문 구멍에 맞춰 끼워요.','나사를 조여 손잡이를 단단히 고정해요.','레버를 눌러 문이 잘 열리고 닫히는지 확인해요.']},
+  faq:{eyebrow:'FAQ',title:'자주 묻는 질문',items:faq},
+  notice:{title:'구매 전 확인해 주세요',items:['모니터 화면에 따라 실제 색상이 다르게 보일 수 있어요.','측정 방법에 따라 약간의 오차가 있을 수 있어요.']},
+  cta:{title:'우리 집 문에 달아 보세요',sub:'궁금한 점은 지금 달린 손잡이 사진과 함께\n판매자에게 물어보세요.'}};
+}
+let S=defaults();
+let dirty=false;        // 제품 글을 직접 고쳤는지(새 글이 덮어쓰기 전에 물어봐요)
+const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:false,check:true};
+const isProductText=p=>/^(hero|concept|zoom\.items)\./.test(p)||(/^faq\.items\.\d+\./.test(p)&&!!(S.faq.items[+p.split('.')[2]]||{}).p);
+
+/* 글 틀 채우기(무료) */
+function tplFill(){
+  Object.assign(S.hero,TPL.hero,{badge:S.sellName||STD_NAME});Object.assign(S.concept,TPL.concept);
+  TPL.zoom.forEach((z,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],{title:z.title,body:z.body});});
+  const rest=S.faq.items.filter(q=>!q.p);rest.splice(Math.min(TPL.faqPos,rest.length),0,Object.assign({p:true},TPL.faq));S.faq.items=rest;
+  dirty=false;
+}
+/* 새 제품: 회사 공통 글과 색상 구성은 남기고 제품 이름·사진·제품 글만 비워요 */
+function newProduct(){
+  const o=defaults(),c=S;
+  ['about','guide','notice','cta'].forEach(k=>{o[k]=c[k];});o.sellName=c.sellName;
+  Object.assign(o.zoom,{eyebrow:c.zoom.eyebrow,title:c.zoom.title,body:c.zoom.body});
+  o.colors=Object.assign({},c.colors,{items:c.colors.items.map(i=>Object.assign({},i,{photo:null}))});
+  o.faq=Object.assign({},c.faq,{items:c.faq.items.filter(q=>!q.p)});
+  o.name='';o.hero=Object.assign({},o.hero,{badge:'',title:'',sub:''});o.concept=Object.assign({},o.concept,{title:'',body:''});
+  o.zoom.items.forEach(z=>{z.title='';z.body='';});
+  S=o;dirty=false;gc();
+}
+
+/* ============ 사진 보관(이 브라우저 안) ============ */
+const PH=new Map(),PENDING=new Set();                 // id -> {blob,url,w,h}
+const idb={db:null,mem:new Map(),
+  open(){return new Promise(res=>{try{const r=indexedDB.open('wj-dp',1);r.onupgradeneeded=()=>r.result.createObjectStore('p');r.onsuccess=()=>{this.db=r.result;res()};r.onerror=()=>res();}catch(e){res()}})},
+  tx(m){return this.db.transaction('p',m).objectStore('p')},
+  put(id,v){this.mem.set(id,v);if(!this.db)return Promise.resolve();return new Promise(r=>{try{const q=this.tx('readwrite').put(v,id);q.onsuccess=q.onerror=()=>r()}catch(e){r()}})},
+  get(id){if(this.mem.has(id))return Promise.resolve(this.mem.get(id));if(!this.db)return Promise.resolve(null);return new Promise(r=>{try{const q=this.tx('readonly').get(id);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)}catch(e){r(null)}})},
+  del(id){this.mem.delete(id);if(!this.db)return;try{this.tx('readwrite').delete(id)}catch(e){}}
+};
+function remember(id,blob,w,h){PH.set(id,{blob,w,h,url:URL.createObjectURL(blob)});}
+async function ingest(file){
+  if(!file||!/^image\//.test(file.type))throw new Error('이미지 파일이 아니에요.');
+  let bmp;
+  try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'});}
+  catch(e){bmp=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('사진을 읽지 못했어요.'));i.src=URL.createObjectURL(file);});}
+  const iw=bmp.width||bmp.naturalWidth,ih=bmp.height||bmp.naturalHeight,k=Math.min(1,2400/Math.max(iw,ih));
+  const w=Math.max(1,Math.round(iw*k)),h=Math.max(1,Math.round(ih*k));
+  const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
+  const png=file.type==='image/png'||file.type==='image/webp';
+  if(!png){g.fillStyle='#fff';g.fillRect(0,0,w,h);}
+  g.drawImage(bmp,0,0,w,h);
+  const blob=await new Promise(r=>c.toBlob(r,png?'image/png':'image/jpeg',.92));
+  if(!blob)throw new Error('사진을 읽지 못했어요.');
+  const id=uid();PENDING.add(id);remember(id,blob,w,h);await idb.put(id,{blob,w,h});
+  return {id,w,h};
+}
+function usedIds(){const s=new Set();const walk=o=>{if(!o||typeof o!=='object')return;if(typeof o.id==='string'&&o.w&&o.h)s.add(o.id);for(const k in o)walk(o[k]);};walk(S);return s;}
+function gc(){const u=usedIds();for(const [id,m] of PH){if(!u.has(id)&&!PENDING.has(id)){try{URL.revokeObjectURL(m.url)}catch(e){}PH.delete(id);idb.del(id);}}}
+async function setPhoto(path,file,extra){
+  const meta=await ingest(file);
+  if(path==='src')setP(path,{id:meta.id,w:meta.w,h:meta.h});
+  else setP(path,Object.assign({id:meta.id,w:meta.w,h:meta.h,fx:.5,fy:.5,z:1,ai:false},extra||{}));
+  PENDING.delete(meta.id);gc();
+}
+const hasPhoto=p=>!!(p&&p.id&&PH.has(p.id));
+
+/* ============ 저장 / 불러오기 ============ */
+let saveT=0;
+const persist=()=>{clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}},400);};
+function fromSaved(o){                       // 저장본 → 현재 형식(예전 버전 파일도 읽어요)
+  if(!o||(o.v!==2&&o.v!==3))return null;
+  const b=defaults(),r=Object.assign(b,o,{v:3});
+  r.colors=Object.assign({},b.colors,o.colors||{});
+  r.colors.items=((o.colors&&o.colors.items)||b.colors.items).map(it=>({label:it.label||'',scene:it.scene||'',door:it.door||(it.plate&&it.plate.f)||'groove',view:it.view||'f',flip:it.flip!==undefined?!!it.flip:!!(it.pose&&it.pose.flip),photo:it.photo&&!it.photo.comp?it.photo:null}));
+  ['hero','concept'].forEach(k=>{const h=Object.assign({},b[k],o[k]||{});delete h.how;if(h.photo&&h.photo.comp)h.photo=null;r[k]=h;});
+  ['cut','cutL','cutC','cutS','cut2','shape','tone','seen','check','cv','desc'].forEach(k=>delete r[k]);
+  return r;
+}
+async function loadPhotos(){                  // S 안의 사진을 저장소에서 불러오고, 사라진 사진 칸은 비워요
+  const ids=[];const walk=x=>{if(!x||typeof x!=='object')return;if(typeof x.id==='string'&&x.w&&x.h)ids.push(x);for(const k in x)walk(x[k]);};walk(S);
+  await Promise.all(ids.map(async p=>{const r=await idb.get(p.id);if(r&&r.blob)remember(p.id,r.blob,r.w,r.h);}));
+  const fix=o=>{if(!o||typeof o!=='object')return;for(const k in o){const v=o[k];if(v&&typeof v==='object'&&typeof v.id==='string'&&v.w&&v.h&&!PH.has(v.id))o[k]=null;else fix(v);}};fix(S);
+}
+async function restore(){
+  let raw=null;try{raw=localStorage.getItem(LS)}catch(e){}
+  if(!raw)return;
+  try{const o=fromSaved(JSON.parse(raw));if(!o)return;S=o;await loadPhotos();}catch(e){S=defaults();}
+}
+/* 한글 파일 이름이 깨질 수 있어 내 컴퓨터에서는 영문 이름으로 내려받아요 */
+const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];return (/작업/.test(n)?'detailpage-work':'detailpage')+'-'+new Date().toISOString().slice(0,10)+ext;};
+async function saveFile(name,blob){
+  let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
+  if(dl){await dl.save({filename:name,data:blob});return;}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=asciiName(name);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},4000);
+}
+const safeName=()=>String(S.name||'상세페이지').replace(/[\\/:*?"<>|\s]+/g,'_').slice(0,40);
+async function saveWork(){
+  if(!window.JSZip){toast('저장 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.',3000);return;}
+  try{
+    const z=new JSZip();z.file('state.json',JSON.stringify(S));
+    const u=usedIds();for(const id of u){const m=PH.get(id);if(m)z.file('photos/'+id+'.bin',m.blob);}
+    z.file('photos/index.json',JSON.stringify([...u].map(id=>{const m=PH.get(id);return m?{id,w:m.w,h:m.h,type:m.blob.type}:null;}).filter(Boolean)));
+    await saveFile(safeName()+'_작업.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast('작업을 저장했어요.');
+  }catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
+}
+async function loadWork(f){
+  if(!window.JSZip){toast('불러오기 도구를 불러오지 못했어요.',3000);return;}
+  try{
+    const z=await JSZip.loadAsync(f),st=fromSaved(JSON.parse(await z.file('state.json').async('string')));if(!st)throw new Error('v');
+    const idx=JSON.parse(await z.file('photos/index.json').async('string'));
+    for(const it of idx){const fl=z.file('photos/'+it.id+'.bin');if(!fl)continue;const blob=new Blob([await fl.async('blob')],{type:it.type||'image/jpeg'});remember(it.id,blob,it.w,it.h);await idb.put(it.id,{blob,w:it.w,h:it.h});}
+    S=st;dirty=false;gc();renderSide();refresh();toast('작업을 불러왔어요.');
+  }catch(err){toast('이 파일은 불러올 수 없어요. 이 프로그램에서 저장한 zip인지 확인해 주세요.',3500);}
+}
+
+/* ============ 상세페이지 그리기 ============ */
+function geom(m,bw,bh,p){
+  const z=clamp((p&&p.z)||1,1,4),fx=p&&p.fx!=null?p.fx:.5,fy=p&&p.fy!=null?p.fy:.5;
+  const s=Math.max(bw/m.w,bh/m.h)*z,sw=m.w*s,sh=m.h*s;
+  return {sw,sh,x:clamp(bw/2-fx*sw,bw-sw,0),y:clamp(bh/2-fy*sh,bh-sh,0)};
+}
+const ILLUS='<svg viewBox="0 0 220 170" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-10 100 60)"><rect x="22" y="30" width="150" height="46" rx="23"/><path d="M52 36v34M70 34v38M88 33v40M106 33v40M124 34v38M142 36v34"/></g><path d="M100 80v38"/><path d="M82 118h36"/><ellipse cx="100" cy="132" rx="46" ry="17"/></svg>';
+function box(p,bw,bh,o){
+  o=o||{};const m=p&&PH.get(p.id),at=(!o.ex&&o.jump)?' data-jump="'+o.jump+'"':'';
+  const pic=(mm,g,extra)=>'<div class="pb '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px;background-image:url('+mm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>'+(extra||'');
+  if(m)return pic(m,geom(m,bw,bh,p));
+  const sm=o.fallback&&S.src&&PH.get(S.src.id);   // 아직 안 만들었으면 원본 사진을 임시로(미리보기에서만)
+  if(sm)return pic(sm,geom(sm,bw,bh,null),o.ex?'':'<span class="tmp">임시 · 원본 사진</span>');
+  if(o.ex)return '<div class="pb '+(o.cls||'')+'" style="width:'+bw+'px;height:'+bh+'px"></div>';
+  return '<div class="pb ph-empty '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px">'+ILLUS+'<span>'+esc(o.hint||'사진을 넣어 주세요')+'</span></div>';
+}
+function renderPage(ex){
+  const J=p=>ex?'':' data-jump="'+p+'"';
+  const T=(path,v,o)=>{o=o||{};if(String(v==null?'':v).trim()!=='')return nl(v);return (ex||!o.req)?'':'<span class="need" data-jump="'+path+'">'+esc(o.ph||'입력 필요')+'</span>';};
+  const head=a=>'<div class="head"><div class="eyebrow"'+J(a+'.eyebrow')+'>'+esc(S[a].eyebrow)+'</div><h2'+J(a+'.title')+'>'+T(a+'.title',S[a].title,{req:1,ph:'제목'})+'</h2>'+(S[a].body||!ex?'<p class="lead"'+J(a+'.body')+'>'+T(a+'.body',S[a].body,{req:a!=='concept',ph:'설명 글'})+'</p>':'')+'</div>';
+  const out=[],A=S.about;
+  // 1 첫 화면
+  out.push('<section class="sec hero" data-slice="01_첫화면">'+box(S.hero.photo,860,1040,{jump:'hero.photo',ex,fallback:1,hint:'첫 화면 사진 (세로 4:5)'})+'<div class="shade"></div><div class="txt">'
+    +(S.hero.badge||!ex?'<span class="badge"'+J('hero.badge')+'>'+(S.hero.badge?nl(S.hero.badge):'<span class="need">작은 글</span>')+'</span>':'')
+    +'<h1'+J('hero.title')+'>'+T('hero.title',S.hero.title,{req:1,ph:'큰 제목'})+'</h1>'
+    +(S.hero.sub||!ex?'<p'+J('hero.sub')+'>'+T('hero.sub',S.hero.sub,{req:1,ph:'설명 글'})+'</p>':'')+'</div></section>');
+  // 2 소개
+  out.push('<section class="sec soft" data-slice="02_소개">'+head('concept')+'<div class="card-ph">'+box(S.concept.photo,736,520,{cls:'r24',jump:'concept.photo',ex,fallback:1,hint:'소개 사진 (가로 3:2)'})+'</div></section>');
+  // 3 확대(원본 사진을 잘라 쓰고, 문에 설치한 실제 사진을 따로 넣으면 그걸 써요)
+  const sm=S.src&&PH.get(S.src.id);
+  const zi=S.zoom.items.map((it,i)=>{
+    const own=it.photo&&PH.get(it.photo.id);if(ex&&!sm&&!own)return '';
+    let ph,inset='';
+    if(own){const g2=geom(own,736,560,it.photo);ph='<div class="pb" style="width:736px;height:560px;background-image:url('+own.url+');background-size:'+g2.sw+'px '+g2.sh+'px;background-position:'+g2.x+'px '+g2.y+'px"></div>';}
+    else if(sm){const g=geom(sm,736,560,it);
+      ph='<div class="pb" style="width:736px;height:560px;background-image:url('+sm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>';
+      const IN=176,c=Math.min(IN/sm.w,IN/sm.h),cw=sm.w*c,ch=sm.h*c,cx=(IN-cw)/2,cy=(IN-ch)/2;
+      const l=clamp(-g.x/g.sw,0,1),t=clamp(-g.y/g.sh,0,1),wf=clamp(736/g.sw,0,1),hf=clamp(560/g.sh,0,1);
+      inset='<div class="zin"><div class="cr" style="left:'+cx+'px;top:'+cy+'px;width:'+cw+'px;height:'+ch+'px"><img src="'+sm.url+'" alt="" style="display:block;width:'+cw+'px;height:'+ch+'px"><div class="rb" style="left:'+(l*cw)+'px;top:'+(t*ch)+'px;width:'+(wf*cw)+'px;height:'+(hf*ch)+'px"></div></div></div>';
+    }else ph='<div class="pb ph-empty" data-jump="src" style="width:736px;height:560px">'+ILLUS+'<span>1단계에서 제품 사진을 넣으면 여기에 확대돼요</span></div>';
+    return '<div class="zi"><div class="zp">'+ph+inset+'<span class="ztag"'+J('zoom.items.'+i+'.tag')+'>'+esc(it.tag)+'</span></div>'
+      +'<h3'+J('zoom.items.'+i+'.title')+'>'+T('zoom.items.'+i+'.title',it.title,{req:1,ph:'항목 제목'})+'</h3>'
+      +(it.body||!ex?'<p'+J('zoom.items.'+i+'.body')+'>'+T('zoom.items.'+i+'.body',it.body,{req:1,ph:'설명 글'})+'</p>':'')+'</div>';
+  }).join('');
+  out.push('<section class="sec soft" data-slice="03_확대">'+head('zoom')+zi+'</section>');
+  // 4 문 색상
+  const cells=S.colors.items.map((it,i)=>{
+    if(ex&&!hasPhoto(it.photo))return '';
+    return '<figure class="cell">'+box(it.photo,356,356,{cls:'r20',jump:'colors.items.'+i+'.photo',ex,hint:(it.label||'문 색상')+' (1:1)'})+'<figcaption'+J('colors.items.'+i+'.label')+'>'+T('colors.items.'+i+'.label',it.label,{req:1,ph:'이름'})+'</figcaption></figure>';
+  }).join('');
+  out.push('<section class="sec white" data-slice="04_문색상">'+head('colors')+'<div class="cgrid">'+cells+'</div>'+(S.colors.note?'<p class="note"'+J('colors.note')+'>'+nl(S.colors.note)+'</p>':'')+'</section>');
+  // 5 회사 소개
+  const stats=A.stats.map((s,i)=>'<div class="stat"><b'+J('about.stats.'+i+'.v')+'>'+T('about.stats.'+i+'.v',s.v,{req:1,ph:'숫자'})+'</b><span'+J('about.stats.'+i+'.l')+'>'+T('about.stats.'+i+'.l',s.l,{req:1,ph:'이름'})+'</span></div>').join('');
+  const pats=A.patents.map((p,i)=>{if(ex&&!p.no.trim()&&!p.title.trim())return '';const b='about.patents.'+i+'.';
+    return '<div class="pat"><div class="pt"><div class="no">특허 제 <span'+J(b+'no')+'>'+T(b+'no',p.no,{req:1,ph:'특허 번호'})+'</span> 호</div><div class="nm"'+J(b+'title')+'>'+T(b+'title',p.title,{req:1,ph:'특허 이름'})+'</div>'+(p.meta||!ex?'<div class="mt"'+J(b+'meta')+'>'+(p.meta?nl(p.meta):'<span class="need">등록일·권리자 (선택)</span>')+'</div>':'')+'</div><div class="seal"'+J(b+'badge')+'>'+nl(p.badge||'등록\n완료')+'</div></div>';}).join('');
+  const grows=A.grow.map((g,i)=>{if(ex&&!g.title.trim())return '';const b='about.grow.'+i+'.';
+    return '<div class="gr"><div class="seal"'+J(b+'badge')+'>'+(g.badge?nl(g.badge):(ex?'':'<span class="need">표시</span>'))+'</div><div><b'+J(b+'title')+'>'+T(b+'title',g.title,{req:1,ph:'제목'})+'</b><span'+J(b+'body')+'>'+(g.body?nl(g.body):(ex?'':'<span class="need">설명 (선택)</span>'))+'</span></div></div>';}).join('');
+  const tls=A.tl.map((t,i)=>{if(ex&&!t.text.trim())return '';const b='about.tl.'+i+'.',lines=String(t.text||'').split('\n').map(s=>s.trim()).filter(Boolean);
+    return '<div class="tl"><div class="yr"'+J(b+'year')+'>'+esc(t.year)+'</div><div class="tt"'+J(b+'text')+'>'+(lines.length?lines.map(esc).join(' · '):'<span class="need" style="font-size:14px">그해 등록한 내용</span>')+'</div></div>';}).join('');
+  out.push('<section class="sec about" data-slice="05_회사소개"><div class="head"><div class="eyebrow"'+J('about.eyebrow')+'>'+esc(A.eyebrow)+'</div><h2'+J('about.title')+'>'+T('about.title',A.title,{req:1,ph:'제목'})+'</h2><p class="lead"'+J('about.body')+'>'+T('about.body',A.body,{req:1,ph:'회사 소개 글'})+'</p></div>'
+    +'<div class="stats">'+stats+'</div>'+pats
+    +(grows?'<h3 class="sb"'+J('about.growTitle')+'>'+esc(A.growTitle)+'</h3>'+grows:'')
+    +(tls?'<h3 class="sb"'+J('about.tlTitle')+'>'+esc(A.tlTitle)+'</h3>'+tls:'')
+    +(A.foot?'<div class="foot"'+J('about.foot')+'>'+nl(A.foot)+'</div>':'')+(A.note?'<p class="fn"'+J('about.note')+'>'+nl(A.note)+'</p>':'')+'</section>');
+  // 6 설치 안내 · 7 질문 · 8 구매 전 확인 · 9 마지막
+  out.push('<section class="sec soft" data-slice="06_설치안내"><div class="head"><div class="eyebrow"'+J('guide.eyebrow')+'>'+esc(S.guide.eyebrow)+'</div><h2'+J('guide.title')+'>'+T('guide.title',S.guide.title,{req:1,ph:'제목'})+'</h2>'+(String(S.guide.time||'').trim()?'<div class="gtime"'+J('guide.time')+'>'+esc(S.guide.time)+'</div>':'')+'</div><div class="steps">'
+    +S.guide.steps.map((s,i)=>(ex&&!String(s).trim())?'':'<div class="gs"><i>'+(i+1)+'</i><div'+J('guide.steps.'+i)+'>'+T('guide.steps.'+i,s,{req:1,ph:'순서 글'})+'</div></div>').join('')+'</div></section>');
+  out.push('<section class="sec soft" data-slice="07_질문" style="padding-top:0"><div class="head"><div class="eyebrow"'+J('faq.eyebrow')+'>'+esc(S.faq.eyebrow)+'</div><h2'+J('faq.title')+'>'+T('faq.title',S.faq.title,{req:1,ph:'제목'})+'</h2></div>'
+    +S.faq.items.map((q,i)=>(ex&&!q.q.trim())?'':'<div class="qa"><div class="q"><i>Q</i><span'+J('faq.items.'+i+'.q')+'>'+T('faq.items.'+i+'.q',q.q,{req:1,ph:'질문'})+'</span></div><div class="a"'+J('faq.items.'+i+'.a')+'>'+T('faq.items.'+i+'.a',q.a,{req:1,ph:'답'})+'</div></div>').join('')+'</section>');
+  out.push('<section class="nt white" data-slice="08_구매전확인"><h3'+J('notice.title')+'>'+esc(S.notice.title)+'</h3><ul>'+S.notice.items.map((s,i)=>(ex&&!String(s).trim())?'':'<li'+J('notice.items.'+i)+'>'+T('notice.items.'+i,s,{req:1,ph:'안내 글'})+'</li>').join('')+'</ul></section>');
+  out.push('<section class="cta" data-slice="09_마지막"><h2'+J('cta.title')+'>'+T('cta.title',S.cta.title,{req:1,ph:'마지막 제목'})+'</h2>'+(S.cta.sub||!ex?'<p'+J('cta.sub')+'>'+T('cta.sub',S.cta.sub,{req:1,ph:'마지막 글'})+'</p>':'')+'</section>');
+  return out.join('');
+}
+/* 빈 칸 세기 */
+function needs(){
+  const n=[],tx=(p,l,g)=>{if(!String(getP(p)||'').trim())n.push({p,l,g,t:'글'});},ph=(p,l,g)=>{if(!hasPhoto(getP(p)))n.push({p,l,g,t:'사진'});};
+  ph('src','제품 사진 한 장','p1');ph('hero.photo','첫 화면 사진','p3');ph('concept.photo','소개 사진','p3');
+  S.colors.items.forEach((it,i)=>ph('colors.items.'+i+'.photo',(it.label||'문 색상')+' 사진','p3'));
+  tx('hero.title','첫 화면 제목','s-hero');tx('concept.title','소개 제목','s-concept');
+  S.zoom.items.forEach((it,i)=>{tx('zoom.items.'+i+'.title','확대 '+(i+1)+' 제목','s-zoom');tx('zoom.items.'+i+'.body','확대 '+(i+1)+' 글','s-zoom');});
+  S.about.patents.forEach((p,i)=>{tx('about.patents.'+i+'.no','특허 번호','s-about');tx('about.patents.'+i+'.title','특허 이름','s-about');});
+  S.about.grow.forEach((g,i)=>{tx('about.grow.'+i+'.badge','실적 표시','s-about');tx('about.grow.'+i+'.title','실적 제목','s-about');});
+  S.about.tl.forEach((t,i)=>tx('about.tl.'+i+'.text',t.year+'년 내용','s-about'));
+  return n;
+}
+
+/* ============ 화면 ============ */
+const side=$('#side'),paper=$('#paper'),pw=$('#pw'),stage=$('#stage'),veil=$('#veil');
+function toast(msg,ms){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{t.hidden=true},ms||2200);}
+function fit(){const h=paper.offsetHeight||1000,s=UI.scale==='fit'?clamp((stage.clientWidth-32)/PW,.2,1):Number(UI.scale)||1;pw.style.setProperty('--s',s);pw.style.setProperty('--h',h);}
+let rq=0;
+function refresh(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;paper.innerHTML=renderPage(false);fit();chip();persist();});}
+function chip(){
+  const n=needs(),c=$('#blankChip');c.hidden=!n.length;
+  if(n.length){const p=n.filter(x=>x.t==='사진').length;c.textContent='채울 곳 '+n.length+' (사진 '+p+' · 글 '+(n.length-p)+')';}
+  $$('[data-cnt]').forEach(e=>{const k=n.filter(x=>x.g===e.dataset.cnt).length;e.textContent=k?k+'곳 비어 있음':'';e.hidden=!k;});
+  const st=$('#st1');if(st)st.textContent=hasPhoto(S.src)?'사진 있음':'사진 필요';
+}
+window.addEventListener('resize',fit);new ResizeObserver(fit).observe(paper);
+function setTab(t){UI.tab=t;document.body.dataset.tab=t;$('#tabEdit').setAttribute('aria-pressed',t==='edit');$('#tabView').setAttribute('aria-pressed',t==='view');if(t==='view')requestAnimationFrame(fit);}
+$('#tabEdit').onclick=()=>setTab('edit');$('#tabView').onclick=()=>setTab('view');
+$$('[data-zoom]').forEach(b=>b.addEventListener('click',()=>{UI.scale=b.dataset.zoom==='fit'?'fit':b.dataset.zoom;fit();}));
+
+/* ---------- 입력 칸 만들기 ---------- */
+const open=id=>UI.open.has(id)?' open':'';
+const fld={
+  text:(k,label,o)=>{o=o||{};const v=getP(k)||'';return '<label class="f"><span>'+label+'</span><input type="text" data-k="'+k+'" value="'+esc(v)+'" placeholder="'+esc(o.ph||'')+'"'+(o.req?' data-req="1"':'')+(o.req&&!v.trim()?' class="blank"':'')+'></label>';},
+  area:(k,label,o)=>{o=o||{};const v=getP(k)||'';return '<label class="f"><span>'+label+'</span><textarea data-k="'+k+'" rows="'+(o.rows||3)+'" placeholder="'+esc(o.ph||'')+'"'+(o.req?' data-req="1"':'')+(o.req&&!v.trim()?' class="blank"':'')+'>'+esc(v)+'</textarea></label>';}
+};
+function sliders(path){
+  const o=getP(path)||{},v=(x,d)=>Math.round((x!=null?x:d)*100);
+  const row=(k,l,mn,mx,val)=>'<div class="sl"><span>'+l+'</span><input type="range" min="'+mn+'" max="'+mx+'" value="'+val+'" data-s="'+path+'.'+k+'" aria-label="'+l+'"><output>'+val+'</output></div>';
+  return row('fx','좌우',0,100,v(o.fx,.5))+row('fy','상하',0,100,v(o.fy,.5))+row('z','확대',100,400,v(o.z,1));
+}
+function photoCtl(path,label){
+  const p=getP(path),m=p&&PH.get(p.id);
+  return '<div class="pc" data-pk="'+path+'"><div class="pc-top"><div class="thumb" data-drop="'+path+'" title="눌러서 사진 고르기"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'사진<br>넣기')+'</div>'
+    +'<div class="pc-btns"><label class="btn sm">'+esc(label||'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="'+path+'"></label>'+(m?'<button class="btn sm ghost" type="button" data-act="pclear" data-p="'+path+'">지우기</button>':'')+'</div></div>'
+    +(m?'<details class="pos"><summary>위치·크기 조절</summary>'+sliders(path)+'</details>':'')+'</div>';
+}
+function listItems(path,items,render,opt){
+  opt=opt||{};
+  return '<div class="list">'+items.map((it,i)=>'<div class="item"><div class="item-h"><b>'+(opt.title?opt.title(it,i):(i+1))+'</b><span class="sp"></span>'
+    +'<button class="ib" type="button" data-act="up" data-l="'+path+'" data-i="'+i+'" aria-label="위로"'+(i?'':' disabled')+'>↑</button>'
+    +'<button class="ib" type="button" data-act="dn" data-l="'+path+'" data-i="'+i+'" aria-label="아래로"'+(i<items.length-1?'':' disabled')+'>↓</button>'
+    +'<button class="ib" type="button" data-act="del" data-l="'+path+'" data-i="'+i+'" aria-label="지우기">✕</button></div>'+render(it,i,path+'.'+i)+'</div>').join('')+'</div>'
+    +'<button class="btn sm" type="button" data-act="add" data-l="'+path+'">+ '+(opt.add||'추가')+'</button>';
+}
+const CMN=new Set(['s-about','s-guide','s-notice','s-cta']);
+const subp=(id,title,body)=>'<details class="sub" id="'+id+'" data-sub="'+id+'"'+open(id)+'><summary>'+title+(CMN.has(id)?' <span class="cmn">공통</span>':'')+' <span class="cnt" data-cnt="'+id+'" hidden></span></summary><div class="body">'+body+'</div></details>';
+function newItem(path,l){
+  const T={'zoom.items':()=>({tag:'확대 '+(l.length+1),title:'',body:'',fx:.5,fy:.5,z:2,photo:null}),'colors.items':()=>mkColor(['','','groove','f',0]),
+    'about.stats':()=>({v:'',l:''}),'about.patents':()=>({no:'',title:'',meta:'',badge:'등록\n완료'}),'about.grow':()=>({badge:'',title:'',body:''}),
+    'about.tl':()=>({year:'',text:''}),'guide.steps':()=>'','faq.items':()=>({q:'',a:''}),'notice.items':()=>''};
+  return (T[path]||(()=>JSON.parse(JSON.stringify(l[l.length-1]))))();
+}
+/* ---------- 지시문(구글에 보내는 글) ---------- */
+function promptOf(j){
+  const base='첨부한 사진 속 "'+(S.name||'이 제품')+'" 제품을 기준으로 이미지를 만들어 주세요.\n'
+    +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 레버의 길이·굵기·끝 모양, 받침의 크기와 모양, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n글자, 로고, 워터마크는 넣지 마세요.\n';
+  if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 짙은 남색~검정 스튜디오 배경에 이 제품 하나만 화면 위쪽 60% 영역에 크게(레버와 받침이 모두 잘리지 않게), 약간 비스듬한 각도로 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
+  if(j.kind==='concept')return base+'장면: 어두운 남회색 스튜디오 배경에 이 제품 하나만 중앙에 크게(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
+  const it=S.colors.items[j.i],sc=(it.scene||j.name).trim(),vw=CAMS[it.view||'f']||CAMS.f,dir=it.flip?'오른쪽':'왼쪽',fr=DOORF[it.door]||'';
+  const real='실제 인테리어 사진처럼 사실적으로. 손잡이 받침은 문에 단단히 붙어 있고, 받침과 레버 아래·옆으로 부드러운 접촉 그림자가 드리우게. 금속 표면에는 은은한 하이라이트, 배경은 살짝 흐리게(얕은 심도), 창가의 자연스러운 실내 빛. ';
+  if(/손/.test(sc))return base+'장면: '+sc+'. '+real+'카메라: '+vw+'. 손은 자연스러운 한 손(손가락 5개)이 레버를 위에서 잡아 아래로 누르는 순간. 손만 보이고 얼굴·몸은 나오지 않게. 레버는 화면 '+dir+'으로 뻗게. 비율은 정사각형 1:1.';
+  return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 가까이에서 찍은 사진. 문 표면이 화면을 가득 채우고 문 전체는 보이지 않는 가까운 구도.\n카메라: '+vw+'.\n손잡이 방향: 레버가 화면 '+dir+'으로 뻗게.\n'+(fr?'문: '+fr+'.\n':'')
+    +real+'손잡이 모양과 마감은 첨부 사진과 똑같이 유지하고, 문의 색과 질감만 위 설명대로 바꿔 주세요. 비율은 정사각형 1:1.';
+}
+const ASPECT={hero:'4:5',concept:'3:2',color:'1:1'};
+function jobs(){
+  const j=[{key:'hero.photo',name:'첫 화면 사진',ratio:'세로 4:5',kind:'hero'},{key:'concept.photo',name:'소개 사진',ratio:'가로 3:2',kind:'concept'}];
+  S.colors.items.forEach((it,i)=>j.push({key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:'정사각 1:1',kind:'color',i}));
+  return j;
+}
+const gList=()=>jobs().filter(j=>!hasPhoto(getP(j.key)));      // 비어 있는 칸만 만들어요(이미 있는 칸은 돈을 쓰지 않아요)
+
+/* ---------- 왼쪽 네 단계 ---------- */
+function p1(){
+  const m=S.src&&PH.get(S.src.id);
+  return '<p class="hint">제품 이름과 사진 한 장만 넣고 위의 <b>한 번에 만들기</b>를 누르세요. 글, 이미지, 저장까지 이어져요.</p>'
+    +fld.text('name','제품 이름',{ph:'예: 메탈 방문 손잡이',req:1})
+    +fld.text('sellName','판매 상품명 (스마트스토어 등 · 모든 제품이 같아요)',{ph:STD_NAME})+'<div><button class="btn sm" type="button" data-act="copysell">상품명 복사</button></div>'
+    +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label></div></div></div></div>'
+    +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷과 이미지 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
+    +fld.area('memo','아는 내용 (선택)',{rows:2,ph:'확실한 것만 적어요. 재질, 색상, 크기, 구성품 등. 적지 않은 사양은 글에 넣지 않아요.'});
+}
+function p2(){
+  const stG=G.msg||{idle:'아직 연결하지 않았어요.',on:'연결됐어요.',off:'연결되지 않았어요.',blocked:'이 창에서는 구글에 직접 연결할 수 없어요.'}[G.state];
+  const model=G.models.length
+    ?'<label class="f"><span>이미지 모델 (연결할 때 자동으로 골랐어요)</span><select id="gModelSel">'+(G.models.includes(G.model)?'':'<option selected>'+esc(G.model)+'</option>')+G.models.map(n=>{const p=priceOf(n);return '<option value="'+esc(n)+'"'+(n===G.model?' selected':'')+'>'+esc(n)+(p?' · 약 $'+p:'')+'</option>';}).join('')+'</select></label>'
+    :'<label class="f"><span>이미지 모델 이름 (연결 확인을 누르면 자동으로 찾아요)</span><input type="text" id="gModel" value="'+esc(G.model)+'"></label>';
+  return '<div class="blk"><h3>구글 AI 스튜디오 키 · 이미지를 만들어요</h3>'
+    +'<label class="f"><span>키</span><input type="password" id="gKey" autocomplete="off" spellcheck="false" placeholder="여기에 붙여 넣기" value="'+esc(G.key)+'"></label>'
+    +'<label class="chk"><input type="checkbox" id="gRem"'+(G.remember?' checked':'')+'> 이 컴퓨터에 기억하기 (공용 컴퓨터에서는 켜지 마세요)</label>'+model
+    +'<div class="acts"><button class="btn sm" type="button" id="gCheck">연결 확인 (무료)</button></div>'
+    +'<div class="msg'+(G.cls?' '+G.cls:'')+'" id="gMsg" aria-live="polite">'+esc(stG)+'</div>'
+    +(G.state==='blocked'?'<div class="tip">게시된 링크는 보안상 구글에 직접 연결할 수 없어요. 이미지 자동 만들기는 <b>내 컴퓨터에서 연 파일</b>에서 써요.</div>':'')+'</div>'
+    +'<div class="blk"><h3>클로드 키 · 글과 손잡이 모양 검수 (선택)</h3>'
+    +(window.claude?'<p class="hint">이 링크는 클로드 안에서 열려 있어 키 없이 클로드를 써요. 키는 내 컴퓨터 파일에서만 넣어요.</p>'
+      :'<label class="f"><span>키</span><input type="password" id="cKey" autocomplete="off" spellcheck="false" placeholder="여기에 붙여 넣기" value="'+esc(C.key)+'"></label>'
+       +'<label class="chk"><input type="checkbox" id="cRem"'+(C.remember?' checked':'')+'> 이 컴퓨터에 기억하기</label>'
+       +'<label class="f"><span>모델 이름 (비우면 작은 모델로 자동)</span><input type="text" id="cModel" placeholder="'+CMODEL+'" value="'+esc(C.model)+'"></label>'
+       +'<div class="acts"><button class="btn sm" type="button" id="cCheck">연결 확인 (무료)</button></div>'
+       +'<div class="msg'+(C.cls?' '+C.cls:'')+'" id="cMsg" aria-live="polite">'+esc(C.msg||(C.key.trim()?'':'키가 없어도 글은 무료 틀로 만들어져요.'))+'</div>')
+    +'<label class="chk"><input type="checkbox" id="useAI"'+(UI.useAI?' checked':'')+'> 글을 클로드가 새로 쓰기 (기본은 무료 틀)</label>'
+    +'<label class="chk"><input type="checkbox" id="useChk"'+(UI.check?' checked':'')+'> 만든 사진을 원본과 비교해 손잡이 모양 검수 (장당 1센트 안팎 예상)</label></div>'
+    +'<p class="cost">키는 이 창에만 두고 글·사진·작업 저장 파일에는 들어가지 않아요. 키는 구글·클로드에서 회사가 직접 발급하고, 쓴 만큼 요금이 들어요.</p>';
+}
+const chkLine=p=>p&&p.chk?(p.chk.ok?'<div class="cost" style="color:var(--ok)">검수: 원본과 같은 손잡이로 보여요</div>':'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 손잡이가 원본과 달라 보여요'+(p.chk.issues.length?' — '+esc(p.chk.issues.join(' / ')):'')+' (AI 판단이라 틀릴 수 있어요)</div>'):'';
+function p3(){
+  const on=G.state==='on',cm=colorMode(),fl=flagged();
+  const rows=jobs().map((j,idx)=>{
+    const p=getP(j.key),m=p&&PH.get(p.id),it=j.kind==='color'?S.colors.items[j.i]:null;
+    return '<div class="job" data-pk="'+j.key+'"><div class="thumb" data-drop="'+j.key+'"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'끌어다<br>놓기')+'</div>'
+      +'<div class="meta"><div class="nm">'+esc(j.name)+' <span class="ratio">'+j.ratio+'</span>'+(m?'<span class="done">완료</span>':'')+'</div>'+chkLine(p)
+      +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'AI로 만들기')+'</button>':'')
+      +(on&&m&&G.modelHi&&G.modelHi!==G.model?'<button class="btn sm" type="button" data-act="gonehi" data-i="'+idx+'">정밀 모델로 다시 (약 $'+(priceOf(G.modelHi)||'')+')</button>':'')
+      +'<button class="btn sm" type="button" data-act="copyp" data-i="'+idx+'">지시문 복사</button><label class="btn sm">사진 넣기<input type="file" accept="image/*" hidden data-file="'+j.key+'" data-ai="1"></label></div>'
+      +(it?'<div class="acts"><label class="chk">카메라 각도 <select data-view="'+j.i+'">'+Object.keys(CAMS).map(v=>'<option value="'+v+'"'+(it.view===v?' selected':'')+'>'+CAM_NAME[v]+'</option>').join('')+'</select></label>'
+        +'<label class="chk">레버 방향 <select data-dir="'+j.i+'"><option value="L"'+(it.flip?'':' selected')+'>왼쪽으로</option><option value="R"'+(it.flip?' selected':'')+'>오른쪽으로</option></select></label></div>':'')
+      +'</div><details><summary class="aitag">지시문 보기</summary><pre data-j="'+idx+'">'+esc(promptOf(j))+'</pre></details></div>';
+  }).join('');
+  return '<label class="f"><span>문 색상 칸 구성 (구글 이미지 장수가 달라져요)</span><select id="colorMode"><option value="full"'+(cm==='full'?' selected':'')+'>10칸 · 참고 페이지와 같은 구성</option><option value="lite"'+(cm==='lite'?' selected':'')+'>5칸 · 비용 절약 (화이트, 월넛, 라이트 그레이, 블랙, 사용 컷)</option></select></label>'
+    +'<p class="hint">문 색상 칸은 구글이 "문에 달린 사진"으로 만들어요. 손잡이 모양은 1단계 원본 그대로 두고 문 색과 카메라 각도만 바뀌어요. 처음에는 <b>1장만 시험</b>해 보고 나머지를 만드세요.</p>'
+    +'<p class="cost" id="costLine">'+costLine()+'</p><p class="cost" id="gSpent">'+esc(spentText())+'</p>'
+    +'<div class="acts"><button class="btn sm" type="button" data-act="gtest"'+(on?'':' disabled')+'>먼저 1장만 시험</button><button class="btn sm primary" type="button" id="gAll"'+(on?'':' disabled')+'>빈 칸 모두 만들기</button><button class="btn sm" type="button" id="gStop" hidden>멈추기</button></div>'
+    +(on?'':'<p class="cost">먼저 2단계에서 구글 키를 연결해 주세요. 키 없이는 칸마다 \'지시문 복사\'로 AI 스튜디오에서 만들어 \'사진 넣기\'로 넣을 수 있어요.</p>')
+    +(fl.length?'<div class="msg err" style="display:block">손잡이가 원본과 달라 보이는 칸이 '+fl.length+'개 있어요 (AI 판단이라 틀릴 수 있어요).</div><button class="btn sm primary" type="button" data-act="gfix">달라 보이는 칸만 정밀 모델로 다시 ('+fl.length+'장'+estText(fl.length,G.modelHi||G.model,true)+')</button>':'')
+    +'<div class="confirm" id="gConfirm" hidden><span id="gWhy"></span><button class="btn sm" type="button" data-act="ggo">만들기</button><button class="btn sm ghost" type="button" data-act="gno">취소</button></div>'
+    +'<div class="tip">만든 이미지에서 제품 모양·마감이 실제와 다르면 쓰지 마세요. AI로 만든 사진은 판매 채널의 AI 표시 규칙을 확인하세요(규칙은 바뀔 수 있어요). 쿠팡 대표이미지는 실물 원본 사진만 써야 해요.</div>'
+    +'<div class="list">'+rows+'</div>';
+}
+function p4(){
+  const a=S.about;
+  return '<div class="acts"><button class="btn sm" type="button" data-act="tplfill">틀로 글 다시 채우기 (무료)</button><button class="btn sm" type="button" data-act="autozoom">확대 위치 자동 맞춤 (무료)</button></div>'
+   +'<div class="confirm" id="genConfirm" hidden><span id="genMsg"></span><button class="btn sm" type="button" data-act="genok">계속</button><button class="btn sm ghost" type="button" data-act="genno">취소</button></div>'
+   +subp('s-hero','첫 화면',fld.text('hero.badge','작은 글(파란 띠)')+fld.area('hero.title','큰 제목',{rows:2,req:1})+fld.area('hero.sub','설명 글',{rows:3,req:1}))
+   +subp('s-concept','소개(CONCEPT)',fld.text('concept.eyebrow','작은 제목')+fld.text('concept.title','제목',{req:1})+fld.area('concept.body','설명 글 (비워도 돼요)',{rows:3}))
+   +subp('s-zoom','확대(ZOOM)',fld.text('zoom.eyebrow','작은 제목')+fld.text('zoom.title','제목',{req:1})+fld.area('zoom.body','설명 글',{rows:2,req:1})
+     +'<p class="hint">제목·설명은 모든 제품이 같이 써요. 확대 컷은 1단계 원본 사진을 잘라 써요. 문에 설치한 실제 사진을 넣으면 그 사진을 써요.</p>'
+     +listItems('zoom.items',S.zoom.items,(it,i,b)=>fld.text(b+'.tag','표시')+fld.text(b+'.title','제목',{req:1})+fld.area(b+'.body','설명 글',{rows:2,req:1})+'<details class="pos" open><summary>어디를 확대할까요</summary>'+sliders(b)+'</details><div class="f"><span>문에 설치한 실제 확대 사진 (선택)</span>'+photoCtl(b+'.photo','사진 넣기')+'</div>',{title:(it,i)=>'확대 '+(i+1),add:'확대 항목 추가'}))
+   +subp('s-colors','문 색상(COLORS)','<p class="hint">제목·설명·칸 이름은 모든 제품이 같이 써요. 사진은 3단계에서 만들어요.</p>'+fld.text('colors.eyebrow','작은 제목')+fld.text('colors.title','제목',{req:1})+fld.area('colors.body','설명 글',{rows:2,req:1})+fld.area('colors.note','맨 아래 작은 글',{rows:2})
+     +listItems('colors.items',S.colors.items,(it,i,b)=>fld.text(b+'.label','이름',{req:1})+fld.text(b+'.scene','지시문에 들어갈 장면 설명'),{title:it=>esc(it.label||'문 색상'),add:'문 색상 칸 추가'}))
+   +subp('s-about','회사 소개(ABOUT US)','<div class="tip">회사 공통 내용이에요. 한 번 입력하면 새 제품을 시작해도 그대로 남아요. 숫자·특허·연혁은 사실이라 틀리면 안 되니 직접 확인해서 입력해 주세요. 비워 두면 이미지에서 빠져요.</div>'
+     +fld.text('about.eyebrow','작은 제목')+fld.text('about.title','제목',{req:1})+fld.area('about.body','회사 소개 글',{rows:4,req:1})
+     +'<b class="hint">숫자 3칸</b>'+listItems('about.stats',a.stats,(s,i,b)=>'<div class="row2">'+fld.text(b+'.v','숫자',{req:1})+fld.text(b+'.l','이름',{req:1})+'</div>',{title:(s,i)=>'숫자 '+(i+1),add:'숫자 칸 추가'})
+     +'<b class="hint">특허 카드</b>'+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1})+fld.text(b+'.meta','등록일·권리자 (선택)')+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
+     +fld.text('about.growTitle','소제목')+listItems('about.grow',a.grow,(g,i,b)=>'<div class="row2">'+fld.text(b+'.badge','동그라미 글(두 글자)',{req:1})+fld.text(b+'.title','제목',{req:1})+'</div>'+fld.text(b+'.body','설명'),{title:(g,i)=>'실적 '+(i+1),add:'실적 추가'})
+     +fld.text('about.tlTitle','연혁 소제목')+listItems('about.tl',a.tl,(t,i,b)=>fld.text(b+'.year','해')+fld.area(b+'.text','그해 등록한 내용 (한 줄에 하나)',{rows:2,req:1}),{title:(t,i)=>esc(t.year)+'년',add:'연도 추가'})
+     +fld.text('about.foot','맨 아래 줄')+fld.area('about.note','작은 주석 (선택)',{rows:2}))
+   +subp('s-guide','설치 안내(GUIDE)',fld.text('guide.eyebrow','작은 제목')+fld.text('guide.title','제목',{req:1})+fld.text('guide.time','설치 시간 (확인된 값만 · 비우면 안 나와요)',{ph:'예: 설치 약 2분'})+listItems('guide.steps',S.guide.steps,(s,i,b)=>fld.text(b,'순서 글',{req:1}),{title:(s,i)=>(i+1)+'번',add:'순서 추가'}))
+   +subp('s-faq','자주 묻는 질문(FAQ)','<p class="hint">대부분 모든 제품이 같은 질문이에요. 이 제품에만 해당하는 질문은 "이 제품 전용"에 체크해 두세요.</p>'+fld.text('faq.eyebrow','작은 제목')+fld.text('faq.title','제목',{req:1})+listItems('faq.items',S.faq.items,(q,i,b)=>fld.text(b+'.q','질문',{req:1})+fld.area(b+'.a','답',{rows:3,req:1})+'<label class="chk"><input type="checkbox" data-chk="'+b+'.p"'+(q.p?' checked':'')+'> 이 제품 전용 질문 (새 제품을 시작하면 지워져요)</label>',{title:(q,i)=>'질문 '+(i+1)+(q.p?' · 이 제품 전용':''),add:'질문 추가'}))
+   +subp('s-notice','구매 전 확인',fld.text('notice.title','제목')+listItems('notice.items',S.notice.items,(s,i,b)=>fld.text(b,'안내 글',{req:1}),{title:(s,i)=>(i+1)+'번',add:'안내 추가'}))
+   +subp('s-cta','마지막 문구',fld.text('cta.title','제목',{req:1})+fld.area('cta.sub','설명 글',{rows:2,req:1}));
+}
+function renderSide(){
+  const keep=side.scrollTop,st=(n,t,body,extra)=>'<details class="step" id="p'+n+'"'+open('p'+n)+'><summary><span class="no">'+n+'</span>'+t+(extra||'')+'</summary><div class="body">'+body+'</div></details>';
+  side.innerHTML=st(1,'제품 넣기',p1(),'<span class="st" id="st1"></span>')+st(2,'키 연결 · 설정',p2())+st(3,'이미지 만들기',p3())+st(4,'글·사진 다듬기',p4());
+  side.scrollTop=keep;chip();
+}
+side.addEventListener('toggle',e=>{const d=e.target;if(d.id&&(d.classList.contains('step')||d.classList.contains('sub')))d.open?UI.open.add(d.id):UI.open.delete(d.id);},true);
+function focusEl(el){
+  if(!el)return;
+  let d=el.parentElement;while(d&&d!==side){if(d.tagName==='DETAILS'){d.open=true;if(d.id)UI.open.add(d.id);}d=d.parentElement;}
+  const b=el.closest('.f,.pc,.job,.item,.blk')||el;b.scrollIntoView({block:'center',behavior:'smooth'});b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');
+  if(/INPUT|TEXTAREA/.test(el.tagName))setTimeout(()=>el.focus({preventScroll:true}),250);
+}
+const findField=p=>$('[data-k="'+p+'"]',side)||$('[data-pk="'+p+'"]',side)||$('[data-s="'+p+'"]',side);
+paper.addEventListener('click',e=>{                    // 미리보기에서 눌러 고치기
+  const t=e.target.closest('[data-jump]');if(!t)return;setTab('edit');focusEl(findField(t.dataset.jump));
+});
+$('#blankChip').addEventListener('click',()=>{const n=needs()[0];if(!n)return;setTab('edit');focusEl(findField(n.p)||$('#'+n.g,side));});
+
+/* ============ 구글: 키 연결, 이미지 만들기 ============ */
+const GBASE='https://generativelanguage.googleapis.com/v1beta',GKEY='wj-gk';
+const G={key:'',remember:false,model:'gemini-3.1-flash-image',modelHi:'',models:[],auto:true,par:5,made:0,spent:0,state:'idle',msg:'',cls:'',busy:false,ctl:null,cache:new Map()};
+try{const k=localStorage.getItem(GKEY);if(k){G.key=k;G.remember=true;}}catch(e){}
+const saveKey=()=>{try{G.remember&&G.key?localStorage.setItem(GKEY,G.key):localStorage.removeItem(GKEY);}catch(e){}};
+function gMsg(t,c){G.msg=t;G.cls=c||'';const m=$('#gMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
+const hashStr=t=>{let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return String(h);};
+/* 모델 이름은 몰라도 되게: 연결할 때 구글 목록에서 이미지 모델을 찾아 자동으로 골라요 */
+const MPRICE=[[/lite-image/,0.034],[/gemini-3(\.\d+)?-pro-image/,0.134],[/gemini-3(\.\d+)?-flash-image/,0.067],[/gemini-2\.5-flash-image/,0.039]];   // 장당 대략 가격(1K, 외부 가격표 기준)
+const priceOf=model=>{const m=MPRICE.find(x=>x[0].test(model||''));return m?m[1]:0;};
+function estText(n,model,short){const p=priceOf(model||G.model);if(!p||!n)return '';const t='약 $'+(p*n).toFixed(2);return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준 · 1K 크기).';}
+const verOf=n=>{const m=String(n).match(/gemini-(\d+(?:\.\d+)?)/);return m?parseFloat(m[1]):0;};
+const bestOf=a=>a.slice().sort((x,y)=>(/preview/.test(x)-/preview/.test(y))||(verOf(y)-verOf(x)))[0]||'';   // 정식 출시 먼저, 같으면 높은 버전
+function pickModels(names){
+  const img=names.filter(n=>/image/i.test(n)&&!/imagen|live|tts|audio|embed/i.test(n));
+  const std=bestOf(img.filter(n=>/flash-image/.test(n)&&!/lite/.test(n)&&verOf(n)>=3))||bestOf(img.filter(n=>/lite-image/.test(n)))||bestOf(img.filter(n=>/gemini-2\.5-flash-image/.test(n)))||bestOf(img);
+  return {img,std,hi:bestOf(img.filter(n=>/pro-image/.test(n)))||std};
+}
+const flagged=()=>jobs().filter(j=>{const p=getP(j.key);return p&&p.chk&&!p.chk.ok;});
+function costLine(){const l=gList();return '구글로 만들 빈 칸 <b>'+l.length+'장</b>'+estText(l.length,null,true);}
+const spentText=()=>G.made?'이번에 구글로 만든 이미지 '+G.made+'장'+(G.spent?' · 약 $'+G.spent.toFixed(2)+' (대략)':''):'';
+function updInfo(){const a=$('#gSpent'),b=$('#costLine');if(a)a.textContent=spentText();if(b)b.innerHTML=costLine();}
+let REF={id:'',b64:''};
+async function refB64(){
+  if(!hasPhoto(S.src))throw {status:-1,message:'1단계의 제품 사진을 먼저 넣어 주세요.'};
+  if(REF.id===S.src.id)return REF.b64;
+  const b=await toB64(await shrink(PH.get(S.src.id).blob,1024,.85));REF={id:S.src.id,b64:b};return b;
+}
+async function gCheck(){
+  const key=G.key.trim();if(!key){gMsg('키를 붙여 넣어 주세요.','err');return;}
+  gMsg('연결을 확인하는 중이에요. 비용이 들지 않아요…');
+  try{
+    const H={headers:{'x-goog-api-key':key}},r=await fetch(GBASE+'/models?pageSize=1000',H);
+    if(r.ok){
+      G.state='on';let names=[];
+      try{let d=await r.json(),pg=0;for(;;){names=names.concat((d.models||[]).filter(m=>!m.supportedGenerationMethods||m.supportedGenerationMethods.includes('generateContent')).map(m=>String(m.name||'').replace(/^models\//,'')));
+        if(!d.nextPageToken||++pg>=4)break;const r2=await fetch(GBASE+'/models?pageSize=1000&pageToken='+encodeURIComponent(d.nextPageToken),H);if(!r2.ok)break;d=await r2.json();}}catch(e){}
+      const pk=pickModels(names);G.models=pk.img;
+      if(pk.std){if(G.auto)G.model=pk.std;G.modelHi=pk.hi;gMsg('연결됐어요. 이미지 모델을 자동으로 골랐어요 → 기본: '+G.model+' · 어려운 칸 다시 만들기: '+(G.modelHi||G.model)+'.','ok');}
+      else{G.modelHi='';gMsg('연결됐어요. 이미지 모델 목록은 확인하지 못해서 \''+G.model+'\'을 써요. 오류가 나면 모델 이름을 바꿔 주세요.','ok');}
+    }else if([400,401,403].includes(r.status)){G.state='off';gMsg('키가 맞지 않아요. 다시 복사해서 붙여 넣어 주세요.','err');}
+    else{G.state='off';gMsg('구글에서 오류가 왔어요('+r.status+'). 잠시 뒤 다시 눌러 주세요.','err');}
+  }catch(e){G.state='blocked';G.msg='';G.cls='';}
+  renderSide();
+}
+function gErr(e){
+  if(e&&e.name==='AbortError')return '멈췄어요.';
+  const st=e&&e.status,m=e&&e.message?' ('+String(e.message).slice(0,120)+')':'';
+  if(st===-1)return e.message;
+  if(e&&e.blocked)return '구글이 이 장면을 만들지 않았어요. 사유: '+e.message+'. 지시문을 고치거나 직접 올려 주세요.';
+  if(st===400)return '요청이 맞지 않아요. 모델 이름을 확인해 주세요.'+m;
+  if(st===401||st===403)return '키가 맞지 않거나 이 모델을 쓸 수 없어요. 결제 설정이 켜져 있는지도 확인해 주세요.'+m;
+  if(st===404)return '모델 이름을 찾을 수 없어요. 2단계에서 연결 확인을 다시 눌러 주세요.'+m;
+  if(st===429)return '사용 한도에 걸렸어요. 잠시 뒤 다시 하거나 구글 사용량을 확인해 주세요.'+m;
+  if(st>=500)return '구글 쪽 오류예요. 잠시 뒤 다시 눌러 주세요.'+m;
+  return '연결하지 못했어요. 인터넷 연결을 확인해 주세요.';
+}
+async function gOne(j,signal,opts){
+  const model=((opts&&opts.model)||G.model).trim(),prompt=promptOf(j),ck=hashStr(model+'|'+prompt+'|'+(S.src&&S.src.id));
+  if(!(opts&&opts.fresh)&&G.cache.has(ck))return {blob:G.cache.get(ck),cached:true};   // 같은 요청은 다시 돈을 쓰지 않아요(다시 만들기는 예외)
+  const body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:await refB64()}}]}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:ASPECT[j.kind]||'1:1'},candidateCount:1}};
+  const r=await fetch(GBASE+'/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',signal,headers:{'x-goog-api-key':G.key.trim(),'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok){let t='';try{const d=await r.json();t=d&&d.error&&d.error.message||'';}catch(e){}throw {status:r.status,message:t};}
+  const d=await r.json(),parts=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts)||[],part=parts.find(x=>x.inlineData||x.inline_data);
+  if(!part)throw {status:0,blocked:true,message:(d.promptFeedback&&d.promptFeedback.blockReason)||(d.candidates&&d.candidates[0]&&d.candidates[0].finishReason)||'EMPTY'};
+  const id=part.inlineData||part.inline_data,bin=atob(id.data),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+  const blob=new Blob([u8],{type:id.mimeType||id.mime_type||'image/png'});G.cache.set(ck,blob);return {blob,model};
+}
+async function gRun(list,opts){
+  const o=opts||{};
+  if(G.busy)return {done:0,total:list.length,stopped:'이미 만드는 중이에요.'};
+  G.busy=true;const ctl=G.ctl=new AbortController(),st=$('#gStop'),all=$('#gAll');if(st)st.hidden=false;if(all)all.disabled=true;
+  const par=clamp(G.par,1,5),total=list.length,t0=Date.now();
+  let next=0,done=0,cachedN=0,consec=0,stopped='',halt=false;
+  const worker=async()=>{
+    while(!halt&&!ctl.signal.aborted){
+      const i=next++;if(i>=total)return;const j=list[i];
+      try{
+        const r=await gOne(j,ctl.signal,o);await setPhoto(j.key,r.blob,{ai:true});done++;
+        if(r.cached)cachedN++;else{G.made++;G.spent+=priceOf(r.model);}
+        consec=0;refresh();updInfo();if(o.onTick)o.onTick(done,total);if(!o.quiet)gMsg(done+' / '+total+' 만들었어요…');
+      }catch(e){
+        if(e&&e.name==='AbortError')return;
+        consec++;const fatal=e&&(e.status===-1||[400,401,403,404,429].includes(e.status)||e.status>=500||(!e.status&&!e.blocked));
+        if(fatal||consec>=2){if(!halt){halt=true;stopped=gErr(e);}ctl.abort();return;}   // 오류가 나면 모두 바로 멈춰요(요금 보호)
+      }
+    }
+  };
+  if(!o.quiet)gMsg('0 / '+total+' 만드는 중이에요…');
+  await Promise.all(Array.from({length:Math.min(par,total)},worker));
+  if(!halt&&ctl.signal.aborted)stopped='멈췄어요.';
+  let chk=null;
+  if(!halt&&!ctl.signal.aborted&&done>0){if(o.onPhase)o.onPhase('손잡이 모양 검수 중…');if(!o.quiet)gMsg('손잡이 모양을 검수하는 중이에요…');chk=await runChecks(list,ctl.signal).catch(()=>null);}
+  G.busy=false;G.ctl=null;const sec=Math.round((Date.now()-t0)/1000);
+  if(!o.quiet){renderSide();refresh();
+    gMsg(done+'장 만들었어요. ('+sec+'초)'+(cachedN?' 이미 만든 결과 '+cachedN+'장은 다시 요청하지 않았어요.':'')+(chk&&chk.bad?' 손잡이가 원본과 달라 보이는 칸이 '+chk.bad+'개 있어요. 아래 \'달라 보이는 칸만 정밀 모델로 다시\'를 눌러 보세요.':'')+(chk&&chk.err?' (검수: '+chk.err+')':'')+(stopped?' '+stopped:''),stopped&&stopped!=='멈췄어요.'?'err':'ok');}
+  return {done,total,cachedN,stopped,sec,chk};
+}
+function gAsk(list,opts){                      // 돈이 드는 일은 한 번 물어봐요
+  if(G.state!=='on'){gMsg('먼저 2단계에서 구글 키를 넣고 연결을 확인해 주세요.','err');UI.open.add('p2');renderSide();return;}
+  if(!list.length){gMsg('만들 칸이 없어요. 이미 모두 채워져 있어요.','err');return;}
+  if(!hasPhoto(S.src)){gMsg('1단계의 제품 사진을 먼저 넣어 주세요.','err');return;}
+  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=list.length+'장을 만들어요('+((opts&&opts.model)||G.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estText(list.length,opts&&opts.model)+' 계속할까요?';$('#gConfirm').hidden=false;
+}
+
+/* 색상 칸 구성: 10칸(기본) / 5칸(비용 절약) */
+function colorMode(){return S.colors.items.some(it=>COLOR_DEF.some(d=>d[0]===it.label&&!LITE.includes(d[0])))?'full':'lite';}
+function setColorMode(m){
+  const cur=S.colors.items,by=new Map(cur.map(it=>[it.label,it]));let kept=0;
+  if(m==='full'){const out=COLOR_DEF.map(d=>by.get(d[0])||mkColor(d));cur.forEach(it=>{if(!COLOR_DEF.some(d=>d[0]===it.label))out.push(it);});S.colors.items=out;}
+  else S.colors.items=cur.filter(it=>{const d=COLOR_DEF.find(x=>x[0]===it.label);if(!d||LITE.includes(d[0]))return true;if(hasPhoto(it.photo)){kept++;return true;}return false;});   // 사진이 있는 칸은 남겨요
+  gc();return kept;
+}
+
+/* ============ 클로드: 글 쓰기 · 손잡이 모양 검수 ============ */
+const CK='wj-ck',CMODEL='claude-haiku-5-5';
+const C={key:'',remember:false,model:'',msg:'',cls:''};
+try{const k=localStorage.getItem(CK);if(k){C.key=k;C.remember=true;}}catch(e){}
+const saveCKey=()=>{try{C.remember&&C.key?localStorage.setItem(CK,C.key):localStorage.removeItem(CK);}catch(e){}};
+function cMsg(t,c){C.msg=t;C.cls=c||'';const m=$('#cMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
+const cHeaders=()=>({'x-api-key':C.key.trim(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','content-type':'application/json'});
+function cErr(st,m){
+  const low=String(m||'').toLowerCase();
+  if(st===401)return '클로드 키가 맞지 않아요. 다시 복사해서 붙여 넣어 주세요.';
+  if(st===403)return '이 키로는 쓸 수 없어요. 키 권한을 확인해 주세요.';
+  if(st===404)return '모델 이름을 찾을 수 없어요. 2단계의 모델 이름 칸을 비워 두면 자동으로 골라요.';
+  if(st===429)return '사용 한도에 걸렸어요. 잠시 뒤 다시 눌러 주세요.';
+  if(st===400&&(low.includes('credit')||low.includes('balance')))return '크레딧이 부족해요. 클로드 콘솔(console.anthropic.com)에서 충전한 뒤 다시 눌러 주세요.';
+  if(st>=500)return '클로드 쪽이 바빠요. 잠시 뒤 다시 눌러 주세요.';
+  return '요청이 받아들여지지 않았어요.'+(m?' ('+String(m).slice(0,120)+')':'');
+}
+function parseJsonLoose(t){
+  try{return JSON.parse(t);}catch(e){}
+  const m=String(t).match(/```(?:json)?\s*([\s\S]*?)```/);if(m){try{return JSON.parse(m[1]);}catch(e){}}
+  const i=t.indexOf('{'),j=t.lastIndexOf('}');if(i>=0&&j>i){try{return JSON.parse(t.slice(i,j+1));}catch(e){}}
+  throw {code:'invalid_json'};
+}
+async function shrink(blob,max,q){                // 사진을 작게 줄여 보내요(비용이 줄어요)
+  const bmp=await createImageBitmap(blob),k=Math.min(1,max/Math.max(bmp.width,bmp.height));
+  const c=document.createElement('canvas');c.width=Math.max(1,Math.round(bmp.width*k));c.height=Math.max(1,Math.round(bmp.height*k));
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(bmp,0,0,c.width,c.height);
+  return new Promise(r=>c.toBlob(r,'image/jpeg',q));
+}
+const toB64=blob=>new Promise((ok,no)=>{const f=new FileReader();f.onload=()=>ok(String(f.result).split(',')[1]);f.onerror=()=>no(f.error);f.readAsDataURL(blob);});
+async function claudeAvail(){try{return window.claude&&window.claude.use?await window.claude.use('sample'):null;}catch(e){return null;}}
+async function claudeReady(images){                // 클로드 안에서 열었거나 클로드 키가 있으면 쓸 수 있어요
+  const sm=await claudeAvail();
+  if(sm){if(!images)return true;try{const l=await sm.limits();return !!(l&&l.images&&(l.images.maxCount||0)>=images);}catch(e){return false;}}
+  return !!C.key.trim();
+}
+/* 클로드를 부르는 길은 이 함수 하나예요(글 쓰기와 검수가 같이 써요) */
+async function claude(prompt,o){
+  o=o||{};const imgs=o.images||[],sm=await claudeAvail();
+  if(sm){try{return await sm.json(prompt,Object.assign({signal:o.signal,modelTier:'quick'},imgs.length?{images:imgs}:{}));}catch(e){throw e&&e.name==='AbortError'?{code:'cancelled'}:e;}}
+  if(!C.key.trim())throw {code:'unavailable'};
+  const content=[];for(const b of imgs)content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await toB64(b)}});content.push({type:'text',text:prompt});
+  let r;
+  try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:o.signal,headers:cHeaders(),body:JSON.stringify({model:(C.model||'').trim()||CMODEL,max_tokens:o.max||2000,messages:[{role:'user',content}]})});}
+  catch(e){if(e&&e.name==='AbortError')throw {code:'cancelled'};throw {code:'api_error',text:'클로드에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.'};}
+  if(!r.ok){let m='';try{const d=await r.json();m=d&&d.error&&d.error.message||'';}catch(e){}throw {code:'api_error',status:r.status,text:cErr(r.status,m)};}
+  const d=await r.json();return parseJsonLoose((d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n'));
+}
+const ASK_ERR={not_granted:'이 창에서는 클로드 사용이 허용되지 않았어요.',sampling_disabled:'이 계정에서는 클로드를 쓸 수 없어요.',rate_limited:'사용 한도에 걸렸어요. 잠시 뒤 다시 눌러 주세요.',image_rejected:'사진을 읽지 못했어요. 다른 사진으로 해 보세요.',invalid_json:'답을 읽지 못했어요. 한 번 더 눌러 주세요.',upstream_error:'연결이 잠깐 끊겼어요. 한 번 더 눌러 주세요.',empty_completion:'답이 비어 있어요.',refused:'이 내용으로는 글을 만들 수 없어요.',unavailable:'클로드 키를 먼저 넣어 주세요.'};
+/* 글 새로 쓰기 */
+function planPrompt(){
+  const ex=(e,i)=>'[예시 '+(i+1)+'] 제품: '+e.name+'\n'+JSON.stringify({hero:e.hero,concept:e.concept,zoom:e.zoom,faq:e.faq},null,1);
+  return '당신은 한국 쇼핑몰(스마트스토어·쿠팡) 상세페이지 글을 쓰는 카피라이터입니다. '+CO.name+'('+CO.place+', 문 손잡이·도어락 제조사)의 방문(실내문) 손잡이 상세페이지에서 "제품마다 다른 글"만 씁니다. 회사 소개, 설치 안내, 구매 전 확인, 마지막 문구, 공통 질문은 모든 제품이 같은 글을 쓰므로 쓰지 않습니다.\n\n'
+  +'제품 이름: '+String(S.name).slice(0,80)+'\n아는 내용(메모): '+(S.memo.trim().slice(0,600)||'(없음)')+'\n첨부한 사진은 이 제품 사진입니다. 사진에서 실제로 보이는 것(모양, 무늬, 색, 마감 느낌, 부품 구성)만 관찰해서 쓰세요.\n\n'
+  +'아래는 이 회사가 이미 만든 두 제품의 글입니다. 말투, 길이, 줄바꿈, 구성을 그대로 따라 하되 문장을 베끼지 마세요. 제품이 다르면 내용도 달라야 합니다.\n\n'+PLAN_EX.map(ex).join('\n\n')+'\n\n'
+  +'지켜야 할 것:\n1. 쉬운 한국어, 짧은 문장, "~해요" 말투. 어려운 영어 단어는 쓰지 않습니다.\n'
+  +'2. 제품 사양(치수, 백셋, 문 두께, 구멍 간격, 재질 이름, 인증, 방수·내구 수치), 특허 번호, 연도, 날짜, 실적, 가격은 절대 지어내지 마세요. 메모에 적힌 것과 사진에서 보이는 것만 쓰세요.\n'
+  +'3. 과장 표현(최고, 최초, 100%, 완벽, 국내 유일)을 쓰지 마세요.\n4. 호환 여부, 잠금 기능, 교환·반품처럼 확인이 필요한 것은 "판매자에게 확인해 주세요"로 안내하세요.\n'
+  +'5. 줄바꿈이 필요하면 \\n을 쓰세요. 제목은 한두 줄, 설명은 두 줄 안쪽으로 짧게.\n'
+  +'6. faq에는 이 제품에만 해당하는 질문 1~2개만 쓰세요(모양, 방향, 손에 닿는 느낌에 대한 걱정 등). 맞는지·잠금·색상·혼자 달기·교환 반품은 이미 공통 질문이 있으니 쓰지 마세요.\n\n'
+  +'아래 JSON 하나만 답하세요(다른 글 없이).\n{\n "hero":{"badge":"작은 파란 띠 글(제품 종류)","title":"큰 제목(2줄 이내)","sub":"설명 2줄 이내"},\n "concept":{"title":"제목","body":"설명 2줄 이내"},\n'
+  +' "zoom":{"items":[{"title":"","body":""},{"title":"","body":""},{"title":"","body":""}]},\n "faq":[{"q":"","a":""}]\n}\n\n'
+  +'zoom.items는 1번 손이 가장 먼저 닿는 레버 끝이나 윗부분, 2번 레버가 목으로 이어져 받침과 만나는 부분, 3번 받침의 아래쪽이나 뒷부분입니다.';
+}
+function applyPlan(p){
+  if(!p||typeof p!=='object')throw {code:'invalid_json'};
+  const s=(v,n)=>typeof v==='string'&&v.trim()?v.trim().slice(0,n||300):null,put=(path,v)=>{if(v!==null)setP(path,v);};
+  const h=p.hero||{};put('hero.badge',s(h.badge,40));put('hero.title',s(h.title,80));put('hero.sub',s(h.sub,140));
+  const c=p.concept||{};put('concept.title',s(c.title,60));put('concept.body',s(c.body,200));
+  const z=p.zoom||{};(Array.isArray(z.items)?z.items:[]).slice(0,S.zoom.items.length).forEach((it,i)=>{if(!it)return;put('zoom.items.'+i+'.title',s(it.title,60));put('zoom.items.'+i+'.body',s(it.body,160));});
+  if(Array.isArray(p.faq)){
+    const f=p.faq.map(x=>x&&s(x.q,80)&&s(x.a,260)?{q:s(x.q,80),a:s(x.a,260),p:true}:null).filter(Boolean).slice(0,2);
+    if(f.length){const all=S.faq.items;let pos=all.findIndex(q=>q.p);const rest=all.filter(q=>!q.p);if(pos<0)pos=Math.max(0,rest.length-1);rest.splice(Math.min(pos,rest.length),0,...f);S.faq.items=rest;}
+  }
+}
+let lastAsk='';const askKey=()=>[S.name,S.memo,S.src&&S.src.id].join('|');
+async function askText(signal){
+  const imgs=hasPhoto(S.src)&&await claudeReady(1)?[await shrink(PH.get(S.src.id).blob,768,.8)]:[];
+  applyPlan(await claude(planPrompt(),{signal,images:imgs,max:2000}));dirty=false;lastAsk=askKey();
+}
+/* 손잡이 모양 검수: 만든 사진이 원본과 같은 손잡이인지 작은 모델이 한 번 비교해요(AI 판단이라 틀릴 수 있어요) */
+const CHK_PROMPT='첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 비교하세요. 비교할 것: 레버의 길이·굵기·끝 모양, 받침(원판)의 크기·모양, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경 차이는 무시하세요. 확실히 다른 점이 있을 때만 ok를 false로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';
+async function checkOne(j,signal){
+  const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
+  const r=await claude(CHK_PROMPT,{signal,max:300,images:[await shrink(PH.get(S.src.id).blob,640,.8),await shrink(m.blob,640,.8)]});
+  if(!r||typeof r!=='object'||typeof r.ok!=='boolean')return false;
+  const cur=getP(j.key);if(!cur||cur.id!==p.id)return false;   // 그 사이 사진이 바뀌었으면 버려요
+  cur.chk={ok:r.ok,issues:(Array.isArray(r.issues)?r.issues:[]).map(x=>String(x).slice(0,100)).filter(Boolean).slice(0,3)};return true;
+}
+async function runChecks(list,signal){
+  if(!UI.check||!(await claudeReady(2)))return {n:0,bad:flagged().length,skipped:true};
+  const L2=list.filter(j=>{const p=getP(j.key);return p&&p.ai&&!p.chk;});
+  let nx=0,n=0,stop=false,err='';
+  const wk=async()=>{while(!stop&&!(signal&&signal.aborted)){const i=nx++;if(i>=L2.length)return;try{if(await checkOne(L2[i],signal))n++;}catch(e){if(e&&(e.name==='AbortError'||e.code==='cancelled'))return;stop=true;err=(e&&e.text)||ASK_ERR[e&&e.code]||'검수를 하지 못했어요.';}}};
+  await Promise.all(Array.from({length:Math.min(3,L2.length)},wk));
+  refresh();return {n,bad:flagged().length,err};
+}
+
+/* ============ 확대 위치 자동 맞춤(컴퓨터가 원본에서 손잡이를 찾아요 · 무료) ============ */
+function dil(a,w,h,r){const t=new Uint8Array(a.length),o=new Uint8Array(a.length);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=0;for(let i=-r;i<=r&&!v;i++){const xx=x+i;if(xx>=0&&xx<w&&a[y*w+xx])v=1;}t[y*w+x]=v;}
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=0;for(let i=-r;i<=r&&!v;i++){const yy=y+i;if(yy>=0&&yy<h&&t[yy*w+x])v=1;}o[y*w+x]=v;}
+  return o;}
+async function findParts(blob){
+  const bmp=await createImageBitmap(blob),k=Math.min(1,360/Math.max(bmp.width,bmp.height)),w=Math.max(16,Math.round(bmp.width*k)),h=Math.max(16,Math.round(bmp.height*k));
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d',{willReadFrequently:true});g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(bmp,0,0,w,h);
+  const d=g.getImageData(0,0,w,h).data,N=w*h,L=new Float32Array(N);
+  for(let p=0;p<N;p++)L[p]=.299*d[p*4]+.587*d[p*4+1]+.114*d[p*4+2];
+  const E=new Uint8Array(N);   // 윤곽선만(그림자처럼 부드러운 변화는 빠져요)
+  for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const p=y*w+x;if(Math.abs(L[p+1]-L[p-1])+Math.abs(L[p+w]-L[p-w])>30)E[p]=1;}
+  const D=dil(E,w,h,2),out=new Uint8Array(N),st=[];
+  const pu=p=>{if(D[p]||out[p])return;out[p]=1;st.push(p);};
+  for(let x=0;x<w;x++){pu(x);pu((h-1)*w+x);}for(let y=0;y<h;y++){pu(y*w);pu(y*w+w-1);}
+  while(st.length){const p=st.pop(),x=p%w,y=(p/w)|0;if(x>0)pu(p-1);if(x<w-1)pu(p+1);if(y>0)pu(p-w);if(y<h-1)pu(p+w);}
+  const lab=new Int32Array(N);let best=0,bestN=0,id=0;
+  for(let s0=0;s0<N;s0++){if(out[s0]||lab[s0])continue;id++;let n=0;const q=[s0];lab[s0]=id;
+    while(q.length){const p=q.pop();n++;const x=p%w,y=(p/w)|0;
+      if(x>0&&!out[p-1]&&!lab[p-1]){lab[p-1]=id;q.push(p-1);}if(x<w-1&&!out[p+1]&&!lab[p+1]){lab[p+1]=id;q.push(p+1);}
+      if(y>0&&!out[p-w]&&!lab[p-w]){lab[p-w]=id;q.push(p-w);}if(y<h-1&&!out[p+w]&&!lab[p+w]){lab[p+w]=id;q.push(p+w);}}
+    if(n>bestN){bestN=n;best=id;}}
+  if(bestN<N*.015||bestN>N*.8)throw new Error('제품 위치를 찾지 못했어요.');
+  const xs=[],ys=[];let sx=0,sy=0;for(let p=0;p<N;p++)if(lab[p]===best){const x=p%w,y=(p/w)|0;xs.push(x);ys.push(y);sx+=x;sy+=y;}
+  const n=xs.length,cx=sx/n,cy=sy/n;let a=0,b=0,c2=0;
+  for(let i=0;i<n;i++){const dx=xs[i]-cx,dy=ys[i]-cy;a+=dx*dx;b+=dx*dy;c2+=dy*dy;}
+  const th=.5*Math.atan2(2*b,a-c2),ux=Math.cos(th),uy=Math.sin(th),vx=-uy,vy=ux,T=new Float32Array(n),Sv=new Float32Array(n);
+  let t0=1e9,t1=-1e9;for(let i=0;i<n;i++){const dx=xs[i]-cx,dy=ys[i]-cy;T[i]=dx*ux+dy*uy;Sv[i]=dx*vx+dy*vy;if(T[i]<t0)t0=T[i];if(T[i]>t1)t1=T[i];}
+  const len=t1-t0;if(len<w*.12)throw new Error('제품 위치를 찾지 못했어요.');
+  const bins=20,cnt=new Float32Array(bins);for(let i=0;i<n;i++)cnt[Math.min(bins-1,((T[i]-t0)/len*bins)|0)]++;
+  const m1=(cnt[0]+cnt[1]+cnt[2])/3,m2=(cnt[bins-1]+cnt[bins-2]+cnt[bins-3])/3,ros=m2>=m1?1:-1;   // 두꺼운 쪽 끝이 받침
+  const A=i=>ros>0?(T[i]-t0)/len:(t1-T[i])/len;   // 0 = 레버 끝, 1 = 받침 쪽 끝
+  const at=(a0,a1)=>{let sT=0,sS=0,m=0;for(let i=0;i<n;i++){const v=A(i);if(v>=a0&&v<=a1){sT+=T[i];sS+=Sv[i];m++;}}if(!m)return null;const tt=sT/m,ss=sS/m;return {x:cx+ux*tt+vx*ss,y:cy+uy*tt+vy*ss};};
+  const p1=at(.04,.2),p2=at(.6,.78);if(!p1||!p2)throw new Error('제품 위치를 찾지 못했어요.');
+  let mx=-1,mn=1e9,k3=0;for(let i=0;i<n;i++)if(A(i)>=.7){if(ys[i]>mx)mx=ys[i];if(ys[i]<mn)mn=ys[i];k3++;}
+  if(!k3)throw new Error('제품 위치를 찾지 못했어요.');
+  let lx=0,ln=0;for(let i=0;i<n;i++)if(A(i)>=.7&&ys[i]>=mx-(mx-mn)*.3){lx+=xs[i];ln++;}
+  return {p1,p2,p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h};
+}
+async function autoZoom(){
+  const m=S.src&&PH.get(S.src.id);if(!m)return false;
+  let P;try{P=await findParts(m.blob);}catch(e){return false;}
+  const Wc=736/Math.max(736/m.w,552/m.h),lenSrc=P.len*(m.w/P.w),cap=clamp(m.w/700,1.6,4);   // 확대해도 흐려지지 않게 원본 크기에 맞춰요
+  const mk=(pt,fr)=>({fx:+clamp(pt.x/P.w,.05,.95).toFixed(3),fy:+clamp(pt.y/P.h,.05,.95).toFixed(3),z:+clamp(Wc/(lenSrc*fr),1.6,cap).toFixed(2)});
+  [mk(P.p1,.3),mk(P.p2,.32),mk(P.p3,.28)].forEach((z,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],z);});
+  return true;
+}
+
+/* ============ 이미지로 저장: 전체를 긴 이미지 한 장으로 ============ */
+const EX={fmt:'jpg',w:860,busy:false,cancel:false};
+function showExport(msg){
+  const n=needs(),aiN=aiCount(),fl=flagged().length,ab=n.filter(x=>/^about\./.test(x.p)).length;
+  const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
+  veil.hidden=false;
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="이미지로 저장"><h2>이미지로 저장 · 긴 이미지 한 장</h2>'
+   +(n.length?'<div class="confirm" style="display:block">아직 채울 곳이 '+n.length+'곳 남아 있어요. 비어 있는 칸은 이미지에서 빠져요.</div>':'')
+   +(ab?'<div class="confirm" style="display:block">회사 소개의 특허·실적·연도 기록 '+ab+'곳이 비어 있어서 그 부분이 짧게 나와요. 4단계 \'회사 소개\'에서 채워 주세요.</div>':'')
+   +(fl?'<div class="confirm" style="display:block">손잡이가 원본과 달라 보이는 칸이 '+fl+'개 있어요. 3단계에서 확인하고 다시 만들 수 있어요.</div>':'')
+   +(aiN?'<div class="tip">AI로 만든 사진이 '+aiN+'장 들어 있어요. 판매 채널의 AI 표시 규칙을 확인하세요(바뀔 수 있어요). 쿠팡 대표이미지는 실물 원본 사진만 써요.</div>':'')
+   +'<div class="opts"><b class="hint">가로 크기</b>'+radio('w',860,EX.w,'860px · 스마트스토어 기본')+radio('w',780,EX.w,'780px · 쿠팡')+radio('w',1720,EX.w,'1720px · 2배로 선명하게 (파일이 커요)')+'</div>'
+   +'<div class="opts"><b class="hint">파일 종류</b>'+radio('fmt','jpg',EX.fmt,'JPG · 파일이 작아요 · 추천')+radio('fmt','png',EX.fmt,'PNG · 글자가 더 또렷해요 (파일이 커요)')+'</div>'
+   +'<div class="bar" id="exBar" hidden><i></i></div><div class="msg" id="exMsg" aria-live="polite">'+esc(msg||'')+'</div>'
+   +'<div class="acts"><button class="btn" id="exClose" type="button">닫기</button><button class="btn primary" id="exGo" type="button">한 장으로 저장</button></div></div>';
+  $('#exClose').onclick=()=>{if(EX.busy)EX.cancel=true;else veil.hidden=true;};
+  $('#exGo').onclick=runExport;
+  $$('input[type=radio]',veil).forEach(r=>r.onchange=()=>{EX[r.name]=r.name==='w'?Number(r.value):r.value;});
+}
+function aiCount(){let n=0;const walk=o=>{if(!o||typeof o!=='object')return;if(o.ai===true&&o.id)n++;for(const k in o)walk(o[k]);};walk(S);return n;}
+function exMsg(t,pct){const m=$('#exMsg');if(m)m.textContent=t;const b=$('#exBar');if(b&&pct!=null){b.hidden=false;b.firstElementChild.style.width=pct+'%';}}
+async function runExport(){
+  if(EX.busy)return;
+  if(!window.html2canvas){exMsg('내보내기 도구를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 열어 주세요.');return;}
+  EX.busy=true;EX.cancel=false;$('#exGo').disabled=true;$('#exClose').textContent='멈추기';const t0=Date.now();
+  const host=document.createElement('div');host.className='export-host';host.innerHTML='<div class="pg" id="expRoot">'+renderPage(true)+'</div>';document.body.appendChild(host);
+  try{
+    exMsg('준비하는 중이에요…',2);
+    try{await document.fonts.load('800 40px "Noto Sans KR"','가나다라마바사 0123');await document.fonts.load('400 20px "Noto Sans KR"','가나다라마바사');await document.fonts.ready;}catch(e){}
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    const root=$('#expRoot',host),k=EX.w/PW,type=EX.fmt==='jpg'?'image/jpeg':'image/png',secs=$$('[data-slice]',root).filter(s=>s.offsetHeight>0);
+    const Ht=Math.round(secs.reduce((a,s)=>a+s.offsetHeight,0)*k);
+    if(Ht>30000||EX.w*Ht>2.2e8)throw new Error('너무 길어서 한 장으로 만들 수 없어요. 가로 크기를 줄여 주세요.');
+    const cvs=new Array(secs.length);let nx=0,fin=0;   // 구역을 동시에 그린 뒤 한 장으로 이어 붙여요(빠르고 안 끊겨요)
+    const wk=async()=>{while(nx<secs.length){if(EX.cancel)throw {code:'cancel'};const i=nx++;
+      cvs[i]=await html2canvas(secs[i],{scale:k,backgroundColor:'#ffffff',useCORS:true,logging:false,imageTimeout:0,width:PW,windowWidth:PW,scrollX:0,scrollY:0,ignoreElements:n=>n.id==='app'||n.id==='veil'||n.id==='toast'});
+      fin++;exMsg('그리는 중이에요… '+fin+' / '+secs.length,Math.round(fin/secs.length*80)+3);}};
+    await Promise.all(Array.from({length:Math.min(3,secs.length)},wk));if(EX.cancel)throw {code:'cancel'};
+    exMsg('한 장으로 잇는 중이에요…',88);
+    const oc=document.createElement('canvas');oc.width=cvs[0].width;oc.height=cvs.reduce((a,c)=>a+c.height,0);const og=oc.getContext('2d');og.fillStyle='#fff';og.fillRect(0,0,oc.width,oc.height);
+    let y=0;for(const c of cvs){og.drawImage(c,0,y);y+=c.height;}
+    const blob=await new Promise((ok,no)=>oc.toBlob(b=>b?ok(b):no(new Error('이미지를 만들지 못했어요.')),type,.92));
+    exMsg('저장 창을 열었어요. 저장을 눌러 주세요.',95);await saveFile(safeName()+'_상세페이지.'+(EX.fmt==='jpg'?'jpg':'png'),blob);
+    exMsg('저장했어요. ('+Math.round((Date.now()-t0)/1000)+'초)',100);
+  }catch(e){exMsg(e&&e.code==='cancel'?'멈췄어요.':e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':(e&&e.message)||'저장하지 못했어요. 한 번 더 눌러 주세요.');}
+  finally{host.remove();EX.busy=false;const g=$('#exGo'),c=$('#exClose');if(g)g.disabled=false;if(c)c.textContent='닫기';}
+}
+veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy)veil.hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy)veil.hidden=true;});
+
+/* ============ 한 번에 만들기: 글과 이미지를 동시에 → 저장 창 ============ */
+let oneBusy=false;
+async function runOne(go){
+  if(oneBusy||G.busy||EX.busy)return;
+  if(!String(S.name||'').trim()){UI.open.add('p1');setTab('edit');renderSide();toast('제품 이름을 먼저 적어 주세요.');focusEl($('[data-k="name"]',side));return;}
+  if(!hasPhoto(S.src)){UI.open.add('p1');setTab('edit');renderSide();toast('제품 사진 한 장을 먼저 넣어 주세요.');focusEl($('[data-pk="src"]',side));return;}
+  const aiOn=UI.useAI&&await claudeReady(1),on=G.state==='on',list=on?gList():[],why=[];
+  if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
+  if(aiOn&&askKey()===lastAsk)why.push('같은 이름·메모·사진으로 이미 한 번 짰어요. 다시 짜면 클로드 사용량이 또 들어요.');
+  if(list.length)why.push('구글로 이미지 '+list.length+'장을 만들어요('+G.model+'). 요금이 들 수 있어요.'+estText(list.length));
+  if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
+    veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button><button class="btn primary" id="onGo" type="button">시작</button></div></div>';
+    $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);$('#onGo').focus();return;
+  }
+  oneBusy=true;const t0=Date.now(),ctl=new AbortController(),row=(id,t)=>'<div class="orow" id="'+id+'"><span class="od"></span><b>'+t+'</b><span class="ost">대기</span></div>';
+  veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="만드는 중"><h2>한 번에 만드는 중이에요</h2>'+row('o1','글 짜기')+row('o2','이미지 만들기')+'<div class="bar"><i id="oBar"></i></div><div class="msg" id="oMsg" aria-live="polite"></div><div class="acts"><button class="btn" id="oStop" type="button">멈추기</button></div></div>';
+  const set=(id,t,c)=>{const r=$('#'+id);if(r){r.querySelector('.ost').textContent=t;r.className='orow'+(c?' '+c:'');}};
+  let p1=0,p2=0;const bar=()=>{const b=$('#oBar');if(b)b.style.width=Math.round(list.length?p1*20+p2*80:p1*100)+'%';};
+  $('#oStop').onclick=()=>{ctl.abort();if(G.ctl)G.ctl.abort();};
+  let tErr='',imgRes=null;
+  const tText=(async()=>{
+    if(!aiOn){tplFill();await autoZoom();p1=1;bar();set('o1','틀로 채움 · 무료','ok');return;}
+    set('o1','클로드가 쓰는 중…','run');
+    try{await askText(ctl.signal);await autoZoom();p1=1;bar();set('o1','완료','ok');}
+    catch(e){p1=1;bar();if(e&&e.code==='cancelled')set('o1','멈춤','skip');else{tErr=(e&&e.text)||ASK_ERR[e&&e.code]||'글을 받지 못했어요.';set('o1',tErr,'err');}}
+  })();
+  const tImg=(async()=>{
+    if(!list.length){set('o2',on?'건너뜀 · 만들 빈 칸이 없어요':'건너뜀 · 구글 키 연결이 없어요','skip');p2=1;bar();return;}
+    set('o2','0 / '+list.length,'run');
+    imgRes=await gRun(list,{quiet:true,onTick:(d,t)=>{p2=d/t;set('o2',d+' / '+t,'run');bar();},onPhase:t=>set('o2',t,'run')});
+    p2=1;bar();set('o2',imgRes.done+' / '+list.length+(imgRes.stopped?' · '+imgRes.stopped:' 완료'),imgRes.stopped&&imgRes.stopped!=='멈췄어요.'?'err':'ok');
+  })();
+  await Promise.all([tText,tImg]);
+  oneBusy=false;const sec=Math.round((Date.now()-t0)/1000);
+  UI.open.add('p3');renderSide();refresh();
+  if(ctl.signal.aborted){veil.hidden=true;toast('멈췄어요.');return;}
+  const bad=tErr||((imgRes&&imgRes.stopped&&imgRes.stopped!=='멈췄어요.')?imgRes.stopped:'');
+  if(bad){const m=$('#oMsg');if(m){m.className='msg err';m.textContent=bad;}const b=$('#oStop');if(b){b.textContent='닫기';b.onclick=()=>{veil.hidden=true;};}return;}
+  if(imgRes&&imgRes.done){showExport('다 만들었어요. ('+sec+'초) 비어 있는 칸을 확인하고 저장하세요.');const g=$('#exGo');if(g)g.focus();}
+  else{veil.hidden=true;toast(on?'글을 채웠어요('+sec+'초).':'글을 채웠어요('+sec+'초). 이미지는 2단계에서 구글 키를 연결하면 만들어져요.',3800);}
+}
+
+/* ============ 버튼과 입력 처리(한 곳에 모아요) ============ */
+async function putPhoto(path,file,ai){
+  try{await setPhoto(path,file,ai?{ai:true}:{});}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
+  renderSide();refresh();
+}
+async function copy(text,msg){
+  try{await navigator.clipboard.writeText(text);toast(msg);return;}catch(e){}
+  const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;left:0;top:0;opacity:0';document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand('copy');}catch(e){}ta.remove();toast(ok?msg:'복사가 막혀 있어요. 지시문 보기에서 글을 직접 선택해 복사해 주세요.',3200);
+}
+const regen=(j,opts)=>gAsk([j],Object.assign({fresh:hasPhoto(getP(j.key))},opts));
+let pendingGen=null;
+const ACT={
+  copysell(){copy(S.sellName||STD_NAME,'판매 상품명을 복사했어요.');},
+  add(b){const l=getP(b.dataset.l);l.push(newItem(b.dataset.l,l));dirty=true;renderSide();refresh();},
+  del(b){getP(b.dataset.l).splice(+b.dataset.i,1);dirty=true;gc();renderSide();refresh();},
+  up(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i>0){[l[i],l[i-1]]=[l[i-1],l[i]];renderSide();refresh();}},
+  dn(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i<l.length-1){[l[i],l[i+1]]=[l[i+1],l[i]];renderSide();refresh();}},
+  pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
+  copyp(b){copy(promptOf(jobs()[+b.dataset.i]),'지시문을 복사했어요. AI 스튜디오에 원본 사진과 함께 붙여 넣으세요.');},
+  tplfill(){
+    const run=async()=>{tplFill();await autoZoom();renderSide();refresh();toast('틀로 글을 채웠어요. 무료예요.');};
+    if(dirty){pendingGen=run;$('#genMsg').textContent='지금 쓴 제품 글이 틀의 글로 바뀌어요. 회사 공통 글은 그대로예요. 계속할까요?';$('#genConfirm').hidden=false;}else run();
+  },
+  genok(){$('#genConfirm').hidden=true;const f=pendingGen;pendingGen=null;if(f)f();},
+  genno(){$('#genConfirm').hidden=true;pendingGen=null;},
+  async autozoom(){const ok=await autoZoom();UI.open.add('s-zoom');renderSide();refresh();toast(ok?'확대 3곳을 제품 위치에 맞췄어요.':'제품 위치를 찾지 못했어요. 슬라이더로 직접 맞춰 주세요.',3000);},
+  gCheck,
+  gAll(){gAsk(gList());},
+  gStop(){if(G.ctl)G.ctl.abort();},
+  gtest(){const l=gList(),j=l.find(x=>x.kind==='color')||l[0];if(j)gAsk([j]);else gMsg('만들 빈 칸이 없어요.','err');},
+  gone(b){regen(jobs()[+b.dataset.i]);},
+  gonehi(b){regen(jobs()[+b.dataset.i],{model:G.modelHi,fresh:true});},
+  gfix(){const l=flagged();if(l.length)gAsk(l,{model:G.modelHi||G.model,fresh:true});},
+  ggo(){$('#gConfirm').hidden=true;const l=G.pending||[],po=G.pendingOpts||undefined;G.pending=G.pendingOpts=null;gRun(l,po);},
+  gno(){$('#gConfirm').hidden=true;G.pending=null;},
+  async cCheck(){
+    if(!C.key.trim()){cMsg('클로드 키를 붙여 넣어 주세요.','err');return;}
+    cMsg('연결을 확인하는 중이에요. 비용이 들지 않아요…');
+    try{const r=await fetch('https://api.anthropic.com/v1/models?limit=1',{headers:cHeaders()});
+      if(r.ok)cMsg('연결됐어요. 글 새로 쓰기와 손잡이 모양 검수에 쓰여요.','ok');
+      else{let m='';try{const d=await r.json();m=d&&d.error&&d.error.message||'';}catch(x){}cMsg(cErr(r.status,m),'err');}
+    }catch(x){cMsg('연결하지 못했어요. 인터넷 연결을 확인해 주세요.','err');}
+  }
+};
+side.addEventListener('click',e=>{
+  const th=e.target.closest('.thumb');
+  if(th&&th.dataset.drop){const inp=th.closest('.job,.pc').querySelector('input[type=file]');if(inp)inp.click();return;}
+  const b=e.target.closest('[data-act]'),k=b?b.dataset.act:e.target.id;
+  if(ACT[k])ACT[k](b||e.target,e);
+});
+const CHANGE={
+  gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
+  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},
+  gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
+  colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
+};
+side.addEventListener('change',e=>{
+  const t=e.target,d=t.dataset;
+  if(CHANGE[t.id])return CHANGE[t.id](t);
+  if(d.chk){setP(d.chk,t.checked);refresh();}
+  else if(d.file){const f=t.files&&t.files[0];t.value='';if(f)putPhoto(d.file,f,d.ai==='1');}
+  else if(d.view!==undefined){S.colors.items[+d.view].view=t.value;renderSide();refresh();}
+  else if(d.dir!==undefined){S.colors.items[+d.dir].flip=t.value==='R';renderSide();refresh();}
+});
+side.addEventListener('input',e=>{
+  const t=e.target,d=t.dataset;
+  if(d.k!==undefined){setP(d.k,t.value);if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name')syncPrompts();refresh();}
+  else if(d.s){setP(d.s,Number(t.value)/100);if(t.nextElementSibling)t.nextElementSibling.textContent=t.value;refresh();}
+  else if(t.id==='gKey'){G.key=t.value;if(G.state!=='idle')G.state='idle';saveKey();}
+  else if(t.id==='gModel'){G.model=t.value;G.auto=false;}
+  else if(t.id==='cKey'){C.key=t.value;saveCKey();}
+  else if(t.id==='cModel')C.model=t.value;
+});
+function syncPrompts(){const J=jobs();$$('.job pre',side).forEach(p=>{const j=J[+p.dataset.j];if(j)p.textContent=promptOf(j);});}
+['dragover','dragenter'].forEach(ev=>side.addEventListener(ev,e=>{const t=e.target.closest('.thumb');if(t&&t.dataset.drop){e.preventDefault();t.classList.add('drag');}}));
+['dragleave','drop'].forEach(ev=>side.addEventListener(ev,e=>{const t=e.target.closest('.thumb');if(t)t.classList.remove('drag');}));
+side.addEventListener('drop',e=>{const t=e.target.closest('.thumb');if(!t||!t.dataset.drop)return;e.preventDefault();const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)putPhoto(t.dataset.drop,f,!!t.closest('.job'));});
+
+/* 윗줄 버튼 */
+$('#btnOne').onclick=()=>runOne(false);
+$('#btnExport').onclick=()=>{EX.busy=false;EX.cancel=false;showExport();};
+$('#btnSave').onclick=saveWork;
+$('#btnLoad').onclick=()=>$('#loadFile').click();
+$('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
+$('#btnNew').onclick=()=>{
+  veil.hidden=false;
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="새 제품 시작"><h2>새 제품 시작</h2><div class="msg" style="color:var(--ink)">지금 만든 제품의 이름·사진·글을 비우고 새 제품을 시작해요.</div><div class="tip">회사 소개, 설치 안내, 구매 전 확인, 마지막 문구 같은 <b>공통 글은 그대로</b> 남아요. 지금 제품을 다시 쓸 일이 있으면 먼저 <b>작업 저장</b>을 눌러 두세요.</div><div class="acts"><button class="btn" id="nwNo" type="button">취소</button><button class="btn primary" id="nwGo" type="button">새로 시작</button></div></div>';
+  $('#nwNo').onclick=()=>{veil.hidden=true;};
+  $('#nwGo').onclick=()=>{newProduct();UI.open.add('p1');renderSide();refresh();veil.hidden=true;toast('새 제품을 시작했어요. 1단계에서 이름과 사진을 넣어 주세요.',3200);};
+};
+
+/* ============ 새 버전 알림(인터넷 주소로 열었을 때만): 주소는 그대로, 새로고침하면 최신이 돼요 ============ */
+(async()=>{
+  if(!/^https?:$/.test(location.protocol))return;
+  try{
+    const r=await fetch('version.json?'+Date.now(),{cache:'no-store'}),d=await r.json();
+    if(d&&d.v>VER){const c=$('#updChip');c.hidden=false;c.onclick=()=>{location.href=location.pathname+'?v='+d.v;};}
+  }catch(e){}
+})();
+
+/* ============ 시작 ============ */
+(async()=>{
+  setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
+  await idb.open();await restore();
+  renderSide();paper.innerHTML=renderPage(false);fit();chip();
+})();
+})();
+</script>
+
+</body></html>
