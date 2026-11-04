@@ -242,7 +242,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 27</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 28</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -289,7 +289,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=27,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=28,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -331,11 +331,12 @@ const COLOR_DEF=[
 const LITE=['화이트 도어','월넛 우드 도어','라이트 그레이 도어','블랙 도어','사용 컷'];   // 비용 절약용 5칸
 const mkColor=([label,scene,door,view,flip])=>({label,scene,door,view,flip:!!flip,photo:null});
 const CAMS={
-  f:'문 앞쪽에서 가까이 찍은 구도. 문과 거의 마주 보되 아주 살짝만 비스듬히. 받침 원판이 화면의 한쪽에 크게 보이게',
-  l:'문의 왼쪽 앞에서 약 30도 비스듬히 찍은 구도. 받침 원판의 두께와 레버가 문에서 떠 있는 입체감, 문 표면이 안쪽으로 깊어지는 원근이 느껴지게',
-  c:'문 바로 앞에서 손잡이를 아주 가까이 확대해 찍은 구도(초근접). 받침이 화면의 절반 가까이 차지하고, 초점은 받침과 레버에, 문 배경은 살짝 흐리게',
-  s:'문의 오른쪽 옆에서 낮은 각도로 비스듬히 찍은 구도. 레버의 옆 두께와 받침이 문에서 튀어나온 높이가 보이고 문 표면이 길게 이어지게'};
-const CAM_NAME={f:'정면',l:'왼쪽 앞에서 비스듬히',c:'가까이 확대',s:'옆면(낮은 각도)'};
+  f:'문 앞쪽에서 찍은 구도. 문과 거의 마주 보되 아주 살짝만 비스듬히. 손잡이 전체가 한눈에 보이게',
+  l:'문의 왼쪽 앞에서 약 30도 비스듬히 찍은 구도. 받침 원판의 두께와 레버가 문에서 떠 있는 입체감, 문 표면이 안쪽으로 깊어지는 원근이 느껴지게. 손잡이 전체가 화면 안에 들어오게',
+  c:'문 앞에서 손잡이에 가까이 다가가 찍은 구도(가까운 거리). 레버 끝부터 받침 원판까지 손잡이 전체가 한 화면에 다 들어오고, 초점은 받침과 레버에, 문 배경은 살짝 흐리게',
+  s:'문의 오른쪽 옆에서 낮은 각도로 비스듬히 찍은 구도. 레버의 옆 두께와 받침이 문에서 튀어나온 높이가 보이고 문 표면이 길게 이어지게. 손잡이 전체가 화면 안에 들어오게'};
+const CAM_NAME={f:'정면',l:'왼쪽 앞에서 비스듬히',c:'가까이 (손잡이 전체가 보이게)',s:'옆면(낮은 각도)'};
+const FRAME='구도 규칙(가장 중요): 손잡이 전체, 곧 레버 끝부터 받침 원판까지가 화면 안에 완전히 보여야 합니다. 레버 끝이나 받침 원판이 화면 가장자리에서 잘리거나 화면 밖으로 나가면 안 되고, 손잡이 둘레로 문 표면 여백이 사방에 화면 폭의 10% 이상 남아야 합니다. 손잡이는 화면 가운데 부근에 두고 화면 폭의 약 65~75%를 차지하게 하세요.';
 const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 보이게',panel:'몰딩으로 구획된 문틀 패널의 선이 보이게',seam:'문 가장자리와 이음선이 화면 한쪽 끝에 살짝 보이게'};
 
 function defaults(){
@@ -619,8 +620,8 @@ function promptOf(j){
   if(j.kind==='concept')return base+'장면: 어두운 남회색 스튜디오 배경에 이 제품 하나만 중앙에 크게(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
   const it=S.colors.items[j.i],sc=(it.scene||j.name).trim(),vw=CAMS[it.view||'f']||CAMS.f,dir=it.flip?'오른쪽':'왼쪽',fr=DOORF[it.door]||'';
   const real='실제 인테리어 사진처럼 사실적으로. 손잡이 받침은 문에 단단히 붙어 있고, 받침과 레버 아래·옆으로 부드러운 접촉 그림자가 드리우게. 금속 표면에는 은은한 하이라이트, 배경은 살짝 흐리게(얕은 심도), 창가의 자연스러운 실내 빛. ';
-  if(/손/.test(sc))return base+'장면: '+sc+'. '+real+'카메라: '+vw+'. 손은 자연스러운 한 손(손가락 5개)이 레버를 위에서 잡아 아래로 누르는 순간. 손만 보이고 얼굴·몸은 나오지 않게. 레버는 화면 '+dir+'으로 뻗게. 비율은 정사각형 1:1.';
-  return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 가까이에서 찍은 사진. 문 표면이 화면을 가득 채우고 문 전체는 보이지 않는 가까운 구도.\n카메라: '+vw+'.\n손잡이 방향: 레버가 화면 '+dir+'으로 뻗게.\n'+(fr?'문: '+fr+'.\n':'')
+  if(/손/.test(sc))return base+'장면: '+sc+'. '+real+'카메라: '+vw+'. 손은 자연스러운 한 손(손가락 5개)이 레버를 위에서 잡아 아래로 누르는 순간. 손만 보이고 얼굴·몸은 나오지 않게. 레버는 화면 '+dir+'으로 뻗게.\n'+FRAME+' (손이 레버를 가리는 것은 괜찮지만 레버 끝이 화면 밖으로 나가면 안 됩니다.) 비율은 정사각형 1:1.';
+  return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도.\n'+FRAME+'\n카메라: '+vw+'.\n손잡이 방향: 받침에서 레버가 화면 '+dir+'으로 뻗게. 레버 끝이 화면 '+dir+' 가장자리에서 충분히 떨어져 보이게.\n'+(fr?'문: '+fr+'.\n':'')
     +real+'손잡이 모양과 마감은 첨부 사진과 똑같이 유지하고, 문의 색과 질감만 위 설명대로 바꿔 주세요. 비율은 정사각형 1:1.';
 }
 const ASPECT={hero:'4:5',concept:'3:2',color:'1:1'};
@@ -669,9 +670,9 @@ function p2(){
     +'<label class="chk"><input type="checkbox" id="useFix"'+(UI.autoFix?' checked':'')+'> 달라 보이는 칸은 정밀 모델로 한 번 더 자동으로 만들기 (칸마다 약 $'+(priceOf(G.modelHi)||'0.13')+')</label></div>'
     +'<p class="cost">키는 이 창에만 두고 글·사진·작업 저장 파일에는 들어가지 않아요. 키는 구글·클로드에서 회사가 직접 발급하고, 쓴 만큼 요금이 들어요.</p>';
 }
-const chkLine=p=>p&&p.chk?(p.chk.ok?'<div class="cost" style="color:var(--ok)">검수: 원본과 같은 손잡이로 보여요</div>':'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 손잡이가 원본과 달라 보여요'+(p.chk.issues.length?' — '+esc(p.chk.issues.join(' / ')):'')+' (AI 판단이라 틀릴 수 있어요)</div>'):'';
+const chkLine=p=>p&&p.chk?(p.chk.ok?'<div class="cost" style="color:var(--ok)">검수: 원본과 같은 손잡이로 보여요</div>':'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 손잡이가 원본과 달라 보이거나 잘려 보여요'+(p.chk.issues.length?' — '+esc(p.chk.issues.join(' / ')):'')+' (AI 판단이라 틀릴 수 있어요)</div>'):'';
 function p3(){
-  const on=G.state==='on',cm=colorMode(),fl=flagged();
+  const on=G.state==='on',cm=colorMode(),fl=flagged(),hasAi=jobs().some(j=>{const p=getP(j.key);return p&&p.ai&&hasPhoto(p);});
   const rows=jobs().map((j,idx)=>{
     const p=getP(j.key),m=p&&PH.get(p.id),it=j.kind==='color'?S.colors.items[j.i]:null;
     return '<div class="job" data-pk="'+j.key+'"><div class="thumb" data-drop="'+j.key+'"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'끌어다<br>놓기')+'</div>'
@@ -687,6 +688,7 @@ function p3(){
     +'<p class="hint">문 색상 칸은 구글이 "문에 달린 사진"으로 만들어요. 손잡이 모양은 1단계 원본 그대로 두고 문 색과 카메라 각도만 바뀌어요. 처음에는 <b>1장만 시험</b>해 보고 나머지를 만드세요.</p>'
     +'<p class="cost" id="costLine">'+costLine()+'</p><p class="cost" id="gSpent">'+esc(spentText())+'</p>'
     +'<div class="acts"><button class="btn sm" type="button" data-act="gtest"'+(on?'':' disabled')+'>먼저 1장만 시험</button><button class="btn sm primary" type="button" id="gAll"'+(on?'':' disabled')+'>빈 칸 모두 만들기</button><button class="btn sm" type="button" id="gStop" hidden>멈추기</button></div>'
+    +(hasAi?'<div class="acts"><button class="btn sm" type="button" data-act="grecheck">이미 만든 사진 모두 다시 검수 (손잡이가 잘렸는지도 봐요 · 장당 1센트 안팎)</button></div>':'')
     +(on?'':'<p class="cost">먼저 2단계에서 구글 키를 연결해 주세요. 키 없이는 칸마다 \'지시문 복사\'로 AI 스튜디오에서 만들어 \'사진 넣기\'로 넣을 수 있어요.</p>')
     +(fl.length?'<div class="msg err" style="display:block">손잡이가 원본과 달라 보이는 칸이 '+fl.length+'개 있어요 (AI 판단이라 틀릴 수 있어요).</div><button class="btn sm primary" type="button" data-act="gfix">달라 보이는 칸만 정밀 모델로 다시 ('+fl.length+'장'+estText(fl.length,G.modelHi||G.model,true)+')</button>':'')
     +'<div class="confirm" id="gConfirm" hidden><span id="gWhy"></span><button class="btn sm" type="button" data-act="ggo">만들기</button><button class="btn sm ghost" type="button" data-act="gno">취소</button></div>'
@@ -1000,7 +1002,7 @@ function applyAbout(r){
 const chkPrompt=()=>{const sp=String(S.spec||'').trim().slice(0,900);
   return '첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 꼼꼼히 비교하세요.'
   +(sp?'\n원본 제품의 특징 메모(이 특징이 빠졌거나 바뀌었으면 다른 제품입니다):\n'+sp+'\n':' ')
-  +'비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(원판)의 크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
+  +'비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(원판)의 크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 또, 두 번째 사진에서 손잡이(레버 끝부터 받침 원판까지)가 화면 가장자리에서 잘려 있거나 일부가 화면 밖으로 나가 있으면 ok를 false로 하고 issues에 "손잡이가 화면 밖으로 잘렸어요"를 넣으세요(손이 가리는 것은 잘린 것이 아닙니다). 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
 let chkModel='claude-sonnet-5-5';   // 검수는 사진을 더 정확히 보는 모델로(없으면 기본 모델로 물러나요)
 async function checkOne(j,signal){
   const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
@@ -1443,6 +1445,18 @@ const ACT={
   gone(b){regen(jobs()[+b.dataset.i]);},
   gonehi(b){regen(jobs()[+b.dataset.i],{model:G.modelHi,fresh:true});},
   gfix(){const l=flagged();if(l.length)gAsk(l,{model:G.modelHi||G.model,fresh:true});},
+  async grecheck(){   // 이미 만든 사진을 새 기준(잘림 포함)으로 다시 검수해요
+    if(G.busy)return;
+    if(!UI.check){gMsg('2단계에서 "만든 사진을 원본과 비교해 검수"를 켜 주세요.','err');UI.open.add('p2');renderSide();return;}
+    if(!(await claudeReady(2))){gMsg('클로드 키가 필요해요. 2단계에서 넣어 주세요.','err');UI.open.add('p2');renderSide();return;}
+    const L=jobs().filter(j=>{const p=getP(j.key);return p&&p.ai&&hasPhoto(p);});
+    if(!L.length)return;
+    L.forEach(j=>{delete getP(j.key).chk;});
+    G.busy=true;renderSide();gMsg('만든 사진 '+L.length+'장을 다시 검수하는 중이에요…');
+    let r=null;try{r=await runChecks(L);}catch(e){}
+    G.busy=false;renderSide();refresh();
+    gMsg('검수를 마쳤어요.'+(r&&r.bad?' 원본과 달라 보이거나 손잡이가 잘린 칸이 '+r.bad+'개 있어요. 아래 \'달라 보이는 칸만 정밀 모델로 다시\'를 눌러 다시 만드세요.':' 문제가 보이는 칸은 없어요.')+(r&&r.err?' ('+r.err+')':''),r&&r.bad?'err':'ok');
+  },
   ggo(){$('#gConfirm').hidden=true;const l=G.pending||[],po=G.pendingOpts||undefined;G.pending=G.pendingOpts=null;gRun(l,po);},
   gno(){$('#gConfirm').hidden=true;G.pending=null;},
   async cCheck(){
