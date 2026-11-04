@@ -245,7 +245,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 25</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 26</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -292,7 +292,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=25,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=26,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -505,10 +505,10 @@ function renderPage(ex){
     if(own){const g2=geom(own,736,560,it.photo);ph='<div class="pb" style="width:736px;height:560px;background-image:url('+own.url+');background-size:'+g2.sw+'px '+g2.sh+'px;background-position:'+g2.x+'px '+g2.y+'px"></div>';}
     else if(sm){const g=geom(sm,736,560,it);
       ph='<div class="pb" style="width:736px;height:560px;background-image:url('+sm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>';
-      const IN=176,c=Math.min(IN/sm.w,IN/sm.h),cw=sm.w*c,ch=sm.h*c,cx=(IN-cw)/2,cy=(IN-ch)/2;
+      const pc=it.ic&&it.ic!=='auto'?{k:it.ic,sz:188}:pickCorner(g);icv=pc.k;   // 작은 사진 자리: 직접 고르지 않았으면 손잡이를 안 가리는 구석(안 되면 조금 작게)
+      const IN=pc.sz-12,c=Math.min(IN/sm.w,IN/sm.h),cw=sm.w*c,ch=sm.h*c,cx=(IN-cw)/2,cy=(IN-ch)/2;
       const l=clamp(-g.x/g.sw,0,1),t=clamp(-g.y/g.sh,0,1),wf=clamp(736/g.sw,0,1),hf=clamp(560/g.sh,0,1);
-      icv=it.ic&&it.ic!=='auto'?it.ic:pickCorner(g);   // 작은 사진 자리: 직접 고르지 않았으면 손잡이를 안 가리는 구석
-      inset=icv==='none'?'':'<div class="zin c-'+icv+'"><div class="cr" style="left:'+cx+'px;top:'+cy+'px;width:'+cw+'px;height:'+ch+'px"><img src="'+sm.url+'" alt="" style="display:block;width:'+cw+'px;height:'+ch+'px"><div class="rb" style="left:'+(l*cw)+'px;top:'+(t*ch)+'px;width:'+(wf*cw)+'px;height:'+(hf*ch)+'px"></div></div></div>';
+      inset=icv==='none'?'':'<div class="zin c-'+icv+'"'+(pc.sz!==188?' style="width:'+pc.sz+'px;height:'+pc.sz+'px"':'')+'><div class="cr" style="left:'+cx+'px;top:'+cy+'px;width:'+cw+'px;height:'+ch+'px"><img src="'+sm.url+'" alt="" style="display:block;width:'+cw+'px;height:'+ch+'px"><div class="rb" style="left:'+(l*cw)+'px;top:'+(t*ch)+'px;width:'+(wf*cw)+'px;height:'+(hf*ch)+'px"></div></div></div>';
     }else ph='<div class="pb ph-empty" data-jump="src" style="width:736px;height:560px">'+ILLUS+'<span>1단계에서 제품 사진을 넣으면 여기에 확대돼요</span></div>';
     return '<div class="zi"><div class="zp'+(icv==='tr'?' tagl':'')+'">'+ph+inset+'<span class="ztag"'+J('zoom.items.'+i+'.tag')+'>'+esc(it.tag)+'</span></div>'
       +'<h3'+J('zoom.items.'+i+'.title')+'>'+T('zoom.items.'+i+'.title',it.title,{req:1,ph:'항목 제목'})+'</h3>'
@@ -1011,20 +1011,23 @@ async function ensureMask(){
   try{const P=await findParts(m.blob);PM={id:S.src.id,w:P.w,h:P.h,m:P.mask};return true;}catch(e){PM=null;return false;}
 }
 // 작은 원본 사진을 네 구석 중 손잡이를 가장 덜 가리는 곳에 놓아요(왼쪽 위 → 왼쪽 아래 → 오른쪽 아래 → 오른쪽 위 순서로 우선)
+// 어느 구석도 손잡이와 겹치지 않으면 그대로, 모든 구석이 닿으면 작은 사진을 조금씩 줄여서(188→152→124) 겹치지 않는 곳을 찾아요
+const INSET_SIZES=[188,152,124];
 function pickCorner(g){
-  if(!PM||!S.src||PM.id!==S.src.id)return 'tl';
-  const l=-g.x/g.sw,t=-g.y/g.sh,wf=736/g.sw,hf=560/g.sh,IN=188,M=20,PD=16,E=736-M-IN,F=560-M-IN,pos={tl:[M,M],bl:[M,F],br:[E,F],tr:[E,M]},fr={};   // PD: 손잡이에 닿을 듯 가까운 것도 피해요
-  for(const k in pos){
-    const x=pos[k][0],y=pos[k][1];
+  if(!PM||!S.src||PM.id!==S.src.id)return {k:'tl',sz:188};
+  const l=-g.x/g.sw,t=-g.y/g.sh,wf=736/g.sw,hf=560/g.sh,M=20,PD=14;   // PD: 손잡이에 닿을 듯 가까운 것도 피해요
+  const over=(IN,k)=>{
+    const x=(k==='tl'||k==='bl')?M:736-M-IN,y=(k==='tl'||k==='tr')?M:560-M-IN;
     const x0=Math.max(0,Math.floor((l+(x-PD)/736*wf)*PM.w)),x1=Math.min(PM.w,Math.ceil((l+(x+IN+PD)/736*wf)*PM.w));
     const y0=Math.max(0,Math.floor((t+(y-PD)/560*hf)*PM.h)),y1=Math.min(PM.h,Math.ceil((t+(y+IN+PD)/560*hf)*PM.h));
     let c=0;for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++)if(PM.m[yy*PM.w+xx])c++;
-    fr[k]=c/Math.max(1,(x1-x0)*(y1-y0));
-  }
-  if(fr.tl<.003)return 'tl';
-  let best='tl',bv=fr.tl;
-  [['bl',0],['br',0],['tr',.03]].forEach(a=>{const v=fr[a[0]]+a[1];if(v<bv-.002){bv=v;best=a[0];}});   // 오른쪽 위는 "확대 N" 표와 자리가 겹쳐서 마지막
-  return best;
+    return c/Math.max(1,(x1-x0)*(y1-y0));
+  };
+  const order=['tl','bl','br','tr'];   // 오른쪽 위는 "확대 N" 표와 자리가 겹쳐서 마지막
+  for(const sz of INSET_SIZES)for(const k of order)if(over(sz,k)<.0005)return {k,sz};
+  const sm=INSET_SIZES[INSET_SIZES.length-1];let best='tl',bv=9;
+  order.forEach(k=>{const v=over(sm,k)+(k==='tr'?.03:0);if(v<bv){bv=v;best=k;}});
+  return {k:best,sz:sm};
 }
 async function autoZoom(){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
