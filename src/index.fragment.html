@@ -119,6 +119,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bfig figcaption{font-size:12px;text-align:center;margin-top:4px;color:var(--mute);font-weight:700}
 .bfig .btn{width:100%;margin-top:4px}
 .bfig .cost{font-size:11px}
+.recog .rwrap{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start}
+.recog .rimg{position:relative;width:120px;background:#fff center/contain no-repeat;border:1px solid var(--line);border-radius:8px}
+.recog .rbox{position:absolute;border:2px solid #e5384f;border-radius:4px}
+.recog .rrow{display:grid;grid-template-columns:70px 1fr;gap:6px;font-size:13px;line-height:1.45;margin-bottom:4px}
+.recog .rrow b{color:var(--mute)}
 .job pre{margin:6px 0 0;white-space:pre-wrap;font:inherit;font-size:13px;color:var(--mute);background:var(--panel-2);border-radius:8px;padding:8px 10px}
 .aitag{font-size:12px;color:var(--mute);cursor:pointer}
 
@@ -250,7 +255,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 32</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 33</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -297,7 +302,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=32,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=33,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -368,7 +373,7 @@ function defaults(){
 }
 let S=defaults();
 let dirty=false;        // 제품 글을 직접 고쳤는지(새 글이 덮어쓰기 전에 물어봐요)
-const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:false,check:true,autoFix:true,clearOnNew:true};
+const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:true,check:true,autoFix:true,clearOnNew:true};
 const isProductText=p=>/^(hero|concept|zoom\.items)\./.test(p)||(/^faq\.items\.\d+\./.test(p)&&!!(S.faq.items[+p.split('.')[2]]||{}).p);
 
 /* 글 틀 채우기(무료) */
@@ -482,12 +487,22 @@ function geom(m,bw,bh,p){
   return {sw,sh,x:clamp(bw/2-fx*sw,bw-sw,0),y:clamp(bh/2-fy*sh,bh-sh,0)};
 }
 const ILLUS='<svg viewBox="0 0 220 170" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-10 100 60)"><rect x="22" y="30" width="150" height="46" rx="23"/><path d="M52 36v34M70 34v38M88 33v40M106 33v40M124 34v38M142 36v34"/></g><path d="M100 80v38"/><path d="M82 118h36"/><ellipse cx="100" cy="132" rx="46" ry="17"/></svg>';
+function fitGeom(m,bw,bh,a){             // 인식한 손잡이 네모가 a 영역 안에 꽉 차게(전체가 보이게) 맞춰요
+  a=a||{x0:.08,x1:.92,y0:.08,y1:.92};
+  const bb=PM&&S.src&&PM.id===S.src.id&&PM.bb?PM.bb:{x0:0,y0:0,x1:1,y1:1};
+  const pw=Math.max(1,(bb.x1-bb.x0)*m.w),ph=Math.max(1,(bb.y1-bb.y0)*m.h),rw=(a.x1-a.x0)*bw,rh=(a.y1-a.y0)*bh;
+  const s=Math.min(rw/pw,rh/ph),sw=m.w*s,sh=m.h*s;
+  return {sw,sh,x:(a.x0+a.x1)/2*bw-(bb.x0+bb.x1)/2*sw,y:(a.y0+a.y1)/2*bh-(bb.y0+bb.y1)/2*sh};
+}
 function box(p,bw,bh,o){
   o=o||{};const m=p&&PH.get(p.id),at=(!o.ex&&o.jump)?' data-jump="'+o.jump+'"':'';
   const pic=(mm,g,extra)=>'<div class="pb '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px;background-image:url('+mm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>'+(extra||'');
   if(m)return pic(m,geom(m,bw,bh,p));
   const sm=o.fallback&&S.src&&PH.get(S.src.id);   // 아직 안 만들었으면 원본 사진을 임시로(미리보기에서만)
-  if(sm)return pic(sm,geom(sm,bw,bh,null),o.ex?'':'<span class="tmp">임시 · 원본 사진</span>');
+  if(sm){   // 아직 AI 사진이 없으면 원본 사진을 넣되, 인식한 손잡이 자리에 맞춰 손잡이 전체가 잘리지 않게 넣어요
+    const g=fitGeom(sm,bw,bh,o.area),bg=PM&&S.src&&PM.id===S.src.id&&PM.bg?'rgb('+PM.bg.join(',')+')':'#f4f4f4';
+    return '<div class="pb '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px;background-color:'+bg+';background-image:url('+sm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>'+(o.ex?'':'<span class="tmp">임시 · 원본 사진</span>');
+  }
   if(o.ex)return '<div class="pb '+(o.cls||'')+'" style="width:'+bw+'px;height:'+bh+'px"></div>';
   return '<div class="pb ph-empty '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px">'+ILLUS+'<span>'+esc(o.hint||'사진을 넣어 주세요')+'</span></div>';
 }
@@ -497,7 +512,7 @@ function renderPage(ex){
   const head=a=>'<div class="head"><div class="eyebrow"'+J(a+'.eyebrow')+'>'+esc(S[a].eyebrow)+'</div><h2'+J(a+'.title')+'>'+T(a+'.title',S[a].title,{req:1,ph:'제목'})+'</h2>'+(S[a].body||!ex?'<p class="lead"'+J(a+'.body')+'>'+T(a+'.body',S[a].body,{req:a!=='concept',ph:'설명 글'})+'</p>':'')+'</div>';
   const out=[],A=S.about;
   // 1 첫 화면
-  out.push('<section class="sec hero" data-slice="01_첫화면">'+box(S.hero.photo,860,1040,{jump:'hero.photo',ex,fallback:1,hint:'첫 화면 사진 (세로 4:5)'})+'<div class="shade"></div><div class="txt">'
+  out.push('<section class="sec hero" data-slice="01_첫화면">'+box(S.hero.photo,860,1040,{jump:'hero.photo',ex,fallback:1,area:{x0:.07,x1:.93,y0:.05,y1:.58},hint:'첫 화면 사진 (세로 4:5)'})+'<div class="shade"></div><div class="txt">'
     +(S.hero.badge||!ex?'<span class="badge"'+J('hero.badge')+'>'+(S.hero.badge?nl(S.hero.badge):'<span class="need">작은 글</span>')+'</span>':'')
     +'<h1'+J('hero.title')+'>'+T('hero.title',S.hero.title,{req:1,ph:'큰 제목'})+'</h1>'
     +(S.hero.sub||!ex?'<p'+J('hero.sub')+'>'+T('hero.sub',S.hero.sub,{req:1,ph:'설명 글'})+'</p>':'')+'</div></section>');
@@ -526,7 +541,7 @@ function renderPage(ex){
     if(ex&&!hasPhoto(it.photo))return '';
     return '<figure class="cell">'+box(it.photo,356,356,{cls:'r20',jump:'colors.items.'+i+'.photo',ex,hint:(it.label||'문 색상')+' (1:1)'})+'<figcaption'+J('colors.items.'+i+'.label')+'>'+T('colors.items.'+i+'.label',it.label,{req:1,ph:'이름'})+'</figcaption></figure>';
   }).join('');
-  out.push('<section class="sec white" data-slice="04_문색상">'+head('colors')+'<div class="cgrid">'+cells+'</div>'+(S.colors.note?'<p class="note"'+J('colors.note')+'>'+nl(S.colors.note)+'</p>':'')+'</section>');
+  if(!ex||S.colors.items.some(it=>hasPhoto(it.photo)))out.push('<section class="sec white" data-slice="04_문색상">'+head('colors')+'<div class="cgrid">'+cells+'</div>'+(S.colors.note?'<p class="note"'+J('colors.note')+'>'+nl(S.colors.note)+'</p>':'')+'</section>');
   // 5 회사 소개
   const stats=A.stats.map((s,i)=>'<div class="stat"><b'+J('about.stats.'+i+'.v')+'>'+T('about.stats.'+i+'.v',s.v,{req:1,ph:'숫자'})+'</b><span'+J('about.stats.'+i+'.l')+'>'+T('about.stats.'+i+'.l',s.l,{req:1,ph:'이름'})+'</span></div>').join('');
   const pats=A.patents.map((p,i)=>{if(ex&&!p.no.trim()&&!p.title.trim())return '';const b='about.patents.'+i+'.';
@@ -687,6 +702,20 @@ const gList=()=>jobs().filter(needJob);      // 비어 있는 칸만 만들어�
 /* ---------- 왼쪽 네 단계 ---------- */
 const extraCtl=i=>{const p=S.extra&&S.extra[i],m=p&&PH.get(p.id),k='extra.'+i;
   return '<div class="pc" data-pk="'+k+'"><div class="pc-top"><div class="thumb" data-drop="'+k+'" style="width:72px;height:72px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'바꾸기':'넣기')+'<input type="file" accept="image/*" hidden data-file="'+k+'"></label>'+(m?'<button class="btn sm ghost" type="button" data-act="pclear" data-p="'+k+'">지우기</button>':'')+'</div></div></div>';};
+function recogCard(){                       // 사진 인식 결과: 컴퓨터가 찾은 손잡이 자리 + 클로드가 본 제품
+  const m=S.src&&PH.get(S.src.id);if(!m)return '';
+  const pm=PM&&PM.id===S.src.id?PM:null,r=S.recog&&S.recog.id===S.src.id?S.recog:null,bb=pm&&pm.bb;
+  const frame=bb?'<div class="rbox" style="left:'+(bb.x0*100)+'%;top:'+(bb.y0*100)+'%;width:'+((bb.x1-bb.x0)*100)+'%;height:'+((bb.y1-bb.y0)*100)+'%"></div>':'';
+  const row=(k,v)=>v?'<div class="rrow"><b>'+k+'</b><span>'+esc(v)+'</span></div>':'';
+  return '<div class="blk recog"><h3>사진 인식 결과</h3>'
+    +'<div class="rwrap"><div class="rimg" style="aspect-ratio:'+m.w+'/'+m.h+';background-image:url('+m.url+')">'+frame+'</div><div class="rinfo">'
+    +row('손잡이 위치',pm?'찾았어요(빨간 네모). 확대 3곳과 첫 화면·소개 자리를 여기에 맞췄어요.':'찾지 못했어요. 확대 칸은 슬라이더로 맞춰 주세요.')
+    +(r?row('종류',r.kind)+row('레버',r.lever)+row('받침',r.rosette)+row('마감',r.finish)+(r.features.length?row('특징',r.features.join(' · ')):'')
+      :'<p class="cost">'+(RECOG.busy?'클로드가 사진을 보고 제품을 인식하는 중이에요…':'클로드 키가 있으면 사진을 넣을 때 제품 종류·모양·특징까지 자동으로 인식해요.')+'</p>')
+    +'</div></div>'
+    +'<div class="acts"><button class="btn sm" type="button" data-act="recog"'+(RECOG.busy?' disabled':'')+'>'+(r?'다시 인식하기':'클로드로 제품 인식하기')+' (약 1센트)</button></div>'
+    +(r?'<p class="cost">인식 내용은 아래 \'제품 특징 메모\'에 들어가 이미지·글을 만들 때 쓰여요. 틀린 곳은 메모에서 고쳐 주세요.</p>':'')+'</div>';
+}
 function p1(){
   const m=S.src&&PH.get(S.src.id);
   return '<p class="hint">제품 이름과 사진 한 장만 넣고 위의 <b>한 번에 만들기</b>를 누르세요. 글, 이미지, 저장까지 이어져요.</p>'
@@ -695,6 +724,7 @@ function p1(){
     +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label></div></div></div></div>'
     +'<label class="chk"><input type="checkbox" id="useClear"'+(UI.clearOnNew?' checked':'')+'> 제품 사진을 바꾸면 이전에 만든 이미지와 다른 각도 사진을 지워요 (새 사진으로 다시 만들 수 있게)</label>'
     +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷과 이미지 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
+    +recogCard()
     +'<div class="f"><span>다른 각도 사진 (선택 · 최대 2장) — 옆면·정면 실제 사진을 더 넣을수록 AI가 실제 모양을 더 정확히 따라 그려요</span><div class="acts">'+extraCtl(0)+extraCtl(1)+'</div></div>'
     +fld.area('spec','제품 특징 메모 (구글에 같이 보내요 · 틀린 곳은 고쳐 주세요)',{rows:6,ph:'비워 두면 이미지를 만들기 직전에 클로드가 사진을 보고 적어요(클로드 키가 있을 때). 직접 적어도 돼요. 예: 레버 윗면 끝쪽에 엄지가 닿는 움푹한 곳이 있어요.'})
     +'<div class="acts"><button class="btn sm" type="button" data-act="specai">클로드가 사진 보고 적기 (약 1센트)</button></div><div class="msg" id="specMsg" aria-live="polite"></div>'
@@ -718,7 +748,7 @@ function p2(){
        +'<label class="f"><span>모델 이름 (비우면 작은 모델로 자동)</span><input type="text" id="cModel" placeholder="'+CMODEL+'" value="'+esc(C.model)+'"></label>'
        +'<div class="acts"><button class="btn sm" type="button" id="cCheck">연결 확인 (무료)</button></div>'
        +'<div class="msg'+(C.cls?' '+C.cls:'')+'" id="cMsg" aria-live="polite">'+esc(C.msg||(C.key.trim()?'':'키가 없어도 글은 무료 틀로 만들어져요.'))+'</div>')
-    +'<label class="chk"><input type="checkbox" id="useAI"'+(UI.useAI?' checked':'')+'> 글을 클로드가 새로 쓰기 (기본은 무료 틀)</label>'
+    +'<label class="chk"><input type="checkbox" id="useAI"'+(UI.useAI?' checked':'')+'> 사진을 보고 제품 글을 클로드가 쓰기 (1센트 안팎 · 끄면 무료 틀)</label>'
     +'<label class="chk"><input type="checkbox" id="useChk"'+(UI.check?' checked':'')+'> 만든 사진을 원본과 비교해 손잡이 모양 검수 (장당 1센트 안팎 예상)</label>'
     +'<label class="chk"><input type="checkbox" id="useFix"'+(UI.autoFix?' checked':'')+'> 달라 보이는 칸은 정밀 모델로 한 번 더 자동으로 만들기 (칸마다 약 $'+(priceOf(G.modelHi)||'0.13')+')</label></div>'
     +'<p class="cost">키는 이 창에만 두고 글·사진·작업 저장 파일에는 들어가지 않아요. 키는 구글·클로드에서 회사가 직접 발급하고, 쓴 만큼 요금이 들어요.</p>';
@@ -1117,7 +1147,7 @@ const ASK_ERR={not_granted:'이 창에서는 클로드 사용이 허용되지 �
 function planPrompt(){
   const ex=(e,i)=>'[예시 '+(i+1)+'] 제품: '+e.name+'\n'+JSON.stringify({hero:e.hero,concept:e.concept,zoom:e.zoom,faq:e.faq},null,1);
   return '당신은 한국 쇼핑몰(스마트스토어·쿠팡) 상세페이지 글을 쓰는 카피라이터입니다. '+CO.name+'('+CO.place+', 문 손잡이·도어락 제조사)의 방문(실내문) 손잡이 상세페이지에서 "제품마다 다른 글"만 씁니다. 회사 소개, 설치 안내, 구매 전 확인, 마지막 문구, 공통 질문은 모든 제품이 같은 글을 쓰므로 쓰지 않습니다.\n\n'
-  +'제품 이름: '+String(S.name).slice(0,80)+'\n아는 내용(메모): '+(S.memo.trim().slice(0,600)||'(없음)')+'\n첨부한 사진은 이 제품 사진입니다. 사진에서 실제로 보이는 것(모양, 무늬, 색, 마감 느낌, 부품 구성)만 관찰해서 쓰세요.\n\n'
+  +'제품 이름: '+String(S.name).slice(0,80)+'\n아는 내용(메모): '+(S.memo.trim().slice(0,600)||'(없음)')+(String(S.spec||'').trim()?'\n사진 인식 결과(제품 특징): '+String(S.spec).trim().slice(0,600):'')+'\n첨부한 사진은 이 제품 사진입니다. 사진에서 실제로 보이는 것(모양, 무늬, 색, 마감 느낌, 부품 구성)만 관찰해서 쓰세요.\n\n'
   +'아래는 이 회사가 이미 만든 두 제품의 글입니다. 말투, 길이, 줄바꿈, 구성을 그대로 따라 하되 문장을 베끼지 마세요. 제품이 다르면 내용도 달라야 합니다.\n\n'+PLAN_EX.map(ex).join('\n\n')+'\n\n'
   +'지켜야 할 것:\n1. 쉬운 한국어, 짧은 문장, "~해요" 말투. 어려운 영어 단어는 쓰지 않습니다.\n'
   +'2. 제품 사양(치수, 백셋, 문 두께, 구멍 간격, 재질 이름, 인증, 방수·내구 수치), 특허 번호, 연도, 날짜, 실적, 가격은 절대 지어내지 마세요. 메모에 적힌 것과 사진에서 보이는 것만 쓰세요.\n'
@@ -1193,13 +1223,26 @@ async function runChecks(list,signal){
 }
 
 /* 제품 특징 메모: 클로드가 사진을 보고, 이미지 AI가 틀리기 쉬운 이 제품만의 모양을 글로 적어요(구글에 같이 보내요) */
-const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
-async function writeSpec(signal){
+const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(원판) 모양 한 문장","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
+async function writeSpec(signal,keep){   // keep: 사장님이 직접 적은 특징 메모는 덮어쓰지 않아요
   if(!hasPhoto(S.src))throw {code:'unavailable'};
   const r=await claude(SPEC_PROMPT,{signal,max:900,images:[await shrink(PH.get(S.src.id).blob,1024,.88)]});
   const sp=String(r&&r.spec||'').trim().slice(0,700);if(!sp)throw {code:'invalid_json'};
   const nv=(Array.isArray(r.never)?r.never:[]).map(x=>String(x).trim().slice(0,120)).filter(Boolean).slice(0,3);
-  S.spec=sp+(nv.length?'\n※ 이렇게 그리면 틀려요: '+nv.join(' / '):'');
+  if(!keep)S.spec=sp+(nv.length?'\n※ 이렇게 그리면 틀려요: '+nv.join(' / '):'');
+  const t=(v,n)=>typeof v==='string'?v.trim().slice(0,n):'';
+  S.recog={id:S.src.id,kind:t(r.kind,40),lever:t(r.lever,120),rosette:t(r.rosette,120),finish:t(r.finish,80),features:(Array.isArray(r.features)?r.features:[]).map(x=>t(String(x),60)).filter(Boolean).slice(0,4)};
+}
+const RECOG={busy:false};
+async function recognize(force){             // 사진 인식(클로드): 제품 종류·모양·특징을 적고, 글도 이 제품에 맞춰 써요
+  if(RECOG.busy||!hasPhoto(S.src)||!(await claudeReady(1)))return false;
+  const id=S.src.id;if(!force&&S.recog&&S.recog.id===id)return false;
+  RECOG.busy=true;renderSide();
+  try{
+    await writeSpec(null,!force&&!!String(S.spec||'').trim()&&!S.specAuto);if(!S.spec||S.specAuto)S.specAuto=true;
+    if(S.src&&S.src.id===id&&UI.useAI&&!dirty&&S.textFor!==askKey()){await askText();S.textFor=askKey();}
+  }finally{RECOG.busy=false;}
+  renderSide();refresh();return true;
 }
 
 /* ============ 확대 위치 자동 맞춤(컴퓨터가 원본에서 손잡이를 찾아요 · 무료) ============ */
@@ -1242,13 +1285,17 @@ async function findParts(blob){
   if(!k3)throw new Error('제품 위치를 찾지 못했어요.');
   let lx=0,ln=0;for(let i=0;i<n;i++)if(A(i)>=.7&&ys[i]>=mx-(mx-mn)*.3){lx+=xs[i];ln++;}
   const mask=new Uint8Array(N);for(let p=0;p<N;p++)if(lab[p]===best)mask[p]=1;   // 제품이 차지한 자리(작은 사진이 안 가리게 쓰여요)
-  return {p1,p2,p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h,mask};
+  let bx0=w,by0=h,bx1=0,by1=0;for(let i=0;i<n;i++){if(xs[i]<bx0)bx0=xs[i];if(xs[i]>bx1)bx1=xs[i];if(ys[i]<by0)by0=ys[i];if(ys[i]>by1)by1=ys[i];}
+  const bb={x0:Math.max(0,(bx0-2)/w),y0:Math.max(0,(by0-2)/h),x1:Math.min(1,(bx1+3)/w),y1:Math.min(1,(by1+3)/h)};   // 손잡이가 있는 네모(0~1)
+  let er=0,eg=0,eb=0,en=0;const edge=(x,y)=>{const i=(y*w+x)*4;er+=d[i];eg+=d[i+1];eb+=d[i+2];en++;};
+  for(let x=0;x<w;x++){edge(x,0);edge(x,h-1);}for(let y=0;y<h;y++){edge(0,y);edge(w-1,y);}
+  return {p1,p2,p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h,mask,bb,bg:[Math.round(er/en),Math.round(eg/en),Math.round(eb/en)]};
 }
 let PM=null;   // 제품 모양 기억(어느 사진 것인지 id와 함께)
 async function ensureMask(){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   if(PM&&PM.id===S.src.id)return true;
-  try{const P=await findParts(m.blob);PM={id:S.src.id,w:P.w,h:P.h,m:P.mask};return true;}catch(e){PM=null;return false;}
+  try{const P=await findParts(m.blob);PM={id:S.src.id,w:P.w,h:P.h,m:P.mask,bb:P.bb,bg:P.bg};return true;}catch(e){PM=null;return false;}
 }
 // 작은 원본 사진을 네 구석 중 손잡이를 가장 덜 가리는 곳에 놓아요(왼쪽 위 → 왼쪽 아래 → 오른쪽 아래 → 오른쪽 위 순서로 우선)
 // 어느 구석도 손잡이와 겹치지 않으면 그대로, 모든 구석이 닿으면 작은 사진을 조금씩 줄여서(188→152→124) 겹치지 않는 곳을 찾아요
@@ -1273,7 +1320,7 @@ async function autoZoom(){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   let P;try{P=await findParts(m.blob);}catch(e){return false;}
   const Wc=736/Math.max(736/m.w,560/m.h),lenSrc=P.len*(m.w/P.w),cap=clamp(m.w/700,1.6,4);   // 확대해도 흐려지지 않게 원본 크기에 맞춰요
-  PM={id:S.src.id,w:P.w,h:P.h,m:P.mask};
+  PM={id:S.src.id,w:P.w,h:P.h,m:P.mask,bb:P.bb,bg:P.bg};
   const mk=(pt,fr)=>({fx:+clamp(pt.x/P.w,.05,.95).toFixed(3),fy:+clamp(pt.y/P.h,.05,.95).toFixed(3),z:+clamp(Wc/(lenSrc*fr),1.6,cap).toFixed(2)});
   [mk(P.p1,.3),mk(P.p2,.32),mk(P.p3,.28)].forEach((z,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],z);});
   return true;
@@ -1288,6 +1335,8 @@ function showExport(msg){
   veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="이미지로 저장"><h2>이미지로 저장 · 긴 이미지 한 장</h2>'
    +(n.length?'<div class="confirm" style="display:block">아직 채울 곳이 '+n.length+'곳 남아 있어요. 비어 있는 칸은 이미지에서 빠져요.</div>':'')
    +(ab?'<div class="confirm" style="display:block">회사 소개의 특허·실적·연도 기록 '+ab+'곳이 비어 있어서 그 부분이 짧게 나와요. 4단계 \'회사 소개\'에서 채워 주세요.</div>':'')
+   +(!hasPhoto(S.hero.photo)||!hasPhoto(S.concept.photo)?'<div class="confirm" style="display:block">첫 화면·소개 사진이 아직 없어서, 원본 사진을 인식한 손잡이 자리에 맞춰 잘리지 않게 넣어요. 3단계에서 만들면 더 좋아요.</div>':'')
+   +(!S.colors.items.some(it=>hasPhoto(it.photo))?'<div class="confirm" style="display:block">문 색상 칸이 하나도 없어서 문 색상 부분은 이미지에서 빠져요.</div>':'')
    +(fl?'<div class="confirm" style="display:block">손잡이가 원본과 달라 보이는 칸이 '+fl+'개 있어요. 3단계에서 확인하고 다시 만들 수 있어요.</div>':'')
    +(aiN?'<div class="tip">AI로 만든 사진이 '+aiN+'장 들어 있어요. 판매 채널의 AI 표시 규칙을 확인하세요(바뀔 수 있어요). 쿠팡 대표이미지는 실물 원본 사진만 써요.</div>':'')
    +'<div class="opts"><b class="hint">가로 크기</b>'+radio('w',860,EX.w,'860px · 스마트스토어 기본')+radio('w',780,EX.w,'780px · 쿠팡')+radio('w',1720,EX.w,'1720px · 2배로 선명하게 (파일이 커요)')+'</div>'
@@ -1520,7 +1569,6 @@ async function runOne(go){
   if(!hasPhoto(S.src)){UI.open.add('p1');setTab('edit');renderSide();toast('제품 사진 한 장을 먼저 넣어 주세요.');focusEl($('[data-pk="src"]',side));return;}
   const aiOn=UI.useAI&&await claudeReady(1),on=G.state==='on',list=on?gList():[],why=[];
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
-  if(aiOn&&askKey()===lastAsk)why.push('같은 이름·메모·사진으로 이미 한 번 짰어요. 다시 짜면 클로드 사용량이 또 들어요.');
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
@@ -1534,9 +1582,10 @@ async function runOne(go){
   $('#oStop').onclick=()=>{ctl.abort();if(G.ctl)G.ctl.abort();};
   let tErr='',imgRes=null;
   const tText=(async()=>{
+    if(!dirty&&S.textFor&&S.textFor===askKey()){p1=1;bar();set('o1','이미 사진에 맞춰 썼어요','ok');return;}   // 사진 인식 때 이미 썼으면 다시 쓰지 않아요
     if(!aiOn){tplFill();await autoZoom();p1=1;bar();set('o1','틀로 채움 · 무료','ok');return;}
     set('o1','클로드가 쓰는 중…','run');
-    try{await askText(ctl.signal);await autoZoom();p1=1;bar();set('o1','완료','ok');}
+    try{await askText(ctl.signal);S.textFor=askKey();await autoZoom();p1=1;bar();set('o1','완료','ok');}
     catch(e){p1=1;bar();if(e&&e.code==='cancelled')set('o1','멈춤','skip');else{tErr=(e&&e.text)||ASK_ERR[e&&e.code]||'글을 받지 못했어요.';set('o1',tErr,'err');}}
   })();
   const tImg=(async()=>{
@@ -1586,6 +1635,7 @@ async function putPhoto(path,file,ai){
     [[.5,.4],[.5,.5],[.5,.6]].forEach((v,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],{fx:v[0],fy:v[1],z:1.6});});
     refresh();toast('제품 위치를 못 찾았어요. 확대 칸의 슬라이더로 맞춰 주세요.',3600);
   }
+  if(path==='src')recognize().then(ok=>{if(ok)toast('사진을 인식했어요. 1단계 \'사진 인식 결과\'에서 확인하세요.',4200);}).catch(e=>{RECOG.busy=false;renderSide();toast('사진 인식(클로드)을 하지 못했어요: '+((e&&e.text)||ASK_ERR[e&&e.code]||'잠시 뒤 \'클로드로 제품 인식하기\'를 눌러 주세요.'),4200);});
 }
 async function copy(text,msg){
   try{await navigator.clipboard.writeText(text);toast(msg);return;}catch(e){}
@@ -1638,6 +1688,11 @@ const ACT={
   basepick(b){                                // 후보 중 하나를 기준 사진으로 확정(나머지 후보는 지워요)
     const c=S.baseCands&&S.baseCands[+b.dataset.k];if(!hasPhoto(c))return;
     S.base=Object.assign({},c);S.baseCands=[];ACT.baseok();
+  },
+  async recog(){
+    if(!hasPhoto(S.src)){toast('제품 사진을 먼저 넣어 주세요.');return;}
+    if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요. 키가 없어도 손잡이 위치 인식은 돼요.',3600);UI.open.add('p2');renderSide();return;}
+    try{if(await recognize(true))toast('사진을 다시 인식했어요.');}catch(e){RECOG.busy=false;renderSide();toast((e&&e.text)||ASK_ERR[e&&e.code]||'인식하지 못했어요. 한 번 더 눌러 주세요.',3600);}
   },
   baseok(){                                   // 기준 사진 확정: 흰 문 칸에 그대로 넣고, 나머지 문 색상은 이 사진에서 문 색만 바꿔 만들어요
     if(!hasPhoto(S.base))return;
@@ -1746,7 +1801,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
   await idb.open();await restore();
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
   if(zoomUntouched()&&await autoZoom()){renderSide();refresh();toast('확대 3곳을 제품 위치에 맞췄어요.',2600);}   // 예전 기본 자리가 저장돼 있던 작업도 한 번 맞춰요
-  else if(await ensureMask())refresh();                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
+  else if(await ensureMask()){renderSide();refresh();}                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
   if(G.key.trim())gCheck();                                  // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
   checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
