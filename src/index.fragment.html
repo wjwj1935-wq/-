@@ -238,7 +238,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 22</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 23</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -285,7 +285,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=22,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=23,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -458,7 +458,7 @@ async function loadWork(f){
     const z=await JSZip.loadAsync(f),st=fromSaved(JSON.parse(await z.file('state.json').async('string')));if(!st)throw new Error('v');
     const idx=JSON.parse(await z.file('photos/index.json').async('string'));
     for(const it of idx){const fl=z.file('photos/'+it.id+'.bin');if(!fl)continue;const blob=new Blob([await fl.async('blob')],{type:it.type||'image/jpeg'});remember(it.id,blob,it.w,it.h);await idb.put(it.id,{blob,w:it.w,h:it.h});}
-    S=st;dirty=false;gc();renderSide();refresh();toast('작업을 불러왔어요.');
+    S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();renderSide();refresh();toast('작업을 불러왔어요.');
   }catch(err){toast('이 파일은 불러올 수 없어요. 이 프로그램에서 저장한 zip인지 확인해 주세요.',3500);}
 }
 
@@ -955,6 +955,8 @@ async function runChecks(list,signal){
 }
 
 /* ============ 확대 위치 자동 맞춤(컴퓨터가 원본에서 손잡이를 찾아요 · 무료) ============ */
+// 제품 사진은 있는데 확대 3곳이 아직 처음 기본 자리 그대로(한 번도 안 맞췄고, 직접 옮기지도 않음)인지
+const zoomUntouched=()=>hasPhoto(S.src)&&S.zoom.items.length>=3&&S.zoom.items.slice(0,3).every((it,i)=>{const t=TPL.zoom[i];return !!t&&!it.photo&&it.fx===t.fx&&it.fy===t.fy&&it.z===t.z;});
 function dil(a,w,h,r){const t=new Uint8Array(a.length),o=new Uint8Array(a.length);
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=0;for(let i=-r;i<=r&&!v;i++){const xx=x+i;if(xx>=0&&xx<w&&a[y*w+xx])v=1;}t[y*w+x]=v;}
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=0;for(let i=-r;i<=r&&!v;i++){const yy=y+i;if(yy>=0&&yy<h&&t[yy*w+x])v=1;}o[y*w+x]=v;}
@@ -1411,6 +1413,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
   await idb.open();await restore();
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
+  if(zoomUntouched()&&await autoZoom()){renderSide();refresh();toast('확대 3곳을 제품 위치에 맞췄어요.',2600);}   // 예전 기본 자리가 저장돼 있던 작업도 한 번 맞춰요
   if(G.key.trim())gCheck();                                  // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
   checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
