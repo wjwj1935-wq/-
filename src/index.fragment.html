@@ -238,7 +238,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 20</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 21</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -285,7 +285,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=20,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=21,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1382,14 +1382,23 @@ $('#btnNew').onclick=()=>{
   $('#nwGo').onclick=()=>{newProduct();UI.open.add('p1');renderSide();refresh();veil.hidden=true;toast('새 제품을 시작했어요. 1단계에서 이름과 사진을 넣어 주세요.',3200);};
 };
 
-/* ============ 새 버전 알림(인터넷 주소로 열었을 때만): 주소는 그대로, 새로고침하면 최신이 돼요 ============ */
-(async()=>{
+/* ============ 자동 업그레이드(인터넷 주소로 열었을 때만) ============
+   열 때마다 최신 버전인지 확인해서, 새 버전이 있으면 스스로 새로고침해요. 작업은 자동 저장돼 있어서 그대로 이어져요.
+   (한 번 새로고침했는데도 옛 화면이면 무한 반복하지 않고 맨 위에 "새 버전이 나왔어요" 버튼만 보여요) */
+async function checkUpdate(auto){
   if(!/^https?:$/.test(location.protocol))return;
   try{
     const r=await fetch('version.json?'+Date.now(),{cache:'no-store'}),d=await r.json();
-    if(d&&d.v>VER){const c=$('#updChip');c.hidden=false;c.onclick=()=>{location.href=location.pathname+'?v='+d.v;};}
+    if(!(d&&d.v>VER))return;
+    const go=()=>{try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}location.href=location.pathname+'?v='+d.v;};
+    let tried=0;try{tried=Number(sessionStorage.getItem('wj-upd')||0);}catch(e){}
+    const busy=G.busy||oneBusy||EX.busy||SV.busy||!veil.hidden;
+    if(auto&&!busy&&tried!==d.v){try{sessionStorage.setItem('wj-upd',String(d.v));}catch(e){}go();return;}
+    const c=$('#updChip');c.hidden=false;c.onclick=go;
   }catch(e){}
-})();
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate(false);});   // 창으로 돌아오면 버튼으로만 알려요(작업 중 갑자기 바뀌지 않게)
+setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
 
 /* ============ 시작 ============ */
 (async()=>{
@@ -1398,6 +1407,7 @@ $('#btnNew').onclick=()=>{
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
   if(G.key.trim())gCheck();                                  // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
+  checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
 })();
 })();
 </script>
