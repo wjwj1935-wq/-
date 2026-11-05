@@ -279,7 +279,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 39</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 40</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -326,7 +326,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=39,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=40,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1029,8 +1029,12 @@ function gErr(e){
   if(st===404)return '모델 이름을 찾을 수 없어요. 2단계에서 연결 확인을 다시 눌러 주세요.'+m;
   if(st===429)return '사용 한도에 걸렸어요. 잠시 뒤 다시 하거나 구글 사용량을 확인해 주세요.'+m;
   if(st>=500)return '구글 쪽 오류예요. 잠시 뒤 다시 눌러 주세요.'+m;
+  const dt=e&&(e.message||e.name)?String((e.name&&e.name!=='Error'?e.name+': ':'')+(e.message||'')).slice(0,140):'';
+  if(e&&(e.net||(e instanceof TypeError&&/fetch|network|load failed/i.test(e.message||''))))return '구글에 연결하지 못했어요('+dt+'). 인터넷 연결을 확인하고, VPN·보안 프로그램·광고 차단 확장이 구글 주소(googleapis.com)를 막고 있지 않은지도 확인해 주세요. 잠시 뒤 다시 눌러도 돼요.';
+  if(dt)return '예상하지 못한 오류가 났어요('+dt+'). 이 글을 캡처해서 알려 주세요.';
   return '연결하지 못했어요. 인터넷 연결을 확인해 주세요.';
 }
+const sleepA=(ms,sig)=>new Promise((ok,no)=>{const t=setTimeout(ok,ms);if(sig)sig.addEventListener('abort',()=>{clearTimeout(t);no(Object.assign(new Error('abort'),{name:'AbortError'}));},{once:true});});
 async function gOne(j,signal,opts){
   const model=((opts&&opts.model)||((j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j.kind==='edit'&&G.modelEdit)||G.model).trim(),refs=j.kind==='edit'?await baseRef():await buildRefs();   // 기준 사진·첫 화면은 최고급(정밀 모델)
   let prompt=promptOf(j)+refs.note;
@@ -1042,8 +1046,11 @@ async function gOne(j,signal,opts){
   const cfg={aspectRatio:ASPECT[j.kind]||'1:1'};
   if((j.kind==='sheet'||j.kind==='base'||j.kind==='hero')&&/gemini-3/.test(model))cfg.imageSize='2K';   // 시트는 칸마다 선명하도록 큰 크기로(이 모델이 크기 지정을 못 받으면 아래에서 기본 크기로 다시 보내요)
   const send=c=>fetch(GBASE+'/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',signal,headers:{'x-goog-api-key':G.key.trim(),'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:reqParts}],generationConfig:{responseModalities:['IMAGE'],imageConfig:c,candidateCount:1}})});
-  let r=await send(cfg);
-  if(r.status===400&&cfg.imageSize){const c2=Object.assign({},cfg);delete c2.imageSize;r=await send(c2);}
+  const sendR=async c=>{for(let a=0;;a++){   // 잠깐 끊기거나(네트워크) 구글이 바쁠 때(429·5xx)는 2번까지 기다렸다 다시 보내요(실패한 요청은 요금이 안 들어요)
+    let r;try{r=await send(c);}catch(e){if(e&&e.name==='AbortError')throw e;if(a>=2){const ee=e instanceof Error?e:new Error(String(e));ee.net=true;throw ee;}await sleepA(2000*(a+1),signal);continue;}
+    if([429,500,502,503,504].includes(r.status)&&a<2){await sleepA(3000*(a+1),signal);continue;}return r;}};
+  let r=await sendR(cfg);
+  if(r.status===400&&cfg.imageSize){const c2=Object.assign({},cfg);delete c2.imageSize;r=await sendR(c2);}
   if(!r.ok){let t='';try{const d=await r.json();t=d&&d.error&&d.error.message||'';}catch(e){}throw {status:r.status,message:t};}
   const d=await r.json(),parts=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts)||[],part=parts.find(x=>x.inlineData||x.inline_data);
   if(!part)throw {status:0,blocked:true,message:(d.promptFeedback&&d.promptFeedback.blockReason)||(d.candidates&&d.candidates[0]&&d.candidates[0].finishReason)||'EMPTY'};
@@ -1240,7 +1247,7 @@ async function gRun(list,opts){
   const o=opts||{};
   if(G.busy)return {done:0,total:list.length,stopped:'이미 만드는 중이에요.'};
   G.busy=true;const ctl=G.ctl=new AbortController(),st=$('#gStop'),all=$('#gAll');if(st)st.hidden=false;if(all)all.disabled=true;
-  const par=clamp(G.par,1,5),total=list.length,t0=Date.now();
+  const par=clamp(list.length&&list.every(j=>j.kind==='edit')?Math.min(G.par,3):G.par,1,5),total=list.length,t0=Date.now();   // 문 색 편집은 한꺼번에 많이 보내면 구글이 막을 수 있어 최대 3개씩
   let next=0,done=0,cachedN=0,consec=0,stopped='',halt=false;
   const worker=async()=>{
     while(!halt&&!ctl.signal.aborted){
