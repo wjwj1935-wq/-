@@ -284,7 +284,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 47</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 48</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -332,7 +332,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=47,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=48,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -500,7 +500,7 @@ async function restore(){
   try{const o=fromSaved(JSON.parse(raw));if(!o)return;S=o;await loadPhotos();}catch(e){S=defaults();}
 }
 /* 한글 파일 이름이 깨질 수 있어 내 컴퓨터에서는 영문 이름으로 내려받아요 */
-const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];return (/_1_위/.test(n)?'detailpage-1-top':/_2_작동영상/.test(n)?'detailpage-2-video':/_3_아래/.test(n)?'detailpage-3-bottom':/작업/.test(n)?'detailpage-work':'detailpage')+'-'+new Date().toISOString().slice(0,10)+ext;};
+const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];return (/첫장면/.test(n)?'operation-first-frame':/_1_위/.test(n)?'detailpage-1-top':/_2_작동영상/.test(n)?'detailpage-2-video':/_3_아래/.test(n)?'detailpage-3-bottom':/작업/.test(n)?'detailpage-work':'detailpage')+'-'+new Date().toISOString().slice(0,10)+ext;};
 async function saveFile(name,blob){
   let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
   if(dl){await dl.save({filename:name,data:blob});return;}
@@ -1029,11 +1029,12 @@ async function gCheck(){
   try{
     const H={headers:{'x-goog-api-key':key}},r=await fetch(GBASE+'/models?pageSize=1000',H);
     if(r.ok){
-      G.state='on';let names=[],vids=[];
+      G.state='on';G.veoNo='';let names=[],vids=[],allm=[];
       try{let d=await r.json(),pg=0;for(;;){names=names.concat((d.models||[]).filter(m=>!m.supportedGenerationMethods||m.supportedGenerationMethods.includes('generateContent')).map(m=>String(m.name||'').replace(/^models\//,'')));
         vids=vids.concat((d.models||[]).filter(m=>/veo/i.test(String(m.name||''))).map(m=>String(m.name||'').replace(/^models\//,'')));
+        allm=allm.concat((d.models||[]).map(m=>String(m.name||'').replace(/^models\//,'')+((m.supportedGenerationMethods||[]).length?' ['+m.supportedGenerationMethods.join(',')+']':'')));
         if(!d.nextPageToken||++pg>=4)break;const r2=await fetch(GBASE+'/models?pageSize=1000&pageToken='+encodeURIComponent(d.nextPageToken),H);if(!r2.ok)break;d=await r2.json();}}catch(e){}
-      const pk=pickModels(names);G.models=pk.img;if(vids.length){G.vman=false;G.videos=vids;if(!vids.includes(G.modelVideo))G.modelVideo=pickVideo(vids);}else if(G.vman&&G.modelVideo){G.videos=[G.modelVideo];}else{G.videos=[];G.modelVideo='';}
+      G.allModels=allm;const pk=pickModels(names);G.models=pk.img;if(vids.length){G.vman=false;G.videos=vids;if(!vids.includes(G.modelVideo))G.modelVideo=pickVideo(vids);}else if(G.vman&&G.modelVideo){G.videos=[G.modelVideo];}else{G.videos=[];G.modelVideo='';}
       if(pk.std){if(G.auto)G.model=pk.std;G.modelHi=pk.hi;G.modelEdit=pk.edit;gMsg('연결됐어요. 이미지 모델을 자동으로 골랐어요 → 기본: '+G.model+' · 기준 사진·어려운 칸: '+(G.modelHi||G.model)+' · 문 색 바꾸기(편집): '+(G.modelEdit||G.model)+(G.modelVideo?' · 작동 영상: '+G.modelVideo:'')+'.'+(G.remember?'':' 다음에 다시 넣지 않으려면 \'이 컴퓨터에 기억하기\'를 켜세요(공용 컴퓨터는 빼고).'),'ok');}
       else{G.modelHi='';G.modelEdit='';gMsg('연결됐어요. 이미지 모델 목록은 확인하지 못해서 \''+G.model+'\'을 써요. 오류가 나면 모델 이름을 바꿔 주세요.','ok');}
     }else if([400,401,403].includes(r.status)){G.state='off';gMsg('키가 맞지 않아요. 다시 복사해서 붙여 넣어 주세요.','err');}
@@ -1132,6 +1133,7 @@ async function putResult(j,blob,extra){       // 만든 이미지를 칸에 넣�
   else await setPhoto(j.key,blob,extra);
 }
 /* ============ 작동 영상(구글 Veo): 기준 사진을 첫 장면으로 레버가 눌렸다 올라오는 짧은 영상 ============ */
+const VEO_ALT=['veo-3.1-generate-preview','veo-3.1-fast-generate-001','veo-3.1-generate-001','veo-3.0-fast-generate-001','veo-3.0-generate-001','veo-2.0-generate-001'];   // 기본 이름이 안 맞을 때 차례로 시도할 알려진 이름들
 const VEO_DEFAULT='veo-3.1-fast-generate-preview';   // 키 목록에 영상 모델이 안 보여도 이 이름으로 한 번 시도해요(안 되면 구글이 이유를 알려 주고 요금은 안 들어요)
 const VPRICE=[[/fast/,0.10],[/lite/,0.05],[/veo/,0.40]];   // 초당 대략(외부 자료이고 일부는 확인 못 한 값)
 const vPrice=m=>{const x=VPRICE.find(a=>a[0].test(m||''));return x?x[1]:0;};
@@ -1176,7 +1178,7 @@ function opErr(e){
   if(st===402||/prepay|credits? (are )?depleted|insufficient (balance|credit|fund)|out of credits?/i.test(String(e&&e.message||'')))return '구글 이용 잔액(선불 크레딧)이 다 떨어졌어요. 구글 AI 스튜디오(https://ai.studio/projects)의 결제(Billing)에서 크레딧을 충전한 뒤 다시 눌러 주세요.';
   if(st===400)return '영상 요청이 맞지 않아요.'+m;
   if(st===401||st===403)return '이 키로는 영상(Veo)을 쓸 수 없어요. 구글 결제 설정이 켜져 있어야 해요.'+m;
-  if(st===404)return (G.vman?'넣은 영상 모델 이름이 이 키에는 없어요. 이름을 바꿔 보거나, \'지시문 복사\'로 구글 AI 스튜디오에서 만들어 \'영상 파일 직접 올리기\'로 넣어 주세요.':'영상 모델을 찾을 수 없어요. 2단계에서 연결 확인을 다시 눌러 주세요.')+m;
+  if(st===404)return '이 키로는 영상 모델(Veo)을 쓸 수 없어요. 구글 모델 목록에 영상 모델이 없고, 알려진 이름으로 시도해도 모두 "없다"고 해요. 구글 키가 붙은 프로젝트에 결제가 켜져 있는지 확인해 주세요. 지금 바로 영상이 필요하면 「첫 장면 사진 저장」과 「지시문 복사」로 구글 AI 스튜디오(또는 Flow)에서 직접 만들고 「영상 파일 직접 올리기」로 넣어 주세요.'+m;
   if(st===429)return '사용 한도에 걸렸어요. 잠시 뒤 다시 해 보세요.'+m;
   return (e&&e.message)||'영상을 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.';
 }
@@ -1203,16 +1205,18 @@ async function putVideo(blob,meta,posterB64){
 }
 async function makeOpVideo(modelOverride){
   if(OPV.busy)return false;
-  const model=(typeof modelOverride==='string'&&modelOverride||G.modelVideo||'').trim();if(G.state!=='on'||!model){opMsg('먼저 2단계에서 구글 키를 연결해 주세요. 이 키에 영상 모델(Veo)이 없으면 만들 수 없어요.','err');return false;}
+  let model=(typeof modelOverride==='string'&&modelOverride||G.modelVideo||'').trim();if(G.state!=='on'||!model){opMsg('먼저 2단계에서 구글 키를 연결해 주세요. 이 키에 영상 모델(Veo)이 없으면 만들 수 없어요.','err');return false;}
   OPV.busy=true;OPV.ask=false;OPV.ctl=new AbortController();const signal=OPV.ctl.signal,key=G.key.trim(),t0=Date.now();renderSide();
   try{
     opMsg('첫 장면 사진을 준비하는 중이에요…');
-    const img=await opFrame(),url=GBASE+'/models/'+encodeURIComponent(model)+':predictLongRunning';
+    const img=await opFrame();
     const inst={prompt:opPrompt(),image:{bytesBase64Encoded:img,mimeType:'image/jpeg'}};
-    const send=params=>fetch(url,{method:'POST',signal,headers:{'x-goog-api-key':key,'Content-Type':'application/json'},body:JSON.stringify(params?{instances:[inst],parameters:params}:{instances:[inst]})});
+    const mk=m=>params=>fetch(GBASE+'/models/'+encodeURIComponent(m)+':predictLongRunning',{method:'POST',signal,headers:{'x-goog-api-key':key,'Content-Type':'application/json'},body:JSON.stringify(params?{instances:[inst],parameters:params}:{instances:[inst]})});
     opMsg('구글에 영상을 요청하는 중이에요…');
-    let r=await send({aspectRatio:OPV.ratio});
-    if(r.status===400)r=await send(null);   // 이 모델이 옵션을 못 받으면 기본값으로 다시 보내요
+    const cands=(G.videos.length&&!G.vman)?[model]:[model].concat(VEO_ALT.filter(n=>n!==model));   // 키 목록에 영상 모델이 없으면 이름이 안 맞을 수 있어요. 알려진 다른 이름도 차례로 시도해요(없는 이름은 요금이 안 들어요)
+    let r=null;
+    for(const m of cands){const send=mk(m);r=await send({aspectRatio:OPV.ratio});if(r.status===400)r=await send(null);   // 이 모델이 옵션을 못 받으면 기본값으로 다시 보내요
+      if(r.status!==404){model=m;break;}}
     if(!r.ok){let t='';try{const d=await r.json();t=d&&d.error&&d.error.message||'';}catch(e){}throw {status:r.status,message:t};}
     let op=await r.json();if(!op||!op.name)throw {status:0,message:'영상 작업을 시작하지 못했어요.'};const opName=op.name;   // 확인할 때는 처음 받은 작업 이름만 써요
     while(!op.done){
@@ -1235,7 +1239,7 @@ async function makeOpVideo(modelOverride){
     await putVideo(blob,{ai:true,model,ratio:OPV.ratio,motion:OPV.motion},img);
     opMsg('영상을 만들었어요. 아래에서 확인하고, 손잡이 모양이 실물과 같을 때만 저장해서 쓰세요.','ok');
     return true;
-  }catch(e){opMsg(opErr(e),'err');return false;}
+  }catch(e){if(e&&e.status===404)G.veoNo='1';opMsg(opErr(e),'err');return false;}
   finally{OPV.busy=false;OPV.ctl=null;renderSide();refresh();updInfo();}
 }
 async function opUpload(f){
@@ -1265,9 +1269,11 @@ function opCard(){
     +(G.videos.length>1?'<label class="chk">영상 모델 <select id="opModel">'+G.videos.map(n=>'<option value="'+esc(n)+'"'+(n===model?' selected':'')+'>'+esc(n)+(vPrice(n)?' · 초당 약 $'+vPrice(n):'')+'</option>').join('')+'</select></label>':'')+'</div>'
     +(OPV.ask?'<div class="confirm" style="display:block">영상 1개(약 '+OPV.secs+'초)를 만들어요('+esc(model)+'). 요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). 계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
     +'<div class="acts">'+(OPV.busy?'<button class="btn sm" type="button" data-act="opstop">멈추기</button>':'<button class="btn sm primary" type="button" data-act="opask"'+(on&&model&&src?'':' disabled')+'>작동 영상 만들기'+(model?' (약 $'+price.toFixed(2)+')':'')+'</button>')
+    +(src?'<button class="btn sm" type="button" data-act="opsaveframe">첫 장면 사진 저장</button>':'')
     +'<label class="btn sm">도어 설치 사진 직접 올리기<input type="file" accept="image/*" hidden data-opfirst="1"></label><label class="btn sm">영상 파일 직접 올리기<input type="file" accept="video/*" hidden data-opfile="1"></label><button class="btn sm" type="button" data-act="opcopy">지시문 복사</button></div>'
     +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (영상 요금이 따로 들어요)</label>'
     +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||hint)+'</div>'
+    +(on&&!G.videos.length&&G.allModels&&G.allModels.length?'<details><summary>이 키에서 쓸 수 있는 모델 이름 보기 (영상 모델이 없는 이유 확인용)</summary><div class="hint" style="word-break:break-all">'+esc(G.allModels.slice(0,80).join(' · '))+(G.allModels.length>80?' … 외 '+(G.allModels.length-80)+'개':'')+'</div></details>':'')
     +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted playsinline></video><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 (mp4)</button><button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
     +'</div>';
 }
@@ -1857,7 +1863,7 @@ async function runOne(go){
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
-  const vApp=on&&!hasPhoto(S.opVideo),vm=(G.modelVideo||'').trim()||VEO_DEFAULT,vCost=(vPrice(vm)*OPV.secs).toFixed(2);   // 작동 영상: 도어 설치 사진에서 레버만 위아래로 움직여요
+  const vUn=!!G.veoNo&&(!G.videos.length||!!G.vman),vApp=on&&!hasPhoto(S.opVideo)&&!vUn,vm=(G.modelVideo||'').trim()||VEO_DEFAULT,vCost=(vPrice(vm)*OPV.secs).toFixed(2);   // 작동 영상: 도어 설치 사진에서 레버만 위아래로 움직여요
   const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개(약 '+OPV.secs+'초)도 만들어요(')+'도어에 설치된 사진에서 레버만 위아래로 움직여요 · 영상 모델 '+vm+' · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이고 단가 일부는 확인 못 했어요).';
   if(why.length&&!go||(!why.length&&!go&&vApp&&UI.opAuto)){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+(vApp?'<li id="onOpLi"'+(UI.opAuto?'':' hidden')+'>'+esc(vLine)+'</li>':'')+'</ul>'+(vApp?'<label class="chk" style="display:block;margin:6px 0 10px"><input type="checkbox" id="onOp"'+(UI.opAuto?' checked':'')+'> 작동 영상도 함께 만들기</label>':'')+'<div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
@@ -1871,9 +1877,9 @@ async function runOne(go){
   const set=(id,t,c)=>{const r=$('#'+id);if(r){r.querySelector('.ost').textContent=t;r.className='orow'+(c?' '+c:'');}};
   let p1=0,p2=0;const bar=()=>{const b=$('#oBar');if(b)b.style.width=Math.round(list.length?p1*20+p2*80:p1*100)+'%';};
   $('#oStop').onclick=()=>{ctl.abort();if(G.ctl)G.ctl.abort();if(OPV.ctl)OPV.ctl.abort();};
-  const wantVideo=UI.opAuto&&on&&!hasPhoto(S.opVideo);
-  set('o3',wantVideo?'이미지 뒤에 만들어요':'건너뜀 · 선택 사항','skip');
-  let tErr='',imgRes=null,vidMsg='';
+  const wantVideo=UI.opAuto&&on&&!hasPhoto(S.opVideo)&&!vUn;
+  set('o3',wantVideo?'이미지 뒤에 만들어요':(vUn&&UI.opAuto?'건너뜀 · 이 키에서는 영상 모델을 쓸 수 없어요':'건너뜀 · 선택 사항'),'skip');
+  let tErr='',imgRes=null,vidMsg=(vUn&&UI.opAuto&&on&&!hasPhoto(S.opVideo))?'작동 영상은 이 키에서 영상 모델(Veo)을 쓸 수 없어 건너뛰었어요. 3단계 「작동 영상」 칸의 「첫 장면 사진 저장」·「지시문 복사」로 구글 AI 스튜디오(또는 Flow)에서 직접 만들 수 있어요.':'';
   const tText=(async()=>{
     if(!dirty&&S.textFor&&S.textFor===askKey()){p1=1;bar();set('o1','이미 사진에 맞춰 썼어요','ok');return;}   // 사진 인식 때 이미 썼으면 다시 쓰지 않아요
     if(!aiOn){tplFill();await autoZoom();p1=1;bar();set('o1','틀로 채움 · 무료','ok');return;}
@@ -1972,7 +1978,7 @@ const ACT={
   pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
   restoreprev(){restorePrev();},
   async rotl(){await rotSrc(-90);},async rotr(){await rotSrc(90);},
-  opmodeldef(){G.modelVideo='veo-3.1-fast-generate-preview';G.vman=true;G.videos=[G.modelVideo];renderSide();},
+  opmodeldef(){G.modelVideo='veo-3.1-fast-generate-preview';G.vman=true;G.veoNo='';G.videos=[G.modelVideo];renderSide();},
   async specai(){
     const say=(t,c)=>{const e=$('#specMsg');if(e){e.textContent=t;e.className='msg'+(c?' '+c:'');}};
     if(!hasPhoto(S.src)){say('제품 사진을 먼저 넣어 주세요.','err');return;}
@@ -2021,6 +2027,7 @@ const ACT={
   opgo(){makeOpVideo();},
   opstop(){if(OPV.ctl)OPV.ctl.abort();},
   opdel(){S.opVideo=null;gc();renderSide();refresh();},
+  async opsaveframe(){try{const b64=await opFrame(),bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);await saveFile('작동영상_첫장면.jpg',new Blob([u8],{type:'image/jpeg'}));toast('첫 장면 사진을 저장했어요. 구글 AI 스튜디오(또는 Flow)에서 이 사진과 「지시문 복사」 글로 영상을 만드세요.',5600);}catch(e){toast((e&&e.message)||'저장하지 못했어요.');}},
   opsave(){const m=S.opVideo&&PH.get(S.opVideo.id);if(m)saveFile('작동영상_'+safeName()+'.mp4',m.blob);},
   opcopy(){copy(opPrompt(),'지시문을 복사했어요. 구글 AI 스튜디오(또는 Flow)의 영상 만들기에 기준 사진과 함께 붙여 넣으세요.');},
   baseok(){                                   // 기준 사진 확정: 흰 문 칸에 그대로 넣고, 나머지 문 색상은 이 사진에서 문 색만 바꿔 만들어요
@@ -2065,7 +2072,7 @@ const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
   useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useClear(t){UI.clearOnNew=t.checked;},opAutoChk(t){UI.opAuto=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
-  opMotion(t){OPV.motion=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();refresh();},opFit(t){OPV.fit=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},opSrc(t){OPV.srcKey=t.value;OPV.firstKey='';renderSide();},opModelTxt(t){const v=String(t.value||'').trim().replace(/^models\//,'');if(!v)return;G.modelVideo=v;G.vman=true;G.videos=[v];renderSide();},
+  opMotion(t){OPV.motion=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();refresh();},opFit(t){OPV.fit=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},opSrc(t){OPV.srcKey=t.value;OPV.firstKey='';renderSide();},opModelTxt(t){const v=String(t.value||'').trim().replace(/^models\//,'');if(!v)return;G.modelVideo=v;G.vman=true;G.veoNo='';G.videos=[v];renderSide();},
   colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
