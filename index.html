@@ -282,7 +282,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 41</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 42</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -329,7 +329,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=41,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=42,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1572,6 +1572,7 @@ function showExport(msg){
    +(ab?'<div class="confirm" style="display:block">회사 소개의 특허·실적·연도 기록 '+ab+'곳이 비어 있어서 그 부분이 짧게 나와요. 4단계 \'회사 소개\'에서 채워 주세요.</div>':'')
    +(!hasPhoto(S.hero.photo)||!hasPhoto(S.concept.photo)?'<div class="confirm" style="display:block">첫 화면·소개 사진이 아직 없어서, 원본 사진을 인식한 손잡이 자리에 맞춰 잘리지 않게 넣어요. 3단계에서 만들면 더 좋아요.</div>':'')
    +(!S.colors.items.some(it=>hasPhoto(it.photo))?'<div class="confirm" style="display:block">문 색상 칸이 하나도 없어서 문 색상 부분은 이미지에서 빠져요.</div>':'')
+   +(!hasPhoto(S.opVideo)?'<div class="confirm" style="display:block">작동 영상이 아직 없어서 영상 자리는 이미지에서 빠져요. 영상은 선택 기능이고 \'한 번에 만들기\'에는 들어 있지 않아요. 넣으려면 3단계 \'작동 영상\'에서 만드세요(구글 영상 AI 요금이 따로 들어요).</div>':'')
    +(fl?'<div class="confirm" style="display:block">손잡이가 원본과 달라 보이는 칸이 '+fl+'개 있어요. 3단계에서 확인하고 다시 만들 수 있어요.</div>':'')
    +(aiN?'<div class="tip">AI로 만든 사진이 '+aiN+'장 들어 있어요. 판매 채널의 AI 표시 규칙을 확인하세요(바뀔 수 있어요). 쿠팡 대표이미지는 실물 원본 사진만 써요.</div>':'')
    +'<div class="opts"><b class="hint">가로 크기</b>'+radio('w',860,EX.w,'860px · 스마트스토어 기본')+radio('w',780,EX.w,'780px · 쿠팡')+radio('w',1720,EX.w,'1720px · 2배로 선명하게 (파일이 커요)')+'</div>'
@@ -1821,7 +1822,7 @@ async function runOne(go){
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
-    veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
+    veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.concat(hasPhoto(S.opVideo)?[]:['참고: 작동 영상(레버가 눌렸다 올라오는 영상)은 선택 기능이라 한 번에 만들기에는 들어 있지 않아요. 넣으려면 만든 뒤 3단계 \'작동 영상\'에서 따로 만드세요(요금이 따로 들어요).']).map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);
     const k=$('#onKey');if(k){k.onclick=()=>{veil.hidden=true;UI.open.add('p2');setTab('edit');renderSide();const i=$(!on?'#gKey':'#cKey');if(i){i.scrollIntoView({block:'center'});i.focus();}};k.focus();}else $('#onGo').focus();
     return;
