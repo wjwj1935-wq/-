@@ -127,6 +127,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .opbox .play::after{content:"";position:absolute;left:36px;top:27px;border-left:30px solid #fff;border-top:19px solid transparent;border-bottom:19px solid transparent}
 .pg .opbox .optag{position:absolute;left:18px;bottom:18px;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:18px;padding:6px 16px;border-radius:999px}
 .pg .opbox.ph{display:flex;align-items:flex-end;justify-content:center;background:#eef2fa;border:2px dashed #b8c4da;color:#6b7a96;font-size:18px;line-height:1.5;text-align:center;padding:0 24px 26px}
+.pg .sizebox{margin:44px auto 0;max-width:736px;text-align:center}
+.pg .sizebox h3{margin:0 0 14px;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.pg .sdwrap{width:736px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden}
+.pg .sddia{position:relative;margin:0 auto}
+.pg .sddia i{display:block}
+.pg .sdp{position:absolute;transform:translate(-50%,-50%);background:#fff;color:#2a56a3;font-weight:700;font-size:17px;padding:3px 11px;border:1.5px solid #2a56a3;border-radius:999px;white-space:nowrap}
+.pg .sdr{position:absolute;transform:translate(-50%,-50%);text-align:center;font-size:14px;line-height:1.35;color:#66728a;font-weight:700}
+.pg .sdtb{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:18px auto 0}
+.pg .sdr2{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid #d9e0ec;border-radius:14px;padding:14px 20px;font-size:20px}
+.pg .sdr2 b{color:#586478;font-weight:700}
+.pg .sdr2 span{font-weight:800;color:#14213d}
+.pg .sizeph{margin:36px auto 0;max-width:736px;padding:26px 20px;border:2px dashed #b8c4da;border-radius:18px;background:#eef2fa;color:#6b7a96;font-size:18px;text-align:center}
 .pg .opbox.ph .play{background:rgba(107,122,150,.55);box-shadow:inset 0 0 0 4px rgba(255,255,255,.9)}
 .recog .rwrap{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start}
 .recog .rimg{position:relative;width:120px;background:#fff center/contain no-repeat;border:1px solid var(--line);border-radius:8px}
@@ -264,7 +276,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 37</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 38</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -311,7 +323,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=37,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=38,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -363,7 +375,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,opVideo:null,opv:{eyebrow:'ACTION',title:'손잡이는 이렇게 작동해요',body:'레버를 눌렀다 놓으면 부드럽게 돌아오는 모습을 영상으로 확인해 보세요.',note:'※ 영상은 연출 영상이에요. 실제 제품과 조금 다를 수 있어요.'},
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,opVideo:null,size:{len:'',wid:'',cap:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},opv:{eyebrow:'ACTION',title:'손잡이는 이렇게 작동해요',body:'레버를 눌렀다 놓으면 부드럽게 돌아오는 모습을 영상으로 확인해 보세요.',note:'※ 영상은 연출 영상이에요. 실제 제품과 조금 다를 수 있어요.'},
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -515,6 +527,41 @@ function box(p,bw,bh,o){
   if(o.ex)return '<div class="pb '+(o.cls||'')+'" style="width:'+bw+'px;height:'+bh+'px"></div>';
   return '<div class="pb ph-empty '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px">'+ILLUS+'<span>'+esc(o.hint||'사진을 넣어 주세요')+'</span></div>';
 }
+/* 크기 안내: 사장님이 적은 치수(캡 지름·총 길이·총 폭)로 치수 그림과 표를 그려요. 적지 않은 숫자는 절대 채우지 않아요. */
+function sizeBlock(ex){
+  const Z=S.size||{},num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,''));return n>0&&isFinite(n)?n:0;};
+  const L=num(Z.len),W=num(Z.wid),D=num(Z.cap),fmt=v=>{const t=String(v||'').trim();return /^[0-9.]+$/.test(t)?t+'mm':t;};
+  const rows=[['총 길이',Z.len,'size.len'],['총 폭',Z.wid,'size.wid'],['캡 지름',Z.cap,'size.cap']].concat((Z.extra||[]).map((x,i)=>[x.l,x.v,'size.extra.'+i+'.v'])).filter(r=>String(r[0]||'').trim()&&String(r[1]||'').trim());
+  if(!rows.length)return ex?'':'<div class="sizeph" data-jump="size.len">손잡이 크기(캡 지름 · 총 길이 · 총 폭)를 적으면 여기에 크기 안내가 들어가요</div>';
+  const J=p=>ex?'':' data-jump="'+p+'"';
+  let dia='';
+  if(L&&W&&D&&D<=L*1.02){
+    const REFS={card:{w:85.6,h:54,t:'신용카드',s:'85.6 × 54mm'},coin:{w:26.5,h:26.5,t:'500원 동전',s:'지름 26.5mm',round:1}},R=REFS[Z.ref]||null;
+    const PWI=736,padX=112,padY=78,gap=R?Math.max(14,L*.12):0,tot=L+(R?gap+R.w:0),sc=Math.min(6,(PWI-2*padX)/tot);
+    const Hm=Math.max(D,W,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=Math.max(padX,(PWI-tot*sc)/2),xL=x0+L*sc,cxp=x0+(L-D/2)*sc;
+    const f=n=>Math.round(n*10)/10,box=(l,t,w,h,st)=>'<i style="position:absolute;left:'+f(l)+'px;top:'+f(t)+'px;width:'+f(w)+'px;height:'+f(h)+'px;'+st+'"></i>';
+    const C='#2a56a3',hl=(xa,xb,y)=>box(xa,y-1,xb-xa,2,'background:'+C)+box(xa-1,y-9,2,18,'background:'+C)+box(xb-1,y-9,2,18,'background:'+C);
+    const vl=(ya,yb,x)=>box(x-1,ya,2,yb-ya,'background:'+C)+box(x-9,ya-1,18,2,'background:'+C)+box(x-9,yb-1,18,2,'background:'+C);
+    const dash=(x,ya,yb)=>box(x-.75,ya,0,yb-ya,'border-left:1.5px dashed #9fb0d0'),dashH=(y,xa,xb)=>box(xa,y-.75,xb-xa,0,'border-top:1.5px dashed #9fb0d0');
+    const pill=(x,y,t)=>'<span class="sdp" style="left:'+f(x)+'px;top:'+f(y)+'px">'+esc(t)+'</span>';
+    const yTop=cy-Hp/2-40,yBot=cy+Hp/2+40,xW=x0-44;
+    let h='';
+    h+=box(x0,cy-W*sc/2,(L-D/2)*sc+2,W*sc,'border-radius:'+f(W*sc/2)+'px;background:#cfd4dc;border:2px solid #7d8697;box-sizing:border-box');   // 레버
+    h+=box(cxp-D*sc/2,cy-D*sc/2,D*sc,D*sc,'border-radius:50%;background:#e4e8ef;border:2px solid #8a93a4;box-sizing:border-box');                     // 캡
+    h+=box(cxp-D*sc*.26,cy-D*sc*.26,D*sc*.52,D*sc*.52,'border-radius:50%;border:1.5px solid #aab2c0;box-sizing:border-box');
+    h+=dash(x0,yTop,cy-W*sc/2)+dash(xL,yTop,cy)+hl(x0,xL,yTop)+pill((x0+xL)/2,yTop,'총 길이 '+fmt(Z.len));                                          // 총 길이
+    h+=dash(cxp-D*sc/2,cy,yBot)+dash(cxp+D*sc/2,cy,yBot)+hl(cxp-D*sc/2,cxp+D*sc/2,yBot)+pill(cxp,yBot,'캡 지름 '+(/^[0-9.]+$/.test(String(Z.cap).trim())?'Ø':'')+fmt(Z.cap)); // 캡 지름
+    h+=dashH(cy-W*sc/2,xW,x0)+dashH(cy+W*sc/2,xW,x0)+vl(cy-W*sc/2,cy+W*sc/2,xW)+pill(xW,cy,'총 폭 '+fmt(Z.wid));                                       // 총 폭
+    if(R){   // 같은 비율로 그린 비교 물건
+      const rx=xL+gap*sc,rw=R.w*sc,rh=R.h*sc;
+      h+=box(rx,cy-rh/2,rw,rh,'border-radius:'+(R.round?'50%':f(3.2*sc)+'px')+';background:#f3f5f9;border:2px solid #aab2c0;box-sizing:border-box');
+      h+='<span class="sdr" style="left:'+f(rx+rw/2)+'px;top:'+f(cy)+'px">'+R.t+'<br>'+R.s+'</span>';
+    }
+    dia='<div class="sddia" style="width:'+PWI+'px;height:'+f(TH)+'px">'+h+'</div>';
+  }
+  const tbl='<div class="sdtb"'+J('size.len')+'>'+rows.map(r=>'<div class="sdr2"><b>'+esc(r[0])+'</b><span>'+esc(fmt(r[1]))+'</span></div>').join('')+'</div>';
+  return '<div class="sizebox"><h3>크기 안내</h3>'+(dia?'<div class="sdwrap">'+dia+'</div>':'')+tbl+(Z.note?'<p class="note"'+J('size.note')+'>'+nl(Z.note)+'</p>':'')+'</div>';
+}
 function renderPage(ex){
   const J=p=>ex?'':' data-jump="'+p+'"';
   const T=(path,v,o)=>{o=o||{};if(String(v==null?'':v).trim()!=='')return nl(v);return (ex||!o.req)?'':'<span class="need" data-jump="'+path+'">'+esc(o.ph||'입력 필요')+'</span>';};
@@ -526,7 +573,7 @@ function renderPage(ex){
     +'<h1'+J('hero.title')+'>'+T('hero.title',S.hero.title,{req:1,ph:'큰 제목'})+'</h1>'
     +(S.hero.sub||!ex?'<p'+J('hero.sub')+'>'+T('hero.sub',S.hero.sub,{req:1,ph:'설명 글'})+'</p>':'')+'</div></section>');
   // 2 소개
-  out.push('<section class="sec soft" data-slice="02_소개">'+head('concept')+'<div class="card-ph">'+box(S.concept.photo,736,520,{cls:'r24',jump:'concept.photo',ex,fallback:1,hint:'소개 사진 (가로 3:2)'})+'</div></section>');
+  out.push('<section class="sec soft" data-slice="02_소개">'+head('concept')+'<div class="card-ph">'+box(S.concept.photo,736,520,{cls:'r24',jump:'concept.photo',ex,fallback:1,hint:'소개 사진 (가로 3:2)'})+'</div>'+sizeBlock(ex)+'</section>');
   // 3 확대(원본 사진을 잘라 쓰고, 문에 설치한 실제 사진을 따로 넣으면 그걸 써요)
   const sm=S.src&&PH.get(S.src.id);
   const zi=S.zoom.items.map((it,i)=>{
@@ -651,7 +698,7 @@ const CMN=new Set(['s-about','s-guide','s-notice','s-cta']);
 const subp=(id,title,body)=>'<details class="sub" id="'+id+'" data-sub="'+id+'"'+open(id)+'><summary>'+title+(CMN.has(id)?' <span class="cmn">공통</span>':'')+' <span class="cnt" data-cnt="'+id+'" hidden></span></summary><div class="body">'+body+'</div></details>';
 function newItem(path,l){
   const T={'zoom.items':()=>({tag:'확대 '+(l.length+1),title:'',body:'',fx:.5,fy:.5,z:2,photo:null}),'colors.items':()=>mkColor(['','','groove','f',0]),
-    'about.stats':()=>({v:'',l:''}),'about.patents':()=>({no:'',title:'',meta:'',badge:'등록\n완료'}),'about.grow':()=>({badge:'',title:'',body:''}),
+    'size.extra':()=>({l:'',v:''}),'about.stats':()=>({v:'',l:''}),'about.patents':()=>({no:'',title:'',meta:'',badge:'등록\n완료'}),'about.grow':()=>({badge:'',title:'',body:''}),
     'about.tl':()=>({year:'',text:''}),'guide.steps':()=>'','faq.items':()=>({q:'',a:''}),'notice.items':()=>''};
   return (T[path]||(()=>JSON.parse(JSON.stringify(l[l.length-1]))))();
 }
@@ -836,6 +883,11 @@ function p4(){
    +'<div class="confirm" id="genConfirm" hidden><span id="genMsg"></span><button class="btn sm" type="button" data-act="genok">계속</button><button class="btn sm ghost" type="button" data-act="genno">취소</button></div>'
    +subp('s-hero','첫 화면',fld.text('hero.badge','작은 글(파란 띠)')+fld.area('hero.title','큰 제목',{rows:2,req:1})+fld.area('hero.sub','설명 글',{rows:3,req:1}))
    +subp('s-concept','소개(CONCEPT)',fld.text('concept.eyebrow','작은 제목')+fld.text('concept.title','제목',{req:1})+fld.area('concept.body','설명 글 (비워도 돼요)',{rows:3}))
+   +subp('s-size','크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 세 칸을 다 적으면 치수 그림이 나오고, 일부만 적으면 표만 나와요. 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
+     +fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'})+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
+     +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
+     +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
+     +fld.area('size.note','맨 아래 작은 글',{rows:2}))
    +subp('s-zoom','확대(ZOOM)',fld.text('zoom.eyebrow','작은 제목')+fld.text('zoom.title','제목',{req:1})+fld.area('zoom.body','설명 글',{rows:2,req:1})
      +'<p class="hint">제목·설명은 모든 제품이 같이 써요. 확대 컷은 1단계 원본 사진을 잘라 써요. 문에 설치한 실제 사진을 넣으면 그 사진을 써요.</p>'
      +listItems('zoom.items',S.zoom.items,(it,i,b)=>fld.text(b+'.tag','표시')+fld.text(b+'.title','제목',{req:1})+fld.area(b+'.body','설명 글',{rows:2,req:1})+'<details class="pos" open><summary>어디를 확대할까요</summary>'+sliders(b)+'<label class="chk">작은 원본 사진 자리 <select data-ic="'+i+'">'+[['auto','손잡이를 안 가리는 곳 (자동)'],['tl','왼쪽 위'],['tr','오른쪽 위'],['bl','왼쪽 아래'],['br','오른쪽 아래'],['none','보이지 않게']].map(o=>'<option value="'+o[0]+'"'+((it.ic||'auto')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label></details><div class="f"><span>문에 설치한 실제 확대 사진 (선택)</span>'+photoCtl(b+'.photo','사진 넣기')+'</div>',{title:(it,i)=>'확대 '+(i+1),add:'확대 항목 추가'}))
@@ -1925,6 +1977,7 @@ side.addEventListener('change',e=>{
   else if(d.view!==undefined){S.colors.items[+d.view].view=t.value;renderSide();refresh();}
   else if(d.dir!==undefined){S.colors.items[+d.dir].flip=t.value==='R';renderSide();refresh();}
   else if(d.ic!==undefined){S.zoom.items[+d.ic].ic=t.value;refresh();}
+  else if(d.sz!==undefined){S.size[d.sz]=t.value;refresh();}
   else if(d.basen!==undefined){S.baseN=+t.value;renderSide();updInfo();}
   else if(d.opfile!==undefined){const f=t.files&&t.files[0];t.value='';if(f)opUpload(f);}
 });
