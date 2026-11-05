@@ -200,7 +200,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .hero{padding:0;height:1040px;background:var(--pg-navy-d);overflow:hidden}
 .pg .hero .pb{position:absolute;left:0;top:0}
 .pg .hero .ph-empty{background:linear-gradient(160deg,#1b2b52,#0b1226);color:#8da0c6}
-.pg .hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,32,0) 36%,rgba(10,15,32,.6) 62%,rgba(10,15,32,.97) 100%);pointer-events:none}
+.pg .hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,15,32,0) 44%,rgba(10,15,32,.6) 66%,rgba(10,15,32,.97) 100%);pointer-events:none}
+.pg .hero.fb{background:linear-gradient(170deg,#1b2b52,#0b1226)}
+.pg .hero .hcard{position:absolute;left:62px;top:64px;width:736px;height:560px;border-radius:28px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.45)}
+.pg .hero.fb .shade{background:linear-gradient(180deg,rgba(10,15,32,0) 60%,rgba(10,15,32,.92) 100%)}
 .pg .hero .txt{position:absolute;left:62px;right:62px;bottom:76px;color:#fff}
 .pg .badge{display:inline-block;background:var(--pg-blue);color:#fff;font-weight:700;font-size:19px;padding:9px 22px;border-radius:999px}
 .pg h1{margin:24px 0 18px;font-size:54px;line-height:1.27;font-weight:800;letter-spacing:-.03em}
@@ -276,7 +279,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 38</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 39</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -323,7 +326,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=38,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=39,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -358,9 +361,9 @@ const PLAN_EX=[
 /* 문 색상 칸(참고 페이지와 같은 10칸) [이름, 문 설명, 문틀, 카메라 각도, 레버가 오른쪽?] */
 const COLOR_DEF=[
   ['화이트 도어','깨끗한 흰색 실내 문','groove','l',0],['월넛 우드 도어','짙은 월넛 우드 결의 실내 문','seam','c',0],
-  ['라이트 그레이 도어','밝은 회색 실내 문','groove','f',1],['블랙 도어','무광 검정 실내 문','groove','c',1],
-  ['아이보리 도어','아이보리색 실내 문','panel','s',0],['베이지 도어','베이지색 실내 문','panel','l',1],
-  ['차콜 도어','짙은 차콜 회색 실내 문','groove','f',0],['오크 도어','밝은 오크 우드 결의 실내 문','seam','s',1],
+  ['라이트 그레이 도어','밝은 회색 실내 문','groove','f',0],['블랙 도어','무광 검정 실내 문','groove','c',0],
+  ['아이보리 도어','아이보리색 실내 문','panel','s',0],['베이지 도어','베이지색 실내 문','panel','l',0],
+  ['차콜 도어','짙은 차콜 회색 실내 문','groove','f',0],['오크 도어','밝은 오크 우드 결의 실내 문','seam','s',0],
   ['체리 도어','붉은 갈색 체리 우드 결의 실내 문','seam','l',0],['사용 컷','흰색 실내 문에서 한 손으로 레버를 잡아 내리는 장면(손만 보이고 얼굴은 없음)','groove','f',0]];
 const LITE=['화이트 도어','월넛 우드 도어','라이트 그레이 도어','블랙 도어','사용 컷'];   // 비용 절약용 5칸
 const mkColor=([label,scene,door,view,flip])=>({label,scene,door,view,flip:!!flip,photo:null});
@@ -371,11 +374,12 @@ const CAMS={
   s:'문의 오른쪽 옆에서 낮은 각도로 비스듬히 찍은 구도. 레버의 옆 두께와 받침이 문에서 튀어나온 높이가 보이고 문 표면이 길게 이어지게. 손잡이 전체가 화면 안에 들어오게'};
 const CAM_NAME={f:'정면',l:'왼쪽 앞에서 비스듬히',c:'가까이 (손잡이 전체가 보이게)',s:'옆면(낮은 각도)'};
 const FRAME='구도 규칙(가장 중요): 손잡이 전체, 곧 레버 끝부터 받침 원판까지가 화면 안에 완전히 보여야 합니다. 레버 끝이나 받침 원판이 화면 가장자리에서 잘리거나 화면 밖으로 나가면 안 되고, 손잡이 둘레로 문 표면 여백이 사방에 화면 폭의 10% 이상 남아야 합니다. 손잡이는 화면 가운데 부근에 두고 화면 폭의 약 65~75%를 차지하게 하세요.';
+const LEVERDIR=d=>'레버 방향 규칙(가장 중요): 받침에서 레버가 화면 '+d+'으로 거의 수평(문 바닥과 나란히, 아주 살짝 아래로 처진 정도)으로 뻗어야 합니다. 위로 솟거나 아래로 꺾이거나 비스듬히 서 있으면 안 되고, 레버 끝이 향한 쪽을 좌우로 뒤집으면(거울상) 안 됩니다.';
 const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 보이게',panel:'몰딩으로 구획된 문틀 패널의 선이 보이게',seam:'문 가장자리와 이음선이 화면 한쪽 끝에 살짝 보이게'};
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,opVideo:null,size:{len:'',wid:'',cap:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},opv:{eyebrow:'ACTION',title:'손잡이는 이렇게 작동해요',body:'레버를 눌렀다 놓으면 부드럽게 돌아오는 모습을 영상으로 확인해 보세요.',note:'※ 영상은 연출 영상이에요. 실제 제품과 조금 다를 수 있어요.'},
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,lvDir:null,opVideo:null,size:{len:'',wid:'',cap:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},opv:{eyebrow:'ACTION',title:'손잡이는 이렇게 작동해요',body:'레버를 눌렀다 놓으면 부드럽게 돌아오는 모습을 영상으로 확인해 보세요.',note:'※ 영상은 연출 영상이에요. 실제 제품과 조금 다를 수 있어요.'},
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -515,6 +519,11 @@ function fitGeom(m,bw,bh,a){             // 인식한 손잡이 네모가 a 영�
   const s=Math.min(rw/pw,rh/ph),sw=m.w*s,sh=m.h*s;
   return {sw,sh,x:(a.x0+a.x1)/2*bw-(bb.x0+bb.x1)/2*sw,y:(a.y0+a.y1)/2*bh-(bb.y0+bb.y1)/2*sh};
 }
+function heroCard(sm,ex){   // 첫 화면 사진을 아직 안 만들었을 때: 원본 사진을 둥근 사진 카드로 넣어요(위쪽 영역 안, 글자 자리와 안 겹쳐요)
+  const g=fitGeom(sm,736,560,{x0:.05,x1:.95,y0:.06,y1:.94}),cx=368,cy=280;
+  const hw=Math.max(60,Math.min(cx,cx-g.x,g.x+g.sw-cx)),hh=Math.max(60,Math.min(cy,cy-g.y,g.y+g.sh-cy));   // 카드 가장자리가 사진 가장자리 안쪽에 오게(사진이 모자라 빈 띠가 생기지 않게). 손잡이는 가운데라 안 잘려요
+  return '<div class="hcard"'+(ex?'':' data-jump="hero.photo"')+' style="left:'+(62+cx-hw)+'px;top:'+(64+cy-hh)+'px;width:'+(2*hw)+'px;height:'+(2*hh)+'px"><div class="pb" style="width:'+(2*hw)+'px;height:'+(2*hh)+'px;background-image:url('+sm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+(g.x-(cx-hw))+'px '+(g.y-(cy-hh))+'px"></div></div>'+(ex?'':'<span class="tmp">임시 · 원본 사진</span>');
+}
 function box(p,bw,bh,o){
   o=o||{};const m=p&&PH.get(p.id),at=(!o.ex&&o.jump)?' data-jump="'+o.jump+'"':'';
   const pic=(mm,g,extra)=>'<div class="pb '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px;background-image:url('+mm.url+');background-size:'+g.sw+'px '+g.sh+'px;background-position:'+g.x+'px '+g.y+'px"></div>'+(extra||'');
@@ -568,7 +577,8 @@ function renderPage(ex){
   const head=a=>'<div class="head"><div class="eyebrow"'+J(a+'.eyebrow')+'>'+esc(S[a].eyebrow)+'</div><h2'+J(a+'.title')+'>'+T(a+'.title',S[a].title,{req:1,ph:'제목'})+'</h2>'+(S[a].body||!ex?'<p class="lead"'+J(a+'.body')+'>'+T(a+'.body',S[a].body,{req:a!=='concept',ph:'설명 글'})+'</p>':'')+'</div>';
   const out=[],A=S.about;
   // 1 첫 화면
-  out.push('<section class="sec hero" data-slice="01_첫화면">'+box(S.hero.photo,860,1040,{jump:'hero.photo',ex,fallback:1,area:{x0:.07,x1:.93,y0:.05,y1:.58},hint:'첫 화면 사진 (세로 4:5)'})+'<div class="shade"></div><div class="txt">'
+  const hsm=!(S.hero.photo&&PH.get(S.hero.photo.id))&&S.src&&PH.get(S.src.id);
+  out.push('<section class="sec hero'+(hsm?' fb':'')+'" data-slice="01_첫화면">'+(hsm?heroCard(hsm,ex):box(S.hero.photo,860,1040,{jump:'hero.photo',ex,hint:'첫 화면 사진 (세로 4:5)'}))+'<div class="shade"></div><div class="txt">'
     +(S.hero.badge||!ex?'<span class="badge"'+J('hero.badge')+'>'+(S.hero.badge?nl(S.hero.badge):'<span class="need">작은 글</span>')+'</span>':'')
     +'<h1'+J('hero.title')+'>'+T('hero.title',S.hero.title,{req:1,ph:'큰 제목'})+'</h1>'
     +(S.hero.sub||!ex?'<p'+J('hero.sub')+'>'+T('hero.sub',S.hero.sub,{req:1,ph:'설명 글'})+'</p>':'')+'</div></section>');
@@ -709,18 +719,18 @@ function promptOf(j){
     +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 흔한 손잡이처럼 단순하게 바꾸거나 비슷한 다른 손잡이를 새로 만들지 마세요. 레버의 길이·굵기·끝 모양과 윗면의 굴곡(움푹 파인 곳 포함), 레버와 받침을 잇는 목 부분, 받침의 크기·두께·테두리, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n'
     +(spec?'이 제품의 특징(사진과 함께 반드시 지킬 것):\n'+spec+'\n':'')
     +'글자, 로고, 워터마크는 넣지 마세요.\n';
-  if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 짙은 남색~검정 스튜디오 배경에 이 제품 하나만 화면 위쪽 60% 영역에 크게(레버와 받침이 모두 잘리지 않게) 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
-  if(j.kind==='concept')return base+'장면: 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 어두운 남회색 스튜디오 배경에 이 제품 하나만 중앙에 크게(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
+  if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 짙은 남색~검정 스튜디오 배경에 이 제품 하나만, 가로로는 화면 가운데, 세로로는 위쪽 60% 영역의 한가운데(위에서 약 30% 높이)에 화면 폭의 70~80% 크기로(레버 끝과 받침이 모두 잘리지 않고 위·좌·우 여백이 6% 이상 남게) 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
+  if(j.kind==='concept')return base+'장면: 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 어두운 남회색 스튜디오 배경에 이 제품 하나만 정중앙에 화면 폭의 65~75% 크기로(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
   const real='실제 인테리어 사진처럼 사실적으로. 손잡이 받침은 문에 단단히 붙어 있고, 받침과 레버 아래·옆으로 부드러운 접촉 그림자가 드리우게. 금속 표면에는 은은한 하이라이트, 배경은 살짝 흐리게(얕은 심도), 창가의 자연스러운 실내 빛. ';
   if(j.kind==='base'){   // 기준 설치 사진: 이 한 장을 사장님이 확인·확정하면, 나머지 문 색상은 이 사진에서 문 색만 바꿔요
     const w=S.colors.items[whiteIdx()]||{scene:'깨끗한 흰색 실내 문',view:'l',door:'groove',flip:false};
     const vw=CAMS[w.view||'l']||CAMS.l,d=w.flip?'오른쪽':'왼쪽',f=DOORF[w.door]||'';
     return base+'장면: '+String(w.scene||'깨끗한 흰색 실내 문').trim()+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도. 이 사진은 다른 문 색상 사진을 만드는 기준이 되니, 손잡이를 첨부 사진과 특히 정확하게 똑같이 그려 주세요.\n'
-      +FRAME+'\n카메라: '+vw+'.\n손잡이 방향: 받침에서 레버가 화면 '+d+'으로 뻗게. 레버 끝이 화면 '+d+' 가장자리에서 충분히 떨어져 보이게.\n'+(f?'문: '+f+'.\n':'')+real+'비율은 정사각형 1:1.';
+      +FRAME+'\n카메라: '+vw+'.\n'+LEVERDIR(d)+' 레버 끝이 화면 '+d+' 가장자리에서 충분히 떨어져 보이게.\n'+(f?'문: '+f+'.\n':'')+real+'비율은 정사각형 1:1.';
   }
   if(j.kind==='edit'){   // 확정한 기준 사진을 편집: 손잡이는 그대로, 문 색(또는 손)만 바꿔요. 손잡이를 새로 그리지 않아서 칸마다 같아요.
     const c=S.colors.items[j.i],sc=String(c.scene||c.label).trim(),f=DOORF[c.door]||'';
-    const keep='절대 바꾸지 말 것: 손잡이(레버·목·받침)의 모양·크기·위치·각도·금속 색과 결, 손잡이 그림자의 위치와 모양, 카메라 구도와 화면 비율, 빛의 방향. 손잡이 부분은 첨부 사진의 픽셀을 그대로 두세요. 새 물체, 글자, 로고를 넣지 마세요.';
+    const keep='절대 바꾸지 말 것: 손잡이(레버·목·받침)의 모양·크기·위치·각도·금속 색과 결, 손잡이 그림자의 위치와 모양, 카메라 구도와 화면 비율, 빛의 방향. 레버가 향한 방향(좌우)과 기울기도 그대로 두고, 이미지를 좌우로 뒤집거나 돌리지 마세요(거울상 금지). 손잡이 부분은 첨부 사진의 픽셀을 그대로 두세요. 새 물체, 글자, 로고를 넣지 마세요.';
     if(isHand(c))return '첨부한 사진(사진 1)을 편집하세요. 이 사진의 문과 손잡이는 정답이고 그대로 둡니다.\n더할 것: '+sc+'. 자연스러운 한 손(손가락 5개)이 이 레버를 위에서 잡아 아래로 누르는 순간을 더하세요. 손만 보이고 얼굴·몸은 나오지 않게. 손이 가리는 부분 말고는 레버가 그대로 보이게.\n'+keep+'\n비율은 정사각형 1:1.';
     return '첨부한 사진(사진 1)을 편집하세요. 이 사진은 정답이고, 바꿀 것은 문뿐입니다.\n바꿀 것: 문짝과 문틀의 색과 재질을 "'+sc+'"(으)로 바꾸세요.'+(f?' '+f+'.':'')+' 문 색이 바뀌어도 빛과 그림자, 문 표면의 자연스러운 질감은 실제 사진처럼 보이게.\n'+keep+'\n비율은 정사각형 1:1.';
   }
@@ -735,7 +745,7 @@ function promptOf(j){
   }
   const it=S.colors.items[j.i],sc=(it.scene||j.name).trim(),vw=CAMS[it.view||'f']||CAMS.f,dir=it.flip?'오른쪽':'왼쪽',fr=DOORF[it.door]||'';
   if(/손/.test(sc))return base+'장면: '+sc+'. '+real+'카메라: '+vw+'. 손은 자연스러운 한 손(손가락 5개)이 레버를 위에서 잡아 아래로 누르는 순간. 손만 보이고 얼굴·몸은 나오지 않게. 레버는 화면 '+dir+'으로 뻗게.\n'+FRAME+' (손이 레버를 가리는 것은 괜찮지만 레버 끝이 화면 밖으로 나가면 안 됩니다.) 비율은 정사각형 1:1.';
-  return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도.\n'+FRAME+'\n카메라: '+vw+'.\n손잡이 방향: 받침에서 레버가 화면 '+dir+'으로 뻗게. 레버 끝이 화면 '+dir+' 가장자리에서 충분히 떨어져 보이게.\n'+(fr?'문: '+fr+'.\n':'')
+  return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도.\n'+FRAME+'\n카메라: '+vw+'.\n'+LEVERDIR(dir)+' 레버 끝이 화면 '+dir+' 가장자리에서 충분히 떨어져 보이게.\n'+(fr?'문: '+fr+'.\n':'')
     +real+'손잡이 모양과 마감은 첨부 사진과 똑같이 유지하고, 문의 색과 질감만 위 설명대로 바꿔 주세요. 비율은 정사각형 1:1.';
 }
 const ASPECT={hero:'4:5',concept:'3:2',color:'1:1',sheet:'1:1',base:'1:1',edit:'1:1'};
@@ -780,6 +790,7 @@ function recogCard(){                       // 사진 인식 결과: 컴퓨터�
   return '<div class="blk recog"><h3>사진 인식 결과</h3>'
     +'<div class="rwrap"><div class="rimg" style="aspect-ratio:'+m.w+'/'+m.h+';background-image:url('+m.url+')">'+frame+'</div><div class="rinfo">'
     +row('손잡이 위치',pm?'찾았어요(빨간 네모). 확대 3곳과 첫 화면·소개 자리를 여기에 맞췄어요.':'찾지 못했어요. 확대 칸은 슬라이더로 맞춰 주세요.')
+    +(pm&&S.lvDir&&S.lvDir.id===S.src.id?'<div class="rrow"><b>레버 방향</b><span>사진에서 레버가 <select data-lv="1" aria-label="레버 방향"><option value="L"'+(S.lvDir.dir==='L'?' selected':'')+'>왼쪽</option><option value="R"'+(S.lvDir.dir==='R'?' selected':'')+'>오른쪽</option></select>을 향해요. 문 색상 사진도 모두 이 방향으로 만들어요. 틀리면 바꿔 주세요.</span></div>':'')
     +(r?row('종류',r.kind)+row('레버',r.lever)+row('받침',r.rosette)+row('마감',r.finish)+(r.features.length?row('특징',r.features.join(' · ')):'')
       :'<p class="cost">'+(RECOG.busy?'클로드가 사진을 보고 제품을 인식하는 중이에요…':'클로드 키가 있으면 사진을 넣을 때 제품 종류·모양·특징까지 자동으로 인식해요.')+'</p>')
     +'</div></div>'
@@ -791,7 +802,7 @@ function p1(){
   return '<p class="hint">제품 이름과 사진 한 장만 넣고 위의 <b>한 번에 만들기</b>를 누르세요. 글, 이미지, 저장까지 이어져요.</p>'
     +fld.text('name','제품 이름',{ph:'예: 메탈 방문 손잡이',req:1})
     +fld.text('sellName','판매 상품명 (스마트스토어 등 · 모든 제품이 같아요)',{ph:STD_NAME})+'<div><button class="btn sm" type="button" data-act="copysell">상품명 복사</button></div>'
-    +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label></div></div></div></div>'
+    +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label>'+(m?'<button class="btn sm ghost" type="button" data-act="rotl">↺ 왼쪽으로 돌리기</button><button class="btn sm ghost" type="button" data-act="rotr">↻ 오른쪽으로 돌리기</button>':'')+'</div></div></div></div>'
     +'<label class="chk"><input type="checkbox" id="useClear"'+(UI.clearOnNew?' checked':'')+'> 제품 사진을 바꾸면 이전에 만든 이미지와 다른 각도 사진을 지워요 (새 사진으로 다시 만들 수 있게)</label>'
     +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷과 이미지 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
     +recogCard()
@@ -1400,20 +1411,24 @@ function applyAbout(r){
   return {n,unclear:(Array.isArray(r.unclear)?r.unclear:[]).map(x=>t(String(x),120)).filter(Boolean).slice(0,6)};
 }
 /* 손잡이 모양 검수: 만든 사진이 원본과 같은 손잡이인지 작은 모델이 한 번 비교해요(AI 판단이라 틀릴 수 있어요) */
-const chkPrompt=kind=>{const sp=String(S.spec||'').trim().slice(0,900);
-  if(kind==='edit')return '첫 번째 사진은 사장님이 확정한 기준 사진이고, 두 번째 사진은 첫 번째 사진에서 문 색(또는 손)만 바꾼 편집본입니다. 두 번째 사진의 손잡이(레버·목·받침)가 첫 번째와 모양·크기·위치·각도·금속 색까지 같은지 비교하세요. 문 색과 재질이 바뀐 것은 정상이니 무시하고, 손이 레버 일부를 가리는 것도 괜찮습니다. 손잡이 모양이 달라졌거나, 다른 손잡이로 바뀌었거나, 화면 밖으로 잘렸으면 ok를 false로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';
+const chkPrompt=(kind,dirTxt)=>{const sp=String(S.spec||'').trim().slice(0,900);
+  if(kind==='edit')return '첫 번째 사진은 사장님이 확정한 기준 사진이고, 두 번째 사진은 첫 번째 사진에서 문 색(또는 손)만 바꾼 편집본입니다. 두 번째 사진의 손잡이(레버·목·받침)가 첫 번째와 모양·크기·위치·각도·금속 색까지 같은지 비교하세요. 문 색과 재질이 바뀐 것은 정상이니 무시하고, 손이 레버 일부를 가리는 것도 괜찮습니다. 손잡이 모양이 달라졌거나, 다른 손잡이로 바뀌었거나, 화면 밖으로 잘렸으면 ok를 false로 하세요. 또 레버가 향한 방향(받침에서 레버 끝이 왼쪽인지 오른쪽인지)이 기준 사진과 반대로 뒤집혔거나 레버 각도가 눈에 띄게 달라졌으면 ok를 false로 하고 issues에 "레버 방향이 달라요"를 넣으세요(손이 레버를 눌러 내린 모습은 정상입니다). 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';
   return '첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 꼼꼼히 비교하세요.'
   +(kind==='sheet'?' 두 번째 사진은 여러 칸(문 색상별)을 이어 붙인 시트입니다. 모든 칸의 손잡이를 각각 원본과 비교하고, 한 칸이라도 다르거나 잘려 있으면 ok를 false로 하며 issues에 몇 번째 칸인지(왼쪽에서 오른쪽, 위에서 아래 순서)를 적으세요. 칸 구분선이 칸 안쪽을 심하게 침범해 칸이 잘려 보여도 false입니다.':'')
   +(sp?'\n원본 제품의 특징 메모(이 특징이 빠졌거나 바뀌었으면 다른 제품입니다):\n'+sp+'\n':' ')
-  +'비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(원판)의 크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 또, 두 번째 사진에서 손잡이(레버 끝부터 받침 원판까지)가 화면 가장자리에서 잘려 있거나 일부가 화면 밖으로 나가 있으면 ok를 false로 하고 issues에 "손잡이가 화면 밖으로 잘렸어요"를 넣으세요(손이 가리는 것은 잘린 것이 아닙니다). 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
+  +(kind==='hero'?' 이 사진은 세로 4:5 첫 화면용입니다. 제품이 화면 위쪽 약 60% 안에 가로로 가운데쯤 모두 들어와 있고 아래 40%는 어둡게 비어 있어야 합니다. 제품이 아래로 내려와 아래쪽 글자 자리를 침범하거나 한쪽으로 크게 치우쳐 있으면 ok를 false로 하고 issues에 "제품 위치가 치우쳤어요"를 넣으세요.':'')
+  +(kind==='concept'?' 이 사진은 가로 3:2 소개용입니다. 제품이 가운데에 전체가 보이게 있어야 하고, 한쪽으로 치우치거나 잘리면 ok를 false로 하세요.':'')
+  +(kind==='sheet'?'':' 레버 방향: 원본에서 받침 기준으로 레버 끝이 어느 쪽(왼쪽/오른쪽)에 있는지 보고, 두 번째 사진에서 좌우가 뒤집혀(거울상) 있으면 ok를 false로 하고 issues에 "레버 방향이 반대예요"를 넣으세요. 연출 사진이라 각도가 조금 달라지는 것은 괜찮습니다.'+(dirTxt?' 이 사진에서 레버 끝은 받침에서 화면 '+dirTxt+'을 향해야 합니다.':''))
+  +' 비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(원판)의 크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 또, 두 번째 사진에서 손잡이(레버 끝부터 받침 원판까지)가 화면 가장자리에서 잘려 있거나 일부가 화면 밖으로 나가 있으면 ok를 false로 하고 issues에 "손잡이가 화면 밖으로 잘렸어요"를 넣으세요(손이 가리는 것은 잘린 것이 아닙니다). 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
 let chkModel='claude-sonnet-5-5';   // 검수는 사진을 더 정확히 보는 모델로(없으면 기본 모델로 물러나요)
 async function checkOne(j,signal){
   const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
   const ed=j.kind==='edit'&&hasPhoto(S.base);   // 편집 칸은 확정한 기준 사진과 비교해요(비슷한 두 장 비교라 값싼 기본 모델로 충분해요)
   const imgs=[await shrink(PH.get(ed?S.base.id:S.src.id).blob,800,.85),await shrink(m.blob,j.kind==='sheet'?1400:800,.85)];
+  const dt=ed?'':j.kind==='color'?sideName(S.colors.items[j.i]&&S.colors.items[j.i].flip?'R':'L'):j.kind==='base'?sideName((S.colors.items[whiteIdx()]||{}).flip?'R':'L'):(j.kind==='hero'||j.kind==='concept')&&S.lvDir&&S.src&&S.lvDir.id===S.src.id?sideName(S.lvDir.dir):'';
   let r;
-  try{r=await claude(chkPrompt(ed?'edit':j.kind),{signal,max:400,images:imgs,model:((C.model||'').trim()||ed)?'':chkModel});}
-  catch(e){if(e&&e.status===404&&chkModel&&!ed){chkModel='';r=await claude(chkPrompt(j.kind),{signal,max:400,images:imgs,model:''});}else throw e;}
+  try{r=await claude(chkPrompt(ed?'edit':j.kind,dt),{signal,max:400,images:imgs,model:((C.model||'').trim()||ed)?'':chkModel});}
+  catch(e){if(e&&e.status===404&&chkModel&&!ed){chkModel='';r=await claude(chkPrompt(j.kind,dt),{signal,max:400,images:imgs,model:''});}else throw e;}
   if(!r||typeof r!=='object'||typeof r.ok!=='boolean')return false;
   const cur=getP(j.key);if(!cur||cur.id!==p.id)return false;   // 그 사이 사진이 바뀌었으면 버려요
   cur.chk={ok:r.ok,issues:(Array.isArray(r.issues)?r.issues:[]).map(x=>String(x).slice(0,100)).filter(Boolean).slice(0,3)};return true;
@@ -1494,13 +1509,13 @@ async function findParts(blob){
   const bb={x0:Math.max(0,(bx0-2)/w),y0:Math.max(0,(by0-2)/h),x1:Math.min(1,(bx1+3)/w),y1:Math.min(1,(by1+3)/h)};   // 손잡이가 있는 네모(0~1)
   let er=0,eg=0,eb=0,en=0;const edge=(x,y)=>{const i=(y*w+x)*4;er+=d[i];eg+=d[i+1];eb+=d[i+2];en++;};
   for(let x=0;x<w;x++){edge(x,0);edge(x,h-1);}for(let y=0;y<h;y++){edge(0,y);edge(w-1,y);}
-  return {p1,p2,p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h,mask,bb,bg:[Math.round(er/en),Math.round(eg/en),Math.round(eb/en)]};
+  return {p1,p2,dir:(p1.x-p2.x>=0?'R':'L'),p3:{x:lx/ln,y:mx-(mx-mn)*.18},len,w,h,mask,bb,bg:[Math.round(er/en),Math.round(eg/en),Math.round(eb/en)]};
 }
 let PM=null;   // 제품 모양 기억(어느 사진 것인지 id와 함께)
 async function ensureMask(){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   if(PM&&PM.id===S.src.id)return true;
-  try{const P=await findParts(m.blob);PM={id:S.src.id,w:P.w,h:P.h,m:P.mask,bb:P.bb,bg:P.bg};return true;}catch(e){PM=null;return false;}
+  try{const P=await findParts(m.blob);PM={id:S.src.id,w:P.w,h:P.h,m:P.mask,bb:P.bb,bg:P.bg,dir:P.dir};return true;}catch(e){PM=null;return false;}
 }
 // 작은 원본 사진을 네 구석 중 손잡이를 가장 덜 가리는 곳에 놓아요(왼쪽 위 → 왼쪽 아래 → 오른쪽 아래 → 오른쪽 위 순서로 우선)
 // 어느 구석도 손잡이와 겹치지 않으면 그대로, 모든 구석이 닿으면 작은 사진을 조금씩 줄여서(188→152→124) 겹치지 않는 곳을 찾아요
@@ -1521,11 +1536,15 @@ function pickCorner(g){
   order.forEach(k=>{const v=over(sm,k)+(k==='tr'?.03:0);if(v<bv){bv=v;best=k;}});
   return {k:best,sz:sm};
 }
-async function autoZoom(){
+/* 레버 방향: 사진에서 레버 끝이 받침의 왼쪽/오른쪽 어디인지 읽어서, 모든 문 색상 칸을 같은 방향으로 맞춰요(칸마다 뒤집히지 않게) */
+function setLever(dir,auto){if(!S.src)return;dir=dir==='R'?'R':'L';S.lvDir={id:S.src.id,dir,auto:!!auto};S.colors.items.forEach(it=>{it.flip=dir==='R';});}
+const sideName=d=>d==='R'?'오른쪽':'왼쪽';
+async function autoZoom(keepDir){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   let P;try{P=await findParts(m.blob);}catch(e){return false;}
   const Wc=736/Math.max(736/m.w,560/m.h),lenSrc=P.len*(m.w/P.w),cap=clamp(m.w/700,1.6,4);   // 확대해도 흐려지지 않게 원본 크기에 맞춰요
-  PM={id:S.src.id,w:P.w,h:P.h,m:P.mask,bb:P.bb,bg:P.bg};
+  PM={id:S.src.id,w:P.w,h:P.h,m:P.mask,bb:P.bb,bg:P.bg,dir:P.dir};
+  if(!keepDir&&(!S.lvDir||S.lvDir.id!==S.src.id||S.lvDir.auto))setLever(P.dir,true);
   const mk=(pt,fr)=>({fx:+clamp(pt.x/P.w,.05,.95).toFixed(3),fy:+clamp(pt.y/P.h,.05,.95).toFixed(3),z:+clamp(Wc/(lenSrc*fr),1.6,cap).toFixed(2)});
   [mk(P.p1,.3),mk(P.p2,.32),mk(P.p3,.28)].forEach((z,i)=>{if(S.zoom.items[i])Object.assign(S.zoom.items[i],z);});
   return true;
@@ -1844,6 +1863,16 @@ function clearMade(){
   G.cache.clear();gc();
   return {made,extra,kept};
 }
+async function rotSrc(deg){       // 제품 사진이 옆으로 누워 있을 때 90도씩 돌려요(돌린 사진이 새 제품 사진이 돼요)
+  const m=S.src&&PH.get(S.src.id);if(!m)return;
+  try{
+    const bmp=await createImageBitmap(m.blob),w=bmp.width,h=bmp.height,c=document.createElement('canvas');c.width=h;c.height=w;
+    const g=c.getContext('2d');g.translate(h/2,w/2);g.rotate(deg*Math.PI/180);g.drawImage(bmp,-w/2,-h/2);
+    const png=/png/.test(m.blob.type),blob=await new Promise(r=>c.toBlob(r,png?'image/png':'image/jpeg',.95));
+    if(!blob)throw new Error('사진을 돌리지 못했어요.');
+    await putPhoto('src',new File([blob],'rotated.'+(png?'png':'jpg'),{type:blob.type}));
+  }catch(e){toast((e&&e.message)||'사진을 돌리지 못했어요.');}
+}
 async function putPhoto(path,file,ai){
   const hadSrc=path==='src'&&hasPhoto(S.src);
   try{await setPhoto(path,file,ai?{ai:true}:{});if(path==='sheetImg')await applySheet(file);if(path==='base'){S.baseOk=false;S.baseCands=[];gc();}}catch(err){toast(err.message||'사진을 읽지 못했어요.');return;}
@@ -1873,6 +1902,7 @@ const ACT={
   up(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i>0){[l[i],l[i-1]]=[l[i-1],l[i]];renderSide();refresh();}},
   dn(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i<l.length-1){[l[i],l[i+1]]=[l[i+1],l[i]];renderSide();refresh();}},
   pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
+  async rotl(){await rotSrc(-90);},async rotr(){await rotSrc(90);},
   async specai(){
     const say=(t,c)=>{const e=$('#specMsg');if(e){e.textContent=t;e.className='msg'+(c?' '+c:'');}};
     if(!hasPhoto(S.src)){say('제품 사진을 먼저 넣어 주세요.','err');return;}
@@ -1888,7 +1918,7 @@ const ACT={
   },
   genok(){$('#genConfirm').hidden=true;const f=pendingGen;pendingGen=null;if(f)f();},
   genno(){$('#genConfirm').hidden=true;pendingGen=null;},
-  async autozoom(){const ok=await autoZoom();UI.open.add('s-zoom');renderSide();refresh();toast(ok?'확대 3곳을 제품 위치에 맞췄어요.':'제품 위치를 찾지 못했어요. 슬라이더로 직접 맞춰 주세요.',3000);},
+  async autozoom(){const ok=await autoZoom(true);UI.open.add('s-zoom');renderSide();refresh();toast(ok?'확대 3곳을 제품 위치에 맞췄어요.':'제품 위치를 찾지 못했어요. 슬라이더로 직접 맞춰 주세요.',3000);},
   async aboutai(){
     const text=($('#aboutPaste')||{}).value||'',say=(x,c)=>{const m=$('#aboutMsg');if(m){m.textContent=x;m.className='msg'+(c?' '+c:'');}};
     if(!text.trim()){say('자료를 먼저 붙여 넣어 주세요.','err');return;}
@@ -1975,6 +2005,7 @@ side.addEventListener('change',e=>{
   if(d.chk){setP(d.chk,t.checked);refresh();}
   else if(d.file){const f=t.files&&t.files[0];t.value='';if(f)putPhoto(d.file,f,d.ai==='1');}
   else if(d.view!==undefined){S.colors.items[+d.view].view=t.value;renderSide();refresh();}
+  else if(d.lv!==undefined){setLever(t.value,false);renderSide();refresh();}
   else if(d.dir!==undefined){S.colors.items[+d.dir].flip=t.value==='R';renderSide();refresh();}
   else if(d.ic!==undefined){S.zoom.items[+d.ic].ic=t.value;refresh();}
   else if(d.sz!==undefined){S.size[d.sz]=t.value;refresh();}
@@ -2033,7 +2064,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
   await idb.open();await restore();
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
   if(zoomUntouched()&&await autoZoom()){renderSide();refresh();toast('확대 3곳을 제품 위치에 맞췄어요.',2600);}   // 예전 기본 자리가 저장돼 있던 작업도 한 번 맞춰요
-  else if(await ensureMask()){renderSide();refresh();}                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
+  else if(await ensureMask()){if(S.src&&PM&&PM.id===S.src.id&&PM.dir&&(!S.lvDir||S.lvDir.id!==S.src.id))setLever(PM.dir,true);renderSide();refresh();}                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
   if(G.key.trim())gCheck();                                  // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
   checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
