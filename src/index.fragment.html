@@ -279,13 +279,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 42</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 43</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
       <button class="chip" id="blankChip" type="button" title="눌러서 첫 빈 칸으로 이동"></button>
       <button class="btn primary" id="btnOne" type="button">한 번에 만들기</button>
       <button class="btn" id="btnExport" type="button">이미지로 저장</button>
+      <button class="btn" id="btnOp" type="button" title="상세페이지에 들어가는 손잡이 작동 영상(레버가 눌렸다 올라오는 영상) 만들기">작동 영상</button>
       <button class="btn" id="btnShort" type="button">숏폼 영상</button>
       <button class="btn" id="btnNew" type="button">새 제품</button>
       <button class="btn" id="btnSave" type="button">작업 저장</button>
@@ -326,7 +327,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=42,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=43,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -2039,6 +2040,12 @@ side.addEventListener('drop',e=>{const t=e.target.closest('.thumb');if(!t||!t.da
 $('#btnOne').onclick=()=>runOne(false);
 $('#btnExport').onclick=()=>{EX.busy=false;EX.cancel=false;showExport();};
 $('#btnShort').onclick=()=>showShort();
+$('#btnOp').onclick=()=>{   // 손잡이 작동 영상(상세페이지 안에 들어가는 영상) 만드는 칸으로 바로 가요
+  UI.open.add('p3');setTab('edit');renderSide();
+  const el=$('.blk.opv',side);if(el){el.scrollIntoView({block:'start'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1600);}
+  if(!hasPhoto(S.src))toast('제품 사진을 먼저 넣으면 작동 영상을 만들 수 있어요.',3200);
+  else if(G.state!=='on')toast('작동 영상은 2단계에서 구글 키를 연결해야 만들 수 있어요.',3600);
+};
 $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>$('#loadFile').click();
 $('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
