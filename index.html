@@ -284,7 +284,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 50</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 51</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -332,7 +332,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=50,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=51,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -500,7 +500,7 @@ async function restore(){
   try{const o=fromSaved(JSON.parse(raw));if(!o)return;S=o;await loadPhotos();}catch(e){S=defaults();}
 }
 /* 한글 파일 이름이 깨질 수 있어 내 컴퓨터에서는 영문 이름으로 내려받아요 */
-const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];return (/첫장면/.test(n)?'operation-first-frame':/_1_위/.test(n)?'detailpage-1-top':/_2_작동영상/.test(n)?'detailpage-2-video':/_3_아래/.test(n)?'detailpage-3-bottom':/작업/.test(n)?'detailpage-work':'detailpage')+'-'+new Date().toISOString().slice(0,10)+ext;};
+const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];return (/첫장면/.test(n)?'operation-first-frame':/작동영상_/.test(n)?'operation-loop':/_1_위/.test(n)?'detailpage-1-top':/_2_작동영상/.test(n)?'detailpage-2-video':/_3_아래/.test(n)?'detailpage-3-bottom':/작업/.test(n)?'detailpage-work':'detailpage')+'-'+new Date().toISOString().slice(0,10)+ext;};
 async function saveFile(name,blob){
   let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
   if(dl){await dl.save({filename:name,data:blob});return;}
@@ -1178,7 +1178,7 @@ const VEO_DEFAULT='veo-3.1-fast-generate-preview';   // 키 목록에 영상 모
 const VPRICE=[[/fast/,0.10],[/lite/,0.05],[/veo/,0.40]];   // 초당 대략(외부 자료이고 일부는 확인 못 한 값)
 const vPrice=m=>{const x=VPRICE.find(a=>a[0].test(m||''));return x?x[1]:0;};
 const pickVideo=vs=>{const ok=(vs||[]).filter(n=>/generate/.test(n)),r=n=>/fast/.test(n)?0:/lite/.test(n)?1:2;return ok.slice().sort((a,b)=>r(a)-r(b)||verOf(b)-verOf(a))[0]||'';};
-const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',firstKey:'',firstUrl:'',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:'',srcKey:'',method:'auto'};
+const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',firstKey:'',firstUrl:'',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:'',srcKey:'',method:'auto',loop:1};
 function opCands(){   // 첫 장면으로 쓸 수 있는 '도어에 설치된 사진'들(손이 나온 사진은 빼요)
   const L=[];
   if(hasPhoto(S.base))L.push({k:'base',label:'기준 설치 사진',p:S.base});
@@ -1255,18 +1255,61 @@ async function opFrameEdit(b64,deg,model,aspect,signal){   // 이미지 AI: 레�
   const id=part.inlineData||part.inline_data,bin=atob(id.data),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
   return new Blob([u8],{type:id.mimeType||id.mime_type||'image/png'});
 }
-async function opRecord(Ks,signal){   // 장면들을 8초 영상으로 이어 붙여 녹화해요(내 컴퓨터에서 · 무료)
-  const W=Ks[0].width,H=Ks[0].height,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d'),DUR=8,N=Ks.length-1;
+const opPos=(u,N)=>{const e=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;return u<.06?0:u<.46?N*e((u-.06)/.4):u<.54?N:u<.94?N*(1-e((u-.54)/.4)):0;};   // 가만히 → 눌림 → 잠깐 멈춤 → 올라옴 → 가만히(처음과 끝이 같아서 이어 붙여도 끊기지 않아요)
+function opDraw(g,Ks,u){const N=Ks.length-1,q=Math.min(N,Math.max(0,opPos(u,N))),i=Math.min(N-1,Math.floor(q)),a=q-i;g.globalAlpha=1;g.drawImage(Ks[i],0,0);if(a>.001){g.globalAlpha=a;g.drawImage(Ks[i+1],0,0);}g.globalAlpha=1;}
+async function opRecord(Ks,signal,D){   // 장면들을 D초 영상으로 이어 붙여 녹화해요(내 컴퓨터에서 · 무료). 상세페이지에서는 무한 반복돼요.
+  const W=Ks[0].width,H=Ks[0].height,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
   const mt=['video/mp4;codecs=avc1','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>{try{return MediaRecorder.isTypeSupported(t);}catch(e){return false;}})||'';
-  const stream=cv.captureStream(24),rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:5e6}:{}),chunks=[];
+  const stream=cv.captureStream(30),rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:5e6}:{}),chunks=[];
   rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
-  const ease=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
-  const pos=t=>t<.6?0:t<3.2?N*ease((t-.6)/2.6):t<4.2?N:t<6.6?N*(1-ease((t-4.2)/2.4)):0;   // 가만히 → 눌림 → 잠깐 멈춤 → 올라옴 → 가만히
-  const draw=t=>{const q=Math.min(N,Math.max(0,pos(t))),i=Math.min(N-1,Math.floor(q)),a=q-i;g.globalAlpha=1;g.drawImage(Ks[i],0,0);if(a>.001){g.globalAlpha=a;g.drawImage(Ks[i+1],0,0);}g.globalAlpha=1;};
-  draw(0);rec.start();const t0=performance.now();
-  await new Promise((ok,no)=>{const tick=()=>{if(signal&&signal.aborted){no({name:'AbortError'});return;}const t=(performance.now()-t0)/1000;if(t>=DUR){draw(0);setTimeout(ok,150);return;}draw(t);opMsg('영상으로 이어 붙이는 중이에요… '+Math.round(t)+' / '+DUR+'초 (이 탭을 열어 두세요)');setTimeout(tick,1000/30);};tick();});
+  opDraw(g,Ks,0);rec.start();const t0=performance.now();
+  await new Promise((ok,no)=>{const tick=()=>{if(signal&&signal.aborted){no({name:'AbortError'});return;}const t=(performance.now()-t0)/1000;if(t>=D){opDraw(g,Ks,0);setTimeout(ok,120);return;}opDraw(g,Ks,t/D);if(D>=2)opMsg('영상으로 이어 붙이는 중이에요… '+Math.round(t)+' / '+D+'초 (이 탭을 열어 두세요)');setTimeout(tick,1000/40);};tick();});
   const stopped=new Promise(ok=>{rec.onstop=ok;});rec.stop();await stopped;
   return new Blob(chunks,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});
+}
+/* GIF 만들기(무한 반복): 쇼핑몰 상세페이지에 그림처럼 올려도 계속 움직여요. 팔레트 256색 + 규칙적 디더링 + LZW */
+function gifBytes(frames,W,H,delayCs){
+  const hist=new Uint32Array(32768);
+  frames.forEach(f=>{for(let p=0;p<f.length;p+=16){hist[((f[p]>>3)<<10)|((f[p+1]>>3)<<5)|(f[p+2]>>3)]++;}});
+  let items=[];for(let k=0;k<32768;k++)if(hist[k])items.push({r:((k>>10)&31)*8+4,g:((k>>5)&31)*8+4,b:(k&31)*8+4,c:hist[k]});
+  let boxes=[items];
+  while(boxes.length<256){let bi=-1,bs=0,ch='r';
+    boxes.forEach((b,i)=>{if(b.length<2)return;['r','g','b'].forEach(c=>{let lo=255,hi=0;b.forEach(x=>{if(x[c]<lo)lo=x[c];if(x[c]>hi)hi=x[c];});const sc=(hi-lo)*Math.log(2+b.length);if(sc>bs){bs=sc;bi=i;ch=c;}});});
+    if(bi<0)break;const b=boxes[bi].slice().sort((x,y)=>x[ch]-y[ch]);let tot=0;b.forEach(x=>tot+=x.c);let acc=0,cut=1;for(let i=0;i<b.length-1;i++){acc+=b[i].c;cut=i+1;if(acc>=tot/2)break;}
+    boxes.splice(bi,1,b.slice(0,cut),b.slice(cut));}
+  const pal=new Uint8Array(768);boxes.forEach((b,i)=>{let r=0,g=0,bb=0,t=0;b.forEach(x=>{r+=x.r*x.c;g+=x.g*x.c;bb+=x.b*x.c;t+=x.c;});t=t||1;pal[i*3]=Math.round(r/t);pal[i*3+1]=Math.round(g/t);pal[i*3+2]=Math.round(bb/t);});
+  const n=boxes.length,lut=new Uint8Array(32768);
+  for(let k=0;k<32768;k++){const r=((k>>10)&31)*8+4,g=((k>>5)&31)*8+4,b=(k&31)*8+4;let best=0,bd=1e9;for(let i=0;i<n;i++){const dr=r-pal[i*3],dg=g-pal[i*3+1],db=b-pal[i*3+2],d=dr*dr*2+dg*dg*4+db*db*3;if(d<bd){bd=d;best=i;}}lut[k]=best;}
+  const BY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5],out=[];
+  const w16=v=>{out.push(v&255,(v>>8)&255);};
+  'GIF89a'.split('').forEach(c=>out.push(c.charCodeAt(0)));w16(W);w16(H);out.push(0xF7,0,0);for(let i=0;i<768;i++)out.push(pal[i]);
+  out.push(0x21,0xFF,0x0B);'NETSCAPE2.0'.split('').forEach(c=>out.push(c.charCodeAt(0)));out.push(3,1,0,0,0);   // 무한 반복
+  const lzw=idx=>{const mc=8,clear=256,eoi=257;let next=258,size=9,dict=new Map(),cur=0,bits=0;const o=[];
+    const put=c=>{cur|=c<<bits;bits+=size;while(bits>=8){o.push(cur&255);cur>>=8;bits-=8;}};
+    put(clear);let pre=idx[0];
+    for(let i=1;i<idx.length;i++){const k=idx[i],key=pre*256+k,v=dict.get(key);
+      if(v!==undefined){pre=v;continue;}
+      put(pre);
+      if(next===4096){put(clear);dict.clear();next=258;size=9;}else{if(next>=(1<<size))size++;dict.set(key,next++);}
+      pre=k;}
+    put(pre);put(eoi);if(bits>0)o.push(cur&255);return o;};
+  frames.forEach(f=>{
+    const idx=new Uint8Array(W*H);
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=(y*W+x)*4,d=(BY[((y&3)<<2)|(x&3)]-7.5)*1.6;
+      const r=Math.max(0,Math.min(255,f[p]+d)),g=Math.max(0,Math.min(255,f[p+1]+d)),b=Math.max(0,Math.min(255,f[p+2]+d));
+      idx[y*W+x]=lut[((r>>3)<<10)|((g>>3)<<5)|(b>>3)];}
+    out.push(0x21,0xF9,4,4);w16(delayCs);out.push(0,0);
+    out.push(0x2C);w16(0);w16(0);w16(W);w16(H);out.push(0,8);
+    const data=lzw(idx);for(let i=0;i<data.length;i+=255){const ch=data.slice(i,i+255);out.push(ch.length);for(const v of ch)out.push(v);}out.push(0);
+  });
+  out.push(0x3B);return new Uint8Array(out);
+}
+function opGif(Ks,D){   // 1280×720 장면들에서 작은 GIF(가로 640)를 만들어요
+  const W=Ks[0].width,H=Ks[0].height,gw=W>H?640:360,gh=Math.round(gw*H/W),full=document.createElement('canvas');full.width=W;full.height=H;
+  const fg=full.getContext('2d'),sm=document.createElement('canvas');sm.width=gw;sm.height=gh;const sg=sm.getContext('2d',{willReadFrequently:true});
+  const F=Math.max(8,Math.min(36,Math.round(D*14))),frames=[];
+  for(let i=0;i<F;i++){opDraw(fg,Ks,i/F);sg.drawImage(full,0,0,gw,gh);frames.push(sg.getImageData(0,0,gw,gh).data.slice());}
+  return {blob:new Blob([gifBytes(frames,gw,gh,Math.max(2,Math.round(D*100/F)))],{type:'image/gif'}),w:gw,h:gh};
 }
 async function makeFramesVideo(){
   if(OPV.busy)return false;
@@ -1291,8 +1334,10 @@ async function makeFramesVideo(){
       const fb=await createImageBitmap(frames[i]),tmp=document.createElement('canvas');tmp.width=baseBmp.width;tmp.height=baseBmp.height;tmp.getContext('2d').drawImage(fb,0,0,tmp.width,tmp.height);
       Ks.push(opMask(C0,g0,opCompose(tmp)));
     }
-    const blob=await opRecord(Ks,signal);
-    await putVideo(blob,{ai:true,model:'frames:'+model,ratio:OPV.ratio,motion:'frames'},C0.toDataURL('image/jpeg',.9).split(',')[1]);
+    const D=Math.max(1,Math.min(8,+OPV.loop||1));
+    const blob=await opRecord(Ks,signal,D);
+    await putVideo(blob,{ai:true,model:'frames:'+model,ratio:OPV.ratio,motion:'frames',loopSecs:D},C0.toDataURL('image/jpeg',.9).split(',')[1]);
+    try{const gf=opGif(Ks,D),gid=uid();PENDING.add(gid);remember(gid,gf.blob,gf.w,gf.h);await idb.put(gid,{blob:gf.blob,w:gf.w,h:gf.h});S.opVideo.gif={id:gid,w:gf.w,h:gf.h};PENDING.delete(gid);}catch(e){}   // GIF(무한 반복)도 같이 저장해 둬요
     opMsg('영상을 만들었어요(간이 방식: 사진 '+ok.length+'장을 이어 붙였어요). 아래에서 확인하고, 손잡이 모양이 실물과 같을 때만 저장해서 쓰세요.','ok');return true;
   }catch(e){opMsg(e&&e.name==='AbortError'?'멈췄어요. (이미 구글에 보낸 요청은 요금이 들 수 있어요)':gErr(e),'err');return false;}
   finally{OPV.busy=false;OPV.ctl=null;renderSide();refresh();updInfo();}
@@ -1387,23 +1432,24 @@ function opCard(){
   const opt=(arr,cur)=>arr.map(o=>'<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>').join('');
   const hint=!meth?'2단계에서 구글 키를 연결해 주세요. 구글 영상 AI(Veo)가 안 되는 키여도 이미지 키만 있으면 \'간이 방식\'으로 만들 수 있어요.':!src?'도어에 설치된 사진이 아직 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.':(meth==='veo'&&!model)?'이 키의 모델 목록에는 영상 모델(Veo)이 안 보여요. Veo는 결제가 켜진 구글 키에서만 쓸 수 있고, 잔액이 없으면 안 보일 수도 있어요. 아래 \'영상 모델 이름 직접 넣기\'로 시도해 볼 수 있어요(안 되면 구글이 이유를 알려 줘요. 실패한 요청은 요금이 안 들어요). \'지시문 복사\'로 구글 AI 스튜디오(또는 Flow)에서 직접 만들어 \'영상 파일 직접 올리기\'로 넣을 수도 있어요.':'';
   return '<div class="blk opv"><h3>작동 영상 (선택 · 시험 기능)</h3>'
-    +'<p class="hint"><b>도어에 설치된 사진</b>(기준 설치 사진 → 문 색상 사진)을 첫 장면으로 <b>레버만 눌렸다 올라오는 약 8초 영상</b>을 만들어요. 방법은 둘이에요. ① <b>구글 영상 AI(Veo)</b>: 결제가 켜진 키가 필요하고 품질이 높아요. ② <b>간이 방식</b>: 이미지 AI가 레버를 조금씩 누른 사진 4장을 만들고, 내 컴퓨터가 레버 부분만 바꿔 가며 영상으로 이어 붙여요(이미지 키만 있으면 돼요 · 사진 한 장 약 $0.04). 둘 다 문·벽·받침은 그대로 두라고 지시해요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
+    +'<p class="hint"><b>도어에 설치된 사진</b>(기준 설치 사진 → 문 색상 사진)을 첫 장면으로 <b>레버가 내려갔다 올라오는 짧은 영상</b>을 만들어요(간이 방식은 <b>1초짜리를 계속 반복</b>해요). 방법은 둘이에요. ① <b>구글 영상 AI(Veo)</b>: 결제가 켜진 키가 필요하고 품질이 높아요. ② <b>간이 방식</b>: 이미지 AI가 레버를 조금씩 누른 사진 4장을 만들고, 내 컴퓨터가 레버 부분만 바꿔 가며 영상으로 이어 붙여요(이미지 키만 있으면 돼요 · 사진 한 장 약 $0.04). 둘 다 문·벽·받침은 그대로 두라고 지시해요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
     +'<div class="acts"><label class="chk">움직임 <select id="opMotion">'+opt([['nohand','손 없이 레버만 움직이기 (모양 유지에 유리)'],['hand','손이 레버를 눌러 보여주기']],OPV.motion)+'</select></label>'
     +'<label class="chk">화면 <select id="opRatio">'+opt([['16:9','가로 · 상세페이지 폭에 맞춰요 (추천)'],['9:16','세로 · 숏폼용']],OPV.ratio)+'</select></label>'
     +'<label class="chk">첫 장면 <select id="opFit">'+opt([['fit','사진 전체 보이기 (남는 곳은 흐리게)'],['fill','화면에 꽉 채우기 (위아래/양옆을 잘라요)']],OPV.fit)+'</select></label>'
     +'<label class="chk">만드는 방법 <select id="opMethod">'+opt([['auto','자동 (Veo가 되면 Veo, 아니면 간이 방식)'],['veo','구글 영상 AI(Veo)'],['frames','간이 방식 (이미지 AI 사진 4장 + 이어 붙이기)']],OPV.method)+'</select></label>'
+    +(meth==='frames'?'<label class="chk">반복 길이 <select id="opLoop">'+opt([['1','1초 · 계속 반복 (추천)'],['2','2초 · 계속 반복'],['3','3초 · 계속 반복'],['8','8초 · 천천히']],String(OPV.loop))+'</select></label>':'')
     +'</div>'+(cands.length?'<div class="acts"><label class="chk">첫 장면 사진 <select id="opSrc">'+cands.map(c=>'<option value="'+c.k+'"'+(c.p===src?' selected':'')+'>'+esc(c.label)+'</option>').join('')+'</select></label></div>':'<div class="msg err">도어에 설치된 사진이 아직 없어요. 작동 영상은 도어에 설치된 사진에서 손잡이만 움직여서 만들어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.</div>')
     +'<div class="opfirst"><div class="hint">첫 장면 미리보기 — 이 사진에서 영상이 시작돼요. 손잡이가 잘리면 위에서 \'사진 전체 보이기\'로 바꾸세요.</div><div id="opFirst"></div></div><div class="acts">'
     +(OPV.method==='veo'&&on&&(!G.videos.length||G.vman)?'<label class="chk">영상 모델 이름 직접 넣기 <input type="text" id="opModelTxt" value="'+esc(G.vman?model:'')+'" placeholder="veo-3.1-fast-generate-preview" style="min-width:260px"></label><button class="btn sm" type="button" data-act="opmodeldef">veo-3.1-fast-generate-preview로 시도</button>':'')
     +(G.videos.length>1?'<label class="chk">영상 모델 <select id="opModel">'+G.videos.map(n=>'<option value="'+esc(n)+'"'+(n===model?' selected':'')+'>'+esc(n)+(vPrice(n)?' · 초당 약 $'+vPrice(n):'')+'</option>').join('')+'</select></label>':'')+'</div>'
-    +(OPV.ask?'<div class="confirm" style="display:block">'+(meth==='frames'?'간이 방식으로 영상 1개(약 8초)를 만들어요: 이미지 AI('+esc(G.modelEdit||G.model)+')가 레버를 누른 사진 '+FR_DEG.length+'장을 만들고 내 컴퓨터가 영상으로 이어 붙여요. 만드는 동안 이 탭을 열어 두세요. ':'영상 1개(약 '+OPV.secs+'초)를 만들어요('+esc(model)+'). ')+'요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). 계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
+    +(OPV.ask?'<div class="confirm" style="display:block">'+(meth==='frames'?'간이 방식으로 '+OPV.loop+'초짜리 반복 영상(GIF도 같이)을 만들어요: 이미지 AI('+esc(G.modelEdit||G.model)+')가 레버를 누른 사진 '+FR_DEG.length+'장을 만들고 내 컴퓨터가 영상으로 이어 붙여요. 만드는 동안 이 탭을 열어 두세요. ':'영상 1개(약 '+OPV.secs+'초)를 만들어요('+esc(model)+'). ')+'요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). 계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
     +'<div class="acts">'+(OPV.busy?'<button class="btn sm" type="button" data-act="opstop">멈추기</button>':'<button class="btn sm primary" type="button" data-act="opask"'+(meth&&src&&(meth==='frames'||model)?'':' disabled')+'>작동 영상 만들기'+(meth&&(meth==='frames'||model)?' (약 $'+price.toFixed(2)+')':'')+'</button>')
     +(src?'<button class="btn sm" type="button" data-act="opsaveframe">첫 장면 사진 저장</button>':'')
     +'<label class="btn sm">도어 설치 사진 직접 올리기<input type="file" accept="image/*" hidden data-opfirst="1"></label><label class="btn sm">영상 파일 직접 올리기<input type="file" accept="video/*" hidden data-opfile="1"></label><button class="btn sm" type="button" data-act="opcopy">지시문 복사</button></div>'
     +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (영상 요금이 따로 들어요)</label>'
     +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||hint)+'</div>'
     +(on&&!G.videos.length&&G.allModels&&G.allModels.length?'<details><summary>이 키에서 쓸 수 있는 모델 이름 보기 (영상 모델이 없는 이유 확인용)</summary><div class="hint" style="word-break:break-all">'+esc(G.allModels.slice(0,80).join(' · '))+(G.allModels.length>80?' … 외 '+(G.allModels.length-80)+'개':'')+'</div></details>':'')
-    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted playsinline></video><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button><button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
+    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted playsinline></video><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
     +'</div>';
 }
 async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
@@ -1993,7 +2039,7 @@ async function runOne(go){
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   const vMeth=opMethod(),vApp=!!vMeth&&!hasPhoto(S.opVideo),vm=(G.modelVideo||'').trim()||VEO_DEFAULT,vCost=(vMeth==='frames'?priceOf(G.modelEdit||G.model)*FR_DEG.length:vPrice(vm)*OPV.secs).toFixed(2);   // 작동 영상: 도어 설치 사진에서 레버만 위아래로 움직여요
-  const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개(약 '+OPV.secs+'초)도 만들어요(')+'도어에 설치된 사진에서 레버만 위아래로 움직여요 · '+(vMeth==='frames'?'간이 방식(이미지 AI 사진 '+FR_DEG.length+'장 + 이어 붙이기 · '+(G.modelEdit||G.model)+')':'영상 모델 '+vm)+' · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이고 단가 일부는 확인 못 했어요).';
+  const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개('+(vMeth==='frames'?OPV.loop+'초 반복':'약 '+OPV.secs+'초')+')도 만들어요(')+'도어에 설치된 사진에서 레버만 위아래로 움직여요 · '+(vMeth==='frames'?'간이 방식(이미지 AI 사진 '+FR_DEG.length+'장 + 이어 붙이기 · '+(G.modelEdit||G.model)+')':'영상 모델 '+vm)+' · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이고 단가 일부는 확인 못 했어요).';
   if(why.length&&!go||(!why.length&&!go&&vApp&&UI.opAuto)){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+(vApp?'<li id="onOpLi"'+(UI.opAuto?'':' hidden')+'>'+esc(vLine)+'</li>':'')+'</ul>'+(vApp?'<label class="chk" style="display:block;margin:6px 0 10px"><input type="checkbox" id="onOp"'+(UI.opAuto?' checked':'')+'> 작동 영상도 함께 만들기</label>':'')+'<div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);
@@ -2157,6 +2203,7 @@ const ACT={
   opstop(){if(OPV.ctl)OPV.ctl.abort();},
   opdel(){S.opVideo=null;gc();renderSide();refresh();},
   async opsaveframe(){try{const b64=await opFrame(),bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);await saveFile('작동영상_첫장면.jpg',new Blob([u8],{type:'image/jpeg'}));toast('첫 장면 사진을 저장했어요. 구글 AI 스튜디오(또는 Flow)에서 이 사진과 「지시문 복사」 글로 영상을 만드세요.',5600);}catch(e){toast((e&&e.message)||'저장하지 못했어요.');}},
+  opsavegif(){const g=S.opVideo&&S.opVideo.gif&&PH.get(S.opVideo.gif.id);if(g)saveFile('작동영상_'+safeName()+'.gif',g.blob);},
   opsave(){const m=S.opVideo&&PH.get(S.opVideo.id);if(m)saveFile('작동영상_'+safeName()+'.'+vidExt(m.blob),m.blob);},
   opcopy(){copy(opPrompt(),'지시문을 복사했어요. 구글 AI 스튜디오(또는 Flow)의 영상 만들기에 기준 사진과 함께 붙여 넣으세요.');},
   baseok(){                                   // 기준 사진 확정: 흰 문 칸에 그대로 넣고, 나머지 문 색상은 이 사진에서 문 색만 바꿔 만들어요
@@ -2201,7 +2248,7 @@ const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},vRem(t){VK.remember=t.checked;saveVKey();},cRem(t){C.remember=t.checked;saveCKey();},
   useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useClear(t){UI.clearOnNew=t.checked;},opAutoChk(t){UI.opAuto=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
-  opMotion(t){OPV.motion=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();refresh();},opFit(t){OPV.fit=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},opSrc(t){OPV.srcKey=t.value;OPV.firstKey='';renderSide();},opMethod(t){OPV.method=t.value;renderSide();},opModelTxt(t){const v=String(t.value||'').trim().replace(/^models\//,'');if(!v)return;G.modelVideo=v;G.vman=true;G.veoNo='';G.videos=[v];renderSide();},
+  opMotion(t){OPV.motion=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();refresh();},opFit(t){OPV.fit=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},opSrc(t){OPV.srcKey=t.value;OPV.firstKey='';renderSide();},opMethod(t){OPV.method=t.value;renderSide();},opLoop(t){OPV.loop=+t.value;renderSide();},opModelTxt(t){const v=String(t.value||'').trim().replace(/^models\//,'');if(!v)return;G.modelVideo=v;G.vman=true;G.veoNo='';G.videos=[v];renderSide();},
   colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
