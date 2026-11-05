@@ -126,7 +126,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .opbox .play{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;background:rgba(0,0,0,.55);box-shadow:inset 0 0 0 4px rgba(255,255,255,.88)}
 .pg .opbox .play::after{content:"";position:absolute;left:36px;top:27px;border-left:30px solid #fff;border-top:19px solid transparent;border-bottom:19px solid transparent}
 .pg .opbox .optag{position:absolute;left:18px;bottom:18px;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:18px;padding:6px 16px;border-radius:999px}
-.pg .opbox.ph{display:flex;align-items:center;justify-content:center;background:#eef2fa;border:2px dashed #b8c4da;color:#6b7a96;font-size:18px;text-align:center;padding:0 40px}
+.pg .opbox.ph{display:flex;align-items:flex-end;justify-content:center;background:#eef2fa;border:2px dashed #b8c4da;color:#6b7a96;font-size:18px;line-height:1.5;text-align:center;padding:0 24px 26px}
+.pg .opbox.ph .play{background:rgba(107,122,150,.55);box-shadow:inset 0 0 0 4px rgba(255,255,255,.9)}
 .recog .rwrap{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start}
 .recog .rimg{position:relative;width:120px;background:#fff center/contain no-repeat;border:1px solid var(--line);border-radius:8px}
 .recog .rbox{position:absolute;border:2px solid #e5384f;border-radius:4px}
@@ -263,7 +264,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 36</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 37</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -310,7 +311,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=36,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=37,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -560,12 +561,12 @@ function renderPage(ex){
     return '<div class="tl"><div class="yr"'+J(b+'year')+'>'+esc(t.year)+'</div><div class="tt"'+J(b+'text')+'>'+(lines.length?lines.map(esc).join(' · '):'<span class="need" style="font-size:14px">그해 등록한 내용</span>')+'</div></div>';}).join('');
   // 4-2 작동 영상(문 색상 바로 밑): 화면에서는 재생, 저장 이미지에서는 대표 화면 + ▶ 표시
   if(hasPhoto(S.opVideo)||!ex){
-    const v=S.opVideo&&PH.get(S.opVideo.id),vw=v?v.w:720,vh=v?v.h:1280,vert=vh>vw,bw=vert?360:736,bh=Math.round(bw*vh/vw);
+    const v=S.opVideo&&PH.get(S.opVideo.id),vw=v?v.w:(OPV.ratio==='9:16'?720:1280),vh=v?v.h:(OPV.ratio==='9:16'?1280:720),rr=vw/vh,bw=rr>=1.2?736:rr<=.8?360:520,bh=Math.round(bw/rr);
     const pm=S.opVideo&&S.opVideo.poster&&PH.get(S.opVideo.poster.id),pst=pm?'background-image:url('+pm.url+');background-size:cover;background-position:center;':'background:linear-gradient(160deg,#1c2740,#0e1526);';
     let box;
     if(v&&!ex)box='<div class="opbox" style="width:'+bw+'px;height:'+bh+'px;'+pst+'"><video src="'+v.url+'" autoplay muted loop playsinline></video></div>';
     else if(v)box='<div class="opbox" style="width:'+bw+'px;height:'+bh+'px;'+pst+'"><span class="play"></span><span class="optag">작동 영상</span></div>';
-    else box='<div class="opbox ph" data-jump="opv.title" style="width:736px;height:200px"><span>작동 영상이 들어갈 자리 · 3단계 맨 아래에서 만들면 여기에 들어가요</span></div>';
+    else box='<div class="opbox ph" data-jump="opv.title" style="width:'+bw+'px;height:'+bh+'px"><span class="play"></span><span class="phtxt">작동 영상이 들어갈 자리<br>3단계 맨 아래에서 만들면 여기에 들어가요</span></div>';
     out.push('<section class="sec white" data-slice="04b_작동영상">'+head('opv')+box+(S.opv.note?'<p class="note"'+J('opv.note')+'>'+nl(S.opv.note)+'</p>':'')+'</section>');
   }
   out.push('<section class="sec about" data-slice="05_회사소개"><div class="head"><div class="eyebrow"'+J('about.eyebrow')+'>'+esc(A.eyebrow)+'</div><h2'+J('about.title')+'>'+T('about.title',A.title,{req:1,ph:'제목'})+'</h2><p class="lead"'+J('about.body')+'>'+T('about.body',A.body,{req:1,ph:'회사 소개 글'})+'</p></div>'
@@ -1041,7 +1042,7 @@ async function putResult(j,blob,extra){       // 만든 이미지를 칸에 넣�
 const VPRICE=[[/fast/,0.10],[/lite/,0.05],[/veo/,0.40]];   // 초당 대략(외부 자료이고 일부는 확인 못 한 값)
 const vPrice=m=>{const x=VPRICE.find(a=>a[0].test(m||''));return x?x[1]:0;};
 const pickVideo=vs=>{const ok=(vs||[]).filter(n=>/generate/.test(n)),r=n=>/fast/.test(n)?0:/lite/.test(n)?1:2;return ok.slice().sort((a,b)=>r(a)-r(b)||verOf(b)-verOf(a))[0]||'';};
-const OPV={busy:false,ask:false,ratio:'9:16',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:''};
+const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',firstKey:'',firstUrl:'',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:''};
 function opSource(){   // 첫 장면 사진: 확정한 기준 사진 → 흰 문 칸 → 원본 사진
   if(hasPhoto(S.base))return S.base;
   const w=whiteIdx();if(w>=0&&hasPhoto(S.colors.items[w].photo))return S.colors.items[w].photo;
@@ -1052,13 +1053,15 @@ function opPrompt(){
   return 'The first frame is a real product photo of an interior door lever handle installed on a door. Fixed tripod camera, no camera movement, no zoom. '
     +(hand?'A single natural hand (five fingers, only the hand and wrist visible, no face, no body) reaches in from the side, grips the lever, presses it down smoothly about 40 degrees, holds for a moment, then releases so the lever springs back to its original position. '
       :'The lever handle presses down smoothly by itself about 40 degrees, holds for a moment, then returns slowly to its original position, like a product demonstration. No hand, no person. ')
-    +'Keep the lever shape, the rosette, the metal finish, the door color, the wall, the lighting and the framing exactly as in the photo: only the lever rotates around its neck. The blurred area around the sharp square picture must stay unchanged. No text, no logo, no watermark.';
+    +'Keep the lever shape, the rosette, the metal finish, the door color, the wall, the lighting and the framing exactly as in the photo: only the lever rotates around its neck. '+(OPV.fit==='fit'?'The blurred area around the sharp picture must stay unchanged. ':'')+'No text, no logo, no watermark.';
 }
 async function opFrame(){   // 선택한 비율(9:16 / 16:9) 화면 가운데에 사진을 두고, 남는 곳에는 같은 사진을 흐리게 깔아요
   const src=opSource();if(!src)throw {status:-1,message:'먼저 제품 사진(또는 기준 사진)을 넣어 주세요.'};
   const m=PH.get(src.id),bmp=await createImageBitmap(m.blob),vert=OPV.ratio==='9:16',W=vert?720:1280,H=vert?1280:720;
   const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
-  const cov=Math.max(W/bmp.width,H/bmp.height);g.filter='blur(28px)';g.drawImage(bmp,(W-bmp.width*cov)/2,(H-bmp.height*cov)/2,bmp.width*cov,bmp.height*cov);g.filter='none';
+  const cov=Math.max(W/bmp.width,H/bmp.height);
+  if(OPV.fit==='fill'){g.drawImage(bmp,(W-bmp.width*cov)/2,(H-bmp.height*cov)/2,bmp.width*cov,bmp.height*cov);return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.92)));}   // 꽉 채우기
+  g.filter='blur(28px)';g.drawImage(bmp,(W-bmp.width*cov)/2,(H-bmp.height*cov)/2,bmp.width*cov,bmp.height*cov);g.filter='none';
   g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,0,W,H);
   const fit=Math.min(W/bmp.width,H/bmp.height),dw=bmp.width*fit,dh=bmp.height*fit;g.drawImage(bmp,(W-dw)/2,(H-dh)/2,dw,dh);
   return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.92)));
@@ -1137,14 +1140,23 @@ async function opUpload(f){
   if(f.size>150*1024*1024){toast('영상이 너무 커요(150MB 이하).');return;}
   await putVideo(f,{ai:false});renderSide();refresh();toast('영상을 넣었어요.');
 }
+async function opPaintFirst(){                // 첫 장면 미리보기(돈이 안 들어요)
+  const el=$('#opFirst');if(!el)return;const src=opSource();if(!src){el.textContent='';return;}
+  const key=[src.id,OPV.ratio,OPV.fit].join('|');
+  try{if(OPV.firstKey!==key){OPV.firstUrl='data:image/jpeg;base64,'+await opFrame();OPV.firstKey=key;}}catch(e){return;}
+  const e2=$('#opFirst');if(e2)e2.innerHTML='<img alt="첫 장면" src="'+OPV.firstUrl+'" style="width:'+(OPV.ratio==='9:16'?'120px':'300px')+';border-radius:8px;border:1px solid var(--line);display:block">';
+}
 function opCard(){
+  setTimeout(opPaintFirst,0);
   const v=S.opVideo&&PH.get(S.opVideo.id),src=opSource(),model=(G.modelVideo||'').trim(),on=G.state==='on',price=vPrice(model)*OPV.secs;
   const opt=(arr,cur)=>arr.map(o=>'<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>').join('');
   const hint=!on?'2단계에서 구글 키를 연결해 주세요.':!model?'이 키에서는 영상 모델(Veo)을 찾지 못했어요. Veo는 결제가 켜진 구글 키에서만 쓸 수 있어요. \'지시문 복사\'로 구글 AI 스튜디오(또는 Flow)에서 직접 만들어 \'영상 파일 직접 올리기\'로 넣을 수도 있어요.':!src?'제품 사진을 먼저 넣어 주세요.':'';
   return '<div class="blk opv"><h3>작동 영상 (선택 · 시험 기능)</h3>'
-    +'<p class="hint">기준 사진(없으면 흰 문 칸·원본 사진)을 첫 장면으로 구글 영상 AI(Veo)가 <b>레버가 눌렸다 올라오는 약 8초 영상</b>을 만들어요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
+    +'<p class="hint">기준 사진(없으면 흰 문 칸·원본 사진)을 첫 장면으로 구글 영상 AI(Veo)가 <b>레버가 눌렸다 올라오는 약 8초 영상</b>을 만들어요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
     +'<div class="acts"><label class="chk">움직임 <select id="opMotion">'+opt([['nohand','손 없이 레버만 움직이기 (모양 유지에 유리)'],['hand','손이 레버를 눌러 보여주기']],OPV.motion)+'</select></label>'
-    +'<label class="chk">화면 <select id="opRatio">'+opt([['9:16','세로 (숏폼)'],['16:9','가로']],OPV.ratio)+'</select></label>'
+    +'<label class="chk">화면 <select id="opRatio">'+opt([['16:9','가로 · 상세페이지 폭에 맞춰요 (추천)'],['9:16','세로 · 숏폼용']],OPV.ratio)+'</select></label>'
+    +'<label class="chk">첫 장면 <select id="opFit">'+opt([['fit','사진 전체 보이기 (남는 곳은 흐리게)'],['fill','화면에 꽉 채우기 (위아래/양옆을 잘라요)']],OPV.fit)+'</select></label>'
+    +'</div><div class="opfirst"><div class="hint">첫 장면 미리보기 — 이 사진에서 영상이 시작돼요. 손잡이가 잘리면 위에서 \'사진 전체 보이기\'로 바꾸세요.</div><div id="opFirst"></div></div><div class="acts">'
     +(G.videos.length>1?'<label class="chk">영상 모델 <select id="opModel">'+G.videos.map(n=>'<option value="'+esc(n)+'"'+(n===model?' selected':'')+'>'+esc(n)+(vPrice(n)?' · 초당 약 $'+vPrice(n):'')+'</option>').join('')+'</select></label>':'')+'</div>'
     +(OPV.ask?'<div class="confirm" style="display:block">영상 1개(약 '+OPV.secs+'초)를 만들어요('+esc(model)+'). 요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). 계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
     +'<div class="acts">'+(OPV.busy?'<button class="btn sm" type="button" data-act="opstop">멈추기</button>':'<button class="btn sm primary" type="button" data-act="opask"'+(on&&model&&src?'':' disabled')+'>작동 영상 만들기 (약 $'+price.toFixed(2)+')</button>')
@@ -1901,7 +1913,7 @@ const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
   useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useClear(t){UI.clearOnNew=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
-  opMotion(t){OPV.motion=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},
+  opMotion(t){OPV.motion=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();refresh();},opFit(t){OPV.fit=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},
   colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
