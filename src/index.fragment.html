@@ -152,12 +152,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;z-index:50;box-shadow:var(--shadow);max-width:90vw}
 .toast[hidden]{display:none}
 .veil{position:fixed;inset:0;background:rgba(8,12,24,.55);z-index:40;display:grid;place-items:center;padding:16px}
-.pupbox{position:relative;width:100%;max-width:480px;touch-action:none;margin:6px 0}
-.pupbox canvas{width:100%;display:block;border-radius:8px;background:#222}
-.pupmk{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.55);cursor:grab;touch-action:none}
-.pupmk[data-mk=pv]{background:#e5484d}.pupmk[data-mk=tp]{background:#2a7de1}
-.pupmk::after{position:absolute;left:0;right:0;top:-1px;text-align:center;color:#fff;font-size:11px;font-weight:800;line-height:16px;pointer-events:none}
-.pupmk[data-mk=pv]::after{content:'축'}.pupmk[data-mk=tp]::after{content:'끝'}
 .exscroll{max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
 .exscroll img{display:block;width:100%;height:auto}
 .dlg{width:min(520px,100%);max-height:90%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:14px}
@@ -288,7 +282,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 61</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 62</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -324,1877 +318,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous"></script>
-<script>/* mp4-muxer 5.1.3 (MIT License, Copyright (c) 2023 Vanilagy) - MP4 파일 만드는 부품. 인터넷 없이 쓰도록 안에 넣었어요 */
-var Mp4Muxer = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-  var __accessCheck = (obj, member, msg) => {
-    if (!member.has(obj))
-      throw TypeError("Cannot " + msg);
-  };
-  var __privateGet = (obj, member, getter) => {
-    __accessCheck(obj, member, "read from private field");
-    return getter ? getter.call(obj) : member.get(obj);
-  };
-  var __privateAdd = (obj, member, value) => {
-    if (member.has(obj))
-      throw TypeError("Cannot add the same private member more than once");
-    member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-  };
-  var __privateSet = (obj, member, value, setter) => {
-    __accessCheck(obj, member, "write to private field");
-    setter ? setter.call(obj, value) : member.set(obj, value);
-    return value;
-  };
-  var __privateWrapper = (obj, member, setter, getter) => ({
-    set _(value) {
-      __privateSet(obj, member, value, setter);
-    },
-    get _() {
-      return __privateGet(obj, member, getter);
-    }
-  });
-  var __privateMethod = (obj, member, method) => {
-    __accessCheck(obj, member, "access private method");
-    return method;
-  };
-
-  // src/index.ts
-  var src_exports = {};
-  __export(src_exports, {
-    ArrayBufferTarget: () => ArrayBufferTarget,
-    FileSystemWritableFileStreamTarget: () => FileSystemWritableFileStreamTarget,
-    Muxer: () => Muxer,
-    StreamTarget: () => StreamTarget
-  });
-
-  // src/misc.ts
-  var bytes = new Uint8Array(8);
-  var view = new DataView(bytes.buffer);
-  var u8 = (value) => {
-    return [(value % 256 + 256) % 256];
-  };
-  var u16 = (value) => {
-    view.setUint16(0, value, false);
-    return [bytes[0], bytes[1]];
-  };
-  var i16 = (value) => {
-    view.setInt16(0, value, false);
-    return [bytes[0], bytes[1]];
-  };
-  var u24 = (value) => {
-    view.setUint32(0, value, false);
-    return [bytes[1], bytes[2], bytes[3]];
-  };
-  var u32 = (value) => {
-    view.setUint32(0, value, false);
-    return [bytes[0], bytes[1], bytes[2], bytes[3]];
-  };
-  var i32 = (value) => {
-    view.setInt32(0, value, false);
-    return [bytes[0], bytes[1], bytes[2], bytes[3]];
-  };
-  var u64 = (value) => {
-    view.setUint32(0, Math.floor(value / 2 ** 32), false);
-    view.setUint32(4, value, false);
-    return [bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]];
-  };
-  var fixed_8_8 = (value) => {
-    view.setInt16(0, 2 ** 8 * value, false);
-    return [bytes[0], bytes[1]];
-  };
-  var fixed_16_16 = (value) => {
-    view.setInt32(0, 2 ** 16 * value, false);
-    return [bytes[0], bytes[1], bytes[2], bytes[3]];
-  };
-  var fixed_2_30 = (value) => {
-    view.setInt32(0, 2 ** 30 * value, false);
-    return [bytes[0], bytes[1], bytes[2], bytes[3]];
-  };
-  var ascii = (text, nullTerminated = false) => {
-    let bytes2 = Array(text.length).fill(null).map((_, i) => text.charCodeAt(i));
-    if (nullTerminated)
-      bytes2.push(0);
-    return bytes2;
-  };
-  var last = (arr) => {
-    return arr && arr[arr.length - 1];
-  };
-  var lastPresentedSample = (samples) => {
-    let result = void 0;
-    for (let sample of samples) {
-      if (!result || sample.presentationTimestamp > result.presentationTimestamp) {
-        result = sample;
-      }
-    }
-    return result;
-  };
-  var intoTimescale = (timeInSeconds, timescale, round = true) => {
-    let value = timeInSeconds * timescale;
-    return round ? Math.round(value) : value;
-  };
-  var rotationMatrix = (rotationInDegrees) => {
-    let theta = rotationInDegrees * (Math.PI / 180);
-    let cosTheta = Math.cos(theta);
-    let sinTheta = Math.sin(theta);
-    return [
-      cosTheta,
-      sinTheta,
-      0,
-      -sinTheta,
-      cosTheta,
-      0,
-      0,
-      0,
-      1
-    ];
-  };
-  var IDENTITY_MATRIX = rotationMatrix(0);
-  var matrixToBytes = (matrix) => {
-    return [
-      fixed_16_16(matrix[0]),
-      fixed_16_16(matrix[1]),
-      fixed_2_30(matrix[2]),
-      fixed_16_16(matrix[3]),
-      fixed_16_16(matrix[4]),
-      fixed_2_30(matrix[5]),
-      fixed_16_16(matrix[6]),
-      fixed_16_16(matrix[7]),
-      fixed_2_30(matrix[8])
-    ];
-  };
-  var deepClone = (x) => {
-    if (!x)
-      return x;
-    if (typeof x !== "object")
-      return x;
-    if (Array.isArray(x))
-      return x.map(deepClone);
-    return Object.fromEntries(Object.entries(x).map(([key, value]) => [key, deepClone(value)]));
-  };
-  var isU32 = (value) => {
-    return value >= 0 && value < 2 ** 32;
-  };
-
-  // src/box.ts
-  var box = (type, contents, children) => ({
-    type,
-    contents: contents && new Uint8Array(contents.flat(10)),
-    children
-  });
-  var fullBox = (type, version, flags, contents, children) => box(
-    type,
-    [u8(version), u24(flags), contents ?? []],
-    children
-  );
-  var ftyp = (details) => {
-    let minorVersion = 512;
-    if (details.fragmented)
-      return box("ftyp", [
-        ascii("iso5"),
-        // Major brand
-        u32(minorVersion),
-        // Minor version
-        // Compatible brands
-        ascii("iso5"),
-        ascii("iso6"),
-        ascii("mp41")
-      ]);
-    return box("ftyp", [
-      ascii("isom"),
-      // Major brand
-      u32(minorVersion),
-      // Minor version
-      // Compatible brands
-      ascii("isom"),
-      details.holdsAvc ? ascii("avc1") : [],
-      ascii("mp41")
-    ]);
-  };
-  var mdat = (reserveLargeSize) => ({ type: "mdat", largeSize: reserveLargeSize });
-  var free = (size) => ({ type: "free", size });
-  var moov = (tracks, creationTime, fragmented = false) => box("moov", null, [
-    mvhd(creationTime, tracks),
-    ...tracks.map((x) => trak(x, creationTime)),
-    fragmented ? mvex(tracks) : null
-  ]);
-  var mvhd = (creationTime, tracks) => {
-    let duration = intoTimescale(Math.max(
-      0,
-      ...tracks.filter((x) => x.samples.length > 0).map((x) => {
-        const lastSample = lastPresentedSample(x.samples);
-        return lastSample.presentationTimestamp + lastSample.duration;
-      })
-    ), GLOBAL_TIMESCALE);
-    let nextTrackId = Math.max(...tracks.map((x) => x.id)) + 1;
-    let needsU64 = !isU32(creationTime) || !isU32(duration);
-    let u32OrU64 = needsU64 ? u64 : u32;
-    return fullBox("mvhd", +needsU64, 0, [
-      u32OrU64(creationTime),
-      // Creation time
-      u32OrU64(creationTime),
-      // Modification time
-      u32(GLOBAL_TIMESCALE),
-      // Timescale
-      u32OrU64(duration),
-      // Duration
-      fixed_16_16(1),
-      // Preferred rate
-      fixed_8_8(1),
-      // Preferred volume
-      Array(10).fill(0),
-      // Reserved
-      matrixToBytes(IDENTITY_MATRIX),
-      // Matrix
-      Array(24).fill(0),
-      // Pre-defined
-      u32(nextTrackId)
-      // Next track ID
-    ]);
-  };
-  var trak = (track, creationTime) => box("trak", null, [
-    tkhd(track, creationTime),
-    mdia(track, creationTime)
-  ]);
-  var tkhd = (track, creationTime) => {
-    let lastSample = lastPresentedSample(track.samples);
-    let durationInGlobalTimescale = intoTimescale(
-      lastSample ? lastSample.presentationTimestamp + lastSample.duration : 0,
-      GLOBAL_TIMESCALE
-    );
-    let needsU64 = !isU32(creationTime) || !isU32(durationInGlobalTimescale);
-    let u32OrU64 = needsU64 ? u64 : u32;
-    let matrix;
-    if (track.info.type === "video") {
-      matrix = typeof track.info.rotation === "number" ? rotationMatrix(track.info.rotation) : track.info.rotation;
-    } else {
-      matrix = IDENTITY_MATRIX;
-    }
-    return fullBox("tkhd", +needsU64, 3, [
-      u32OrU64(creationTime),
-      // Creation time
-      u32OrU64(creationTime),
-      // Modification time
-      u32(track.id),
-      // Track ID
-      u32(0),
-      // Reserved
-      u32OrU64(durationInGlobalTimescale),
-      // Duration
-      Array(8).fill(0),
-      // Reserved
-      u16(0),
-      // Layer
-      u16(0),
-      // Alternate group
-      fixed_8_8(track.info.type === "audio" ? 1 : 0),
-      // Volume
-      u16(0),
-      // Reserved
-      matrixToBytes(matrix),
-      // Matrix
-      fixed_16_16(track.info.type === "video" ? track.info.width : 0),
-      // Track width
-      fixed_16_16(track.info.type === "video" ? track.info.height : 0)
-      // Track height
-    ]);
-  };
-  var mdia = (track, creationTime) => box("mdia", null, [
-    mdhd(track, creationTime),
-    hdlr(track.info.type === "video" ? "vide" : "soun"),
-    minf(track)
-  ]);
-  var mdhd = (track, creationTime) => {
-    let lastSample = lastPresentedSample(track.samples);
-    let localDuration = intoTimescale(
-      lastSample ? lastSample.presentationTimestamp + lastSample.duration : 0,
-      track.timescale
-    );
-    let needsU64 = !isU32(creationTime) || !isU32(localDuration);
-    let u32OrU64 = needsU64 ? u64 : u32;
-    return fullBox("mdhd", +needsU64, 0, [
-      u32OrU64(creationTime),
-      // Creation time
-      u32OrU64(creationTime),
-      // Modification time
-      u32(track.timescale),
-      // Timescale
-      u32OrU64(localDuration),
-      // Duration
-      u16(21956),
-      // Language ("und", undetermined)
-      u16(0)
-      // Quality
-    ]);
-  };
-  var hdlr = (componentSubtype) => fullBox("hdlr", 0, 0, [
-    ascii("mhlr"),
-    // Component type
-    ascii(componentSubtype),
-    // Component subtype
-    u32(0),
-    // Component manufacturer
-    u32(0),
-    // Component flags
-    u32(0),
-    // Component flags mask
-    ascii("mp4-muxer-hdlr", true)
-    // Component name
-  ]);
-  var minf = (track) => box("minf", null, [
-    track.info.type === "video" ? vmhd() : smhd(),
-    dinf(),
-    stbl(track)
-  ]);
-  var vmhd = () => fullBox("vmhd", 0, 1, [
-    u16(0),
-    // Graphics mode
-    u16(0),
-    // Opcolor R
-    u16(0),
-    // Opcolor G
-    u16(0)
-    // Opcolor B
-  ]);
-  var smhd = () => fullBox("smhd", 0, 0, [
-    u16(0),
-    // Balance
-    u16(0)
-    // Reserved
-  ]);
-  var dinf = () => box("dinf", null, [
-    dref()
-  ]);
-  var dref = () => fullBox("dref", 0, 0, [
-    u32(1)
-    // Entry count
-  ], [
-    url()
-  ]);
-  var url = () => fullBox("url ", 0, 1);
-  var stbl = (track) => {
-    const needsCtts = track.compositionTimeOffsetTable.length > 1 || track.compositionTimeOffsetTable.some((x) => x.sampleCompositionTimeOffset !== 0);
-    return box("stbl", null, [
-      stsd(track),
-      stts(track),
-      stss(track),
-      stsc(track),
-      stsz(track),
-      stco(track),
-      needsCtts ? ctts(track) : null
-    ]);
-  };
-  var stsd = (track) => fullBox("stsd", 0, 0, [
-    u32(1)
-    // Entry count
-  ], [
-    track.info.type === "video" ? videoSampleDescription(
-      VIDEO_CODEC_TO_BOX_NAME[track.info.codec],
-      track
-    ) : soundSampleDescription(
-      AUDIO_CODEC_TO_BOX_NAME[track.info.codec],
-      track
-    )
-  ]);
-  var videoSampleDescription = (compressionType, track) => box(compressionType, [
-    Array(6).fill(0),
-    // Reserved
-    u16(1),
-    // Data reference index
-    u16(0),
-    // Pre-defined
-    u16(0),
-    // Reserved
-    Array(12).fill(0),
-    // Pre-defined
-    u16(track.info.width),
-    // Width
-    u16(track.info.height),
-    // Height
-    u32(4718592),
-    // Horizontal resolution
-    u32(4718592),
-    // Vertical resolution
-    u32(0),
-    // Reserved
-    u16(1),
-    // Frame count
-    Array(32).fill(0),
-    // Compressor name
-    u16(24),
-    // Depth
-    i16(65535)
-    // Pre-defined
-  ], [
-    VIDEO_CODEC_TO_CONFIGURATION_BOX[track.info.codec](track)
-  ]);
-  var avcC = (track) => track.info.decoderConfig && box("avcC", [
-    // For AVC, description is an AVCDecoderConfigurationRecord, so nothing else to do here
-    ...new Uint8Array(track.info.decoderConfig.description)
-  ]);
-  var hvcC = (track) => track.info.decoderConfig && box("hvcC", [
-    // For HEVC, description is a HEVCDecoderConfigurationRecord, so nothing else to do here
-    ...new Uint8Array(track.info.decoderConfig.description)
-  ]);
-  var vpcC = (track) => {
-    if (!track.info.decoderConfig) {
-      return null;
-    }
-    let decoderConfig = track.info.decoderConfig;
-    if (!decoderConfig.colorSpace) {
-      throw new Error(`'colorSpace' is required in the decoder config for VP9.`);
-    }
-    let parts = decoderConfig.codec.split(".");
-    let profile = Number(parts[1]);
-    let level = Number(parts[2]);
-    let bitDepth = Number(parts[3]);
-    let chromaSubsampling = 0;
-    let thirdByte = (bitDepth << 4) + (chromaSubsampling << 1) + Number(decoderConfig.colorSpace.fullRange);
-    let colourPrimaries = 2;
-    let transferCharacteristics = 2;
-    let matrixCoefficients = 2;
-    return fullBox("vpcC", 1, 0, [
-      u8(profile),
-      // Profile
-      u8(level),
-      // Level
-      u8(thirdByte),
-      // Bit depth, chroma subsampling, full range
-      u8(colourPrimaries),
-      // Colour primaries
-      u8(transferCharacteristics),
-      // Transfer characteristics
-      u8(matrixCoefficients),
-      // Matrix coefficients
-      u16(0)
-      // Codec initialization data size
-    ]);
-  };
-  var av1C = () => {
-    let marker = 1;
-    let version = 1;
-    let firstByte = (marker << 7) + version;
-    return box("av1C", [
-      firstByte,
-      0,
-      0,
-      0
-    ]);
-  };
-  var soundSampleDescription = (compressionType, track) => box(compressionType, [
-    Array(6).fill(0),
-    // Reserved
-    u16(1),
-    // Data reference index
-    u16(0),
-    // Version
-    u16(0),
-    // Revision level
-    u32(0),
-    // Vendor
-    u16(track.info.numberOfChannels),
-    // Number of channels
-    u16(16),
-    // Sample size (bits)
-    u16(0),
-    // Compression ID
-    u16(0),
-    // Packet size
-    fixed_16_16(track.info.sampleRate)
-    // Sample rate
-  ], [
-    AUDIO_CODEC_TO_CONFIGURATION_BOX[track.info.codec](track)
-  ]);
-  var esds = (track) => {
-    let description = new Uint8Array(track.info.decoderConfig.description);
-    return fullBox("esds", 0, 0, [
-      // https://stackoverflow.com/a/54803118
-      u32(58753152),
-      // TAG(3) = Object Descriptor ([2])
-      u8(32 + description.byteLength),
-      // length of this OD (which includes the next 2 tags)
-      u16(1),
-      // ES_ID = 1
-      u8(0),
-      // flags etc = 0
-      u32(75530368),
-      // TAG(4) = ES Descriptor ([2]) embedded in above OD
-      u8(18 + description.byteLength),
-      // length of this ESD
-      u8(64),
-      // MPEG-4 Audio
-      u8(21),
-      // stream type(6bits)=5 audio, flags(2bits)=1
-      u24(0),
-      // 24bit buffer size
-      u32(130071),
-      // max bitrate
-      u32(130071),
-      // avg bitrate
-      u32(92307584),
-      // TAG(5) = ASC ([2],[3]) embedded in above OD
-      u8(description.byteLength),
-      // length
-      ...description,
-      u32(109084800),
-      // TAG(6)
-      u8(1),
-      // length
-      u8(2)
-      // data
-    ]);
-  };
-  var dOps = (track) => {
-    let preskip = 3840;
-    let gain = 0;
-    const description = track.info.decoderConfig?.description;
-    if (description) {
-      if (description.byteLength < 18) {
-        throw new TypeError("Invalid decoder description provided for Opus; must be at least 18 bytes long.");
-      }
-      const view2 = ArrayBuffer.isView(description) ? new DataView(description.buffer, description.byteOffset, description.byteLength) : new DataView(description);
-      preskip = view2.getUint16(10, true);
-      gain = view2.getInt16(14, true);
-    }
-    return box("dOps", [
-      u8(0),
-      // Version
-      u8(track.info.numberOfChannels),
-      // OutputChannelCount
-      u16(preskip),
-      u32(track.info.sampleRate),
-      // InputSampleRate
-      fixed_8_8(gain),
-      // OutputGain
-      u8(0)
-      // ChannelMappingFamily
-    ]);
-  };
-  var stts = (track) => {
-    return fullBox("stts", 0, 0, [
-      u32(track.timeToSampleTable.length),
-      // Number of entries
-      track.timeToSampleTable.map((x) => [
-        // Time-to-sample table
-        u32(x.sampleCount),
-        // Sample count
-        u32(x.sampleDelta)
-        // Sample duration
-      ])
-    ]);
-  };
-  var stss = (track) => {
-    if (track.samples.every((x) => x.type === "key"))
-      return null;
-    let keySamples = [...track.samples.entries()].filter(([, sample]) => sample.type === "key");
-    return fullBox("stss", 0, 0, [
-      u32(keySamples.length),
-      // Number of entries
-      keySamples.map(([index]) => u32(index + 1))
-      // Sync sample table
-    ]);
-  };
-  var stsc = (track) => {
-    return fullBox("stsc", 0, 0, [
-      u32(track.compactlyCodedChunkTable.length),
-      // Number of entries
-      track.compactlyCodedChunkTable.map((x) => [
-        // Sample-to-chunk table
-        u32(x.firstChunk),
-        // First chunk
-        u32(x.samplesPerChunk),
-        // Samples per chunk
-        u32(1)
-        // Sample description index
-      ])
-    ]);
-  };
-  var stsz = (track) => fullBox("stsz", 0, 0, [
-    u32(0),
-    // Sample size (0 means non-constant size)
-    u32(track.samples.length),
-    // Number of entries
-    track.samples.map((x) => u32(x.size))
-    // Sample size table
-  ]);
-  var stco = (track) => {
-    if (track.finalizedChunks.length > 0 && last(track.finalizedChunks).offset >= 2 ** 32) {
-      return fullBox("co64", 0, 0, [
-        u32(track.finalizedChunks.length),
-        // Number of entries
-        track.finalizedChunks.map((x) => u64(x.offset))
-        // Chunk offset table
-      ]);
-    }
-    return fullBox("stco", 0, 0, [
-      u32(track.finalizedChunks.length),
-      // Number of entries
-      track.finalizedChunks.map((x) => u32(x.offset))
-      // Chunk offset table
-    ]);
-  };
-  var ctts = (track) => {
-    return fullBox("ctts", 0, 0, [
-      u32(track.compositionTimeOffsetTable.length),
-      // Number of entries
-      track.compositionTimeOffsetTable.map((x) => [
-        // Time-to-sample table
-        u32(x.sampleCount),
-        // Sample count
-        u32(x.sampleCompositionTimeOffset)
-        // Sample offset
-      ])
-    ]);
-  };
-  var mvex = (tracks) => {
-    return box("mvex", null, tracks.map(trex));
-  };
-  var trex = (track) => {
-    return fullBox("trex", 0, 0, [
-      u32(track.id),
-      // Track ID
-      u32(1),
-      // Default sample description index
-      u32(0),
-      // Default sample duration
-      u32(0),
-      // Default sample size
-      u32(0)
-      // Default sample flags
-    ]);
-  };
-  var moof = (sequenceNumber, tracks) => {
-    return box("moof", null, [
-      mfhd(sequenceNumber),
-      ...tracks.map(traf)
-    ]);
-  };
-  var mfhd = (sequenceNumber) => {
-    return fullBox("mfhd", 0, 0, [
-      u32(sequenceNumber)
-      // Sequence number
-    ]);
-  };
-  var fragmentSampleFlags = (sample) => {
-    let byte1 = 0;
-    let byte2 = 0;
-    let byte3 = 0;
-    let byte4 = 0;
-    let sampleIsDifferenceSample = sample.type === "delta";
-    byte2 |= +sampleIsDifferenceSample;
-    if (sampleIsDifferenceSample) {
-      byte1 |= 1;
-    } else {
-      byte1 |= 2;
-    }
-    return byte1 << 24 | byte2 << 16 | byte3 << 8 | byte4;
-  };
-  var traf = (track) => {
-    return box("traf", null, [
-      tfhd(track),
-      tfdt(track),
-      trun(track)
-    ]);
-  };
-  var tfhd = (track) => {
-    let tfFlags = 0;
-    tfFlags |= 8;
-    tfFlags |= 16;
-    tfFlags |= 32;
-    tfFlags |= 131072;
-    let referenceSample = track.currentChunk.samples[1] ?? track.currentChunk.samples[0];
-    let referenceSampleInfo = {
-      duration: referenceSample.timescaleUnitsToNextSample,
-      size: referenceSample.size,
-      flags: fragmentSampleFlags(referenceSample)
-    };
-    return fullBox("tfhd", 0, tfFlags, [
-      u32(track.id),
-      // Track ID
-      u32(referenceSampleInfo.duration),
-      // Default sample duration
-      u32(referenceSampleInfo.size),
-      // Default sample size
-      u32(referenceSampleInfo.flags)
-      // Default sample flags
-    ]);
-  };
-  var tfdt = (track) => {
-    return fullBox("tfdt", 1, 0, [
-      u64(intoTimescale(track.currentChunk.startTimestamp, track.timescale))
-      // Base Media Decode Time
-    ]);
-  };
-  var trun = (track) => {
-    let allSampleDurations = track.currentChunk.samples.map((x) => x.timescaleUnitsToNextSample);
-    let allSampleSizes = track.currentChunk.samples.map((x) => x.size);
-    let allSampleFlags = track.currentChunk.samples.map(fragmentSampleFlags);
-    let allSampleCompositionTimeOffsets = track.currentChunk.samples.map((x) => intoTimescale(x.presentationTimestamp - x.decodeTimestamp, track.timescale));
-    let uniqueSampleDurations = new Set(allSampleDurations);
-    let uniqueSampleSizes = new Set(allSampleSizes);
-    let uniqueSampleFlags = new Set(allSampleFlags);
-    let uniqueSampleCompositionTimeOffsets = new Set(allSampleCompositionTimeOffsets);
-    let firstSampleFlagsPresent = uniqueSampleFlags.size === 2 && allSampleFlags[0] !== allSampleFlags[1];
-    let sampleDurationPresent = uniqueSampleDurations.size > 1;
-    let sampleSizePresent = uniqueSampleSizes.size > 1;
-    let sampleFlagsPresent = !firstSampleFlagsPresent && uniqueSampleFlags.size > 1;
-    let sampleCompositionTimeOffsetsPresent = uniqueSampleCompositionTimeOffsets.size > 1 || [...uniqueSampleCompositionTimeOffsets].some((x) => x !== 0);
-    let flags = 0;
-    flags |= 1;
-    flags |= 4 * +firstSampleFlagsPresent;
-    flags |= 256 * +sampleDurationPresent;
-    flags |= 512 * +sampleSizePresent;
-    flags |= 1024 * +sampleFlagsPresent;
-    flags |= 2048 * +sampleCompositionTimeOffsetsPresent;
-    return fullBox("trun", 1, flags, [
-      u32(track.currentChunk.samples.length),
-      // Sample count
-      u32(track.currentChunk.offset - track.currentChunk.moofOffset || 0),
-      // Data offset
-      firstSampleFlagsPresent ? u32(allSampleFlags[0]) : [],
-      track.currentChunk.samples.map((_, i) => [
-        sampleDurationPresent ? u32(allSampleDurations[i]) : [],
-        // Sample duration
-        sampleSizePresent ? u32(allSampleSizes[i]) : [],
-        // Sample size
-        sampleFlagsPresent ? u32(allSampleFlags[i]) : [],
-        // Sample flags
-        // Sample composition time offsets
-        sampleCompositionTimeOffsetsPresent ? i32(allSampleCompositionTimeOffsets[i]) : []
-      ])
-    ]);
-  };
-  var mfra = (tracks) => {
-    return box("mfra", null, [
-      ...tracks.map(tfra),
-      mfro()
-    ]);
-  };
-  var tfra = (track, trackIndex) => {
-    let version = 1;
-    return fullBox("tfra", version, 0, [
-      u32(track.id),
-      // Track ID
-      u32(63),
-      // This specifies that traf number, trun number and sample number are 32-bit ints
-      u32(track.finalizedChunks.length),
-      // Number of entries
-      track.finalizedChunks.map((chunk) => [
-        u64(intoTimescale(chunk.startTimestamp, track.timescale)),
-        // Time
-        u64(chunk.moofOffset),
-        // moof offset
-        u32(trackIndex + 1),
-        // traf number
-        u32(1),
-        // trun number
-        u32(1)
-        // Sample number
-      ])
-    ]);
-  };
-  var mfro = () => {
-    return fullBox("mfro", 0, 0, [
-      // This value needs to be overwritten manually from the outside, where the actual size of the enclosing mfra box
-      // is known
-      u32(0)
-      // Size
-    ]);
-  };
-  var VIDEO_CODEC_TO_BOX_NAME = {
-    "avc": "avc1",
-    "hevc": "hvc1",
-    "vp9": "vp09",
-    "av1": "av01"
-  };
-  var VIDEO_CODEC_TO_CONFIGURATION_BOX = {
-    "avc": avcC,
-    "hevc": hvcC,
-    "vp9": vpcC,
-    "av1": av1C
-  };
-  var AUDIO_CODEC_TO_BOX_NAME = {
-    "aac": "mp4a",
-    "opus": "Opus"
-  };
-  var AUDIO_CODEC_TO_CONFIGURATION_BOX = {
-    "aac": esds,
-    "opus": dOps
-  };
-
-  // src/target.ts
-  var isTarget = Symbol("isTarget");
-  var Target = class {
-  };
-  isTarget;
-  var ArrayBufferTarget = class extends Target {
-    constructor() {
-      super(...arguments);
-      this.buffer = null;
-    }
-  };
-  var StreamTarget = class extends Target {
-    constructor(options) {
-      super();
-      this.options = options;
-      if (typeof options !== "object") {
-        throw new TypeError("StreamTarget requires an options object to be passed to its constructor.");
-      }
-      if (options.onData) {
-        if (typeof options.onData !== "function") {
-          throw new TypeError("options.onData, when provided, must be a function.");
-        }
-        if (options.onData.length < 2) {
-          throw new TypeError(
-            "options.onData, when provided, must be a function that takes in at least two arguments (data and position). Ignoring the position argument, which specifies the byte offset at which the data is to be written, can lead to broken outputs."
-          );
-        }
-      }
-      if (options.chunked !== void 0 && typeof options.chunked !== "boolean") {
-        throw new TypeError("options.chunked, when provided, must be a boolean.");
-      }
-      if (options.chunkSize !== void 0 && (!Number.isInteger(options.chunkSize) || options.chunkSize <= 0)) {
-        throw new TypeError("options.chunkSize, when provided, must be a positive integer.");
-      }
-    }
-  };
-  var FileSystemWritableFileStreamTarget = class extends Target {
-    constructor(stream, options) {
-      super();
-      this.stream = stream;
-      this.options = options;
-      if (!(stream instanceof FileSystemWritableFileStream)) {
-        throw new TypeError("FileSystemWritableFileStreamTarget requires a FileSystemWritableFileStream instance.");
-      }
-      if (options !== void 0 && typeof options !== "object") {
-        throw new TypeError("FileSystemWritableFileStreamTarget's options, when provided, must be an object.");
-      }
-      if (options) {
-        if (options.chunkSize !== void 0 && (!Number.isInteger(options.chunkSize) || options.chunkSize <= 0)) {
-          throw new TypeError("options.chunkSize, when provided, must be a positive integer");
-        }
-      }
-    }
-  };
-
-  // src/writer.ts
-  var _helper, _helperView;
-  var Writer = class {
-    constructor() {
-      this.pos = 0;
-      __privateAdd(this, _helper, new Uint8Array(8));
-      __privateAdd(this, _helperView, new DataView(__privateGet(this, _helper).buffer));
-      /**
-       * Stores the position from the start of the file to where boxes elements have been written. This is used to
-       * rewrite/edit elements that were already added before, and to measure sizes of things.
-       */
-      this.offsets = /* @__PURE__ */ new WeakMap();
-    }
-    /** Sets the current position for future writes to a new one. */
-    seek(newPos) {
-      this.pos = newPos;
-    }
-    writeU32(value) {
-      __privateGet(this, _helperView).setUint32(0, value, false);
-      this.write(__privateGet(this, _helper).subarray(0, 4));
-    }
-    writeU64(value) {
-      __privateGet(this, _helperView).setUint32(0, Math.floor(value / 2 ** 32), false);
-      __privateGet(this, _helperView).setUint32(4, value, false);
-      this.write(__privateGet(this, _helper).subarray(0, 8));
-    }
-    writeAscii(text) {
-      for (let i = 0; i < text.length; i++) {
-        __privateGet(this, _helperView).setUint8(i % 8, text.charCodeAt(i));
-        if (i % 8 === 7)
-          this.write(__privateGet(this, _helper));
-      }
-      if (text.length % 8 !== 0) {
-        this.write(__privateGet(this, _helper).subarray(0, text.length % 8));
-      }
-    }
-    writeBox(box2) {
-      this.offsets.set(box2, this.pos);
-      if (box2.contents && !box2.children) {
-        this.writeBoxHeader(box2, box2.size ?? box2.contents.byteLength + 8);
-        this.write(box2.contents);
-      } else {
-        let startPos = this.pos;
-        this.writeBoxHeader(box2, 0);
-        if (box2.contents)
-          this.write(box2.contents);
-        if (box2.children) {
-          for (let child of box2.children)
-            if (child)
-              this.writeBox(child);
-        }
-        let endPos = this.pos;
-        let size = box2.size ?? endPos - startPos;
-        this.seek(startPos);
-        this.writeBoxHeader(box2, size);
-        this.seek(endPos);
-      }
-    }
-    writeBoxHeader(box2, size) {
-      this.writeU32(box2.largeSize ? 1 : size);
-      this.writeAscii(box2.type);
-      if (box2.largeSize)
-        this.writeU64(size);
-    }
-    measureBoxHeader(box2) {
-      return 8 + (box2.largeSize ? 8 : 0);
-    }
-    patchBox(box2) {
-      let endPos = this.pos;
-      this.seek(this.offsets.get(box2));
-      this.writeBox(box2);
-      this.seek(endPos);
-    }
-    measureBox(box2) {
-      if (box2.contents && !box2.children) {
-        let headerSize = this.measureBoxHeader(box2);
-        return headerSize + box2.contents.byteLength;
-      } else {
-        let result = this.measureBoxHeader(box2);
-        if (box2.contents)
-          result += box2.contents.byteLength;
-        if (box2.children) {
-          for (let child of box2.children)
-            if (child)
-              result += this.measureBox(child);
-        }
-        return result;
-      }
-    }
-  };
-  _helper = new WeakMap();
-  _helperView = new WeakMap();
-  var _target, _buffer, _bytes, _maxPos, _ensureSize, ensureSize_fn;
-  var ArrayBufferTargetWriter = class extends Writer {
-    constructor(target) {
-      super();
-      __privateAdd(this, _ensureSize);
-      __privateAdd(this, _target, void 0);
-      __privateAdd(this, _buffer, new ArrayBuffer(2 ** 16));
-      __privateAdd(this, _bytes, new Uint8Array(__privateGet(this, _buffer)));
-      __privateAdd(this, _maxPos, 0);
-      __privateSet(this, _target, target);
-    }
-    write(data) {
-      __privateMethod(this, _ensureSize, ensureSize_fn).call(this, this.pos + data.byteLength);
-      __privateGet(this, _bytes).set(data, this.pos);
-      this.pos += data.byteLength;
-      __privateSet(this, _maxPos, Math.max(__privateGet(this, _maxPos), this.pos));
-    }
-    finalize() {
-      __privateMethod(this, _ensureSize, ensureSize_fn).call(this, this.pos);
-      __privateGet(this, _target).buffer = __privateGet(this, _buffer).slice(0, Math.max(__privateGet(this, _maxPos), this.pos));
-    }
-  };
-  _target = new WeakMap();
-  _buffer = new WeakMap();
-  _bytes = new WeakMap();
-  _maxPos = new WeakMap();
-  _ensureSize = new WeakSet();
-  ensureSize_fn = function(size) {
-    let newLength = __privateGet(this, _buffer).byteLength;
-    while (newLength < size)
-      newLength *= 2;
-    if (newLength === __privateGet(this, _buffer).byteLength)
-      return;
-    let newBuffer = new ArrayBuffer(newLength);
-    let newBytes = new Uint8Array(newBuffer);
-    newBytes.set(__privateGet(this, _bytes), 0);
-    __privateSet(this, _buffer, newBuffer);
-    __privateSet(this, _bytes, newBytes);
-  };
-  var _target2, _sections;
-  var StreamTargetWriter = class extends Writer {
-    constructor(target) {
-      super();
-      __privateAdd(this, _target2, void 0);
-      __privateAdd(this, _sections, []);
-      __privateSet(this, _target2, target);
-    }
-    write(data) {
-      __privateGet(this, _sections).push({
-        data: data.slice(),
-        start: this.pos
-      });
-      this.pos += data.byteLength;
-    }
-    flush() {
-      if (__privateGet(this, _sections).length === 0)
-        return;
-      let chunks = [];
-      let sorted = [...__privateGet(this, _sections)].sort((a, b) => a.start - b.start);
-      chunks.push({
-        start: sorted[0].start,
-        size: sorted[0].data.byteLength
-      });
-      for (let i = 1; i < sorted.length; i++) {
-        let lastChunk = chunks[chunks.length - 1];
-        let section = sorted[i];
-        if (section.start <= lastChunk.start + lastChunk.size) {
-          lastChunk.size = Math.max(lastChunk.size, section.start + section.data.byteLength - lastChunk.start);
-        } else {
-          chunks.push({
-            start: section.start,
-            size: section.data.byteLength
-          });
-        }
-      }
-      for (let chunk of chunks) {
-        chunk.data = new Uint8Array(chunk.size);
-        for (let section of __privateGet(this, _sections)) {
-          if (chunk.start <= section.start && section.start < chunk.start + chunk.size) {
-            chunk.data.set(section.data, section.start - chunk.start);
-          }
-        }
-        __privateGet(this, _target2).options.onData?.(chunk.data, chunk.start);
-      }
-      __privateGet(this, _sections).length = 0;
-    }
-    finalize() {
-    }
-  };
-  _target2 = new WeakMap();
-  _sections = new WeakMap();
-  var DEFAULT_CHUNK_SIZE = 2 ** 24;
-  var MAX_CHUNKS_AT_ONCE = 2;
-  var _target3, _chunkSize, _chunks, _writeDataIntoChunks, writeDataIntoChunks_fn, _insertSectionIntoChunk, insertSectionIntoChunk_fn, _createChunk, createChunk_fn, _flushChunks, flushChunks_fn;
-  var ChunkedStreamTargetWriter = class extends Writer {
-    constructor(target) {
-      super();
-      __privateAdd(this, _writeDataIntoChunks);
-      __privateAdd(this, _insertSectionIntoChunk);
-      __privateAdd(this, _createChunk);
-      __privateAdd(this, _flushChunks);
-      __privateAdd(this, _target3, void 0);
-      __privateAdd(this, _chunkSize, void 0);
-      /**
-       * The data is divided up into fixed-size chunks, whose contents are first filled in RAM and then flushed out.
-       * A chunk is flushed if all of its contents have been written.
-       */
-      __privateAdd(this, _chunks, []);
-      __privateSet(this, _target3, target);
-      __privateSet(this, _chunkSize, target.options?.chunkSize ?? DEFAULT_CHUNK_SIZE);
-      if (!Number.isInteger(__privateGet(this, _chunkSize)) || __privateGet(this, _chunkSize) < 2 ** 10) {
-        throw new Error("Invalid StreamTarget options: chunkSize must be an integer not smaller than 1024.");
-      }
-    }
-    write(data) {
-      __privateMethod(this, _writeDataIntoChunks, writeDataIntoChunks_fn).call(this, data, this.pos);
-      __privateMethod(this, _flushChunks, flushChunks_fn).call(this);
-      this.pos += data.byteLength;
-    }
-    finalize() {
-      __privateMethod(this, _flushChunks, flushChunks_fn).call(this, true);
-    }
-  };
-  _target3 = new WeakMap();
-  _chunkSize = new WeakMap();
-  _chunks = new WeakMap();
-  _writeDataIntoChunks = new WeakSet();
-  writeDataIntoChunks_fn = function(data, position) {
-    let chunkIndex = __privateGet(this, _chunks).findIndex((x) => x.start <= position && position < x.start + __privateGet(this, _chunkSize));
-    if (chunkIndex === -1)
-      chunkIndex = __privateMethod(this, _createChunk, createChunk_fn).call(this, position);
-    let chunk = __privateGet(this, _chunks)[chunkIndex];
-    let relativePosition = position - chunk.start;
-    let toWrite = data.subarray(0, Math.min(__privateGet(this, _chunkSize) - relativePosition, data.byteLength));
-    chunk.data.set(toWrite, relativePosition);
-    let section = {
-      start: relativePosition,
-      end: relativePosition + toWrite.byteLength
-    };
-    __privateMethod(this, _insertSectionIntoChunk, insertSectionIntoChunk_fn).call(this, chunk, section);
-    if (chunk.written[0].start === 0 && chunk.written[0].end === __privateGet(this, _chunkSize)) {
-      chunk.shouldFlush = true;
-    }
-    if (__privateGet(this, _chunks).length > MAX_CHUNKS_AT_ONCE) {
-      for (let i = 0; i < __privateGet(this, _chunks).length - 1; i++) {
-        __privateGet(this, _chunks)[i].shouldFlush = true;
-      }
-      __privateMethod(this, _flushChunks, flushChunks_fn).call(this);
-    }
-    if (toWrite.byteLength < data.byteLength) {
-      __privateMethod(this, _writeDataIntoChunks, writeDataIntoChunks_fn).call(this, data.subarray(toWrite.byteLength), position + toWrite.byteLength);
-    }
-  };
-  _insertSectionIntoChunk = new WeakSet();
-  insertSectionIntoChunk_fn = function(chunk, section) {
-    let low = 0;
-    let high = chunk.written.length - 1;
-    let index = -1;
-    while (low <= high) {
-      let mid = Math.floor(low + (high - low + 1) / 2);
-      if (chunk.written[mid].start <= section.start) {
-        low = mid + 1;
-        index = mid;
-      } else {
-        high = mid - 1;
-      }
-    }
-    chunk.written.splice(index + 1, 0, section);
-    if (index === -1 || chunk.written[index].end < section.start)
-      index++;
-    while (index < chunk.written.length - 1 && chunk.written[index].end >= chunk.written[index + 1].start) {
-      chunk.written[index].end = Math.max(chunk.written[index].end, chunk.written[index + 1].end);
-      chunk.written.splice(index + 1, 1);
-    }
-  };
-  _createChunk = new WeakSet();
-  createChunk_fn = function(includesPosition) {
-    let start = Math.floor(includesPosition / __privateGet(this, _chunkSize)) * __privateGet(this, _chunkSize);
-    let chunk = {
-      start,
-      data: new Uint8Array(__privateGet(this, _chunkSize)),
-      written: [],
-      shouldFlush: false
-    };
-    __privateGet(this, _chunks).push(chunk);
-    __privateGet(this, _chunks).sort((a, b) => a.start - b.start);
-    return __privateGet(this, _chunks).indexOf(chunk);
-  };
-  _flushChunks = new WeakSet();
-  flushChunks_fn = function(force = false) {
-    for (let i = 0; i < __privateGet(this, _chunks).length; i++) {
-      let chunk = __privateGet(this, _chunks)[i];
-      if (!chunk.shouldFlush && !force)
-        continue;
-      for (let section of chunk.written) {
-        __privateGet(this, _target3).options.onData?.(
-          chunk.data.subarray(section.start, section.end),
-          chunk.start + section.start
-        );
-      }
-      __privateGet(this, _chunks).splice(i--, 1);
-    }
-  };
-  var FileSystemWritableFileStreamTargetWriter = class extends ChunkedStreamTargetWriter {
-    constructor(target) {
-      super(new StreamTarget({
-        onData: (data, position) => target.stream.write({
-          type: "write",
-          data,
-          position
-        }),
-        chunkSize: target.options?.chunkSize
-      }));
-    }
-  };
-
-  // src/muxer.ts
-  var GLOBAL_TIMESCALE = 1e3;
-  var SUPPORTED_VIDEO_CODECS = ["avc", "hevc", "vp9", "av1"];
-  var SUPPORTED_AUDIO_CODECS = ["aac", "opus"];
-  var TIMESTAMP_OFFSET = 2082844800;
-  var FIRST_TIMESTAMP_BEHAVIORS = ["strict", "offset", "cross-track-offset"];
-  var _options, _writer, _ftypSize, _mdat, _videoTrack, _audioTrack, _creationTime, _finalizedChunks, _nextFragmentNumber, _videoSampleQueue, _audioSampleQueue, _finalized, _validateOptions, validateOptions_fn, _writeHeader, writeHeader_fn, _computeMoovSizeUpperBound, computeMoovSizeUpperBound_fn, _prepareTracks, prepareTracks_fn, _generateMpeg4AudioSpecificConfig, generateMpeg4AudioSpecificConfig_fn, _createSampleForTrack, createSampleForTrack_fn, _addSampleToTrack, addSampleToTrack_fn, _validateTimestamp, validateTimestamp_fn, _finalizeCurrentChunk, finalizeCurrentChunk_fn, _finalizeFragment, finalizeFragment_fn, _maybeFlushStreamingTargetWriter, maybeFlushStreamingTargetWriter_fn, _ensureNotFinalized, ensureNotFinalized_fn;
-  var Muxer = class {
-    constructor(options) {
-      __privateAdd(this, _validateOptions);
-      __privateAdd(this, _writeHeader);
-      __privateAdd(this, _computeMoovSizeUpperBound);
-      __privateAdd(this, _prepareTracks);
-      // https://wiki.multimedia.cx/index.php/MPEG-4_Audio
-      __privateAdd(this, _generateMpeg4AudioSpecificConfig);
-      __privateAdd(this, _createSampleForTrack);
-      __privateAdd(this, _addSampleToTrack);
-      __privateAdd(this, _validateTimestamp);
-      __privateAdd(this, _finalizeCurrentChunk);
-      __privateAdd(this, _finalizeFragment);
-      __privateAdd(this, _maybeFlushStreamingTargetWriter);
-      __privateAdd(this, _ensureNotFinalized);
-      __privateAdd(this, _options, void 0);
-      __privateAdd(this, _writer, void 0);
-      __privateAdd(this, _ftypSize, void 0);
-      __privateAdd(this, _mdat, void 0);
-      __privateAdd(this, _videoTrack, null);
-      __privateAdd(this, _audioTrack, null);
-      __privateAdd(this, _creationTime, Math.floor(Date.now() / 1e3) + TIMESTAMP_OFFSET);
-      __privateAdd(this, _finalizedChunks, []);
-      // Fields for fragmented MP4:
-      __privateAdd(this, _nextFragmentNumber, 1);
-      __privateAdd(this, _videoSampleQueue, []);
-      __privateAdd(this, _audioSampleQueue, []);
-      __privateAdd(this, _finalized, false);
-      __privateMethod(this, _validateOptions, validateOptions_fn).call(this, options);
-      options.video = deepClone(options.video);
-      options.audio = deepClone(options.audio);
-      options.fastStart = deepClone(options.fastStart);
-      this.target = options.target;
-      __privateSet(this, _options, {
-        firstTimestampBehavior: "strict",
-        ...options
-      });
-      if (options.target instanceof ArrayBufferTarget) {
-        __privateSet(this, _writer, new ArrayBufferTargetWriter(options.target));
-      } else if (options.target instanceof StreamTarget) {
-        __privateSet(this, _writer, options.target.options?.chunked ? new ChunkedStreamTargetWriter(options.target) : new StreamTargetWriter(options.target));
-      } else if (options.target instanceof FileSystemWritableFileStreamTarget) {
-        __privateSet(this, _writer, new FileSystemWritableFileStreamTargetWriter(options.target));
-      } else {
-        throw new Error(`Invalid target: ${options.target}`);
-      }
-      __privateMethod(this, _prepareTracks, prepareTracks_fn).call(this);
-      __privateMethod(this, _writeHeader, writeHeader_fn).call(this);
-    }
-    addVideoChunk(sample, meta, timestamp, compositionTimeOffset) {
-      if (!(sample instanceof EncodedVideoChunk)) {
-        throw new TypeError("addVideoChunk's first argument (sample) must be of type EncodedVideoChunk.");
-      }
-      if (meta && typeof meta !== "object") {
-        throw new TypeError("addVideoChunk's second argument (meta), when provided, must be an object.");
-      }
-      if (timestamp !== void 0 && (!Number.isFinite(timestamp) || timestamp < 0)) {
-        throw new TypeError(
-          "addVideoChunk's third argument (timestamp), when provided, must be a non-negative real number."
-        );
-      }
-      if (compositionTimeOffset !== void 0 && !Number.isFinite(compositionTimeOffset)) {
-        throw new TypeError(
-          "addVideoChunk's fourth argument (compositionTimeOffset), when provided, must be a real number."
-        );
-      }
-      let data = new Uint8Array(sample.byteLength);
-      sample.copyTo(data);
-      this.addVideoChunkRaw(
-        data,
-        sample.type,
-        timestamp ?? sample.timestamp,
-        sample.duration,
-        meta,
-        compositionTimeOffset
-      );
-    }
-    addVideoChunkRaw(data, type, timestamp, duration, meta, compositionTimeOffset) {
-      if (!(data instanceof Uint8Array)) {
-        throw new TypeError("addVideoChunkRaw's first argument (data) must be an instance of Uint8Array.");
-      }
-      if (type !== "key" && type !== "delta") {
-        throw new TypeError("addVideoChunkRaw's second argument (type) must be either 'key' or 'delta'.");
-      }
-      if (!Number.isFinite(timestamp) || timestamp < 0) {
-        throw new TypeError("addVideoChunkRaw's third argument (timestamp) must be a non-negative real number.");
-      }
-      if (!Number.isFinite(duration) || duration < 0) {
-        throw new TypeError("addVideoChunkRaw's fourth argument (duration) must be a non-negative real number.");
-      }
-      if (meta && typeof meta !== "object") {
-        throw new TypeError("addVideoChunkRaw's fifth argument (meta), when provided, must be an object.");
-      }
-      if (compositionTimeOffset !== void 0 && !Number.isFinite(compositionTimeOffset)) {
-        throw new TypeError(
-          "addVideoChunkRaw's sixth argument (compositionTimeOffset), when provided, must be a real number."
-        );
-      }
-      __privateMethod(this, _ensureNotFinalized, ensureNotFinalized_fn).call(this);
-      if (!__privateGet(this, _options).video)
-        throw new Error("No video track declared.");
-      if (typeof __privateGet(this, _options).fastStart === "object" && __privateGet(this, _videoTrack).samples.length === __privateGet(this, _options).fastStart.expectedVideoChunks) {
-        throw new Error(`Cannot add more video chunks than specified in 'fastStart' (${__privateGet(this, _options).fastStart.expectedVideoChunks}).`);
-      }
-      let videoSample = __privateMethod(this, _createSampleForTrack, createSampleForTrack_fn).call(this, __privateGet(this, _videoTrack), data, type, timestamp, duration, meta, compositionTimeOffset);
-      if (__privateGet(this, _options).fastStart === "fragmented" && __privateGet(this, _audioTrack)) {
-        while (__privateGet(this, _audioSampleQueue).length > 0 && __privateGet(this, _audioSampleQueue)[0].decodeTimestamp <= videoSample.decodeTimestamp) {
-          let audioSample = __privateGet(this, _audioSampleQueue).shift();
-          __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _audioTrack), audioSample);
-        }
-        if (videoSample.decodeTimestamp <= __privateGet(this, _audioTrack).lastDecodeTimestamp) {
-          __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _videoTrack), videoSample);
-        } else {
-          __privateGet(this, _videoSampleQueue).push(videoSample);
-        }
-      } else {
-        __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _videoTrack), videoSample);
-      }
-    }
-    addAudioChunk(sample, meta, timestamp) {
-      if (!(sample instanceof EncodedAudioChunk)) {
-        throw new TypeError("addAudioChunk's first argument (sample) must be of type EncodedAudioChunk.");
-      }
-      if (meta && typeof meta !== "object") {
-        throw new TypeError("addAudioChunk's second argument (meta), when provided, must be an object.");
-      }
-      if (timestamp !== void 0 && (!Number.isFinite(timestamp) || timestamp < 0)) {
-        throw new TypeError(
-          "addAudioChunk's third argument (timestamp), when provided, must be a non-negative real number."
-        );
-      }
-      let data = new Uint8Array(sample.byteLength);
-      sample.copyTo(data);
-      this.addAudioChunkRaw(data, sample.type, timestamp ?? sample.timestamp, sample.duration, meta);
-    }
-    addAudioChunkRaw(data, type, timestamp, duration, meta) {
-      if (!(data instanceof Uint8Array)) {
-        throw new TypeError("addAudioChunkRaw's first argument (data) must be an instance of Uint8Array.");
-      }
-      if (type !== "key" && type !== "delta") {
-        throw new TypeError("addAudioChunkRaw's second argument (type) must be either 'key' or 'delta'.");
-      }
-      if (!Number.isFinite(timestamp) || timestamp < 0) {
-        throw new TypeError("addAudioChunkRaw's third argument (timestamp) must be a non-negative real number.");
-      }
-      if (!Number.isFinite(duration) || duration < 0) {
-        throw new TypeError("addAudioChunkRaw's fourth argument (duration) must be a non-negative real number.");
-      }
-      if (meta && typeof meta !== "object") {
-        throw new TypeError("addAudioChunkRaw's fifth argument (meta), when provided, must be an object.");
-      }
-      __privateMethod(this, _ensureNotFinalized, ensureNotFinalized_fn).call(this);
-      if (!__privateGet(this, _options).audio)
-        throw new Error("No audio track declared.");
-      if (typeof __privateGet(this, _options).fastStart === "object" && __privateGet(this, _audioTrack).samples.length === __privateGet(this, _options).fastStart.expectedAudioChunks) {
-        throw new Error(`Cannot add more audio chunks than specified in 'fastStart' (${__privateGet(this, _options).fastStart.expectedAudioChunks}).`);
-      }
-      let audioSample = __privateMethod(this, _createSampleForTrack, createSampleForTrack_fn).call(this, __privateGet(this, _audioTrack), data, type, timestamp, duration, meta);
-      if (__privateGet(this, _options).fastStart === "fragmented" && __privateGet(this, _videoTrack)) {
-        while (__privateGet(this, _videoSampleQueue).length > 0 && __privateGet(this, _videoSampleQueue)[0].decodeTimestamp <= audioSample.decodeTimestamp) {
-          let videoSample = __privateGet(this, _videoSampleQueue).shift();
-          __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _videoTrack), videoSample);
-        }
-        if (audioSample.decodeTimestamp <= __privateGet(this, _videoTrack).lastDecodeTimestamp) {
-          __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _audioTrack), audioSample);
-        } else {
-          __privateGet(this, _audioSampleQueue).push(audioSample);
-        }
-      } else {
-        __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _audioTrack), audioSample);
-      }
-    }
-    /** Finalizes the file, making it ready for use. Must be called after all video and audio chunks have been added. */
-    finalize() {
-      if (__privateGet(this, _finalized)) {
-        throw new Error("Cannot finalize a muxer more than once.");
-      }
-      if (__privateGet(this, _options).fastStart === "fragmented") {
-        for (let videoSample of __privateGet(this, _videoSampleQueue))
-          __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _videoTrack), videoSample);
-        for (let audioSample of __privateGet(this, _audioSampleQueue))
-          __privateMethod(this, _addSampleToTrack, addSampleToTrack_fn).call(this, __privateGet(this, _audioTrack), audioSample);
-        __privateMethod(this, _finalizeFragment, finalizeFragment_fn).call(this, false);
-      } else {
-        if (__privateGet(this, _videoTrack))
-          __privateMethod(this, _finalizeCurrentChunk, finalizeCurrentChunk_fn).call(this, __privateGet(this, _videoTrack));
-        if (__privateGet(this, _audioTrack))
-          __privateMethod(this, _finalizeCurrentChunk, finalizeCurrentChunk_fn).call(this, __privateGet(this, _audioTrack));
-      }
-      let tracks = [__privateGet(this, _videoTrack), __privateGet(this, _audioTrack)].filter(Boolean);
-      if (__privateGet(this, _options).fastStart === "in-memory") {
-        let mdatSize;
-        for (let i = 0; i < 2; i++) {
-          let movieBox2 = moov(tracks, __privateGet(this, _creationTime));
-          let movieBoxSize = __privateGet(this, _writer).measureBox(movieBox2);
-          mdatSize = __privateGet(this, _writer).measureBox(__privateGet(this, _mdat));
-          let currentChunkPos = __privateGet(this, _writer).pos + movieBoxSize + mdatSize;
-          for (let chunk of __privateGet(this, _finalizedChunks)) {
-            chunk.offset = currentChunkPos;
-            for (let { data } of chunk.samples) {
-              currentChunkPos += data.byteLength;
-              mdatSize += data.byteLength;
-            }
-          }
-          if (currentChunkPos < 2 ** 32)
-            break;
-          if (mdatSize >= 2 ** 32)
-            __privateGet(this, _mdat).largeSize = true;
-        }
-        let movieBox = moov(tracks, __privateGet(this, _creationTime));
-        __privateGet(this, _writer).writeBox(movieBox);
-        __privateGet(this, _mdat).size = mdatSize;
-        __privateGet(this, _writer).writeBox(__privateGet(this, _mdat));
-        for (let chunk of __privateGet(this, _finalizedChunks)) {
-          for (let sample of chunk.samples) {
-            __privateGet(this, _writer).write(sample.data);
-            sample.data = null;
-          }
-        }
-      } else if (__privateGet(this, _options).fastStart === "fragmented") {
-        let startPos = __privateGet(this, _writer).pos;
-        let mfraBox = mfra(tracks);
-        __privateGet(this, _writer).writeBox(mfraBox);
-        let mfraBoxSize = __privateGet(this, _writer).pos - startPos;
-        __privateGet(this, _writer).seek(__privateGet(this, _writer).pos - 4);
-        __privateGet(this, _writer).writeU32(mfraBoxSize);
-      } else {
-        let mdatPos = __privateGet(this, _writer).offsets.get(__privateGet(this, _mdat));
-        let mdatSize = __privateGet(this, _writer).pos - mdatPos;
-        __privateGet(this, _mdat).size = mdatSize;
-        __privateGet(this, _mdat).largeSize = mdatSize >= 2 ** 32;
-        __privateGet(this, _writer).patchBox(__privateGet(this, _mdat));
-        let movieBox = moov(tracks, __privateGet(this, _creationTime));
-        if (typeof __privateGet(this, _options).fastStart === "object") {
-          __privateGet(this, _writer).seek(__privateGet(this, _ftypSize));
-          __privateGet(this, _writer).writeBox(movieBox);
-          let remainingBytes = mdatPos - __privateGet(this, _writer).pos;
-          __privateGet(this, _writer).writeBox(free(remainingBytes));
-        } else {
-          __privateGet(this, _writer).writeBox(movieBox);
-        }
-      }
-      __privateMethod(this, _maybeFlushStreamingTargetWriter, maybeFlushStreamingTargetWriter_fn).call(this);
-      __privateGet(this, _writer).finalize();
-      __privateSet(this, _finalized, true);
-    }
-  };
-  _options = new WeakMap();
-  _writer = new WeakMap();
-  _ftypSize = new WeakMap();
-  _mdat = new WeakMap();
-  _videoTrack = new WeakMap();
-  _audioTrack = new WeakMap();
-  _creationTime = new WeakMap();
-  _finalizedChunks = new WeakMap();
-  _nextFragmentNumber = new WeakMap();
-  _videoSampleQueue = new WeakMap();
-  _audioSampleQueue = new WeakMap();
-  _finalized = new WeakMap();
-  _validateOptions = new WeakSet();
-  validateOptions_fn = function(options) {
-    if (typeof options !== "object") {
-      throw new TypeError("The muxer requires an options object to be passed to its constructor.");
-    }
-    if (!(options.target instanceof Target)) {
-      throw new TypeError("The target must be provided and an instance of Target.");
-    }
-    if (options.video) {
-      if (!SUPPORTED_VIDEO_CODECS.includes(options.video.codec)) {
-        throw new TypeError(`Unsupported video codec: ${options.video.codec}`);
-      }
-      if (!Number.isInteger(options.video.width) || options.video.width <= 0) {
-        throw new TypeError(`Invalid video width: ${options.video.width}. Must be a positive integer.`);
-      }
-      if (!Number.isInteger(options.video.height) || options.video.height <= 0) {
-        throw new TypeError(`Invalid video height: ${options.video.height}. Must be a positive integer.`);
-      }
-      const videoRotation = options.video.rotation;
-      if (typeof videoRotation === "number" && ![0, 90, 180, 270].includes(videoRotation)) {
-        throw new TypeError(`Invalid video rotation: ${videoRotation}. Has to be 0, 90, 180 or 270.`);
-      } else if (Array.isArray(videoRotation) && (videoRotation.length !== 9 || videoRotation.some((value) => typeof value !== "number"))) {
-        throw new TypeError(`Invalid video transformation matrix: ${videoRotation.join()}`);
-      }
-      if (options.video.frameRate !== void 0 && (!Number.isInteger(options.video.frameRate) || options.video.frameRate <= 0)) {
-        throw new TypeError(
-          `Invalid video frame rate: ${options.video.frameRate}. Must be a positive integer.`
-        );
-      }
-    }
-    if (options.audio) {
-      if (!SUPPORTED_AUDIO_CODECS.includes(options.audio.codec)) {
-        throw new TypeError(`Unsupported audio codec: ${options.audio.codec}`);
-      }
-      if (!Number.isInteger(options.audio.numberOfChannels) || options.audio.numberOfChannels <= 0) {
-        throw new TypeError(
-          `Invalid number of audio channels: ${options.audio.numberOfChannels}. Must be a positive integer.`
-        );
-      }
-      if (!Number.isInteger(options.audio.sampleRate) || options.audio.sampleRate <= 0) {
-        throw new TypeError(
-          `Invalid audio sample rate: ${options.audio.sampleRate}. Must be a positive integer.`
-        );
-      }
-    }
-    if (options.firstTimestampBehavior && !FIRST_TIMESTAMP_BEHAVIORS.includes(options.firstTimestampBehavior)) {
-      throw new TypeError(`Invalid first timestamp behavior: ${options.firstTimestampBehavior}`);
-    }
-    if (typeof options.fastStart === "object") {
-      if (options.video) {
-        if (options.fastStart.expectedVideoChunks === void 0) {
-          throw new TypeError(`'fastStart' is an object but is missing property 'expectedVideoChunks'.`);
-        } else if (!Number.isInteger(options.fastStart.expectedVideoChunks) || options.fastStart.expectedVideoChunks < 0) {
-          throw new TypeError(`'expectedVideoChunks' must be a non-negative integer.`);
-        }
-      }
-      if (options.audio) {
-        if (options.fastStart.expectedAudioChunks === void 0) {
-          throw new TypeError(`'fastStart' is an object but is missing property 'expectedAudioChunks'.`);
-        } else if (!Number.isInteger(options.fastStart.expectedAudioChunks) || options.fastStart.expectedAudioChunks < 0) {
-          throw new TypeError(`'expectedAudioChunks' must be a non-negative integer.`);
-        }
-      }
-    } else if (![false, "in-memory", "fragmented"].includes(options.fastStart)) {
-      throw new TypeError(`'fastStart' option must be false, 'in-memory', 'fragmented' or an object.`);
-    }
-  };
-  _writeHeader = new WeakSet();
-  writeHeader_fn = function() {
-    __privateGet(this, _writer).writeBox(ftyp({
-      holdsAvc: __privateGet(this, _options).video?.codec === "avc",
-      fragmented: __privateGet(this, _options).fastStart === "fragmented"
-    }));
-    __privateSet(this, _ftypSize, __privateGet(this, _writer).pos);
-    if (__privateGet(this, _options).fastStart === "in-memory") {
-      __privateSet(this, _mdat, mdat(false));
-    } else if (__privateGet(this, _options).fastStart === "fragmented") {
-    } else {
-      if (typeof __privateGet(this, _options).fastStart === "object") {
-        let moovSizeUpperBound = __privateMethod(this, _computeMoovSizeUpperBound, computeMoovSizeUpperBound_fn).call(this);
-        __privateGet(this, _writer).seek(__privateGet(this, _writer).pos + moovSizeUpperBound);
-      }
-      __privateSet(this, _mdat, mdat(true));
-      __privateGet(this, _writer).writeBox(__privateGet(this, _mdat));
-    }
-    __privateMethod(this, _maybeFlushStreamingTargetWriter, maybeFlushStreamingTargetWriter_fn).call(this);
-  };
-  _computeMoovSizeUpperBound = new WeakSet();
-  computeMoovSizeUpperBound_fn = function() {
-    if (typeof __privateGet(this, _options).fastStart !== "object")
-      return;
-    let upperBound = 0;
-    let sampleCounts = [
-      __privateGet(this, _options).fastStart.expectedVideoChunks,
-      __privateGet(this, _options).fastStart.expectedAudioChunks
-    ];
-    for (let n of sampleCounts) {
-      if (!n)
-        continue;
-      upperBound += (4 + 4) * Math.ceil(2 / 3 * n);
-      upperBound += 4 * n;
-      upperBound += (4 + 4 + 4) * Math.ceil(2 / 3 * n);
-      upperBound += 4 * n;
-      upperBound += 8 * n;
-    }
-    upperBound += 4096;
-    return upperBound;
-  };
-  _prepareTracks = new WeakSet();
-  prepareTracks_fn = function() {
-    if (__privateGet(this, _options).video) {
-      __privateSet(this, _videoTrack, {
-        id: 1,
-        info: {
-          type: "video",
-          codec: __privateGet(this, _options).video.codec,
-          width: __privateGet(this, _options).video.width,
-          height: __privateGet(this, _options).video.height,
-          rotation: __privateGet(this, _options).video.rotation ?? 0,
-          decoderConfig: null
-        },
-        // The fallback contains many common frame rates as factors
-        timescale: __privateGet(this, _options).video.frameRate ?? 57600,
-        samples: [],
-        finalizedChunks: [],
-        currentChunk: null,
-        firstDecodeTimestamp: void 0,
-        lastDecodeTimestamp: -1,
-        timeToSampleTable: [],
-        compositionTimeOffsetTable: [],
-        lastTimescaleUnits: null,
-        lastSample: null,
-        compactlyCodedChunkTable: []
-      });
-    }
-    if (__privateGet(this, _options).audio) {
-      __privateSet(this, _audioTrack, {
-        id: __privateGet(this, _options).video ? 2 : 1,
-        info: {
-          type: "audio",
-          codec: __privateGet(this, _options).audio.codec,
-          numberOfChannels: __privateGet(this, _options).audio.numberOfChannels,
-          sampleRate: __privateGet(this, _options).audio.sampleRate,
-          decoderConfig: null
-        },
-        timescale: __privateGet(this, _options).audio.sampleRate,
-        samples: [],
-        finalizedChunks: [],
-        currentChunk: null,
-        firstDecodeTimestamp: void 0,
-        lastDecodeTimestamp: -1,
-        timeToSampleTable: [],
-        compositionTimeOffsetTable: [],
-        lastTimescaleUnits: null,
-        lastSample: null,
-        compactlyCodedChunkTable: []
-      });
-      if (__privateGet(this, _options).audio.codec === "aac") {
-        let guessedCodecPrivate = __privateMethod(this, _generateMpeg4AudioSpecificConfig, generateMpeg4AudioSpecificConfig_fn).call(
-          this,
-          2,
-          // Object type for AAC-LC, since it's the most common
-          __privateGet(this, _options).audio.sampleRate,
-          __privateGet(this, _options).audio.numberOfChannels
-        );
-        __privateGet(this, _audioTrack).info.decoderConfig = {
-          codec: __privateGet(this, _options).audio.codec,
-          description: guessedCodecPrivate,
-          numberOfChannels: __privateGet(this, _options).audio.numberOfChannels,
-          sampleRate: __privateGet(this, _options).audio.sampleRate
-        };
-      }
-    }
-  };
-  _generateMpeg4AudioSpecificConfig = new WeakSet();
-  generateMpeg4AudioSpecificConfig_fn = function(objectType, sampleRate, numberOfChannels) {
-    let frequencyIndices = [96e3, 88200, 64e3, 48e3, 44100, 32e3, 24e3, 22050, 16e3, 12e3, 11025, 8e3, 7350];
-    let frequencyIndex = frequencyIndices.indexOf(sampleRate);
-    let channelConfig = numberOfChannels;
-    let configBits = "";
-    configBits += objectType.toString(2).padStart(5, "0");
-    configBits += frequencyIndex.toString(2).padStart(4, "0");
-    if (frequencyIndex === 15)
-      configBits += sampleRate.toString(2).padStart(24, "0");
-    configBits += channelConfig.toString(2).padStart(4, "0");
-    let paddingLength = Math.ceil(configBits.length / 8) * 8;
-    configBits = configBits.padEnd(paddingLength, "0");
-    let configBytes = new Uint8Array(configBits.length / 8);
-    for (let i = 0; i < configBits.length; i += 8) {
-      configBytes[i / 8] = parseInt(configBits.slice(i, i + 8), 2);
-    }
-    return configBytes;
-  };
-  _createSampleForTrack = new WeakSet();
-  createSampleForTrack_fn = function(track, data, type, timestamp, duration, meta, compositionTimeOffset) {
-    let presentationTimestampInSeconds = timestamp / 1e6;
-    let decodeTimestampInSeconds = (timestamp - (compositionTimeOffset ?? 0)) / 1e6;
-    let durationInSeconds = duration / 1e6;
-    let adjusted = __privateMethod(this, _validateTimestamp, validateTimestamp_fn).call(this, presentationTimestampInSeconds, decodeTimestampInSeconds, track);
-    presentationTimestampInSeconds = adjusted.presentationTimestamp;
-    decodeTimestampInSeconds = adjusted.decodeTimestamp;
-    if (meta?.decoderConfig) {
-      if (track.info.decoderConfig === null) {
-        track.info.decoderConfig = meta.decoderConfig;
-      } else {
-        Object.assign(track.info.decoderConfig, meta.decoderConfig);
-      }
-    }
-    let sample = {
-      presentationTimestamp: presentationTimestampInSeconds,
-      decodeTimestamp: decodeTimestampInSeconds,
-      duration: durationInSeconds,
-      data,
-      size: data.byteLength,
-      type,
-      // Will be refined once the next sample comes in
-      timescaleUnitsToNextSample: intoTimescale(durationInSeconds, track.timescale)
-    };
-    return sample;
-  };
-  _addSampleToTrack = new WeakSet();
-  addSampleToTrack_fn = function(track, sample) {
-    if (__privateGet(this, _options).fastStart !== "fragmented") {
-      track.samples.push(sample);
-    }
-    const sampleCompositionTimeOffset = intoTimescale(sample.presentationTimestamp - sample.decodeTimestamp, track.timescale);
-    if (track.lastTimescaleUnits !== null) {
-      let timescaleUnits = intoTimescale(sample.decodeTimestamp, track.timescale, false);
-      let delta = Math.round(timescaleUnits - track.lastTimescaleUnits);
-      track.lastTimescaleUnits += delta;
-      track.lastSample.timescaleUnitsToNextSample = delta;
-      if (__privateGet(this, _options).fastStart !== "fragmented") {
-        let lastTableEntry = last(track.timeToSampleTable);
-        if (lastTableEntry.sampleCount === 1) {
-          lastTableEntry.sampleDelta = delta;
-          lastTableEntry.sampleCount++;
-        } else if (lastTableEntry.sampleDelta === delta) {
-          lastTableEntry.sampleCount++;
-        } else {
-          lastTableEntry.sampleCount--;
-          track.timeToSampleTable.push({
-            sampleCount: 2,
-            sampleDelta: delta
-          });
-        }
-        const lastCompositionTimeOffsetTableEntry = last(track.compositionTimeOffsetTable);
-        if (lastCompositionTimeOffsetTableEntry.sampleCompositionTimeOffset === sampleCompositionTimeOffset) {
-          lastCompositionTimeOffsetTableEntry.sampleCount++;
-        } else {
-          track.compositionTimeOffsetTable.push({
-            sampleCount: 1,
-            sampleCompositionTimeOffset
-          });
-        }
-      }
-    } else {
-      track.lastTimescaleUnits = 0;
-      if (__privateGet(this, _options).fastStart !== "fragmented") {
-        track.timeToSampleTable.push({
-          sampleCount: 1,
-          sampleDelta: intoTimescale(sample.duration, track.timescale)
-        });
-        track.compositionTimeOffsetTable.push({
-          sampleCount: 1,
-          sampleCompositionTimeOffset
-        });
-      }
-    }
-    track.lastSample = sample;
-    let beginNewChunk = false;
-    if (!track.currentChunk) {
-      beginNewChunk = true;
-    } else {
-      let currentChunkDuration = sample.presentationTimestamp - track.currentChunk.startTimestamp;
-      if (__privateGet(this, _options).fastStart === "fragmented") {
-        let mostImportantTrack = __privateGet(this, _videoTrack) ?? __privateGet(this, _audioTrack);
-        if (track === mostImportantTrack && sample.type === "key" && currentChunkDuration >= 1) {
-          beginNewChunk = true;
-          __privateMethod(this, _finalizeFragment, finalizeFragment_fn).call(this);
-        }
-      } else {
-        beginNewChunk = currentChunkDuration >= 0.5;
-      }
-    }
-    if (beginNewChunk) {
-      if (track.currentChunk) {
-        __privateMethod(this, _finalizeCurrentChunk, finalizeCurrentChunk_fn).call(this, track);
-      }
-      track.currentChunk = {
-        startTimestamp: sample.presentationTimestamp,
-        samples: []
-      };
-    }
-    track.currentChunk.samples.push(sample);
-  };
-  _validateTimestamp = new WeakSet();
-  validateTimestamp_fn = function(presentationTimestamp, decodeTimestamp, track) {
-    const strictTimestampBehavior = __privateGet(this, _options).firstTimestampBehavior === "strict";
-    const noLastDecodeTimestamp = track.lastDecodeTimestamp === -1;
-    const timestampNonZero = decodeTimestamp !== 0;
-    if (strictTimestampBehavior && noLastDecodeTimestamp && timestampNonZero) {
-      throw new Error(
-        `The first chunk for your media track must have a timestamp of 0 (received DTS=${decodeTimestamp}).Non-zero first timestamps are often caused by directly piping frames or audio data from a MediaStreamTrack into the encoder. Their timestamps are typically relative to the age of thedocument, which is probably what you want.
-
-If you want to offset all timestamps of a track such that the first one is zero, set firstTimestampBehavior: 'offset' in the options.
-`
-      );
-    } else if (__privateGet(this, _options).firstTimestampBehavior === "offset" || __privateGet(this, _options).firstTimestampBehavior === "cross-track-offset") {
-      if (track.firstDecodeTimestamp === void 0) {
-        track.firstDecodeTimestamp = decodeTimestamp;
-      }
-      let baseDecodeTimestamp;
-      if (__privateGet(this, _options).firstTimestampBehavior === "offset") {
-        baseDecodeTimestamp = track.firstDecodeTimestamp;
-      } else {
-        baseDecodeTimestamp = Math.min(
-          __privateGet(this, _videoTrack)?.firstDecodeTimestamp ?? Infinity,
-          __privateGet(this, _audioTrack)?.firstDecodeTimestamp ?? Infinity
-        );
-      }
-      decodeTimestamp -= baseDecodeTimestamp;
-      presentationTimestamp -= baseDecodeTimestamp;
-    }
-    if (decodeTimestamp < track.lastDecodeTimestamp) {
-      throw new Error(
-        `Timestamps must be monotonically increasing (DTS went from ${track.lastDecodeTimestamp * 1e6} to ${decodeTimestamp * 1e6}).`
-      );
-    }
-    track.lastDecodeTimestamp = decodeTimestamp;
-    return { presentationTimestamp, decodeTimestamp };
-  };
-  _finalizeCurrentChunk = new WeakSet();
-  finalizeCurrentChunk_fn = function(track) {
-    if (__privateGet(this, _options).fastStart === "fragmented") {
-      throw new Error("Can't finalize individual chunks if 'fastStart' is set to 'fragmented'.");
-    }
-    if (!track.currentChunk)
-      return;
-    track.finalizedChunks.push(track.currentChunk);
-    __privateGet(this, _finalizedChunks).push(track.currentChunk);
-    if (track.compactlyCodedChunkTable.length === 0 || last(track.compactlyCodedChunkTable).samplesPerChunk !== track.currentChunk.samples.length) {
-      track.compactlyCodedChunkTable.push({
-        firstChunk: track.finalizedChunks.length,
-        // 1-indexed
-        samplesPerChunk: track.currentChunk.samples.length
-      });
-    }
-    if (__privateGet(this, _options).fastStart === "in-memory") {
-      track.currentChunk.offset = 0;
-      return;
-    }
-    track.currentChunk.offset = __privateGet(this, _writer).pos;
-    for (let sample of track.currentChunk.samples) {
-      __privateGet(this, _writer).write(sample.data);
-      sample.data = null;
-    }
-    __privateMethod(this, _maybeFlushStreamingTargetWriter, maybeFlushStreamingTargetWriter_fn).call(this);
-  };
-  _finalizeFragment = new WeakSet();
-  finalizeFragment_fn = function(flushStreamingWriter = true) {
-    if (__privateGet(this, _options).fastStart !== "fragmented") {
-      throw new Error("Can't finalize a fragment unless 'fastStart' is set to 'fragmented'.");
-    }
-    let tracks = [__privateGet(this, _videoTrack), __privateGet(this, _audioTrack)].filter((track) => track && track.currentChunk);
-    if (tracks.length === 0)
-      return;
-    let fragmentNumber = __privateWrapper(this, _nextFragmentNumber)._++;
-    if (fragmentNumber === 1) {
-      let movieBox = moov(tracks, __privateGet(this, _creationTime), true);
-      __privateGet(this, _writer).writeBox(movieBox);
-    }
-    let moofOffset = __privateGet(this, _writer).pos;
-    let moofBox = moof(fragmentNumber, tracks);
-    __privateGet(this, _writer).writeBox(moofBox);
-    {
-      let mdatBox = mdat(false);
-      let totalTrackSampleSize = 0;
-      for (let track of tracks) {
-        for (let sample of track.currentChunk.samples) {
-          totalTrackSampleSize += sample.size;
-        }
-      }
-      let mdatSize = __privateGet(this, _writer).measureBox(mdatBox) + totalTrackSampleSize;
-      if (mdatSize >= 2 ** 32) {
-        mdatBox.largeSize = true;
-        mdatSize = __privateGet(this, _writer).measureBox(mdatBox) + totalTrackSampleSize;
-      }
-      mdatBox.size = mdatSize;
-      __privateGet(this, _writer).writeBox(mdatBox);
-    }
-    for (let track of tracks) {
-      track.currentChunk.offset = __privateGet(this, _writer).pos;
-      track.currentChunk.moofOffset = moofOffset;
-      for (let sample of track.currentChunk.samples) {
-        __privateGet(this, _writer).write(sample.data);
-        sample.data = null;
-      }
-    }
-    let endPos = __privateGet(this, _writer).pos;
-    __privateGet(this, _writer).seek(__privateGet(this, _writer).offsets.get(moofBox));
-    let newMoofBox = moof(fragmentNumber, tracks);
-    __privateGet(this, _writer).writeBox(newMoofBox);
-    __privateGet(this, _writer).seek(endPos);
-    for (let track of tracks) {
-      track.finalizedChunks.push(track.currentChunk);
-      __privateGet(this, _finalizedChunks).push(track.currentChunk);
-      track.currentChunk = null;
-    }
-    if (flushStreamingWriter) {
-      __privateMethod(this, _maybeFlushStreamingTargetWriter, maybeFlushStreamingTargetWriter_fn).call(this);
-    }
-  };
-  _maybeFlushStreamingTargetWriter = new WeakSet();
-  maybeFlushStreamingTargetWriter_fn = function() {
-    if (__privateGet(this, _writer) instanceof StreamTargetWriter) {
-      __privateGet(this, _writer).flush();
-    }
-  };
-  _ensureNotFinalized = new WeakSet();
-  ensureNotFinalized_fn = function() {
-    if (__privateGet(this, _finalized)) {
-      throw new Error("Cannot add new video or audio chunks after the file has been finalized.");
-    }
-  };
-  return __toCommonJS(src_exports);
-})();
-
-
-</script>
 <script>
 (()=>{
 'use strict';
@@ -2206,7 +329,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=61,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=62,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -2300,7 +423,7 @@ function snapPrev(){
 async function restorePrev(){
   const pv=S.prev;if(!pv||!pv.s)return;
   const cur=snapPrev(),st=fromSaved(Object.assign({},pv.s,{prev:cur}));if(!st){toast('되살리지 못했어요.');return;}
-  S=st;dirty=false;PM=null;REF={sig:'',val:null};BREF={id:'',val:null};OPV.srcKey='';
+  S=st;dirty=false;PM=null;REF={sig:'',val:null};BREF={id:'',val:null};OPV.srcKey='';OPV.firstKey='';
   gc();if(zoomUntouched())await autoZoom();else await ensureMask();
   UI.open.add('p1');renderSide();refresh();toast('이전 작업을 되살렸어요.'+(cur?' 방금 작업은 같은 자리에 보관했어요(다시 누르면 돌아가요).':''),5200);
 }
@@ -2566,7 +689,7 @@ function chip(){
   const kc=$('#keyChip');if(kc){
     const g=G.state==='on'?'✔ 연결됨':G.state==='off'?'✘ 키 확인 필요':G.key.trim()?'… 확인 전':'– 키 없음';
     const c=window.claude?'✔ 기본 제공':C.ok?'✔ 연결됨':C.key.trim()?(C.bad?'✘ 키 확인 필요':'… 확인 전'):'– 키 없음';
-    kc.textContent='구글 '+g+' · 클로드 '+c;
+    kc.textContent='구글 '+g+' · 클로드 '+c+(VK.key.trim()?' · 영상 '+(VK.state==='on'?'✔ 연결됨':VK.state==='off'?'✘ 키 확인 필요':'… 확인 전'):'');
     const miss=G.state!=='on'||!(window.claude||C.ok);   // 하나라도 연결이 안 됐으면 눈에 띄게
     kc.style.background=miss?'var(--bad)':'var(--accent-soft)';kc.style.color=miss?'#fff':'var(--accent)';kc.style.cursor=miss?'pointer':'default';
     if(miss)kc.textContent+=' → 눌러서 키 넣기';
@@ -2722,6 +845,19 @@ function p2(){
     +'<div class="acts"><button class="btn sm" type="button" id="gCheck">연결 확인 (무료)</button></div>'
     +'<div class="msg'+(G.cls?' '+G.cls:'')+'" id="gMsg" aria-live="polite">'+esc(stG)+'</div>'
     +(window.claude?'<a class="btn primary" href="'+SITE+'" target="_blank" rel="noopener">구글 이미지까지 쓰는 새 주소 열기 ↗</a><p class="hint">이 링크는 보안상 구글에 직접 연결할 수 없어요. 새 주소에서는 구글 키로 이미지를 자동으로 만들어요. 글·검수·저장은 이 링크에서도 돼요.</p>':'')+'</div>'
+    +'<div class="blk"><h3>영상용 구글 키 (선택) · 작동 영상을 자동으로 만들어요</h3>'
+    +'<p class="hint">작동 영상(구글 Veo)은 <b>결제가 켜진 구글 프로젝트의 키</b>에서만 만들어져요. 위의 구글 키로 영상이 안 되면, 영상이 되는 키를 여기에 따로 넣으세요. <b>이미지는 위의 키로, 영상은 이 키로</b> 만들어요. 비워 두면 위의 키로 영상도 만들어요.</p>'
+    +'<details><summary>이 키는 어디서 받나요? (눌러서 보기)</summary><ol class="hint" style="padding-left:20px;margin:6px 0">'
+    +'<li>구글 계정으로 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">구글 AI 스튜디오 API 키 페이지</a>(aistudio.google.com/apikey)에 들어가요.</li>'
+    +'<li>"API 키 만들기(Create API key)"를 눌러요. 프로젝트를 고르라고 하면 <b>결제가 켜진 프로젝트</b>를 골라요.</li>'
+    +'<li>결제가 안 켜져 있으면 <a href="https://ai.studio/projects" target="_blank" rel="noopener">프로젝트 목록(ai.studio/projects)</a>에서 그 프로젝트의 결제(Billing)를 켜고 크레딧을 충전해요.</li>'
+    +'<li>만들어진 키(AIza…로 시작)를 복사해서 아래 칸에 붙여 넣고 "연결 확인"을 눌러요.</li>'
+    +'<li>"영상 모델을 찾았어요"가 나오면 끝이에요. 안 나오면 그 프로젝트에 결제나 영상 사용 권한이 없는 거예요. 결제가 켜진 다른 프로젝트의 키로 다시 해 보세요.</li>'
+    +'</ol><p class="hint">화면 이름은 구글이 바꿀 수 있어요. 키는 이 채팅이나 남에게 보내지 말고 아래 칸에만 넣으세요.</p></details>'
+    +'<label class="f"><span>영상용 키</span><input type="password" id="vKey" autocomplete="off" spellcheck="false" placeholder="여기에 붙여 넣기" value="'+esc(VK.key)+'"></label>'
+    +'<label class="chk"><input type="checkbox" id="vRem"'+(VK.remember?' checked':'')+'> 이 컴퓨터에 기억하기 (공용 컴퓨터에서는 켜지 마세요)</label>'
+    +'<div class="acts"><button class="btn sm" type="button" id="vCheck">영상용 키 연결 확인 (무료)</button></div>'
+    +'<div class="msg'+(VK.cls?' '+VK.cls:'')+'" id="vMsg" aria-live="polite">'+esc(VK.msg||(VK.key.trim()?'':'따로 넣지 않으면 위의 구글 키로 영상도 만들어요.'))+'</div></div>'
     +'<div class="blk"><h3>클로드 키 · 글과 손잡이 모양 검수 (선택)</h3>'
     +(window.claude?'<p class="hint">이 링크는 클로드 안에서 열려 있어 키 없이 클로드를 써요. 키는 내 컴퓨터 파일에서만 넣어요.</p>'
       :'<label class="f"><span>키</span><input type="password" id="cKey" autocomplete="off" spellcheck="false" placeholder="여기에 붙여 넣기" value="'+esc(C.key)+'"></label>'
@@ -2842,6 +978,12 @@ const GBASE='https://generativelanguage.googleapis.com/v1beta',GKEY='wj-gk';
 const G={key:'',remember:false,model:'gemini-3.1-flash-image',modelHi:'',modelEdit:'',modelVideo:'',videos:[],models:[],auto:true,par:5,made:0,spent:0,state:'idle',msg:'',cls:'',busy:false,ctl:null,cache:new Map()};
 try{const k=localStorage.getItem(GKEY);if(k){G.key=k;G.remember=true;}}catch(e){}
 const saveKey=()=>{try{G.remember&&G.key?localStorage.setItem(GKEY,G.key):localStorage.removeItem(GKEY);}catch(e){}};
+/* 영상용 구글 키(선택): 작동 영상(Veo)은 결제가 켜진 프로젝트의 키에서만 열려요. 영상만 이 키로 만들고, 비워 두면 위 구글 키를 써요. */
+const VKEY='wj-vk',VK={key:'',remember:false,state:'idle',msg:'',cls:''};
+try{const k=localStorage.getItem(VKEY);if(k){VK.key=k;VK.remember=true;}}catch(e){}
+const saveVKey=()=>{try{VK.remember&&VK.key?localStorage.setItem(VKEY,VK.key):localStorage.removeItem(VKEY);}catch(e){}};
+const vKeyOf=()=>(VK.key||'').trim()||G.key.trim();
+const vOn=()=>VK.key.trim()?VK.state==='on':G.state==='on';
 function gMsg(t,c){G.msg=t;G.cls=c||'';const m=$('#gMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
 const hashStr=t=>{let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return String(h);};
 /* 모델 이름은 몰라도 되게: 연결할 때 구글 목록에서 이미지 모델을 찾아 자동으로 골라요 */
@@ -2868,7 +1010,7 @@ function pickModels(names){
 }
 const flagged=()=>jobs().filter(j=>{const p=getP(j.key);return p&&p.chk&&!p.chk.ok;});
 function costLine(){const l=gList();return '구글로 만들 빈 칸 <b>'+l.length+'장</b>'+estJobs(l,null,true);}
-const spentText=()=>(G.made)?'이번에 구글로 만든 '+[G.made?'이미지 '+G.made+'장':''].filter(Boolean).join(' · ')+(G.spent?' · 약 $'+G.spent.toFixed(2)+' (대략)':''):'';
+const spentText=()=>(G.made||G.vmade)?'이번에 구글로 만든 '+[G.made?'이미지 '+G.made+'장':'',G.vmade?'영상 '+G.vmade+'개':''].filter(Boolean).join(' · ')+(G.spent?' · 약 $'+G.spent.toFixed(2)+' (대략)':''):'';
 function updInfo(){const a=$('#gSpent'),b=$('#costLine');if(a)a.textContent=spentText();if(b)b.innerHTML=costLine();}
 /* 구글에 같이 보내는 기준 사진: ① 제품 전체 ② 다른 각도 사진(넣었다면) ③ 원본에서 레버 끝·목 부분을 원래 해상도로 자른 확대 사진
    (구글이 작은 사진 한 장만 보면 손잡이를 흔한 모양으로 단순하게 그려서, 실제 모양이 잘 보이는 사진을 더 보내요) */
@@ -2907,17 +1049,40 @@ async function gCheck(){
   try{
     const H={headers:{'x-goog-api-key':key}},r=await fetch(GBASE+'/models?pageSize=1000',H);
     if(r.ok){
-      G.state='on';let names=[];
+      G.state='on';if(!(VK.key.trim()&&VK.state==='on'))G.veoNo='';let names=[],vids=[],allm=[];
       try{let d=await r.json(),pg=0;for(;;){names=names.concat((d.models||[]).filter(m=>!m.supportedGenerationMethods||m.supportedGenerationMethods.includes('generateContent')).map(m=>String(m.name||'').replace(/^models\//,'')));
+        vids=vids.concat((d.models||[]).filter(m=>/veo/i.test(String(m.name||''))).map(m=>String(m.name||'').replace(/^models\//,'')));
+        allm=allm.concat((d.models||[]).map(m=>String(m.name||'').replace(/^models\//,'')+((m.supportedGenerationMethods||[]).length?' ['+m.supportedGenerationMethods.join(',')+']':'')));
         if(!d.nextPageToken||++pg>=4)break;const r2=await fetch(GBASE+'/models?pageSize=1000&pageToken='+encodeURIComponent(d.nextPageToken),H);if(!r2.ok)break;d=await r2.json();}}catch(e){}
-      const pk=pickModels(names);G.models=pk.img;
-      if(pk.std){if(G.auto)G.model=pk.std;G.modelHi=pk.hi;G.modelEdit=pk.edit;gMsg('연결됐어요. 이미지 모델을 자동으로 골랐어요 → 기본: '+G.model+' · 기준 사진·어려운 칸: '+(G.modelHi||G.model)+' · 문 색 바꾸기(편집): '+(G.modelEdit||G.model)+'.'+(G.remember?'':' 다음에 다시 넣지 않으려면 \'이 컴퓨터에 기억하기\'를 켜세요(공용 컴퓨터는 빼고).'),'ok');}
+      const vkOn=VK.key.trim()&&VK.state==='on';   // 영상용 키가 연결돼 있으면 영상 모델은 그 키 기준으로 둬요
+      if(!vkOn)G.allModels=allm;const pk=pickModels(names);G.models=pk.img;if(vkOn){}else if(vids.length){G.vman=false;G.videos=vids;if(!vids.includes(G.modelVideo))G.modelVideo=pickVideo(vids);}else if(G.vman&&G.modelVideo){G.videos=[G.modelVideo];}else{G.videos=[];G.modelVideo='';}
+      if(pk.std){if(G.auto)G.model=pk.std;G.modelHi=pk.hi;G.modelEdit=pk.edit;gMsg('연결됐어요. 이미지 모델을 자동으로 골랐어요 → 기본: '+G.model+' · 기준 사진·어려운 칸: '+(G.modelHi||G.model)+' · 문 색 바꾸기(편집): '+(G.modelEdit||G.model)+(G.modelVideo?' · 작동 영상: '+G.modelVideo:'')+'.'+(G.remember?'':' 다음에 다시 넣지 않으려면 \'이 컴퓨터에 기억하기\'를 켜세요(공용 컴퓨터는 빼고).'),'ok');}
       else{G.modelHi='';G.modelEdit='';gMsg('연결됐어요. 이미지 모델 목록은 확인하지 못해서 \''+G.model+'\'을 써요. 오류가 나면 모델 이름을 바꿔 주세요.','ok');}
     }else if([400,401,403].includes(r.status)){G.state='off';gMsg('키가 맞지 않아요. 다시 복사해서 붙여 넣어 주세요.','err');}
     else{G.state='off';gMsg('구글에서 오류가 왔어요('+r.status+'). 잠시 뒤 다시 눌러 주세요.','err');}
   }catch(e){G.state='blocked';G.msg='';G.cls='';}
   renderSide();
 }
+async function vCheck(){
+  const key=VK.key.trim();if(!key){VK.state='idle';vMsg('키를 붙여 넣어 주세요. 비워 두면 위의 구글 키로 영상도 만들어요.','err');return;}
+  vMsg('연결을 확인하는 중이에요. 비용이 들지 않아요…');
+  try{
+    const H={headers:{'x-goog-api-key':key}};let vids=[],all=[],tok='',pg=0;
+    for(;;){
+      const r=await fetch(GBASE+'/models?pageSize=1000'+(tok?'&pageToken='+encodeURIComponent(tok):''),H);
+      if(!r.ok){VK.state='off';vMsg([400,401,403].includes(r.status)?'키가 맞지 않아요. 다시 복사해서 붙여 넣어 주세요.':'구글에서 오류가 왔어요('+r.status+'). 잠시 뒤 다시 눌러 주세요.','err');renderSide();chip();return;}
+      const d=await r.json();
+      all=all.concat((d.models||[]).map(m=>String(m.name||'').replace(/^models\//,'')+((m.supportedGenerationMethods||[]).length?' ['+m.supportedGenerationMethods.join(',')+']':'')));
+      vids=vids.concat((d.models||[]).filter(m=>/veo/i.test(String(m.name||''))).map(m=>String(m.name||'').replace(/^models\//,'')));
+      tok=d.nextPageToken;if(!tok||++pg>=4)break;
+    }
+    VK.state='on';G.allModels=all;G.vman=false;G.veoNo='';G.videos=vids;G.modelVideo=pickVideo(vids);
+    if(vids.length)vMsg('연결됐어요. 영상 모델을 찾았어요 → '+G.modelVideo+(vPrice(G.modelVideo)?' (영상 1개 약 $'+(vPrice(G.modelVideo)*OPV.secs).toFixed(2)+' · 대략)':'')+'. 이제 작동 영상이 이 키로 자동으로 만들어져요.'+(VK.remember?'':' 다음에 다시 넣지 않으려면 \'이 컴퓨터에 기억하기\'를 켜세요(공용 컴퓨터는 빼고).'),'ok');
+    else vMsg('키는 맞는데 이 키에서도 영상 모델(Veo)이 안 보여요. 이 키가 붙은 프로젝트에 결제가 켜져 있고 크레딧이 있는지 확인하거나, 결제가 켜진 다른 프로젝트의 키로 다시 해 보세요.','err');
+  }catch(e){VK.state='blocked';vMsg('구글에 연결하지 못했어요. 인터넷 연결을 확인하고, 보안 프로그램이나 광고 차단 확장이 구글 주소를 막고 있지 않은지 확인해 주세요.','err');}
+  renderSide();chip();
+}
+function vMsg(t,c){VK.msg=t;VK.cls=c||'';const m=$('#vMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
 function gErr(e){
   if(e&&e.name==='AbortError')return '멈췄어요.';
   const st=e&&e.status,m=e&&e.message?' ('+String(e.message).slice(0,120)+')':'';
@@ -3008,8 +1173,13 @@ async function putResult(j,blob,extra){       // 만든 이미지를 칸에 넣�
   else if(j.kind==='base')await setBaseCands([blob]);   // 새 기준 사진은 후보로 넣고, 사장님이 골라 확정해요
   else await setPhoto(j.key,blob,extra);
 }
-/* ============ 작동 영상: 도어 설치 사진에서 레버만 30도 내려갔다 원위치하는 10초 영상(무료 · 키 필요 없음) ============ */
-const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',ctl:null,msg:'',cls:'',srcKey:'',loop:10,pupPlay:false,pupB:null,pupTok:0,drag:null};
+/* ============ 작동 영상(구글 AI 스튜디오 키 · Veo): 도어 설치 사진을 첫 장면으로 레버만 30도 내려갔다 원위치하는 영상 ============ */
+const VEO_ALT=['veo-3.1-generate-preview','veo-3.1-fast-generate-001','veo-3.1-generate-001','veo-3.0-fast-generate-001','veo-3.0-generate-001','veo-2.0-generate-001'];   // 기본 이름이 안 맞을 때 차례로 시도할 알려진 이름들
+const VEO_DEFAULT='veo-3.1-fast-generate-preview';   // 키 목록에 영상 모델이 안 보여도 이 이름으로 한 번 시도해요(안 되면 구글이 이유를 알려 주고 요금은 안 들어요)
+const VPRICE=[[/fast/,0.10],[/lite/,0.05],[/veo/,0.40]];   // 초당 대략(외부 자료이고 일부는 확인 못 한 값)
+const vPrice=m=>{const x=VPRICE.find(a=>a[0].test(m||''));return x?x[1]:0;};
+const pickVideo=vs=>{const ok=(vs||[]).filter(n=>/generate/.test(n)),r=n=>/fast/.test(n)?0:/lite/.test(n)?1:2;return ok.slice().sort((a,b)=>r(a)-r(b)||verOf(b)-verOf(a))[0]||'';};
+const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',firstKey:'',firstUrl:'',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:'',srcKey:'',cam:'push'};
 function opCands(){   // 첫 장면으로 쓸 수 있는 '도어에 설치된 사진'들(손이 나온 사진은 빼요)
   const L=[];
   if(hasPhoto(S.base))L.push({k:'base',label:'기준 설치 사진',p:S.base});
@@ -3022,304 +1192,52 @@ function opSource(){   // 첫 장면 사진: 고른 사진 → 확정한 기준 
   const w=whiteIdx(),def=L.find(c=>c.k==='base')||L.find(c=>c.k==='c'+w)||L[0];
   return (L.find(c=>c.k===OPV.srcKey)||def).p;
 }
-/* ---------- */
+function opPrompt(){   // 광고용 영상 지시문(영어) — 사진을 첫 장면으로, 레버만 움직이고 카메라는 천천히
+  const hand=OPV.motion==='hand',push=OPV.cam!=='static',vert=OPV.ratio==='9:16';
+  return 'Use the uploaded product photo as the exact first frame and reference: a real interior door lever handle installed on a door. '
+    +'Preserve the original product geometry, dimensions, proportions, materials, metal finish and colors. '
+    +(hand?'A single natural hand (five fingers, only the hand and wrist visible, no face, no body) reaches in from the side, grips the lever, presses it down smoothly about 30 degrees, holds for a moment, then releases so the lever springs back to its original position. '
+      :'The lever handle presses down smoothly by itself about 30 degrees around its neck, holds for a moment, then returns slowly to its original position, like a product demonstration. No hand, no person. ')
+    +'Only the lever moves. The door, the round base plate (rosette), the wall and the shadows stay exactly as in the photo. '
+    +(push?'Camera: a very slow, steady push-in (dolly in) of about 8 percent over the whole shot, smooth cinematic motion, shallow depth of field, no shaking. '
+      :'Camera: fixed on a tripod, no camera movement, no zoom. ')
+    +'Keep all components in their original positions. No redesign. No invented parts. No structural modification. '
+    +(OPV.fit==='fit'?'The blurred area around the sharp picture must stay unchanged. ':'')
+    +'No added text, logo, numbers or watermark. Photorealistic premium product advertisement, soft natural window light, clean and calm mood, '+OPV.secs+' seconds, '+(vert?'9:16':'16:9')+'.';
+}
+async function opFrame(){   // 선택한 비율(9:16 / 16:9) 화면 가운데에 사진을 두고, 남는 곳에는 같은 사진을 흐리게 깔아요
+  const src=opSource();if(!src)throw {status:-1,message:'도어에 설치된 사진이 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 작동 영상 칸에서 도어 설치 사진을 올려 주세요.'};
+  const m=PH.get(src.id),bmp=await createImageBitmap(m.blob),vert=OPV.ratio==='9:16',W=vert?720:1280,H=vert?1280:720;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const cov=Math.max(W/bmp.width,H/bmp.height);
+  if(OPV.fit==='fill'){g.drawImage(bmp,(W-bmp.width*cov)/2,(H-bmp.height*cov)/2,bmp.width*cov,bmp.height*cov);return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.92)));}   // 꽉 채우기
+  g.filter='blur(28px)';g.drawImage(bmp,(W-bmp.width*cov)/2,(H-bmp.height*cov)/2,bmp.width*cov,bmp.height*cov);g.filter='none';
+  g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,0,W,H);
+  const fit=Math.min(W/bmp.width,H/bmp.height),dw=bmp.width*fit,dh=bmp.height*fit;g.drawImage(bmp,(W-dw)/2,(H-dh)/2,dw,dh);
+  return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.92)));
+}
 const vidExt=b=>b&&/webm/.test(b.type)?'webm':'mp4';
-/* ---------- 레버 직접 움직이기: 도어 설치 사진에서 레버만 오려 받침을 축으로 돌려요 ----------
-   AI가 다시 그리지 않아서 레버 모양이 사진 그대로예요(무료). 레버 자리는 주변 문 색으로 채워요. 처음과 끝이 같아서 계속 반복해도 끊기지 않아요. */
-const PUP0={hw:.09,r0:.24,deg:30};   // 우리 회사 제품: 레버가 30도 내려갔다 원위치
-const pupGet=src=>{const o=S.opPup;return o&&src&&o.id===src.id?o:null;};
-function pupSet(src,patch){const cur=pupGet(src)||Object.assign({id:src.id,pv:{x:.62,y:.5},tp:{x:.32,y:.5},set:false},PUP0);S.opPup=Object.assign(cur,patch);persist();return S.opPup;}
-const pupReady=()=>{const src=opSource(),o=src&&pupGet(src);return !!(o&&o.set&&o.pv&&o.tp);};
-function opRect(bmp){const vert=OPV.ratio==='9:16',W=vert?720:1280,H=vert?1280:720,cov=Math.max(W/bmp.width,H/bmp.height);
-  if(OPV.fit==='fill')return {x:(W-bmp.width*cov)/2,y:(H-bmp.height*cov)/2,w:bmp.width*cov,h:bmp.height*cov};
-  const f=Math.min(W/bmp.width,H/bmp.height),dw=bmp.width*f,dh=bmp.height*f;return {x:(W-dw)/2,y:(H-dh)/2,w:dw,h:dh};}
-function pupBuild(bmp,o){
-  let fixed=null;
-  try{const rf=pupRefine(bmp,o);if(rf){const L1=Math.hypot((rf.tp.x-(rf.pv||o.pv).x)*bmp.width,(rf.tp.y-(rf.pv||o.pv).y)*bmp.height),L0=Math.hypot((o.tp.x-o.pv.x)*bmp.width,(o.tp.y-o.pv.y)*bmp.height),sh=rf.pv?Math.hypot((rf.pv.x-o.pv.x)*bmp.width,(rf.pv.y-o.pv.y)*bmp.height):0;if(L1>L0*1.08||sh>L0*.12){fixed=rf;o=Object.assign({},o,rf);}}}catch(e){}   // 파란 점이 레버 중간에 있으면 레버 끝까지 자동으로 늘려서 레버가 반만 움직이지 않게 해요
-  const k=Math.min(1,1280/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);
-  const I=g.getImageData(0,0,W,H).data,Px=o.pv.x*W,Py=o.pv.y*H,Tx=o.tp.x*W,Ty=o.tp.y*H,L=Math.hypot(Tx-Px,Ty-Py);
-  if(!(L>Math.max(W,H)*.06))return null;
-  const dx=(Tx-Px)/L,dy=(Ty-Py)/L,nx=-dy,ny=dx,hs=Math.max(8,o.hw*L*1.55),r0=o.r0*L,S0=r0*.6,S1=L*1.12;   // 레버 굵기보다 조금만 넓게(문 선이 어긋나 보이지 않게)
-  const NS=Math.ceil(S1-S0)+2,cA=new Float32Array(NS*3),cB=new Float32Array(NS*3);
-  const px=(x,y)=>(Math.min(H-1,Math.max(0,Math.round(y)))*W+Math.min(W-1,Math.max(0,Math.round(x))))*4;
-  for(let i=0;i<NS;i++){const sv=S0+i;for(let sg=-1;sg<=1;sg+=2){let r=0,gg=0,b=0,c=0;for(let u=hs*1.08;u<=hs*1.4;u+=2){const j=px(Px+dx*sv+nx*sg*u,Py+dy*sv+ny*sg*u);r+=I[j];gg+=I[j+1];b+=I[j+2];c++;}const arr=sg>0?cA:cB;arr[i*3]=r/c;arr[i*3+1]=gg/c;arr[i*3+2]=b/c;}}
-  const sm3=a=>{const o2=new Float32Array(a.length);for(let i=0;i<NS;i++)for(let c=0;c<3;c++)o2[i*3+c]=(a[Math.max(0,i-1)*3+c]+a[i*3+c]+a[Math.min(NS-1,i+1)*3+c])/3;return o2;};
-  const A=sm3(cA),Bc=sm3(cB);
-  const xsb=[Px,Tx,Px+nx*hs,Px-nx*hs,Px+dx*S1+nx*hs,Px+dx*S1-nx*hs,Px+dx*S0+nx*hs,Px+dx*S0-nx*hs],ysb=[Py,Ty,Py+ny*hs,Py-ny*hs,Py+dy*S1+ny*hs,Py+dy*S1-ny*hs,Py+dy*S0+ny*hs,Py+dy*S0-ny*hs];
-  const x0=Math.max(0,Math.floor(Math.min(...xsb))-2),x1=Math.min(W-1,Math.ceil(Math.max(...xsb))+2),y0=Math.max(0,Math.floor(Math.min(...ysb))-2),y1=Math.min(H-1,Math.ceil(Math.max(...ysb))+2);
-  const alpha=new Float32Array(W*H),F=new Uint8ClampedArray(W*H*3),reg=new Uint8Array(W*H),cl=x=>x<0?0:x>1?1:x;
-  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
-    const ddx=x-Px,ddy=y-Py,sv=ddx*dx+ddy*dy,u=ddx*nx+ddy*ny;if(sv<S0||sv>S1||Math.abs(u)>hs)continue;
-    const p=y*W+x,ii=Math.min(NS-1,Math.max(0,Math.round(sv-S0))),t=cl((u+hs)/(2*hs)),q=p*4;
-    const fr=Bc[ii*3]*(1-t)+A[ii*3]*t,fg=Bc[ii*3+1]*(1-t)+A[ii*3+1]*t,fb=Bc[ii*3+2]*(1-t)+A[ii*3+2]*t;
-    F[p*3]=fr;F[p*3+1]=fg;F[p*3+2]=fb;reg[p]=1;
-    const e=Math.max(Math.abs(I[q]-fr),Math.abs(I[q+1]-fg),Math.abs(I[q+2]-fb)),a=cl((e-12)/18),edge=1-cl((Math.abs(u)-hs*.9)/(hs*.1+1e-6)),endf=1-cl((sv-(S1-8))/8),ramp=cl((Math.hypot(ddx,ddy)-r0*.92)/(r0*.1));
-    alpha[p]=a*edge*endf*ramp;}
-  // 레버가 있던 자리를 문 색으로 채운 '판'(가장자리 번짐을 막으려고 조금 넓게)
-  const mx=new Float32Array(W*H);
-  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){let m=0;for(let j=-2;j<=2&&m<1;j++){const yy=y+j;if(yy<0||yy>=H)continue;for(let i=-2;i<=2;i++){const xx=x+i;if(xx<0||xx>=W)continue;const v=alpha[yy*W+xx];if(v>m)m=v;}}mx[y*W+x]=m;}
-  const ad=boxBlur(mx,W,H,1),plate=new ImageData(new Uint8ClampedArray(I),W,H),pd=plate.data,lev=new ImageData(W,H),ld=lev.data;
-  // 레버가 있던 자리 채우기: 레버와 거의 수직 방향(줄 단위)으로 양쪽 바깥 색을 이어서 채워요 → 문 홈 선이 비스듬히 번지지 않고 곧게 이어져요
-  {const vt=Math.abs(dy)>Math.abs(dx),la=vt?y0:x0,lb=vt?y1:x1,ta=vt?x0:y0,tb=vt?x1:y1,lim=vt?W:H,P2=(li,t)=>vt?li*W+t:t*W+li,isH=(li,t)=>{const q=P2(li,t);return reg[q]===1&&ad[q]>.004;};
-    for(let li=la;li<=lb;li++){let t=ta;while(t<=tb){if(!isH(li,t)){t++;continue;}let e=t;while(e+1<=tb&&isH(li,e+1))e++;
-      if(t-2>=0&&e+2<lim){const a1=P2(li,t-1)*4,a2=P2(li,t-2)*4,b1=P2(li,e+1)*4,b2=P2(li,e+2)*4;
-        for(let q=t;q<=e;q++){const w=(q-t+1)/(e-t+2),p=P2(li,q);for(let c=0;c<3;c++)F[p*3+c]=((I[a1+c]+I[a2+c])/2)*(1-w)+((I[b1+c]+I[b2+c])/2)*w;}}
-      t=e+1;}}}
-  for(let p=0;p<W*H;p++){const q=p*4;
-    if(reg[p]){const a=ad[p];if(a>0){pd[q]=I[q]*(1-a)+F[p*3]*a;pd[q+1]=I[q+1]*(1-a)+F[p*3+1]*a;pd[q+2]=I[q+2]*(1-a)+F[p*3+2]*a;}}
-    const al=alpha[p];if(al>0){ld[q]=I[q];ld[q+1]=I[q+1];ld[q+2]=I[q+2];ld[q+3]=Math.round(al*255);}}
-  // 받침·목(움직이지 않는 부분): 원형으로 오려서 맨 위에 다시 올려요
-  let rm=null;try{const M=pupMask(I,W,H),mf=new Float32Array(W*H);let inC=0,tot=0;
-    for(let y=Math.max(0,Math.floor(Py-r0));y<=Math.min(H-1,Math.ceil(Py+r0));y++)for(let x=Math.max(0,Math.floor(Px-r0));x<=Math.min(W-1,Math.ceil(Px+r0));x++)if(Math.hypot(x-Px,y-Py)<=r0){tot++;if(M[y*W+x])inC++;}
-    if(inC>tot*.25){for(let i=0;i<W*H;i++)mf[i]=M[i];rm=boxBlur(mf,W,H,2);}}catch(e){rm=null;}
-  const ring=new ImageData(W,H),rd=ring.data,R1=r0*1.05+2;
-  for(let y=Math.max(0,Math.floor(Py-R1));y<=Math.min(H-1,Math.ceil(Py+R1));y++)for(let x=Math.max(0,Math.floor(Px-R1));x<=Math.min(W-1,Math.ceil(Px+R1));x++){
-    const dd=Math.hypot(x-Px,y-Py);let a=1-cl((dd-r0)/(r0*.05+1));if(rm)a*=cl(rm[y*W+x]*1.6);if(a<=0)continue;const q=(y*W+x)*4;rd[q]=I[q];rd[q+1]=I[q+1];rd[q+2]=I[q+2];rd[q+3]=Math.round(a*255);}
-  const mk=d=>{const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').putImageData(d,0,0);return c;};
-  const pc=document.createElement('canvas');pc.width=W;pc.height=H;
-  return {W,H,plate:mk(plate),lever:mk(lev),ring:mk(ring),pc,Px,Py,sgn:Math.sign(dx)||1,fix:fixed};
-}
-function pupScale(B,k){   // 미리보기용: 같은 그림을 작게 줄여서 한 장씩 그리는 일을 가볍게 해요
-  const W=Math.max(2,Math.round(B.W*k)),H=Math.max(2,Math.round(B.H*k)),sc=c=>{const e=document.createElement('canvas');e.width=W;e.height=H;const g=e.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(c,0,0,W,H);return e;},pc=document.createElement('canvas');pc.width=W;pc.height=H;
-  return {W,H,plate:sc(B.plate),lever:sc(B.lever),ring:sc(B.ring),pc,Px:B.Px*W/B.W,Py:B.Py*H/B.H,sgn:B.sgn};
-}
-function pupRender(B,deg,u){   // u: 0~1 (한 번 내려갔다 올라오는 동안)
-  const g=B.pc.getContext('2d');g.clearRect(0,0,B.W,B.H);g.drawImage(B.plate,0,0);
-  g.save();g.translate(B.Px,B.Py);g.rotate(B.sgn*deg*opPos(u,1)*Math.PI/180);g.translate(-B.Px,-B.Py);g.drawImage(B.lever,0,0);g.restore();g.drawImage(B.ring,0,0);
-}
-function pupMask(I,W,H,out){   // 문 색과 다른 곳(손잡이)을 표시해요: 사진에서 가장 많은 색 = 문 색
-  const cnt=new Map(),acc=new Map();for(let i=0;i<W*H;i+=3){const q=i*4,key=(I[q]>>4)*256+(I[q+1]>>4)*16+(I[q+2]>>4);cnt.set(key,(cnt.get(key)||0)+1);let a=acc.get(key);if(!a){a=[0,0,0];acc.set(key,a);}a[0]+=I[q];a[1]+=I[q+1];a[2]+=I[q+2];}
-  let bk=-1,bc=0;cnt.forEach((c,k)=>{if(c>bc){bc=c;bk=k;}});const ba=acc.get(bk),dc=[ba[0]/bc,ba[1]/bc,ba[2]/bc],df=new Uint8Array(W*H),hist=new Float64Array(256);
-  for(let i=0;i<W*H;i++){const q=i*4,d=Math.max(Math.abs(I[q]-dc[0]),Math.abs(I[q+1]-dc[1]),Math.abs(I[q+2]-dc[2]))|0;df[i]=d>255?255:d;hist[df[i]]++;}
-  let tot=0,sa=0;for(let t=0;t<256;t++){tot+=hist[t];sa+=t*hist[t];}let wb=0,sb=0,best=-1,thr=34;
-  for(let t=0;t<256;t++){wb+=hist[t];if(!wb)continue;const wf=tot-wb;if(!wf)break;sb+=t*hist[t];const mb=sb/wb,mf=(sa-sb)/wf,v=wb*wf*(mb-mf)*(mb-mf);if(v>best){best=v;thr=t;}}
-  thr=Math.min(90,Math.max(34,thr));if(out)out.df=df;const m=new Uint8Array(W*H);for(let i=0;i<W*H;i++)m[i]=df[i]>thr?1:0;return m;
-}
-function pupRosette(m,W,H,Px,Py,L0){   // 받침(동그란 판): 빨간 점과 이어진 덩어리 안에서 가장 큰 원의 가운데·반지름 / 레버 방향
-  let sx=Math.round(Px),sy=Math.round(Py);sx=Math.min(W-1,Math.max(0,sx));sy=Math.min(H-1,Math.max(0,sy));
-  if(!m[sy*W+sx]){let f=false;for(let r=1;r<=Math.max(8,L0*.25)&&!f;r++)for(let j=-r;j<=r&&!f;j++)for(let i=-r;i<=r;i++){if(Math.max(Math.abs(i),Math.abs(j))!==r)continue;const x=sx+i,y=sy+j;if(x>=0&&y>=0&&x<W&&y<H&&m[y*W+x]){sx=x;sy=y;f=true;break;}}if(!f)return null;}
-  const comp=new Uint8Array(W*H),st=[sy*W+sx];comp[st[0]]=1;let n=0,bx0=W,bx1=0,by0=H,by1=0;
-  while(st.length){const q=st.pop(),x=q%W,y=(q/W)|0;n++;if(x<bx0)bx0=x;if(x>bx1)bx1=x;if(y<by0)by0=y;if(y>by1)by1=y;
-    if(x>0&&m[q-1]&&!comp[q-1]){comp[q-1]=1;st.push(q-1);}if(x<W-1&&m[q+1]&&!comp[q+1]){comp[q+1]=1;st.push(q+1);}if(y>0&&m[q-W]&&!comp[q-W]){comp[q-W]=1;st.push(q-W);}if(y<H-1&&m[q+W]&&!comp[q+W]){comp[q+W]=1;st.push(q+W);}}
-  if(n<W*H*.003||n>W*H*.6)return null;
-  const D=new Float32Array(W*H),INF=1e9;for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const q=y*W+x;D[q]=comp[q]?INF:0;}
-  const rd=(x,y)=>(x<0||y<0||x>=W||y>=H)?0:D[y*W+x];
-  for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const q=y*W+x;if(!comp[q])continue;let v=D[q];v=Math.min(v,rd(x,y-1)+1,rd(x-1,y)+1,rd(x-1,y-1)+1.414,rd(x+1,y-1)+1.414);if(x===0||y===0||x===W-1||y===H-1)v=Math.min(v,1);D[q]=v;}
-  for(let y=by1;y>=by0;y--)for(let x=bx1;x>=bx0;x--){const q=y*W+x;if(!comp[q])continue;let v=D[q];v=Math.min(v,rd(x,y+1)+1,rd(x+1,y)+1,rd(x+1,y+1)+1.414,rd(x-1,y+1)+1.414);D[q]=v;}
-  let mx=0;for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const v=D[y*W+x];if(v>mx&&v<INF/2)mx=v;}
-  if(mx<Math.max(W,H)*.03)return null;
-  let cx=0,cy=0,c=0;for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++)if(D[y*W+x]>=mx*.9&&D[y*W+x]<INF/2){cx+=x;cy+=y;c++;}cx/=c;cy/=c;
-  if(Math.hypot(cx-Px,cy-Py)>Math.max(L0*1.3,mx*2))return null;   // 받침이 아니라 레버 쪽 큰 덩어리를 찾았다면 쓰지 않아요
-  // 레버 방향: 받침 밖에서 가장 멀리 있는 점들의 가운데로 향해요
-  let dm=0;const pts=[];for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++)if(comp[y*W+x]){const d=Math.hypot(x-cx,y-cy);if(d>mx*1.15){pts.push(x,y,d);if(d>dm)dm=d;}}
-  if(dm<mx*1.6)return null;let fx=0,fy=0,fc=0;for(let i=0;i<pts.length;i+=3)if(pts[i+2]>=dm*.93){fx+=pts[i];fy+=pts[i+1];fc++;}fx/=fc;fy/=fc;
-  const L=Math.hypot(fx-cx,fy-cy);return {cx,cy,R:mx,dx:(fx-cx)/L,dy:(fy-cy)/L,dm};
-}
-function pupLocal(bmp){   // 열쇠 없이 사진 모양만 보고 받침 가운데·레버 끝·굵기를 찾아요(무료): 문 색과 다른 가장 큰 어두운 덩어리 = 손잡이
-  const k=Math.min(1,1024/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);const I=g.getImageData(0,0,W,H).data;
-  const out={},M=pupMask(I,W,H,out),df=out.df,lab=new Uint8Array(W*H);let best=null;
-  for(let i0=0;i0<W*H;i0++){if(!M[i0]||lab[i0])continue;
-    const st=[i0];lab[i0]=1;let n=0,sd=0,touch=false;
-    while(st.length){const q=st.pop(),x=q%W,y=(q/W)|0;n++;sd+=df[q];if(x<2||y<2||x>W-3||y>H-3)touch=true;
-      if(x>0&&M[q-1]&&!lab[q-1]){lab[q-1]=1;st.push(q-1);}if(x<W-1&&M[q+1]&&!lab[q+1]){lab[q+1]=1;st.push(q+1);}if(y>0&&M[q-W]&&!lab[q-W]){lab[q-W]=1;st.push(q-W);}if(y<H-1&&M[q+W]&&!lab[q+W]){lab[q+W]=1;st.push(q+W);}}
-    if(n<W*H*.004||n>W*H*.5)continue;
-    const sc=(sd/n)*Math.sqrt(n)*(touch?.4:1);if(!best||sc>best.sc)best={sc,seed:i0};}
-  if(!best)return null;
-  const ro=pupRosette(M,W,H,best.seed%W,(best.seed/W)|0,Math.max(W,H)*3);if(!ro)return null;
-  const o={pv:{x:ro.cx/W,y:ro.cy/H},tp:{x:Math.min(1,Math.max(0,(ro.cx+ro.dx*ro.dm)/W)),y:Math.min(1,Math.max(0,(ro.cy+ro.dy*ro.dm)/H))},r0:PUP0.r0,hw:PUP0.hw,set:true};
-  const rf=pupRefine(bmp,o);if(!rf)return null;
-  return {pv:rf.pv||o.pv,tp:rf.tp,hw:rf.hw,r0:rf.r0,set:true};
-}
-function pupRefine(bmp,o){   // 사진을 보고 받침 가운데·레버 끝·굵기를 맞춰요(무료)
-  const k=Math.min(1,1024/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);const I=g.getImageData(0,0,W,H).data;
-  let Px=o.pv.x*W,Py=o.pv.y*H;const L0=Math.hypot(o.tp.x*W-Px,o.tp.y*H-Py);if(L0<W*.04)return null;
-  const clamp01=v=>Math.min(1,Math.max(0,v));
-  // ① 손잡이 모양으로 받침 가운데를 찾는 방법(받침이 레버보다 굵을 때)
-  let M=null,ro=null;try{M=pupMask(I,W,H);ro=pupRosette(M,W,H,Px,Py,L0);}catch(e){ro=null;}
-  let dx,dy,r0px,like;
-  if(ro){Px=ro.cx;Py=ro.cy;dx=ro.dx;dy=ro.dy;r0px=ro.R*1.22;
-    like=(s,u)=>{const x=Math.round(Px+dx*s-dy*u),y=Math.round(Py+dy*s+dx*u);return x>=2&&y>=2&&x<W-2&&y<H-2&&!!M[y*W+x];};}
-  else{
-    dx=(o.tp.x*W-Px)/L0;dy=(o.tp.y*H-Py)/L0;r0px=Math.max(6,o.r0*L0);const nx0=-dy,ny0=dx,far=Math.max(L0*.5,Math.min(W,H)*.2);
-    const px=(x,y)=>{if(x<2||y<2||x>=W-2||y>=H-2)return null;const j=(Math.round(y)*W+Math.round(x))*4;return [I[j],I[j+1],I[j+2]];};
-    const door=s=>{const a=px(Px+dx*s+nx0*far,Py+dy*s+ny0*far),b=px(Px+dx*s-nx0*far,Py+dy*s-ny0*far);return a&&b?[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2]:(a||b);};
-    like=(s,u)=>{const c=px(Px+dx*s-dy*u,Py+dy*s+dx*u),d=door(s);return !!(c&&d)&&Math.max(Math.abs(c[0]-d[0]),Math.abs(c[1]-d[1]),Math.abs(c[2]-d[2]))>34;};
-  }
-  let last=-1,gap=0;for(let sv=r0px*1.1;sv<=L0*2.8+(ro?ro.dm:0);sv+=1){if(like(sv,0)||like(sv,3)||like(sv,-3)){last=sv;gap=0;}else{gap++;if(gap>14&&last>0)break;}}
-  if(last<(ro?r0px*1.5:L0*.3))return null;
-  const Ln=last+2,sm=Math.max(r0px*1.5,(r0px+last)/2),half=sg=>{let u=0,miss=0;for(;u<Ln*.5;u++){if(like(sm,sg*u))miss=0;else{miss++;if(miss>=3)break;}}return Math.max(2,u-miss);};
-  const hwpx=(half(1)+half(-1))/2,tpx=Px+dx*Ln,tpy=Py+dy*Ln;
-  const tp={x:clamp01(tpx/W),y:clamp01(tpy/H)};
-  if(ro)return {pv:{x:clamp01(Px/W),y:clamp01(Py/H)},tp,hw:Math.min(.16,Math.max(.04,hwpx/Ln)),r0:Math.min(.38,Math.max(.14,r0px/Ln))};
-  return {tp,hw:Math.min(.16,Math.max(.04,1.0*hwpx/Ln)),r0:Math.min(.38,Math.max(.14,r0px/Ln))};
-}
-async function makePupVideo(){
-  if(OPV.busy)return false;
-  const src=opSource();if(!src){opMsg('도어에 설치된 사진이 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 작동 영상 칸에서 도어 설치 사진을 올려 주세요.','err');return false;}
-  if(!window.VideoEncoder&&(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)){opMsg('이 브라우저는 영상 녹화를 지원하지 않아요. 크롬에서 열어 주세요.','err');return false;}
-  OPV.busy=true;OPV.ask=false;OPV.pupPlay=false;OPV.ctl=new AbortController();const signal=OPV.ctl.signal;renderSide();
-  try{
-    let o=pupGet(src);
-    if(!(o&&o.set)){opMsg('사진에서 레버 위치를 찾는 중이에요…');let det=null;try{det=pupLocal(await createImageBitmap(PH.get(src.id).blob));}catch(e){det=null;}
-      if(!det)throw {status:-1,message:'사진에서 레버를 찾지 못했어요. 작동 영상 칸의 사진 위에서 빨간 점(받침 가운데)과 파란 점(레버 맨 끝)을 직접 놓고 다시 눌러 주세요.'};
-      pupSet(src,det);o=pupGet(src);}
-    const m=PH.get(src.id),bmp=await createImageBitmap(m.blob);opMsg('레버를 사진에서 오려 내는 중이에요…');await new Promise(r=>setTimeout(r,30));
-    let B=pupBuild(bmp,o);if(B&&B.fix){pupSet(src,B.fix);o=pupGet(src);}if(!B)throw {status:-1,message:'레버 위치가 맞지 않아요. 작동 영상 칸의 사진 위에서 빨간 점(축)과 파란 점(레버 끝)을 맞춘 뒤 다시 눌러 주세요.'};
-    const C0=opCompose(bmp),R=opRect(bmp),D=10,W=C0.width,H=C0.height;
-    const fn=(g,u)=>{g.drawImage(C0,0,0);pupRender(B,o.deg,u);g.drawImage(B.pc,R.x,R.y,R.w,R.h);};
-    const blob=await opRecordFn(W,H,fn,signal,D);
-    const pcv=document.createElement('canvas');pcv.width=W;pcv.height=H;fn(pcv.getContext('2d'),0);
-    await putVideo(blob,{ai:true,model:'puppet',ratio:'16:9',motion:'puppet',loopSecs:D},pcv.toDataURL('image/jpeg',.9).split(',')[1]);
-    try{const gf=opGifFn(W,H,fn,D),gid=uid();PENDING.add(gid);remember(gid,gf.blob,gf.w,gf.h);await idb.put(gid,{blob:gf.blob,w:gf.w,h:gf.h});S.opVideo.gif={id:gid,w:gf.w,h:gf.h};PENDING.delete(gid);}catch(e){}
-    opMsg('영상을 만들었어요(레버가 30° 내려갔다 올라와요). 아래에서 확인하고, 어색하면 점·굵기·받침 크기를 고쳐서 다시 만드세요.','ok');return true;
-  }catch(e){opMsg(e&&e.name==='AbortError'?'멈췄어요.':(e&&e.status===-1)?e.message:(e&&e.text)||ASK_ERR[e&&e.code]||gErr(e),'err');return false;}
-  finally{OPV.busy=false;OPV.ctl=null;renderSide();refresh();updInfo();}
-}
 /* 사진 위에서 점을 끌어 맞추는 칸 */
-function pupCard(src){
-  const o=pupGet(src)||Object.assign({id:src.id,set:false},PUP0);
-  return '<div class="blk pupblk"><div class="hint">사진 위의 <b style="color:#e5484d">빨간 점(축)</b>은 <b>받침(동그란 판)의 가운데</b>에, <b style="color:#2a7de1">파란 점(끝)</b>은 <b>레버의 맨 끝</b>에 있어야 해요. 처음 열면 프로그램이 사진을 보고 스스로 찾아 놓아요. 틀리면 점을 끌어서 옮기고 「미리보기 재생」으로 확인하세요.</div>'
-    +'<div class="pupbox" id="opPupBox"><canvas id="opPupCv"></canvas><i class="pupmk" data-mk="pv" title="레버가 돌아가는 축"></i><i class="pupmk" data-mk="tp" title="레버 끝"></i></div>'
-    +'<div class="acts"><button class="btn sm" type="button" data-act="puplocal">사진 모양으로 다시 찾기</button><button class="btn sm" type="button" data-act="pupfit">끝·굵기 자동 맞추기</button><button class="btn sm" type="button" data-act="puplay">'+(OPV.pupPlay?'■ 미리보기 정지':'▶ 미리보기 재생')+'</button></div>'
-    +'<label class="chk">레버 굵기 <input type="range" id="pupHw" min="4" max="16" value="'+Math.round(o.hw*100)+'"></label>'
-    +'<label class="chk">받침(원판) 크기 <input type="range" id="pupR0" min="14" max="38" value="'+Math.round(o.r0*100)+'"></label>'
-    +'<label class="chk">눌리는 각도 <input type="range" id="pupDeg" min="10" max="40" value="'+Math.round(o.deg)+'"></label>'
-    +'<p class="cost">레버가 잘리면 굵기를 키우고, 받침 조각이 같이 움직이면 받침 크기를 키워 보세요.</p></div>';
-}
-async function opPupPaint(){
-  const cv=$('#opPupCv',side),src=opSource();if(!cv||!src)return;const m=PH.get(src.id);if(!m)return;
-  const o=pupGet(src)||Object.assign({id:src.id,pv:{x:.62,y:.5},tp:{x:.32,y:.5},set:false},PUP0),pw=480,ph=Math.max(40,Math.round(pw*m.h/m.w));
-  cv.width=pw;cv.height=ph;const g=cv.getContext('2d');
-  const put=(k,v)=>{const el=$('.pupmk[data-mk="'+k+'"]',side);if(el){el.style.left=(v.x*100)+'%';el.style.top=(v.y*100)+'%';}};put('pv',o.pv);put('tp',o.tp);
-  let bmp=OPV.pupBmp&&OPV.pupBmp.id===src.id?OPV.pupBmp.b:null;if(!bmp){bmp=await createImageBitmap(m.blob);OPV.pupBmp={id:src.id,b:bmp};}
-  if(!cv.isConnected)return;g.drawImage(bmp,0,0,pw,ph);
-  if(!o.set){const tr=OPV.pupTried||(OPV.pupTried={});if(!tr[src.id]){tr[src.id]=1;try{const det=pupLocal(bmp);if(det){pupSet(src,det);OPV.pupB=null;renderSide();return;}}catch(e){}}}
-  if(!OPV.pupPlay)return;
-  const key=JSON.stringify([src.id,o.pv,o.tp,o.hw,o.r0]);
-  if(!OPV.pupB||OPV.pupB.key!==key){const B=pupBuild(bmp,o);if(!B){OPV.pupPlay=false;renderSide();toast('레버 위치가 맞지 않아요. 점을 다시 맞춰 주세요.',3500);return;}OPV.pupB=Object.assign(B,{key});if(B.fix){pupSet(src,B.fix);OPV.pupB=null;renderSide();return;}}
-  if(!OPV.pupB.small||OPV.pupB.small.W!==pw)OPV.pupB.small=pupScale(OPV.pupB,pw/OPV.pupB.W);const B=OPV.pupB.small,tok=++OPV.pupTok,t0=performance.now(),D=Math.max(1,OPV.loop||1);
-  const tick=now=>{if(!OPV.pupPlay||tok!==OPV.pupTok||!cv.isConnected)return;pupRender(B,o.deg,((now-t0)/1000/D)%1);g.drawImage(B.pc,0,0,pw,ph);requestAnimationFrame(tick);};
-  requestAnimationFrame(tick);
-}
-function pupDragInit(){
-  side.addEventListener('pointerdown',e=>{const mk=e.target.closest&&e.target.closest('.pupmk');if(!mk)return;e.preventDefault();OPV.drag={k:mk.dataset.mk,el:mk};try{mk.setPointerCapture(e.pointerId);}catch(x){}});
-  side.addEventListener('pointermove',e=>{const d=OPV.drag;if(!d)return;const box=$('#opPupBox',side);if(!box)return;const r=box.getBoundingClientRect(),x=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));d.el.style.left=(x*100)+'%';d.el.style.top=(y*100)+'%';});
-  const up=()=>{const d=OPV.drag;if(!d)return;OPV.drag=null;const src=opSource();if(!src)return;
-    const rd=k=>{const el=$('.pupmk[data-mk="'+k+'"]',side);return {x:parseFloat(el.style.left)/100,y:parseFloat(el.style.top)/100};};
-    pupSet(src,{pv:rd('pv'),tp:rd('tp'),set:true});OPV.pupB=null;renderSide();};
-  side.addEventListener('pointerup',up);side.addEventListener('pointercancel',up);
-}
 
-function opCompose(bmp){   // 한 장면을 그려요(사진 전체 + 남는 곳은 가장자리를 늘려 흐리게)
-  const vert=OPV.ratio==='9:16',W=vert?720:1280,H=vert?1280:720,c=document.createElement('canvas');c.width=W;c.height=H;
-  const g=c.getContext('2d'),cov=Math.max(W/bmp.width,H/bmp.height);
-  if(OPV.fit==='fill'){g.drawImage(bmp,(W-bmp.width*cov)/2,(H-bmp.height*cov)/2,bmp.width*cov,bmp.height*cov);return c;}
-  // 남는 양옆(또는 위아래)은 사진 가장자리를 늘려 흐리게 채워요(사진 한가운데가 커져서 검은 덩어리로 보이는 것을 막아요)
-  const fit=Math.min(W/bmp.width,H/bmp.height),dw=bmp.width*fit,dh=bmp.height*fit,x=(W-dw)/2,y=(H-dh)/2,sx=Math.max(2,Math.round(bmp.width*.03)),sy=Math.max(2,Math.round(bmp.height*.03));
-  const t=document.createElement('canvas');t.width=1;t.height=1;t.getContext('2d').drawImage(bmp,0,0,bmp.width,bmp.height,0,0,1,1);const av=t.getContext('2d').getImageData(0,0,1,1).data;g.fillStyle='rgb('+av[0]+','+av[1]+','+av[2]+')';g.fillRect(0,0,W,H);
-  g.filter='blur(16px)';
-  if(x>1){g.drawImage(bmp,0,0,sx,bmp.height,-40,y,x+40,dh);g.drawImage(bmp,bmp.width-sx,0,sx,bmp.height,x+dw,y,x+40,dh);}
-  if(y>1){g.drawImage(bmp,0,0,bmp.width,sy,x,-40,dw,y+40);g.drawImage(bmp,0,bmp.height-sy,bmp.width,sy,x,y+dh,dw,y+40);}
-  g.filter='none';g.drawImage(bmp,x,y,dw,dh);return c;
-}
-function boxBlur(a,W,H,R){   // 상자 흐림(가로 → 세로)
-  const t=new Float32Array(a.length),o=new Float32Array(a.length),n=2*R+1;
-  for(let y=0;y<H;y++){let sum=0;const r=y*W;for(let x=-R;x<=R;x++)sum+=a[r+Math.min(W-1,Math.max(0,x))];for(let x=0;x<W;x++){t[r+x]=sum/n;sum+=a[r+Math.min(W-1,x+R+1)]-a[r+Math.max(0,x-R)];}}
-  for(let x=0;x<W;x++){let sum=0;for(let y=-R;y<=R;y++)sum+=t[Math.min(H-1,Math.max(0,y))*W+x];for(let y=0;y<H;y++){o[y*W+x]=sum/n;sum+=t[Math.min(H-1,y+R+1)*W+x]-t[Math.max(0,y-R)*W+x];}}
-  return o;
-}
-const opPos=(u,N)=>{const e=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;return u<.06?0:u<.46?N*e((u-.06)/.4):u<.54?N:u<.94?N*(1-e((u-.54)/.4)):0;};   // 가만히 → 눌림 → 잠깐 멈춤 → 올라옴 → 가만히(처음과 끝이 같아서 이어 붙여도 끊기지 않아요)
-function rgbToI420(d,W,H,o){const b=o.buf,Y=0,U=W*H,V=U+(W>>1)*(H>>1),cw=W>>1;
-  for(let y=0;y<H;y+=2)for(let x=0;x<W;x+=2){let su=0,sv=0;
-    for(let j=0;j<2;j++)for(let i=0;i<2;i++){const q=((y+j)*W+x+i)*4,r=d[q],g=d[q+1],bl=d[q+2];b[Y+(y+j)*W+x+i]=((47*r+157*g+16*bl)>>8)+16;su+=-26*r-86*g+112*bl;sv+=112*r-102*g-10*bl;}
-    const c=(y>>1)*cw+(x>>1);b[U+c]=Math.max(16,Math.min(240,(su>>10)+128));b[V+c]=Math.max(16,Math.min(240,(sv>>10)+128));}
-}
-async function opMp4Fn(W,H,fn,signal,D){   // 쇼핑몰·편집 프로그램에서 쓸 수 있는 '정식 MP4'(H.264, 초당 30장 고정, 앞쪽에 재생 정보)를 한 장씩 그려서 만들어요
-  if(!(window.VideoEncoder&&window.VideoFrame&&window.Mp4Muxer))return null;
-  const FPS=30,N=Math.max(2,Math.round(D*FPS));let cfg=null;
-  for(const c of ['avc1.64001f','avc1.4d001f','avc1.42001f']){try{const t={codec:c,width:W,height:H,bitrate:6e6,framerate:FPS,avc:{format:'avc'}},r=await VideoEncoder.isConfigSupported(t);if(r&&r.supported){cfg=t;break;}}catch(e){}}
-  if(!cfg)return null;
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});
-  const i2=(W%2===0&&H%2===0)?{buf:new Uint8Array(W*H*3/2)}:null;   // 방송 규격(BT.709, 밝기 16~235)으로 바꿔서 어느 프로그램에서도 색이 같게 보이게 해요
-  const muxer=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),video:{codec:'avc',width:W,height:H,frameRate:FPS},fastStart:'in-memory'});
-  let err=null;const enc=new VideoEncoder({output:(ch,meta)=>{try{muxer.addVideoChunk(ch,meta);}catch(e){err=e;}},error:e=>{err=e;}});
-  try{
-    enc.configure(cfg);
-    for(let i=0;i<N;i++){
-      if(signal&&signal.aborted)throw {name:'AbortError'};if(err)throw err;
-      fn(g,i/N);const ts=Math.round(i*1e6/FPS),du=Math.round(1e6/FPS);let fr;
-      if(!i2){fr=new VideoFrame(cv,{timestamp:ts,duration:du});}
-      else{rgbToI420(g.getImageData(0,0,W,H).data,W,H,i2);fr=new VideoFrame(i2.buf,{format:'I420',codedWidth:W,codedHeight:H,timestamp:ts,duration:du,colorSpace:{primaries:'bt709',transfer:'bt709',matrix:'bt709',fullRange:false}});}
-      enc.encode(fr,{keyFrame:i%FPS===0});fr.close();
-      while(enc.encodeQueueSize>6){await new Promise(r=>setTimeout(r,4));if(err)throw err;}
-      if(i%6===5){if(D>=2)opMsg('영상(MP4)을 만드는 중이에요… '+(i+1)+' / '+N+'장');await new Promise(r=>setTimeout(r,0));}
-    }
-    await enc.flush();if(err)throw err;muxer.finalize();
-    return new Blob([muxer.target.buffer],{type:'video/mp4'});
-  }finally{try{enc.close();}catch(e){}}
-}
-async function opRecordFn(W,H,fn,signal,D){
-  try{const mp=await opMp4Fn(W,H,fn,signal,D);if(mp&&mp.size>1000)return mp;}catch(e){if(e&&e.name==='AbortError')throw e;}   // 안 되면 아래 옛 녹화 방식으로 대신해요
-  return opRecordOld(W,H,fn,signal,D);
-}
-async function opRecordOld(W,H,fn,signal,D){   // 장면을 D초 영상으로 녹화해요(내 컴퓨터에서 · 무료). 상세페이지에서는 무한 반복돼요.
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
-  const mt=['video/mp4;codecs=avc1','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>{try{return MediaRecorder.isTypeSupported(t);}catch(e){return false;}})||'';
-  const stream=cv.captureStream(30),rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:5e6}:{}),chunks=[];
-  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
-  fn(g,0);rec.start();const t0=performance.now();
-  await new Promise((ok,no)=>{const tick=()=>{if(signal&&signal.aborted){no({name:'AbortError'});return;}const t=(performance.now()-t0)/1000;if(t>=D){fn(g,0);setTimeout(ok,120);return;}fn(g,t/D);if(D>=2)opMsg('영상으로 이어 붙이는 중이에요… '+Math.round(t)+' / '+D+'초 (이 탭을 열어 두세요)');setTimeout(tick,1000/40);};tick();});
-  const stopped=new Promise(ok=>{rec.onstop=ok;});rec.stop();await stopped;
-  return new Blob(chunks,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});
-}
 /* GIF 만들기(무한 반복): 쇼핑몰 상세페이지에 그림처럼 올려도 계속 움직여요. 팔레트 256색 + 규칙적 디더링 + LZW */
-function gifBytes(frames,W,H,delayCs){
-  const hist=new Uint32Array(32768);
-  frames.forEach(f=>{for(let p=0;p<f.length;p+=16){hist[((f[p]>>3)<<10)|((f[p+1]>>3)<<5)|(f[p+2]>>3)]++;}});
-  let items=[];for(let k=0;k<32768;k++)if(hist[k])items.push({r:((k>>10)&31)*8+4,g:((k>>5)&31)*8+4,b:(k&31)*8+4,c:hist[k]});
-  let boxes=[items];
-  while(boxes.length<256){let bi=-1,bs=0,ch='r';
-    boxes.forEach((b,i)=>{if(b.length<2)return;['r','g','b'].forEach(c=>{let lo=255,hi=0;b.forEach(x=>{if(x[c]<lo)lo=x[c];if(x[c]>hi)hi=x[c];});const sc=(hi-lo)*Math.log(2+b.length);if(sc>bs){bs=sc;bi=i;ch=c;}});});
-    if(bi<0)break;const b=boxes[bi].slice().sort((x,y)=>x[ch]-y[ch]);let tot=0;b.forEach(x=>tot+=x.c);let acc=0,cut=1;for(let i=0;i<b.length-1;i++){acc+=b[i].c;cut=i+1;if(acc>=tot/2)break;}
-    boxes.splice(bi,1,b.slice(0,cut),b.slice(cut));}
-  const pal=new Uint8Array(768);boxes.forEach((b,i)=>{let r=0,g=0,bb=0,t=0;b.forEach(x=>{r+=x.r*x.c;g+=x.g*x.c;bb+=x.b*x.c;t+=x.c;});t=t||1;pal[i*3]=Math.round(r/t);pal[i*3+1]=Math.round(g/t);pal[i*3+2]=Math.round(bb/t);});
-  const n=boxes.length,lut=new Uint8Array(32768);
-  for(let k=0;k<32768;k++){const r=((k>>10)&31)*8+4,g=((k>>5)&31)*8+4,b=(k&31)*8+4;let best=0,bd=1e9;for(let i=0;i<n;i++){const dr=r-pal[i*3],dg=g-pal[i*3+1],db=b-pal[i*3+2],d=dr*dr*2+dg*dg*4+db*db*3;if(d<bd){bd=d;best=i;}}lut[k]=best;}
-  const BY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5],out=[];
-  const w16=v=>{out.push(v&255,(v>>8)&255);};
-  'GIF89a'.split('').forEach(c=>out.push(c.charCodeAt(0)));w16(W);w16(H);out.push(0xF7,0,0);for(let i=0;i<768;i++)out.push(pal[i]);
-  out.push(0x21,0xFF,0x0B);'NETSCAPE2.0'.split('').forEach(c=>out.push(c.charCodeAt(0)));out.push(3,1,0,0,0);   // 무한 반복
-  const lzw=idx=>{const mc=8,clear=256,eoi=257;let next=258,size=9,dict=new Map(),cur=0,bits=0;const o=[];
-    const put=c=>{cur|=c<<bits;bits+=size;while(bits>=8){o.push(cur&255);cur>>=8;bits-=8;}};
-    put(clear);let pre=idx[0];
-    for(let i=1;i<idx.length;i++){const k=idx[i],key=pre*256+k,v=dict.get(key);
-      if(v!==undefined){pre=v;continue;}
-      put(pre);
-      if(next===4096){put(clear);dict.clear();next=258;size=9;}else{if(next>=(1<<size))size++;dict.set(key,next++);}
-      pre=k;}
-    put(pre);put(eoi);if(bits>0)o.push(cur&255);return o;};
-  frames.forEach(f=>{
-    const idx=new Uint8Array(W*H);
-    for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=(y*W+x)*4,d=(BY[((y&3)<<2)|(x&3)]-7.5)*1.6;
-      const r=Math.max(0,Math.min(255,f[p]+d)),g=Math.max(0,Math.min(255,f[p+1]+d)),b=Math.max(0,Math.min(255,f[p+2]+d));
-      idx[y*W+x]=lut[((r>>3)<<10)|((g>>3)<<5)|(b>>3)];}
-    out.push(0x21,0xF9,4,4);w16(delayCs);out.push(0,0);
-    out.push(0x2C);w16(0);w16(0);w16(W);w16(H);out.push(0,8);
-    const data=lzw(idx);for(let i=0;i<data.length;i+=255){const ch=data.slice(i,i+255);out.push(ch.length);for(const v of ch)out.push(v);}out.push(0);
-  });
-  out.push(0x3B);return new Uint8Array(out);
-}
-function opGifFn(W,H,fn,D){   // 1280×720 장면에서 작은 GIF(가로 640)를 만들어요
-  const gw=W>H?640:360,gh=Math.round(gw*H/W),full=document.createElement('canvas');full.width=W;full.height=H;
-  const fg=full.getContext('2d'),sm=document.createElement('canvas');sm.width=gw;sm.height=gh;const sg=sm.getContext('2d',{willReadFrequently:true});
-  const F=D<=4?Math.max(8,Math.round(D*14)):Math.min(60,Math.round(D*8)),frames=[];
-  for(let i=0;i<F;i++){fn(fg,i/F);sg.drawImage(full,0,0,gw,gh);frames.push(sg.getImageData(0,0,gw,gh).data.slice());}
-  return {blob:new Blob([gifBytes(frames,gw,gh,Math.max(2,Math.round(D*100/F)))],{type:'image/gif'}),w:gw,h:gh};
-}
 function opMsg(t,c){OPV.msg=t;OPV.cls=c||'';const e=$('#opMsg');if(e){e.textContent=t;e.className='msg'+(c?' '+c:'');}if(OPV.hook)OPV.hook(t,c);}
+function opErr(e){
+  if(e&&e.name==='AbortError')return '멈췄어요. (이미 구글에 보낸 요청은 요금이 들 수 있어요)';
+  const st=e&&e.status,m=e&&e.message?' ('+String(e.message).slice(0,140)+')':'';
+  if(st===-1||st===-2)return e.message;
+  if(e&&e.blocked)return '구글이 이 영상을 만들지 않았어요. 사유: '+e.message+'. 움직임을 바꾸거나 다른 사진으로 해 보세요.';
+  if(st===402||/prepay|credits? (are )?depleted|insufficient (balance|credit|fund)|out of credits?/i.test(String(e&&e.message||'')))return '구글 이용 잔액(선불 크레딧)이 다 떨어졌어요. 구글 AI 스튜디오(https://ai.studio/projects)의 결제(Billing)에서 크레딧을 충전한 뒤 다시 눌러 주세요.';
+  if(st===400)return '영상 요청이 맞지 않아요.'+m;
+  if(st===401||st===403)return '이 키로는 영상(Veo)을 쓸 수 없어요. 구글 결제 설정이 켜져 있어야 해요.'+m;
+  if(st===404)return '이 키로는 영상 모델(Veo)을 쓸 수 없어요. 구글 모델 목록에 영상 모델이 없고, 알려진 이름으로 시도해도 모두 "없다"고 해요. 구글 키가 붙은 프로젝트에 결제가 켜져 있는지 확인해 주세요. 지금 바로 영상이 필요하면 「첫 장면 사진 저장」과 「지시문 복사」로 구글 AI 스튜디오(또는 Flow)에서 직접 만들고 「영상 파일 직접 올리기」로 넣어 주세요.'+m;
+  if(st===429)return '사용 한도에 걸렸어요. 잠시 뒤 다시 해 보세요.'+m;
+  return (e&&e.message)||'영상을 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.';
+}
+async function opDownload(uri,key,signal){   // 구글이 준 영상 주소에서 내려받기(주소에 키가 필요해요)
+  const tries=[()=>fetch(uri,{signal,headers:{'x-goog-api-key':key}}),()=>fetch(uri+(uri.includes('?')?'&':'?')+'key='+encodeURIComponent(key),{signal})];
+  for(const t of tries){try{const r=await t();if(r.ok){const b=await r.blob();if(b.size>2000)return /video/.test(b.type)?b:new Blob([b],{type:'video/mp4'});}}catch(e){if(e&&e.name==='AbortError')throw e;}}
+  throw {status:-2,message:'영상은 만들어졌지만 브라우저가 내려받지 못했어요. 구글 AI 스튜디오에서 만든 영상을 확인할 수 있는지 봐 주세요.'};
+}
 async function videoDims(blob){return new Promise(ok=>{const v=document.createElement('video');v.preload='metadata';v.muted=true;const u=URL.createObjectURL(blob);v.onloadedmetadata=()=>{ok({w:v.videoWidth||720,h:v.videoHeight||1280,d:Math.round((v.duration||0)*10)/10});URL.revokeObjectURL(u);};v.onerror=()=>{ok({w:720,h:1280,d:0});URL.revokeObjectURL(u);};v.src=u;});}
 async function videoPoster(blob){             // 영상 한 장면을 뽑아 대표 화면으로 써요(브라우저가 영상을 못 읽으면 없이 가요)
   return new Promise(ok=>{const v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';const u=URL.createObjectURL(blob);let done=false;
@@ -3336,19 +1254,80 @@ async function putVideo(blob,meta,posterB64){
   let poster=null;if(pb){try{const pm=await ingest(pb);poster={id:pm.id,w:pm.w,h:pm.h};PENDING.add(pm.id);}catch(e){}}
   S.opVideo=Object.assign({id,w:d.w,h:d.h,d:d.d,poster},meta||{});PENDING.delete(id);if(poster)PENDING.delete(poster.id);gc();
 }
+const opMethod=()=>vOn()?'veo':'';
+const makeOpVideo=m=>makeVeoVideo(m);
+async function makeVeoVideo(modelOverride){
+  if(OPV.busy)return false;
+  let model=(typeof modelOverride==='string'&&modelOverride||G.modelVideo||'').trim();if(!vOn()||!model){opMsg('먼저 2단계에서 구글 키(또는 영상용 키)를 연결해 주세요. 그 키에 영상 모델(Veo)이 없으면 만들 수 없어요.','err');return false;}
+  OPV.busy=true;OPV.ask=false;OPV.ctl=new AbortController();const signal=OPV.ctl.signal,key=vKeyOf(),t0=Date.now();renderSide();
+  try{
+    opMsg('첫 장면 사진을 준비하는 중이에요…');
+    const img=await opFrame();
+    const inst={prompt:opPrompt(),image:{bytesBase64Encoded:img,mimeType:'image/jpeg'}};
+    const mk=m=>params=>fetch(GBASE+'/models/'+encodeURIComponent(m)+':predictLongRunning',{method:'POST',signal,headers:{'x-goog-api-key':key,'Content-Type':'application/json'},body:JSON.stringify(params?{instances:[inst],parameters:params}:{instances:[inst]})});
+    opMsg('구글에 영상을 요청하는 중이에요…');
+    const cands=(G.videos.length&&!G.vman)?[model]:[model].concat(VEO_ALT.filter(n=>n!==model));   // 키 목록에 영상 모델이 없으면 이름이 안 맞을 수 있어요. 알려진 다른 이름도 차례로 시도해요(없는 이름은 요금이 안 들어요)
+    let r=null;
+    for(const m of cands){const send=mk(m);r=await send({aspectRatio:OPV.ratio});if(r.status===400)r=await send(null);   // 이 모델이 옵션을 못 받으면 기본값으로 다시 보내요
+      if(r.status!==404){model=m;break;}}
+    if(!r.ok){let t='';try{const d=await r.json();t=d&&d.error&&d.error.message||'';}catch(e){}throw {status:r.status,message:t};}
+    let op=await r.json();if(!op||!op.name)throw {status:0,message:'영상 작업을 시작하지 못했어요.'};const opName=op.name;   // 확인할 때는 처음 받은 작업 이름만 써요
+    while(!op.done){
+      if(Date.now()-t0>12*60000)throw {status:0,message:'12분이 지나도 끝나지 않았어요. 구글 쪽 상태를 확인하고 잠시 뒤 다시 해 보세요.'};
+      await new Promise(ok=>setTimeout(ok,OPV.pollMs));
+      if(signal.aborted)throw {name:'AbortError'};
+      opMsg('구글이 영상을 만드는 중이에요… ('+Math.round((Date.now()-t0)/1000)+'초 · 보통 1~3분)');
+      const pr=await fetch(GBASE+'/'+opName,{signal,headers:{'x-goog-api-key':key}});
+      if(!pr.ok){if(pr.status>=500)continue;throw {status:pr.status,message:''};}
+      op=await pr.json();
+    }
+    if(op.error)throw {status:op.error.code||0,message:op.error.message||'영상을 만들지 못했어요.'};
+    const resp=op.response||{},gv=resp.generateVideoResponse||resp,sm=(gv.generatedSamples||resp.generatedVideos||[])[0],vid=sm&&sm.video;
+    if(!vid||!(vid.uri||vid.bytesBase64Encoded))throw {status:0,blocked:true,message:((gv.raiMediaFilteredReasons||[])[0])||'EMPTY'};
+    opMsg('영상을 내려받는 중이에요…');
+    let blob;
+    if(vid.bytesBase64Encoded){const bin=atob(vid.bytesBase64Encoded),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);blob=new Blob([u8],{type:'video/mp4'});}
+    else blob=await opDownload(vid.uri,key,signal);
+    G.spent+=vPrice(model)*OPV.secs;G.vmade=(G.vmade||0)+1;
+    await putVideo(blob,{ai:true,model,ratio:OPV.ratio,motion:OPV.motion},img);
+    opMsg('영상을 만들었어요. 아래에서 확인하고, 손잡이 모양이 실물과 같을 때만 저장해서 쓰세요.','ok');
+    return true;
+  }catch(e){if(e&&e.status===404)G.veoNo='1';opMsg(opErr(e),'err');return false;}
+  finally{OPV.busy=false;OPV.ctl=null;renderSide();refresh();updInfo();}
+}
+async function opUpload(f){
+  if(!/^video\//.test(f.type)){toast('영상 파일(mp4)을 골라 주세요.');return;}
+  if(f.size>150*1024*1024){toast('영상이 너무 커요(150MB 이하).');return;}
+  await putVideo(f,{ai:false});renderSide();refresh();toast('영상을 넣었어요.');
+}
+async function opPaintFirst(){                // 첫 장면 미리보기(돈이 안 들어요)
+  const el=$('#opFirst');if(!el)return;const src=opSource();if(!src){el.textContent='';return;}
+  const key=[src.id,OPV.ratio,OPV.fit].join('|');
+  try{if(OPV.firstKey!==key){OPV.firstUrl='data:image/jpeg;base64,'+await opFrame();OPV.firstKey=key;}}catch(e){return;}
+  const e2=$('#opFirst');if(e2)e2.innerHTML='<img alt="첫 장면" src="'+OPV.firstUrl+'" style="width:'+(OPV.ratio==='9:16'?'120px':'300px')+';border-radius:8px;border:1px solid var(--line);display:block">';
+}
 function opCard(){
-  setTimeout(opPupPaint,0);
-  const v=S.opVideo&&PH.get(S.opVideo.id),src=opSource(),cands=opCands();
+  setTimeout(opPaintFirst,0);
+  const v=S.opVideo&&PH.get(S.opVideo.id),src=opSource(),cands=opCands(),model=(G.modelVideo||'').trim(),on=vOn(),price=vPrice(model)*OPV.secs;
   const opt=(arr,cur)=>arr.map(o=>'<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>').join('');
-  return '<div class="blk opv"><h3>작동 영상 · 레버가 30° 내려갔다 올라와요</h3>'
-    +'<p class="hint">도어에 설치된 사진에서 <b>레버만 30도 내려갔다 원위치하는 10초 영상</b>(MP4와 GIF)을 만들어요. <b>무료이고 키가 필요 없어요.</b> 사진 속 레버를 그대로 오려 돌리는 간단한 방식이라, 소비자에게 "레버가 이렇게 작동해요"를 보여 주는 용도예요. 만든 영상은 상세페이지의 \'작동 영상\' 칸에 들어가요.</p>'
-    +(cands.length?'<div class="acts"><label class="chk">첫 장면 사진 <select id="opSrc">'+cands.map(c=>'<option value="'+c.k+'"'+(c.p===src?' selected':'')+'>'+esc(c.label)+'</option>').join('')+'</select></label></div>':'<div class="msg err">도어에 설치된 사진이 아직 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.</div>')
-    +(src?pupCard(src):'')
-    +'<div class="acts">'+(OPV.busy?'<button class="btn sm" type="button" data-act="opstop">멈추기</button>':'<button class="btn sm primary" type="button" data-act="opgo"'+(src?'':' disabled')+'>작동 영상 만들기 (무료)</button>')
-    +'<label class="btn sm">도어 설치 사진 직접 올리기<input type="file" accept="image/*" hidden data-opfirst="1"></label></div>'
-    +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (무료)</label>'
-    +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||'')+'</div>'
-    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted autoplay playsinline></video><p class="cost">'+(S.opVideo&&S.opVideo.model==='puppet'?'레버 30° 내려갔다 원위치 · '+(S.opVideo.loopSecs||10)+'초 · 계속 반복':'이전에 만든 영상이에요. 「영상 지우기」를 누르고 다시 만들어 주세요.')+'</p><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
+  const hint=!on?'먼저 2단계에서 구글 AI 스튜디오 키를 넣고 「연결 확인」을 눌러 주세요. 영상은 결제가 켜진 프로젝트의 키에서만 만들어져요(키 받는 법은 2단계 「영상용 구글 키」 칸에 있어요).':!src?'도어에 설치된 사진이 아직 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.':!model?'이 키의 모델 목록에는 영상 모델(Veo)이 안 보여요. Veo는 결제가 켜진 구글 키에서만 쓸 수 있고, 잔액이 없으면 안 보일 수도 있어요. 아래 \'영상 모델 이름 직접 넣기\'로 시도해 볼 수 있어요(안 되면 구글이 이유를 알려 줘요. 실패한 요청은 요금이 안 들어요). \'지시문 복사\'로 구글 AI 스튜디오(또는 Flow)에서 직접 만들어 \'영상 파일 직접 올리기\'로 넣을 수도 있어요.':'';
+  return '<div class="blk opv"><h3>작동 영상 · 구글 AI 스튜디오 키로 만들어요</h3>'
+    +'<p class="hint">도어에 설치된 사진을 첫 장면으로, <b>레버만 약 30도 내려갔다 원위치하는 영상</b>(약 '+OPV.secs+'초)을 구글 영상 AI(Veo)가 만들어요. <b>2단계에 구글 AI 스튜디오 키</b>를 넣어야 하고, <b>결제가 켜진 프로젝트의 키</b>에서만 만들어져요. 영상 1개마다 요금이 들어요(버튼에 예상 금액이 나와요). 문·받침·벽은 그대로 두고 레버만 움직이라고 지시해요. 만든 영상은 상세페이지의 \'작동 영상\' 칸에 들어가요.</p>'
+    +(cands.length?'<div class="acts"><label class="chk">첫 장면 사진 <select id="opSrc">'+cands.map(c=>'<option value="'+c.k+'"'+(c.p===src?' selected':'')+'>'+esc(c.label)+'</option>').join('')+'</select></label></div>':'<div class="msg err">도어에 설치된 사진이 아직 없어요. 작동 영상은 도어에 설치된 사진에서 손잡이만 움직여서 만들어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.</div>')
+    +'<div class="acts"><label class="chk">카메라 <select id="opCam">'+opt([['push','천천히 다가가기 (광고 느낌)'],['static','고정 (모양 유지에 유리)']],OPV.cam)+'</select></label>'
+    +'<label class="chk">화면 <select id="opRatio">'+opt([['16:9','가로 · 상세페이지 폭에 맞춰요 (추천)'],['9:16','세로 · 숏폼용']],OPV.ratio)+'</select></label>'
+    +'<label class="chk">첫 장면 <select id="opFit">'+opt([['fit','사진 전체 보이기 (남는 곳은 흐리게)'],['fill','화면에 꽉 채우기 (위아래/양옆을 잘라요)']],OPV.fit)+'</select></label></div>'
+    +'<div class="opfirst"><div class="hint">첫 장면 미리보기 — 이 사진에서 영상이 시작돼요. 손잡이가 잘리면 위에서 \'사진 전체 보이기\'로 바꾸세요.</div><div id="opFirst"></div></div>'
+    +((on&&(!G.videos.length||G.vman))?'<div class="acts"><label class="chk">영상 모델 이름 직접 넣기 <input type="text" id="opModelTxt" value="'+esc(G.vman?model:'')+'" placeholder="veo-3.1-fast-generate-preview" style="min-width:260px"></label><button class="btn sm" type="button" data-act="opmodeldef">veo-3.1-fast-generate-preview로 시도</button></div>':'')
+    +(G.videos.length>1?'<div class="acts"><label class="chk">영상 모델 <select id="opModel">'+G.videos.map(n=>'<option value="'+esc(n)+'"'+(n===model?' selected':'')+'>'+esc(n)+(vPrice(n)?' · 초당 약 $'+vPrice(n):'')+'</option>').join('')+'</select></label></div>':'')
+    +(OPV.ask?'<div class="confirm" style="display:block">영상 1개(약 '+OPV.secs+'초)를 구글 영상 AI로 만들어요('+esc(model)+'). 요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). 보통 1~3분 걸리고, 만드는 동안 이 탭을 열어 두세요. 계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
+    +'<div class="acts">'+(OPV.busy?'<button class="btn sm" type="button" data-act="opstop">멈추기</button>':'<button class="btn sm primary" type="button" data-act="opask"'+(on&&src&&model?'':' disabled')+'>작동 영상 만들기'+(on&&model?' (약 $'+price.toFixed(2)+')':'')+'</button>')
+    +(src?'<button class="btn sm" type="button" data-act="opsaveframe">첫 장면 사진 저장</button>':'')
+    +'<label class="btn sm">도어 설치 사진 직접 올리기<input type="file" accept="image/*" hidden data-opfirst="1"></label><label class="btn sm">영상 파일 직접 올리기<input type="file" accept="video/*" hidden data-opfile="1"></label><button class="btn sm" type="button" data-act="opcopy">지시문 복사</button></div>'
+    +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (영상 요금이 따로 들어요)</label>'
+    +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||hint)+'</div>'
+    +(on&&!G.videos.length&&G.allModels&&G.allModels.length?'<details><summary>이 키에서 쓸 수 있는 모델 이름 보기 (영상 모델이 없는 이유 확인용)</summary><div class="hint" style="word-break:break-all">'+esc(G.allModels.slice(0,80).join(' · '))+(G.allModels.length>80?' … 외 '+(G.allModels.length-80)+'개':'')+'</div></details>':'')
+    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted autoplay playsinline></video><p class="cost">'+(S.opVideo&&S.opVideo.ai===false?'직접 올린 영상':S.opVideo&&(S.opVideo.model==='puppet'||/^frames:/.test(S.opVideo.model||''))?'이전 방식으로 만든 영상이에요. 「영상 지우기」를 누르고 구글 Veo로 다시 만들어 주세요.':'만든 방법: 구글 영상 AI(Veo) · '+esc((S.opVideo&&S.opVideo.model)||''))+'</p><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button><button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
     +'</div>';
 }
 async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
@@ -3436,7 +1415,7 @@ function setColorMode(m){
 const CK='wj-ck',CMODEL='claude-haiku-5-5';
 const C={key:'',remember:false,model:'',msg:'',cls:'',ok:false,bad:false};
 try{const k=localStorage.getItem(CK);if(k){C.key=k;C.remember=true;}}catch(e){}
-try{const t=JSON.parse(sessionStorage.getItem('wj-kt')||'null');sessionStorage.removeItem('wj-kt');if(t){if(!G.key&&t.g)G.key=t.g;if(!C.key&&t.c)C.key=t.c;}}catch(e){}   // 새 버전으로 새로고침해도 넣어 둔 키가 그대로예요
+try{const t=JSON.parse(sessionStorage.getItem('wj-kt')||'null');sessionStorage.removeItem('wj-kt');if(t){if(!G.key&&t.g)G.key=t.g;if(!C.key&&t.c)C.key=t.c;if(!VK.key&&t.v)VK.key=t.v;}}catch(e){}   // 새 버전으로 새로고침해도 넣어 둔 키가 그대로예요
 const saveCKey=()=>{try{C.remember&&C.key?localStorage.setItem(CK,C.key):localStorage.removeItem(CK);}catch(e){}};
 function cMsg(t,c){C.msg=t;C.cls=c||'';const m=$('#cMsg');if(m){m.textContent=t;m.className='msg'+(c?' '+c:'');}}
 const cHeaders=()=>({'x-api-key':C.key.trim(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','content-type':'application/json'});
@@ -3754,8 +1733,8 @@ async function runOne(go){
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
-  const vApp=!hasPhoto(S.opVideo);   // 작동 영상: 도어 설치 사진에서 레버만 30도 내려갔다 올라와요(무료)
-  const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개('+OPV.loop+'초 반복)도 만들어요(')+'도어에 설치된 사진에서 레버만 30도 내려갔다 올라와요 · 무료예요, 키가 필요 없어요).';
+  const vApp=vOn()&&!hasPhoto(S.opVideo),vm=(G.modelVideo||'').trim()||VEO_DEFAULT,vCost=(vPrice(vm)*OPV.secs).toFixed(2);   // 작동 영상: 도어 설치 사진에서 레버만 30도 내려갔다 올라와요
+  const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개(약 '+OPV.secs+'초)도 만들어요(')+'도어에 설치된 사진에서 레버만 30도 내려갔다 올라와요 · 구글 영상 AI(Veo) '+vm+' · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이고 단가 일부는 확인 못 했어요).';
   if(why.length&&!go||(!why.length&&!go&&vApp&&UI.opAuto)){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+(vApp?'<li id="onOpLi"'+(UI.opAuto?'':' hidden')+'>'+esc(vLine)+'</li>':'')+'</ul>'+(vApp?'<label class="chk" style="display:block;margin:6px 0 10px"><input type="checkbox" id="onOp"'+(UI.opAuto?' checked':'')+'> 작동 영상도 함께 만들기</label>':'')+'<div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);
@@ -3798,9 +1777,9 @@ async function runOne(go){
   if(wantVideo&&!hasPhoto(S.opVideo)){   // 이미지가 다 끝났으면 이어서 작동 영상(도어 설치 사진에서 레버만 움직이게)
     if(!opSource()){set('o3','건너뜀 · 도어에 설치된 사진이 없어요','skip');vidMsg='작동 영상은 도어 설치 사진이 없어서 건너뛰었어요. 3단계 \'작동 영상\'에서 설치 사진을 올리거나 만든 뒤 만들 수 있어요.';}
     else{
-      oneBusy=true;set('o3','영상 준비 중…','run');OPV.hook=t=>{const r=$('#o3');if(r)r.querySelector('.ost').textContent=String(t).slice(0,46);};
-      const m3=$('#oMsg');if(m3){m3.className='msg';m3.textContent='작동 영상을 만드는 중이에요. 보통 20~40초 걸려요. 창을 닫지 마세요.';}
-      let vok=false;try{vok=await makePupVideo();}finally{OPV.hook=null;oneBusy=false;}
+      oneBusy=true;set('o3','영상 요청 준비 중…','run');OPV.hook=t=>{const r=$('#o3');if(r)r.querySelector('.ost').textContent=String(t).slice(0,46);};
+      const m3=$('#oMsg');if(m3){m3.className='msg';m3.textContent='작동 영상을 만드는 중이에요. 보통 1~3분 걸려요. 창을 닫지 마세요.';}
+      let vok=false;try{vok=await makeOpVideo((G.modelVideo||'').trim()||VEO_DEFAULT);}finally{OPV.hook=null;oneBusy=false;}
       if(ctl.signal.aborted){veil.hidden=true;renderSide();refresh();toast('멈췄어요.');return;}
       set('o3',vok?'완료':(OPV.msg||'만들지 못했어요').slice(0,60),vok?'ok':'err');
       if(!vok)vidMsg='작동 영상은 만들지 못했어요: '+(OPV.msg||'')+' (이미지는 그대로 남아 있어요. 3단계 \'작동 영상\'에서 다시 할 수 있어요.)';
@@ -3823,7 +1802,7 @@ function clearMade(){
   if(hasPhoto(S.opVideo)&&S.opVideo.ai){S.opVideo=null;made++;}
   S.colors.items.forEach((it,i)=>wipe('colors.items.'+i+'.photo'));
   (S.extra||[]).forEach((p,i)=>{if(hasPhoto(p)){setP('extra.'+i,null);extra++;}});
-  S.opFirst=null;OPV.srcKey='';
+  S.opFirst=null;OPV.srcKey='';OPV.firstKey='';
   G.cache.clear();gc();
   return {made,extra,kept};
 }
@@ -3868,10 +1847,8 @@ const ACT={
   dn(b){const l=getP(b.dataset.l),i=+b.dataset.i;if(i<l.length-1){[l[i],l[i+1]]=[l[i+1],l[i]];renderSide();refresh();}},
   pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
   restoreprev(){restorePrev();},
-  puplay(){OPV.pupPlay=!OPV.pupPlay;renderSide();},
-  async puplocal(){const src=opSource();if(!src)return;try{const rf=pupLocal(await createImageBitmap(PH.get(src.id).blob));if(!rf){toast('사진에서 레버를 못 찾았어요. 점을 직접 놓아 주세요.',4500);return;}pupSet(src,rf);OPV.pupB=null;renderSide();toast('사진 모양으로 찾았어요. 빨간 점이 받침 가운데, 파란 점이 레버 맨 끝인지 확인하세요.',4500);}catch(e){toast('찾지 못했어요. 점을 직접 놓아 주세요.',3500);}},
-  async pupfit(){const src=opSource(),o=src&&pupGet(src);if(!o||!o.set){toast('먼저 빨간 점(받침 가운데)과 파란 점(레버 쪽)을 놓아 주세요.',3500);return;}try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),o);if(!rf){toast('레버가 끝나는 곳을 못 찾았어요. 파란 점을 레버 맨 끝에 직접 놓아 주세요.',4500);return;}pupSet(src,rf);OPV.pupB=null;renderSide();toast('레버 끝과 굵기를 맞췄어요. 파란 점이 레버 맨 끝에 있는지 확인하세요.',4500);}catch(e){toast('맞추지 못했어요. 점을 직접 놓아 주세요.',3500);}},
   async rotl(){await rotSrc(-90);},async rotr(){await rotSrc(90);},
+  opmodeldef(){G.modelVideo='veo-3.1-fast-generate-preview';G.vman=true;G.veoNo='';G.videos=[G.modelVideo];renderSide();},
   async specai(){
     const say=(t,c)=>{const e=$('#specMsg');if(e){e.textContent=t;e.className='msg'+(c?' '+c:'');}};
     if(!hasPhoto(S.src)){say('제품 사진을 먼저 넣어 주세요.','err');return;}
@@ -3899,7 +1876,7 @@ const ACT={
       const m=$('#aboutMsg');if(m){m.className='msg ok';m.textContent=res.n?res.n+'칸을 채웠어요. 번호와 날짜는 꼭 직접 확인해 주세요.'+(res.unclear.length?' 비워 둔 것: '+res.unclear.join(' / '):''):'채울 내용을 찾지 못했어요. 자료에 특허 번호나 연도가 들어 있는지 확인해 주세요.';}
     }catch(e){say((e&&e.text)||ASK_ERR[e&&e.code]||'정리하지 못했어요. 한 번 더 눌러 주세요.','err');}
   },
-  gCheck,
+  gCheck,vCheck,
   gAll(){gAsk(gList());},
   gStop(){if(G.ctl)G.ctl.abort();},
   gtest(){const l=gList(),j=l.find(x=>x.kind==='base')||l.find(x=>x.kind==='sheet')||l.find(x=>x.kind==='color')||l[0];if(j)gAsk([j]);else gMsg('만들 빈 칸이 없어요.','err');},
@@ -3915,12 +1892,14 @@ const ACT={
     if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요. 키가 없어도 손잡이 위치 인식은 돼요.',3600);UI.open.add('p2');renderSide();return;}
     try{if(await recognize(true))toast('사진을 다시 인식했어요.');}catch(e){RECOG.busy=false;renderSide();toast((e&&e.text)||ASK_ERR[e&&e.code]||'인식하지 못했어요. 한 번 더 눌러 주세요.',3600);}
   },
+  opask(){OPV.ask=true;renderSide();},
   opno(){OPV.ask=false;renderSide();},
-  opgo(){makePupVideo();},
+  opgo(){makeOpVideo();},
   opstop(){if(OPV.ctl)OPV.ctl.abort();},
   opdel(){S.opVideo=null;gc();renderSide();refresh();},
-  opsavegif(){const g=S.opVideo&&S.opVideo.gif&&PH.get(S.opVideo.gif.id);if(g)saveFile('작동영상_'+safeName()+'.gif',g.blob);},
+  async opsaveframe(){try{const b64=await opFrame(),bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);await saveFile('작동영상_첫장면.jpg',new Blob([u8],{type:'image/jpeg'}));toast('첫 장면 사진을 저장했어요. 구글 AI 스튜디오(또는 Flow)에서 이 사진과 「지시문 복사」 글로 영상을 만드세요.',5600);}catch(e){toast((e&&e.message)||'저장하지 못했어요.');}},
   opsave(){const m=S.opVideo&&PH.get(S.opVideo.id);if(m)saveFile('작동영상_'+safeName()+'.'+vidExt(m.blob),m.blob);},
+  opcopy(){copy(opPrompt(),'광고용 지시문을 복사했어요. 구글 AI 스튜디오(Flow)나 다른 영상 AI의 \'사진으로 영상 만들기\'에 도어 설치 사진과 함께 붙여 넣으세요.');},
   baseok(){                                   // 기준 사진 확정: 흰 문 칸에 그대로 넣고, 나머지 문 색상은 이 사진에서 문 색만 바꿔 만들어요
     if(!hasPhoto(S.base))return;
     S.baseOk=true;let n=0;
@@ -3960,10 +1939,10 @@ side.addEventListener('click',e=>{
   if(ACT[k])ACT[k](b||e.target,e);
 });
 const CHANGE={
-  gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
+  gRem(t){G.remember=t.checked;saveKey();},vRem(t){VK.remember=t.checked;saveVKey();},cRem(t){C.remember=t.checked;saveCKey();},
   useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useClear(t){UI.clearOnNew=t.checked;},opAutoChk(t){UI.opAuto=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
-  opSrc(t){OPV.srcKey=t.value;renderSide();},
+  opCam(t){OPV.cam=t.value;renderSide();},opRatio(t){OPV.ratio=t.value;renderSide();refresh();},opFit(t){OPV.fit=t.value;renderSide();},opModel(t){G.modelVideo=t.value;renderSide();},opSrc(t){OPV.srcKey=t.value;OPV.firstKey='';renderSide();},opModelTxt(t){const v=String(t.value||'').trim().replace(/^models\//,'');if(!v)return;G.modelVideo=v;G.vman=true;G.veoNo='';G.videos=[v];renderSide();},
   colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
@@ -3978,19 +1957,19 @@ side.addEventListener('change',e=>{
   else if(d.ic!==undefined){S.zoom.items[+d.ic].ic=t.value;refresh();}
   else if(d.sz!==undefined){S.size[d.sz]=t.value;refresh();}
   else if(d.basen!==undefined){S.baseN=+t.value;renderSide();updInfo();}
-  else if(d.opfirst!==undefined){const f=t.files&&t.files[0];t.value='';if(f)putPhoto('opFirst',f).then(()=>{OPV.srcKey='up';renderSide();toast('도어 설치 사진을 넣었어요. 이 사진에서 영상이 시작돼요.',3200);});}
+  else if(d.opfile!==undefined){const f=t.files&&t.files[0];t.value='';if(f)opUpload(f);}
+  else if(d.opfirst!==undefined){const f=t.files&&t.files[0];t.value='';if(f)putPhoto('opFirst',f).then(()=>{OPV.srcKey='up';OPV.firstKey='';renderSide();toast('도어 설치 사진을 넣었어요. 이 사진에서 영상이 시작돼요.',3200);});}
 });
 side.addEventListener('input',e=>{
   const t=e.target,d=t.dataset;
   if(d.k!==undefined){setP(d.k,t.value);if(d.k==='spec')S.specAuto=false;if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name')syncPrompts();refresh();}
   else if(d.s){setP(d.s,Number(t.value)/100);if(t.nextElementSibling)t.nextElementSibling.textContent=t.value;refresh();}
   else if(t.id==='gKey'){G.key=t.value;if(G.state!=='idle')G.state='idle';saveKey();chip();}
-  else if(t.id==='pupHw'||t.id==='pupR0'||t.id==='pupDeg'){const src=opSource();if(src){pupSet(src,t.id==='pupHw'?{hw:+t.value/100}:t.id==='pupR0'?{r0:+t.value/100}:{deg:+t.value});OPV.pupB=null;if(OPV.pupPlay)opPupPaint();}}
+  else if(t.id==='vKey'){VK.key=t.value;if(VK.state!=='idle')VK.state='idle';saveVKey();chip();}
   else if(t.id==='gModel'){G.model=t.value;G.auto=false;}
   else if(t.id==='cKey'){C.key=t.value;C.ok=false;C.bad=false;saveCKey();chip();}
   else if(t.id==='cModel')C.model=t.value;
 });
-pupDragInit();
 function syncPrompts(){const J=jobs();$$('.job pre',side).forEach(p=>{const j=J[+p.dataset.j];if(j)p.textContent=promptOf(j);});}
 ['dragover','dragenter'].forEach(ev=>side.addEventListener(ev,e=>{const t=e.target.closest('.thumb');if(t&&t.dataset.drop){e.preventDefault();t.classList.add('drag');}}));
 ['dragleave','drop'].forEach(ev=>side.addEventListener(ev,e=>{const t=e.target.closest('.thumb');if(t)t.classList.remove('drag');}));
@@ -4003,6 +1982,7 @@ $('#btnOp').onclick=()=>{   // 손잡이 작동 영상(상세페이지 안에 �
   UI.open.add('p3');setTab('edit');renderSide();
   const el=$('.blk.opv',side);if(el){el.scrollIntoView({block:'start'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1600);}
   if(!hasPhoto(S.src))toast('제품 사진을 먼저 넣으면 작동 영상을 만들 수 있어요.',3200);
+  else if(!vOn())toast('작동 영상은 2단계에서 구글 키(또는 영상용 키)를 연결해야 만들 수 있어요.',3600);
 };
 $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>$('#loadFile').click();
@@ -4022,7 +2002,7 @@ async function checkUpdate(auto){
   try{
     const r=await fetch('version.json?'+Date.now(),{cache:'no-store'}),d=await r.json();
     if(!(d&&d.v>VER))return;
-    const go=()=>{try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}try{if(G.key.trim()||C.key.trim())sessionStorage.setItem('wj-kt',JSON.stringify({g:G.key,c:C.key}));}catch(e){}location.href=location.pathname+'?v='+d.v;};
+    const go=()=>{try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}try{if(G.key.trim()||C.key.trim()||VK.key.trim())sessionStorage.setItem('wj-kt',JSON.stringify({g:G.key,c:C.key,v:VK.key}));}catch(e){}location.href=location.pathname+'?v='+d.v;};
     let tried=0;try{tried=Number(sessionStorage.getItem('wj-upd')||0);}catch(e){}
     const busy=G.busy||oneBusy||EX.busy||!veil.hidden;
     if(auto&&!busy&&tried!==d.v){try{sessionStorage.setItem('wj-upd',String(d.v));}catch(e){}go();return;}
@@ -4039,7 +2019,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
   if(zoomUntouched()&&await autoZoom()){renderSide();refresh();toast('확대 3곳을 제품 위치에 맞췄어요.',2600);}   // 예전 기본 자리가 저장돼 있던 작업도 한 번 맞춰요
   else if(await ensureMask()){if(S.src&&PM&&PM.id===S.src.id&&PM.dir&&(!S.lvDir||S.lvDir.id!==S.src.id))setLever(PM.dir,true);renderSide();refresh();}                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
-  (async()=>{if(G.key.trim())await gCheck();})();   // 기억해 둔 키는 열 때 무료로 자동 확인해요
+  (async()=>{if(G.key.trim())await gCheck();if(VK.key.trim())await vCheck();})();   // 기억해 둔 키는 열 때 무료로 자동 확인해요(영상용 키는 이미지 키 뒤에)
   if(C.key.trim()&&!window.claude)ACT.cCheck();
   checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
 })();
