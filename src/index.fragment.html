@@ -156,6 +156,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pupbox canvas{width:100%;display:block;border-radius:8px;background:#222}
 .pupmk{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.55);cursor:grab;touch-action:none}
 .pupmk[data-mk=pv]{background:#e5484d}.pupmk[data-mk=tp]{background:#2a7de1}
+.pupmk::after{position:absolute;left:0;right:0;top:-1px;text-align:center;color:#fff;font-size:11px;font-weight:800;line-height:16px;pointer-events:none}
+.pupmk[data-mk=pv]::after{content:'축'}.pupmk[data-mk=tp]::after{content:'끝'}
 .exscroll{max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
 .exscroll img{display:block;width:100%;height:auto}
 .dlg{width:min(520px,100%);max-height:90%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:14px}
@@ -286,7 +288,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 54</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 55</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -334,7 +336,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=54,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=55,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1238,14 +1240,15 @@ function opRect(bmp){const vert=OPV.ratio==='9:16',W=vert?720:1280,H=vert?1280:7
   if(OPV.fit==='fill')return {x:(W-bmp.width*cov)/2,y:(H-bmp.height*cov)/2,w:bmp.width*cov,h:bmp.height*cov};
   const f=Math.min(W/bmp.width,H/bmp.height),dw=bmp.width*f,dh=bmp.height*f;return {x:(W-dw)/2,y:(H-dh)/2,w:dw,h:dh};}
 function pupBuild(bmp,o){
+  try{const rf=pupRefine(bmp,o);if(rf){const L1=Math.hypot((rf.tp.x-o.pv.x)*bmp.width,(rf.tp.y-o.pv.y)*bmp.height),L0=Math.hypot((o.tp.x-o.pv.x)*bmp.width,(o.tp.y-o.pv.y)*bmp.height);if(L1>L0*1.08)o=Object.assign({},o,rf);}}catch(e){}   // 파란 점이 레버 중간에 있으면 레버 끝까지 자동으로 늘려서 레버가 반만 움직이지 않게 해요
   const k=Math.min(1,1280/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
   const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);
   const I=g.getImageData(0,0,W,H).data,Px=o.pv.x*W,Py=o.pv.y*H,Tx=o.tp.x*W,Ty=o.tp.y*H,L=Math.hypot(Tx-Px,Ty-Py);
   if(!(L>Math.max(W,H)*.06))return null;
-  const dx=(Tx-Px)/L,dy=(Ty-Py)/L,nx=-dy,ny=dx,hs=Math.max(8,o.hw*L*2.1),r0=o.r0*L,S0=r0*.6,S1=L*1.12;
+  const dx=(Tx-Px)/L,dy=(Ty-Py)/L,nx=-dy,ny=dx,hs=Math.max(8,o.hw*L*1.55),r0=o.r0*L,S0=r0*.6,S1=L*1.12;   // 레버 굵기보다 조금만 넓게(문 선이 어긋나 보이지 않게)
   const NS=Math.ceil(S1-S0)+2,cA=new Float32Array(NS*3),cB=new Float32Array(NS*3);
   const px=(x,y)=>(Math.min(H-1,Math.max(0,Math.round(y)))*W+Math.min(W-1,Math.max(0,Math.round(x))))*4;
-  for(let i=0;i<NS;i++){const sv=S0+i;for(let sg=-1;sg<=1;sg+=2){let r=0,gg=0,b=0,c=0;for(let u=hs*1.12;u<=hs*1.5;u+=2){const j=px(Px+dx*sv+nx*sg*u,Py+dy*sv+ny*sg*u);r+=I[j];gg+=I[j+1];b+=I[j+2];c++;}const arr=sg>0?cA:cB;arr[i*3]=r/c;arr[i*3+1]=gg/c;arr[i*3+2]=b/c;}}
+  for(let i=0;i<NS;i++){const sv=S0+i;for(let sg=-1;sg<=1;sg+=2){let r=0,gg=0,b=0,c=0;for(let u=hs*1.08;u<=hs*1.4;u+=2){const j=px(Px+dx*sv+nx*sg*u,Py+dy*sv+ny*sg*u);r+=I[j];gg+=I[j+1];b+=I[j+2];c++;}const arr=sg>0?cA:cB;arr[i*3]=r/c;arr[i*3+1]=gg/c;arr[i*3+2]=b/c;}}
   const sm3=a=>{const o2=new Float32Array(a.length);for(let i=0;i<NS;i++)for(let c=0;c<3;c++)o2[i*3+c]=(a[Math.max(0,i-1)*3+c]+a[i*3+c]+a[Math.min(NS-1,i+1)*3+c])/3;return o2;};
   const A=sm3(cA),Bc=sm3(cB);
   const xsb=[Px,Tx,Px+nx*hs,Px-nx*hs,Px+dx*S1+nx*hs,Px+dx*S1-nx*hs,Px+dx*S0+nx*hs,Px+dx*S0-nx*hs],ysb=[Py,Ty,Py+ny*hs,Py-ny*hs,Py+dy*S1+ny*hs,Py+dy*S1-ny*hs,Py+dy*S0+ny*hs,Py+dy*S0-ny*hs];
@@ -1277,14 +1280,29 @@ function pupRender(B,deg,u){   // u: 0~1 (한 번 내려갔다 올라오는 동�
   const g=B.pc.getContext('2d');g.clearRect(0,0,B.W,B.H);g.drawImage(B.plate,0,0);
   g.save();g.translate(B.Px,B.Py);g.rotate(B.sgn*deg*opPos(u,1)*Math.PI/180);g.translate(-B.Px,-B.Py);g.drawImage(B.lever,0,0);g.restore();g.drawImage(B.ring,0,0);
 }
-const PUP_PROMPT='첨부한 사진은 문에 설치된 레버형 방문 손잡이입니다. 사진의 가로·세로 길이를 각각 1로 보고(왼쪽 위가 0,0, 오른쪽 아래가 1,1) 아래 위치를 알려 주세요.\npivot: 받침(원판)의 가운데이자 레버가 돌아가는 축의 위치.\ntip: 레버 맨 끝(손으로 잡는 쪽 끝)의 중심선 위 위치.\nhalfWidth: 레버 굵기(위아래 폭)의 절반을 pivot에서 tip까지의 거리로 나눈 값(보통 0.06~0.14).\nrosette: 받침(원판)의 반지름을 pivot에서 tip까지의 거리로 나눈 값(보통 0.15~0.35).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"pivot":{"x":0.0,"y":0.0},"tip":{"x":0.0,"y":0.0},"halfWidth":0.09,"rosette":0.24}';
+const PUP_PROMPT='첨부한 사진은 문에 설치된 레버형 방문 손잡이입니다. 사진의 가로·세로 길이를 각각 1로 보고(왼쪽 위가 0,0, 오른쪽 아래가 1,1) 아래 위치를 알려 주세요.\npivot: 받침(원판)의 가운데이자 레버가 돌아가는 축의 위치.\ntip: 레버에서 받침으로부터 가장 멀리 떨어진 맨 끝의 중심선 위 위치(레버 중간이 아니라 끝).\nhalfWidth: 레버 굵기(위아래 폭)의 절반을 사진 가로 길이에 대한 비율로(보통 0.02~0.08).\nrosette: 받침(원판)의 반지름을 사진 가로 길이에 대한 비율로(보통 0.05~0.2).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"pivot":{"x":0.0,"y":0.0},"tip":{"x":0.0,"y":0.0},"halfWidth":0.05,"rosette":0.12}';
 async function pupDetect(src,signal){   // 클로드가 사진에서 레버 위치를 찾아요(약 1센트)
   const m=PH.get(src.id),ed=(C.model||'').trim()?'':chkModel;
   const r=await claude(PUP_PROMPT,{signal,max:300,images:[await shrink(m.blob,1024,.88)],model:ed});
   const n=v=>typeof v==='number'&&isFinite(v)?v:NaN,pv={x:n(r&&r.pivot&&r.pivot.x),y:n(r&&r.pivot&&r.pivot.y)},tp={x:n(r&&r.tip&&r.tip.x),y:n(r&&r.tip&&r.tip.y)};
   const c01=v=>Math.min(1,Math.max(0,v));
   if([pv.x,pv.y,tp.x,tp.y].some(isNaN)||Math.hypot(tp.x-pv.x,(tp.y-pv.y)*m.h/m.w)<.1)throw {code:'invalid_json',text:'사진에서 레버 위치를 찾지 못했어요. 작동 영상 칸에서 점을 직접 맞춰 주세요.'};
-  return {pv:{x:c01(pv.x),y:c01(pv.y)},tp:{x:c01(tp.x),y:c01(tp.y)},hw:Math.min(.16,Math.max(.04,n(r.halfWidth)||PUP0.hw)),r0:Math.min(.38,Math.max(.14,n(r.rosette)||PUP0.r0)),set:true};
+  const Lpx=Math.hypot((tp.x-pv.x)*m.w,(tp.y-pv.y)*m.h)||1,hwf=n(r.halfWidth),rof=n(r.rosette);
+  return {pv:{x:c01(pv.x),y:c01(pv.y)},tp:{x:c01(tp.x),y:c01(tp.y)},hw:Math.min(.16,Math.max(.04,hwf>0?hwf*m.w/Lpx:PUP0.hw)),r0:Math.min(.38,Math.max(.14,rof>0?rof*m.w/Lpx:PUP0.r0)),set:true};
+}
+function pupRefine(bmp,o){   // 받침 점(빨강)에서 레버 방향으로 따라가며 레버가 끝나는 곳과 굵기를 찾아요(무료)
+  const k=Math.min(1,1024/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);const I=g.getImageData(0,0,W,H).data;
+  const Px=o.pv.x*W,Py=o.pv.y*H,L0=Math.hypot(o.tp.x*W-Px,o.tp.y*H-Py);if(L0<W*.04)return null;
+  const dx=(o.tp.x*W-Px)/L0,dy=(o.tp.y*H-Py)/L0,nx=-dy,ny=dx,far=Math.max(L0*.5,Math.min(W,H)*.2),r0px=Math.max(6,o.r0*L0);
+  const px=(x,y)=>{if(x<2||y<2||x>=W-2||y>=H-2)return null;const j=(Math.round(y)*W+Math.round(x))*4;return [I[j],I[j+1],I[j+2]];};
+  const door=s=>{const a=px(Px+dx*s+nx*far,Py+dy*s+ny*far),b=px(Px+dx*s-nx*far,Py+dy*s-ny*far);return a&&b?[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2]:(a||b);};
+  const like=(s,u)=>{const c=px(Px+dx*s+nx*u,Py+dy*s+ny*u),d=door(s);return !!(c&&d)&&Math.max(Math.abs(c[0]-d[0]),Math.abs(c[1]-d[1]),Math.abs(c[2]-d[2]))>34;};
+  let last=-1,gap=0;for(let sv=r0px*1.1;sv<=L0*2.8;sv+=1){if(like(sv,0)||like(sv,3)||like(sv,-3)){last=sv;gap=0;}else{gap++;if(gap>14&&last>0)break;}}
+  if(last<L0*.3)return null;
+  const Ln=last+2,sm=Math.max(r0px*1.5,(r0px+last)/2),half=sg=>{let u=0,miss=0;for(;u<Ln*.5;u++){if(like(sm,sg*u))miss=0;else{miss++;if(miss>=3)break;}}return Math.max(2,u-miss);};
+  const hwpx=(half(1)+half(-1))/2;
+  return {tp:{x:Math.min(1,Math.max(0,(Px+dx*Ln)/W)),y:Math.min(1,Math.max(0,(Py+dy*Ln)/H))},hw:Math.min(.16,Math.max(.04,1.0*hwpx/Ln)),r0:Math.min(.38,Math.max(.14,r0px/Ln))};
 }
 async function makePupVideo(){
   if(OPV.busy)return false;
@@ -1293,7 +1311,7 @@ async function makePupVideo(){
   OPV.busy=true;OPV.ask=false;OPV.pupPlay=false;OPV.ctl=new AbortController();const signal=OPV.ctl.signal;renderSide();
   try{
     let o=pupGet(src);
-    if(!(o&&o.set)){opMsg('클로드가 사진에서 레버 위치를 찾는 중이에요…');pupSet(src,await pupDetect(src,signal));o=pupGet(src);}
+    if(!(o&&o.set)){opMsg('클로드가 사진에서 레버 위치를 찾는 중이에요…');const det=await pupDetect(src,signal);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}pupSet(src,det);o=pupGet(src);}
     const m=PH.get(src.id),bmp=await createImageBitmap(m.blob);opMsg('레버를 사진에서 오려 내는 중이에요…');await new Promise(r=>setTimeout(r,30));
     const B=pupBuild(bmp,o);if(!B)throw {status:-1,message:'레버 위치가 맞지 않아요. 작동 영상 칸의 사진 위에서 빨간 점(축)과 파란 점(레버 끝)을 맞춘 뒤 다시 눌러 주세요.'};
     const C0=opCompose(bmp),R=opRect(bmp),D=10,W=C0.width,H=C0.height;
@@ -1309,9 +1327,9 @@ async function makePupVideo(){
 /* 사진 위에서 점을 끌어 맞추는 칸 */
 function pupCard(src){
   const o=pupGet(src)||Object.assign({id:src.id,set:false},PUP0);
-  return '<div class="blk pupblk"><div class="hint">레버 위치 맞추기 — 사진 위의 <b style="color:#e5484d">빨간 점(레버가 돌아가는 축)</b>과 <b style="color:#2a7de1">파란 점(레버 끝)</b>을 끌어서 맞추세요. 「자동으로 찾기」는 클로드가 찾아 줘요(1센트 안팎). 맞춘 뒤 「미리보기 재생」으로 움직임을 확인하세요.</div>'
+  return '<div class="blk pupblk"><div class="hint">레버 위치 맞추기 — 사진 위의 <b style="color:#e5484d">빨간 점(축)</b>은 <b>받침(동그란 판)의 가운데</b>에, <b style="color:#2a7de1">파란 점(끝)</b>은 <b>레버의 맨 끝</b>(받침에서 가장 먼 쪽 끝)에 놓아 주세요. 점을 끌어서 옮길 수 있어요. 「자동으로 찾기」는 클로드가 찾고(1센트 안팎), 「끝·굵기 자동 맞추기」는 파란 점을 레버 방향으로 맨 끝까지 늘려 주고 굵기도 맞춰 줘요(무료). 맞춘 뒤 「미리보기 재생」으로 움직임을 확인하세요.</div>'
     +'<div class="pupbox" id="opPupBox"><canvas id="opPupCv"></canvas><i class="pupmk" data-mk="pv" title="레버가 돌아가는 축"></i><i class="pupmk" data-mk="tp" title="레버 끝"></i></div>'
-    +'<div class="acts"><button class="btn sm" type="button" data-act="pupauto">자동으로 찾기 (클로드 · 1센트)</button><button class="btn sm" type="button" data-act="puplay">'+(OPV.pupPlay?'■ 미리보기 정지':'▶ 미리보기 재생')+'</button></div>'
+    +'<div class="acts"><button class="btn sm" type="button" data-act="pupauto">자동으로 찾기 (클로드 · 1센트)</button><button class="btn sm" type="button" data-act="pupfit">끝·굵기 자동 맞추기 (무료)</button><button class="btn sm" type="button" data-act="puplay">'+(OPV.pupPlay?'■ 미리보기 정지':'▶ 미리보기 재생')+'</button></div>'
     +'<label class="chk">레버 굵기 <input type="range" id="pupHw" min="4" max="16" value="'+Math.round(o.hw*100)+'"></label>'
     +'<label class="chk">받침(원판) 크기 <input type="range" id="pupR0" min="14" max="38" value="'+Math.round(o.r0*100)+'"></label>'
     +'<label class="chk">눌리는 각도 <input type="range" id="pupDeg" min="10" max="40" value="'+Math.round(o.deg)+'"></label>'
@@ -2278,7 +2296,8 @@ const ACT={
   pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
   restoreprev(){restorePrev();},
   puplay(){OPV.pupPlay=!OPV.pupPlay;renderSide();},
-  async pupauto(){const src=opSource();if(!src)return;try{if(!(await claudeReady(2))){toast('클로드 키가 없어서 자동으로 못 찾아요. 점을 직접 맞춰 주세요.',4000);return;}toast('클로드가 레버 위치를 찾는 중이에요…',5000);pupSet(src,await pupDetect(src));OPV.pupB=null;renderSide();toast('레버 위치를 찾았어요. 점이 맞는지 보고, 틀리면 끌어서 고쳐 주세요.',5000);}catch(e){toast((e&&e.text)||ASK_ERR[e&&e.code]||'레버 위치를 찾지 못했어요. 점을 직접 맞춰 주세요.',5000);}},
+  async pupfit(){const src=opSource(),o=src&&pupGet(src);if(!o||!o.set){toast('먼저 빨간 점(받침 가운데)과 파란 점(레버 쪽)을 놓아 주세요.',3500);return;}try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),o);if(!rf){toast('레버가 끝나는 곳을 못 찾았어요. 파란 점을 레버 맨 끝에 직접 놓아 주세요.',4500);return;}pupSet(src,rf);OPV.pupB=null;renderSide();toast('레버 끝과 굵기를 맞췄어요. 파란 점이 레버 맨 끝에 있는지 확인하세요.',4500);}catch(e){toast('맞추지 못했어요. 점을 직접 놓아 주세요.',3500);}},
+  async pupauto(){const src=opSource();if(!src)return;try{if(!(await claudeReady(2))){toast('클로드 키가 없어서 자동으로 못 찾아요. 점을 직접 맞춰 주세요.',4000);return;}toast('클로드가 레버 위치를 찾는 중이에요…',5000);const det=await pupDetect(src);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}pupSet(src,det);OPV.pupB=null;renderSide();toast('레버 위치를 찾았어요. 점이 맞는지 보고, 틀리면 끌어서 고쳐 주세요.',5000);}catch(e){toast((e&&e.text)||ASK_ERR[e&&e.code]||'레버 위치를 찾지 못했어요. 점을 직접 맞춰 주세요.',5000);}},
   async rotl(){await rotSrc(-90);},async rotr(){await rotSrc(90);},
   opmodeldef(){G.modelVideo='veo-3.1-fast-generate-preview';G.vman=true;G.veoNo='';G.videos=[G.modelVideo];renderSide();},
   async specai(){
