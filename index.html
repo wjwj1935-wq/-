@@ -291,7 +291,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 56</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 57</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -339,7 +339,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=56,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=57,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1263,7 +1263,7 @@ function pupBuild(bmp,o){
     const p=y*W+x,ii=Math.min(NS-1,Math.max(0,Math.round(sv-S0))),t=cl((u+hs)/(2*hs)),q=p*4;
     const fr=Bc[ii*3]*(1-t)+A[ii*3]*t,fg=Bc[ii*3+1]*(1-t)+A[ii*3+1]*t,fb=Bc[ii*3+2]*(1-t)+A[ii*3+2]*t;
     F[p*3]=fr;F[p*3+1]=fg;F[p*3+2]=fb;reg[p]=1;
-    const e=Math.max(Math.abs(I[q]-fr),Math.abs(I[q+1]-fg),Math.abs(I[q+2]-fb)),a=cl((e-12)/18),edge=1-cl((Math.abs(u)-hs*.9)/(hs*.1+1e-6)),endf=1-cl((sv-(S1-8))/8),ramp=cl((sv-r0*.8)/(r0*.4));
+    const e=Math.max(Math.abs(I[q]-fr),Math.abs(I[q+1]-fg),Math.abs(I[q+2]-fb)),a=cl((e-12)/18),edge=1-cl((Math.abs(u)-hs*.9)/(hs*.1+1e-6)),endf=1-cl((sv-(S1-8))/8),ramp=cl((sv-r0*.86)/(r0*.14));
     alpha[p]=a*edge*endf*ramp;}
   // 레버가 있던 자리를 문 색으로 채운 '판'(가장자리 번짐을 막으려고 조금 넓게)
   const mx=new Float32Array(W*H);
@@ -1279,12 +1279,16 @@ function pupBuild(bmp,o){
     if(reg[p]){const a=ad[p];if(a>0){pd[q]=I[q]*(1-a)+F[p*3]*a;pd[q+1]=I[q+1]*(1-a)+F[p*3+1]*a;pd[q+2]=I[q+2]*(1-a)+F[p*3+2]*a;}}
     const al=alpha[p];if(al>0){ld[q]=I[q];ld[q+1]=I[q+1];ld[q+2]=I[q+2];ld[q+3]=Math.round(al*255);}}
   // 받침·목(움직이지 않는 부분): 원형으로 오려서 맨 위에 다시 올려요
-  const ring=new ImageData(W,H),rd=ring.data,R1=r0*1.14+1;
+  const ring=new ImageData(W,H),rd=ring.data,R1=r0*1.05+2;
   for(let y=Math.max(0,Math.floor(Py-R1));y<=Math.min(H-1,Math.ceil(Py+R1));y++)for(let x=Math.max(0,Math.floor(Px-R1));x<=Math.min(W-1,Math.ceil(Px+R1));x++){
-    const dd=Math.hypot(x-Px,y-Py),a=1-cl((dd-r0)/(r0*.14));if(a<=0)continue;const q=(y*W+x)*4;rd[q]=I[q];rd[q+1]=I[q+1];rd[q+2]=I[q+2];rd[q+3]=Math.round(a*255);}
+    const dd=Math.hypot(x-Px,y-Py),a=1-cl((dd-r0)/(r0*.05+1));if(a<=0)continue;const q=(y*W+x)*4;rd[q]=I[q];rd[q+1]=I[q+1];rd[q+2]=I[q+2];rd[q+3]=Math.round(a*255);}
   const mk=d=>{const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').putImageData(d,0,0);return c;};
   const pc=document.createElement('canvas');pc.width=W;pc.height=H;
   return {W,H,plate:mk(plate),lever:mk(lev),ring:mk(ring),pc,Px,Py,sgn:Math.sign(dx)||1,fix:fixed};
+}
+function pupScale(B,k){   // 미리보기용: 같은 그림을 작게 줄여서 한 장씩 그리는 일을 가볍게 해요
+  const W=Math.max(2,Math.round(B.W*k)),H=Math.max(2,Math.round(B.H*k)),sc=c=>{const e=document.createElement('canvas');e.width=W;e.height=H;const g=e.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(c,0,0,W,H);return e;},pc=document.createElement('canvas');pc.width=W;pc.height=H;
+  return {W,H,plate:sc(B.plate),lever:sc(B.lever),ring:sc(B.ring),pc,Px:B.Px*W/B.W,Py:B.Py*H/B.H,sgn:B.sgn};
 }
 function pupRender(B,deg,u){   // u: 0~1 (한 번 내려갔다 올라오는 동안)
   const g=B.pc.getContext('2d');g.clearRect(0,0,B.W,B.H);g.drawImage(B.plate,0,0);
@@ -1393,7 +1397,7 @@ async function opPupPaint(){
   if(!OPV.pupPlay)return;
   const key=JSON.stringify([src.id,o.pv,o.tp,o.hw,o.r0]);
   if(!OPV.pupB||OPV.pupB.key!==key){const B=pupBuild(bmp,o);if(!B){OPV.pupPlay=false;renderSide();toast('레버 위치가 맞지 않아요. 점을 다시 맞춰 주세요.',3500);return;}OPV.pupB=Object.assign(B,{key});if(B.fix){pupSet(src,B.fix);OPV.pupB=null;renderSide();return;}}
-  const B=OPV.pupB,tok=++OPV.pupTok,t0=performance.now(),D=Math.max(1,OPV.loop||1);
+  if(!OPV.pupB.small||OPV.pupB.small.W!==pw)OPV.pupB.small=pupScale(OPV.pupB,pw/OPV.pupB.W);const B=OPV.pupB.small,tok=++OPV.pupTok,t0=performance.now(),D=Math.max(1,OPV.loop||1);
   const tick=now=>{if(!OPV.pupPlay||tok!==OPV.pupTok||!cv.isConnected)return;pupRender(B,o.deg,((now-t0)/1000/D)%1);g.drawImage(B.pc,0,0,pw,ph);requestAnimationFrame(tick);};
   requestAnimationFrame(tick);
 }
@@ -1640,7 +1644,7 @@ function opCard(){
     +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (영상 요금이 따로 들어요)</label>'
     +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||hint)+'</div>'
     +(on&&!G.videos.length&&G.allModels&&G.allModels.length?'<details><summary>이 키에서 쓸 수 있는 모델 이름 보기 (영상 모델이 없는 이유 확인용)</summary><div class="hint" style="word-break:break-all">'+esc(G.allModels.slice(0,80).join(' · '))+(G.allModels.length>80?' … 외 '+(G.allModels.length-80)+'개':'')+'</div></details>':'')
-    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted playsinline></video><p class="cost">'+(S.opVideo&&S.opVideo.model==='puppet'?'만든 방법: 레버 직접 움직이기 · '+(S.opVideo.loopSecs||10)+'초 · 계속 반복':S.opVideo&&/^frames:/.test(S.opVideo.model||'')?'만든 방법: AI 사진 이어 붙이기(옛 방식 · 화면이 깜빡이기만 할 수 있어요). 「영상 지우기」를 누르고 \'만드는 방법\'을 「레버 직접 움직이기」로 바꿔 다시 만들어 보세요.':S.opVideo&&S.opVideo.ai===false?'직접 올린 영상':'만든 방법: '+esc((S.opVideo&&S.opVideo.model)||'구글 영상 AI(Veo)'))+'</p><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
+    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted autoplay playsinline></video><p class="cost">'+(S.opVideo&&S.opVideo.model==='puppet'?'만든 방법: 레버 직접 움직이기 · '+(S.opVideo.loopSecs||10)+'초 · 계속 반복':S.opVideo&&/^frames:/.test(S.opVideo.model||'')?'만든 방법: AI 사진 이어 붙이기(옛 방식 · 화면이 깜빡이기만 할 수 있어요). 「영상 지우기」를 누르고 \'만드는 방법\'을 「레버 직접 움직이기」로 바꿔 다시 만들어 보세요.':S.opVideo&&S.opVideo.ai===false?'직접 올린 영상':'만든 방법: '+esc((S.opVideo&&S.opVideo.model)||'구글 영상 AI(Veo)'))+'</p><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
     +'</div>';
 }
 async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
