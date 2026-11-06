@@ -286,7 +286,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 52</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 53</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -334,7 +334,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=52,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=53,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1184,7 +1184,7 @@ const VEO_DEFAULT='veo-3.1-fast-generate-preview';   // 키 목록에 영상 모
 const VPRICE=[[/fast/,0.10],[/lite/,0.05],[/veo/,0.40]];   // 초당 대략(외부 자료이고 일부는 확인 못 한 값)
 const vPrice=m=>{const x=VPRICE.find(a=>a[0].test(m||''));return x?x[1]:0;};
 const pickVideo=vs=>{const ok=(vs||[]).filter(n=>/generate/.test(n)),r=n=>/fast/.test(n)?0:/lite/.test(n)?1:2;return ok.slice().sort((a,b)=>r(a)-r(b)||verOf(b)-verOf(a))[0]||'';};
-const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',firstKey:'',firstUrl:'',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:'',srcKey:'',method:'auto',loop:1,pupPlay:false,pupB:null,pupTok:0,drag:null};
+const OPV={busy:false,ask:false,ratio:'16:9',fit:'fit',firstKey:'',firstUrl:'',motion:'nohand',secs:8,pollMs:10000,ctl:null,msg:'',cls:'',srcKey:'',method:'auto',loop:3,pupPlay:false,pupB:null,pupTok:0,drag:null};
 function opCands(){   // 첫 장면으로 쓸 수 있는 '도어에 설치된 사진'들(손이 나온 사진은 빼요)
   const L=[];
   if(hasPhoto(S.base))L.push({k:'base',label:'기준 설치 사진',p:S.base});
@@ -1296,7 +1296,7 @@ async function makePupVideo(){
     if(!(o&&o.set)){opMsg('클로드가 사진에서 레버 위치를 찾는 중이에요…');pupSet(src,await pupDetect(src,signal));o=pupGet(src);}
     const m=PH.get(src.id),bmp=await createImageBitmap(m.blob);opMsg('레버를 사진에서 오려 내는 중이에요…');await new Promise(r=>setTimeout(r,30));
     const B=pupBuild(bmp,o);if(!B)throw {status:-1,message:'레버 위치가 맞지 않아요. 작동 영상 칸의 사진 위에서 빨간 점(축)과 파란 점(레버 끝)을 맞춘 뒤 다시 눌러 주세요.'};
-    const C0=opCompose(bmp),R=opRect(bmp),D=Math.max(1,Math.min(8,+OPV.loop||1)),W=C0.width,H=C0.height;
+    const C0=opCompose(bmp),R=opRect(bmp),D=Math.max(1,Math.min(10,+OPV.loop||3)),W=C0.width,H=C0.height;
     const fn=(g,u)=>{g.drawImage(C0,0,0);pupRender(B,o.deg,u);g.drawImage(B.pc,R.x,R.y,R.w,R.h);};
     const blob=await opRecordFn(W,H,fn,signal,D);
     const pcv=document.createElement('canvas');pcv.width=W;pcv.height=H;fn(pcv.getContext('2d'),0);
@@ -1432,7 +1432,7 @@ function opGif(Ks,D){return opGifFn(Ks[0].width,Ks[0].height,(g,u)=>opDraw(g,Ks,
 function opGifFn(W,H,fn,D){   // 1280×720 장면에서 작은 GIF(가로 640)를 만들어요
   const gw=W>H?640:360,gh=Math.round(gw*H/W),full=document.createElement('canvas');full.width=W;full.height=H;
   const fg=full.getContext('2d'),sm=document.createElement('canvas');sm.width=gw;sm.height=gh;const sg=sm.getContext('2d',{willReadFrequently:true});
-  const F=Math.max(8,Math.min(36,Math.round(D*14))),frames=[];
+  const F=D<=4?Math.max(8,Math.round(D*14)):Math.min(60,Math.round(D*8)),frames=[];
   for(let i=0;i<F;i++){fn(fg,i/F);sg.drawImage(full,0,0,gw,gh);frames.push(sg.getImageData(0,0,gw,gh).data.slice());}
   return {blob:new Blob([gifBytes(frames,gw,gh,Math.max(2,Math.round(D*100/F)))],{type:'image/gif'}),w:gw,h:gh};
 }
@@ -1459,7 +1459,7 @@ async function makeFramesVideo(){
       const fb=await createImageBitmap(frames[i]),tmp=document.createElement('canvas');tmp.width=baseBmp.width;tmp.height=baseBmp.height;tmp.getContext('2d').drawImage(fb,0,0,tmp.width,tmp.height);
       Ks.push(opMask(C0,g0,opCompose(tmp)));
     }
-    const D=Math.max(1,Math.min(8,+OPV.loop||1));
+    const D=Math.max(1,Math.min(10,+OPV.loop||3));
     const blob=await opRecord(Ks,signal,D);
     await putVideo(blob,{ai:true,model:'frames:'+model,ratio:OPV.ratio,motion:'frames',loopSecs:D},C0.toDataURL('image/jpeg',.9).split(',')[1]);
     try{const gf=opGif(Ks,D),gid=uid();PENDING.add(gid);remember(gid,gf.blob,gf.w,gf.h);await idb.put(gid,{blob:gf.blob,w:gf.w,h:gf.h});S.opVideo.gif={id:gid,w:gf.w,h:gf.h};PENDING.delete(gid);}catch(e){}   // GIF(무한 반복)도 같이 저장해 둬요
@@ -1557,12 +1557,12 @@ function opCard(){
   const opt=(arr,cur)=>arr.map(o=>'<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>').join('');
   const hint=!meth?'2단계에서 구글 키를 연결해 주세요. 구글 영상 AI(Veo)가 안 되는 키여도 이미지 키만 있으면 \'간이 방식\'으로 만들 수 있어요.':!src?'도어에 설치된 사진이 아직 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.':(meth==='veo'&&!model)?'이 키의 모델 목록에는 영상 모델(Veo)이 안 보여요. Veo는 결제가 켜진 구글 키에서만 쓸 수 있고, 잔액이 없으면 안 보일 수도 있어요. 아래 \'영상 모델 이름 직접 넣기\'로 시도해 볼 수 있어요(안 되면 구글이 이유를 알려 줘요. 실패한 요청은 요금이 안 들어요). \'지시문 복사\'로 구글 AI 스튜디오(또는 Flow)에서 직접 만들어 \'영상 파일 직접 올리기\'로 넣을 수도 있어요.':'';
   return '<div class="blk opv"><h3>작동 영상 (선택 · 시험 기능)</h3>'
-    +'<p class="hint"><b>도어에 설치된 사진</b>(기준 설치 사진 → 문 색상 사진)을 첫 장면으로 <b>레버가 내려갔다 올라오는 짧은 영상</b>을 만들어요(간이 방식은 <b>1초짜리를 계속 반복</b>해요). 방법은 셋이에요. ⓪ <b>레버 직접 움직이기(추천 · 무료)</b>: 사진 속 레버를 그대로 오려 받침을 축으로 돌려요(레버 모양이 안 바뀌어요 · 레버 위치는 클로드가 찾거나 직접 점을 찍어요). ① <b>구글 영상 AI(Veo)</b>: 결제가 켜진 키가 필요하고 품질이 높아요. ③ <b>간이 방식</b>: 이미지 AI가 레버를 조금씩 누른 사진 4장을 만들고, 내 컴퓨터가 레버 부분만 바꿔 가며 영상으로 이어 붙여요(이미지 키만 있으면 돼요 · 사진 한 장 약 $0.04). 둘 다 문·벽·받침은 그대로 두라고 지시해요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
+    +'<p class="hint"><b>도어에 설치된 사진</b>(기준 설치 사진 → 문 색상 사진)을 첫 장면으로 <b>레버가 내려갔다 올라오는 짧은 영상</b>을 만들어요(반복 길이는 고를 수 있어요 · 기본 3초를 계속 반복). 방법은 셋이에요. ⓪ <b>레버 직접 움직이기(추천 · 무료)</b>: 사진 속 레버를 그대로 오려 받침을 축으로 돌려요(레버 모양이 안 바뀌어요 · 레버 위치는 클로드가 찾거나 직접 점을 찍어요). ① <b>구글 영상 AI(Veo)</b>: 결제가 켜진 키가 필요하고 품질이 높아요. ③ <b>간이 방식</b>: 이미지 AI가 레버를 조금씩 누른 사진 4장을 만들고, 내 컴퓨터가 레버 부분만 바꿔 가며 영상으로 이어 붙여요(이미지 키만 있으면 돼요 · 사진 한 장 약 $0.04). 둘 다 문·벽·받침은 그대로 두라고 지시해요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
     +'<div class="acts"><label class="chk">움직임 <select id="opMotion">'+opt([['nohand','손 없이 레버만 움직이기 (모양 유지에 유리)'],['hand','손이 레버를 눌러 보여주기']],OPV.motion)+'</select></label>'
     +'<label class="chk">화면 <select id="opRatio">'+opt([['16:9','가로 · 상세페이지 폭에 맞춰요 (추천)'],['9:16','세로 · 숏폼용']],OPV.ratio)+'</select></label>'
     +'<label class="chk">첫 장면 <select id="opFit">'+opt([['fit','사진 전체 보이기 (남는 곳은 흐리게)'],['fill','화면에 꽉 채우기 (위아래/양옆을 잘라요)']],OPV.fit)+'</select></label>'
     +'<label class="chk">만드는 방법 <select id="opMethod">'+opt([['auto','자동 (Veo가 되면 Veo, 아니면 레버 직접 움직이기)'],['puppet','레버 직접 움직이기 (무료 · 추천)'],['veo','구글 영상 AI(Veo)'],['frames','간이 방식 (이미지 AI 사진 4장 + 이어 붙이기)']],OPV.method)+'</select></label>'
-    +(meth==='frames'||meth==='puppet'?'<label class="chk">반복 길이 <select id="opLoop">'+opt([['1','1초 · 계속 반복 (추천)'],['2','2초 · 계속 반복'],['3','3초 · 계속 반복'],['8','8초 · 천천히']],String(OPV.loop))+'</select></label>':'')
+    +(meth==='frames'||meth==='puppet'?'<label class="chk">반복 길이 <select id="opLoop">'+opt([['1','1초 · 계속 반복 (빠르게)'],['2','2초 · 계속 반복'],['3','3초 · 계속 반복 (추천)'],['5','5초 · 천천히'],['10','10초 · 아주 천천히']],String(OPV.loop))+'</select></label>':'')
     +'</div>'+(cands.length?'<div class="acts"><label class="chk">첫 장면 사진 <select id="opSrc">'+cands.map(c=>'<option value="'+c.k+'"'+(c.p===src?' selected':'')+'>'+esc(c.label)+'</option>').join('')+'</select></label></div>':'<div class="msg err">도어에 설치된 사진이 아직 없어요. 작동 영상은 도어에 설치된 사진에서 손잡이만 움직여서 만들어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.</div>')
     +(meth==='puppet'&&src?pupCard(src):'')
     +'<div class="opfirst"><div class="hint">첫 장면 미리보기 — 이 사진에서 영상이 시작돼요. 손잡이가 잘리면 위에서 \'사진 전체 보이기\'로 바꾸세요.</div><div id="opFirst"></div></div><div class="acts">'
@@ -1575,7 +1575,7 @@ function opCard(){
     +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (영상 요금이 따로 들어요)</label>'
     +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||hint)+'</div>'
     +(on&&!G.videos.length&&G.allModels&&G.allModels.length?'<details><summary>이 키에서 쓸 수 있는 모델 이름 보기 (영상 모델이 없는 이유 확인용)</summary><div class="hint" style="word-break:break-all">'+esc(G.allModels.slice(0,80).join(' · '))+(G.allModels.length>80?' … 외 '+(G.allModels.length-80)+'개':'')+'</div></details>':'')
-    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted playsinline></video><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
+    +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted playsinline></video><p class="cost">'+(S.opVideo&&S.opVideo.model==='puppet'?'만든 방법: 레버 직접 움직이기 · '+(S.opVideo.loopSecs||'')+'초 반복':S.opVideo&&/^frames:/.test(S.opVideo.model||'')?'만든 방법: AI 사진 이어 붙이기(옛 방식 · 화면이 깜빡이기만 할 수 있어요). 「영상 지우기」를 누르고 \'만드는 방법\'을 「레버 직접 움직이기」로 바꿔 다시 만들어 보세요.':S.opVideo&&S.opVideo.ai===false?'직접 올린 영상':'만든 방법: '+esc((S.opVideo&&S.opVideo.model)||'구글 영상 AI(Veo)'))+'</p><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
     +'</div>';
 }
 async function regenBad(list,signal){            // 정밀 모델로 한 번 더(지적된 점을 지시문에 넣어서)
