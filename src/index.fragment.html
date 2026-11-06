@@ -288,7 +288,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 58</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 59</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -2207,7 +2207,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=58,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=59,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -3093,12 +3093,11 @@ async function opFrame(){   // 선택한 비율(9:16 / 16:9) 화면 가운데에
 const FR_DEG=[8,16,24,30];   // 레버가 30도까지 내려가요
 const vidExt=b=>b&&/webm/.test(b.type)?'webm':'mp4';
 const nearAspect=(w,h)=>{const L=[['1:1',1],['3:2',1.5],['2:3',2/3],['4:3',4/3],['3:4',.75],['16:9',16/9],['9:16',9/16],['5:4',1.25],['4:5',.8]],r=w/h;return L.reduce((a,b)=>Math.abs(b[1]-r)<Math.abs(a[1]-r)?b:a)[0];};
-function opMethod(){   // 어떤 방법으로 만들 수 있는지: Veo가 되면 Veo, 아니면 이미지 키로 간이 방식
-  const m=OPV.method||'auto',veoOk=vOn()&&G.videos.length>0&&!(G.veoNo&&(G.vman||!G.videos.length)),frOk=G.state==='on',pupOk=pupReady()||!!(window.claude||C.ok);
+function opMethod(){   // 자동 = 레버 직접 움직이기(키 필요 없음). 구글 Veo·간이 방식은 직접 골랐을 때만 써요.
+  const m=OPV.method||'auto',frOk=G.state==='on';
   if(m==='veo')return vOn()?'veo':'';
   if(m==='frames')return frOk?'frames':'';
-  if(m==='puppet')return 'puppet';
-  return veoOk?'veo':(pupOk?'puppet':(frOk?'frames':''));   // 자동: Veo가 되면 Veo, 아니면 레버 직접 움직이기(무료), 그것도 안 되면 이미지 AI 사진 이어 붙이기
+  return 'puppet';
 }
 async function makeOpVideo(modelOverride){const m=opMethod();return m==='puppet'?makePupVideo():m==='frames'?makeFramesVideo():makeVeoVideo(modelOverride);}
 /* ---------- 레버 직접 움직이기: 도어 설치 사진에서 레버만 오려 받침을 축으로 돌려요 ----------
@@ -3175,13 +3174,13 @@ async function pupDetect(src,signal){   // 클로드가 사진에서 레버 위�
   const Lpx=Math.hypot((tp.x-pv.x)*m.w,(tp.y-pv.y)*m.h)||1,hwf=n(r.halfWidth),rof=n(r.rosette);
   return {pv:{x:c01(pv.x),y:c01(pv.y)},tp:{x:c01(tp.x),y:c01(tp.y)},hw:Math.min(.16,Math.max(.04,hwf>0?hwf*m.w/Lpx:PUP0.hw)),r0:Math.min(.38,Math.max(.14,rof>0?rof*m.w/Lpx:PUP0.r0)),set:true};
 }
-function pupMask(I,W,H){   // 문 색과 다른 곳(손잡이)을 표시해요: 사진에서 가장 많은 색 = 문 색
+function pupMask(I,W,H,out){   // 문 색과 다른 곳(손잡이)을 표시해요: 사진에서 가장 많은 색 = 문 색
   const cnt=new Map(),acc=new Map();for(let i=0;i<W*H;i+=3){const q=i*4,key=(I[q]>>4)*256+(I[q+1]>>4)*16+(I[q+2]>>4);cnt.set(key,(cnt.get(key)||0)+1);let a=acc.get(key);if(!a){a=[0,0,0];acc.set(key,a);}a[0]+=I[q];a[1]+=I[q+1];a[2]+=I[q+2];}
   let bk=-1,bc=0;cnt.forEach((c,k)=>{if(c>bc){bc=c;bk=k;}});const ba=acc.get(bk),dc=[ba[0]/bc,ba[1]/bc,ba[2]/bc],df=new Uint8Array(W*H),hist=new Float64Array(256);
   for(let i=0;i<W*H;i++){const q=i*4,d=Math.max(Math.abs(I[q]-dc[0]),Math.abs(I[q+1]-dc[1]),Math.abs(I[q+2]-dc[2]))|0;df[i]=d>255?255:d;hist[df[i]]++;}
   let tot=0,sa=0;for(let t=0;t<256;t++){tot+=hist[t];sa+=t*hist[t];}let wb=0,sb=0,best=-1,thr=34;
   for(let t=0;t<256;t++){wb+=hist[t];if(!wb)continue;const wf=tot-wb;if(!wf)break;sb+=t*hist[t];const mb=sb/wb,mf=(sa-sb)/wf,v=wb*wf*(mb-mf)*(mb-mf);if(v>best){best=v;thr=t;}}
-  thr=Math.min(90,Math.max(34,thr));const m=new Uint8Array(W*H);for(let i=0;i<W*H;i++)m[i]=df[i]>thr?1:0;return m;
+  thr=Math.min(90,Math.max(34,thr));if(out)out.df=df;const m=new Uint8Array(W*H);for(let i=0;i<W*H;i++)m[i]=df[i]>thr?1:0;return m;
 }
 function pupRosette(m,W,H,Px,Py,L0){   // 받침(동그란 판): 빨간 점과 이어진 덩어리 안에서 가장 큰 원의 가운데·반지름 / 레버 방향
   let sx=Math.round(Px),sy=Math.round(Py);sx=Math.min(W-1,Math.max(0,sx));sy=Math.min(H-1,Math.max(0,sy));
@@ -3202,6 +3201,22 @@ function pupRosette(m,W,H,Px,Py,L0){   // 받침(동그란 판): 빨간 점과 �
   let dm=0;const pts=[];for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++)if(comp[y*W+x]){const d=Math.hypot(x-cx,y-cy);if(d>mx*1.15){pts.push(x,y,d);if(d>dm)dm=d;}}
   if(dm<mx*1.6)return null;let fx=0,fy=0,fc=0;for(let i=0;i<pts.length;i+=3)if(pts[i+2]>=dm*.93){fx+=pts[i];fy+=pts[i+1];fc++;}fx/=fc;fy/=fc;
   const L=Math.hypot(fx-cx,fy-cy);return {cx,cy,R:mx,dx:(fx-cx)/L,dy:(fy-cy)/L,dm};
+}
+function pupLocal(bmp){   // 열쇠 없이 사진 모양만 보고 받침 가운데·레버 끝·굵기를 찾아요(무료): 문 색과 다른 가장 큰 어두운 덩어리 = 손잡이
+  const k=Math.min(1,1024/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);const I=g.getImageData(0,0,W,H).data;
+  const out={},M=pupMask(I,W,H,out),df=out.df,lab=new Uint8Array(W*H);let best=null;
+  for(let i0=0;i0<W*H;i0++){if(!M[i0]||lab[i0])continue;
+    const st=[i0];lab[i0]=1;let n=0,sd=0,touch=false;
+    while(st.length){const q=st.pop(),x=q%W,y=(q/W)|0;n++;sd+=df[q];if(x<2||y<2||x>W-3||y>H-3)touch=true;
+      if(x>0&&M[q-1]&&!lab[q-1]){lab[q-1]=1;st.push(q-1);}if(x<W-1&&M[q+1]&&!lab[q+1]){lab[q+1]=1;st.push(q+1);}if(y>0&&M[q-W]&&!lab[q-W]){lab[q-W]=1;st.push(q-W);}if(y<H-1&&M[q+W]&&!lab[q+W]){lab[q+W]=1;st.push(q+W);}}
+    if(n<W*H*.004||n>W*H*.5)continue;
+    const sc=(sd/n)*Math.sqrt(n)*(touch?.4:1);if(!best||sc>best.sc)best={sc,seed:i0};}
+  if(!best)return null;
+  const ro=pupRosette(M,W,H,best.seed%W,(best.seed/W)|0,Math.max(W,H)*3);if(!ro)return null;
+  const o={pv:{x:ro.cx/W,y:ro.cy/H},tp:{x:Math.min(1,Math.max(0,(ro.cx+ro.dx*ro.dm)/W)),y:Math.min(1,Math.max(0,(ro.cy+ro.dy*ro.dm)/H))},r0:PUP0.r0,hw:PUP0.hw,set:true};
+  const rf=pupRefine(bmp,o);if(!rf)return null;
+  return {pv:rf.pv||o.pv,tp:rf.tp,hw:rf.hw,r0:rf.r0,set:true};
 }
 function pupRefine(bmp,o){   // 사진을 보고 받침 가운데·레버 끝·굵기를 맞춰요(무료)
   const k=Math.min(1,1024/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
@@ -3234,7 +3249,10 @@ async function makePupVideo(){
   OPV.busy=true;OPV.ask=false;OPV.pupPlay=false;OPV.ctl=new AbortController();const signal=OPV.ctl.signal;renderSide();
   try{
     let o=pupGet(src);
-    if(!(o&&o.set)){opMsg('클로드가 사진에서 레버 위치를 찾는 중이에요…');const det=await pupDetect(src,signal);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}pupSet(src,det);o=pupGet(src);}
+    if(!(o&&o.set)){opMsg('사진에서 레버 위치를 찾는 중이에요…');let det=null;try{det=pupLocal(await createImageBitmap(PH.get(src.id).blob));}catch(e){det=null;}
+      if(!det){if(await claudeReady(2)){opMsg('클로드가 사진에서 레버 위치를 찾는 중이에요…');det=await pupDetect(src,signal);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}}
+        else throw {status:-1,message:'사진에서 레버를 찾지 못했어요. 작동 영상 칸의 사진 위에서 빨간 점(받침 가운데)과 파란 점(레버 맨 끝)을 직접 놓고 다시 눌러 주세요.'};}
+      pupSet(src,det);o=pupGet(src);}
     const m=PH.get(src.id),bmp=await createImageBitmap(m.blob);opMsg('레버를 사진에서 오려 내는 중이에요…');await new Promise(r=>setTimeout(r,30));
     let B=pupBuild(bmp,o);if(B&&B.fix){pupSet(src,B.fix);o=pupGet(src);}if(!B)throw {status:-1,message:'레버 위치가 맞지 않아요. 작동 영상 칸의 사진 위에서 빨간 점(축)과 파란 점(레버 끝)을 맞춘 뒤 다시 눌러 주세요.'};
     const C0=opCompose(bmp),R=opRect(bmp),D=10,W=C0.width,H=C0.height;
@@ -3250,13 +3268,13 @@ async function makePupVideo(){
 /* 사진 위에서 점을 끌어 맞추는 칸 */
 function pupCard(src){
   const o=pupGet(src)||Object.assign({id:src.id,set:false},PUP0);
-  return '<div class="blk pupblk"><div class="hint">레버 위치 맞추기 — 사진 위의 <b style="color:#e5484d">빨간 점(축)</b>은 <b>받침(동그란 판)의 가운데</b>에, <b style="color:#2a7de1">파란 점(끝)</b>은 <b>레버의 맨 끝</b>(받침에서 가장 먼 쪽 끝)에 놓아 주세요. 점을 끌어서 옮길 수 있어요. 「자동으로 찾기」는 클로드가 찾고(1센트 안팎), 「끝·굵기 자동 맞추기」는 파란 점을 레버 방향으로 맨 끝까지 늘려 주고 굵기도 맞춰 줘요(무료). 맞춘 뒤 「미리보기 재생」으로 움직임을 확인하세요.</div>'
+  return '<div class="blk pupblk"><div class="hint">레버 위치 맞추기 — 사진 위의 <b style="color:#e5484d">빨간 점(축)</b>은 <b>받침(동그란 판)의 가운데</b>에, <b style="color:#2a7de1">파란 점(끝)</b>은 <b>레버의 맨 끝</b>(받침에서 가장 먼 쪽 끝)에 놓아 주세요. 점을 끌어서 옮길 수 있어요. 「사진 모양으로 자동 찾기」는 사진만 보고 스스로 찾아요(무료 · 키 필요 없음). 「자동으로 찾기(클로드)」는 클로드가 찾고(1센트 안팎), 「끝·굵기 자동 맞추기」는 파란 점을 레버 방향으로 맨 끝까지 늘려 주고 굵기도 맞춰 줘요(무료). 맞춘 뒤 「미리보기 재생」으로 움직임을 확인하세요.</div>'
     +'<div class="pupbox" id="opPupBox"><canvas id="opPupCv"></canvas><i class="pupmk" data-mk="pv" title="레버가 돌아가는 축"></i><i class="pupmk" data-mk="tp" title="레버 끝"></i></div>'
-    +'<div class="acts"><button class="btn sm" type="button" data-act="pupauto">자동으로 찾기 (클로드 · 1센트)</button><button class="btn sm" type="button" data-act="pupfit">끝·굵기 자동 맞추기 (무료)</button><button class="btn sm" type="button" data-act="puplay">'+(OPV.pupPlay?'■ 미리보기 정지':'▶ 미리보기 재생')+'</button></div>'
+    +'<div class="acts"><button class="btn sm primary" type="button" data-act="puplocal">사진 모양으로 자동 찾기 (무료)</button><button class="btn sm" type="button" data-act="pupauto">자동으로 찾기 (클로드 · 1센트)</button><button class="btn sm" type="button" data-act="pupfit">끝·굵기 자동 맞추기 (무료)</button><button class="btn sm" type="button" data-act="puplay">'+(OPV.pupPlay?'■ 미리보기 정지':'▶ 미리보기 재생')+'</button></div>'
     +'<label class="chk">레버 굵기 <input type="range" id="pupHw" min="4" max="16" value="'+Math.round(o.hw*100)+'"></label>'
     +'<label class="chk">받침(원판) 크기 <input type="range" id="pupR0" min="14" max="38" value="'+Math.round(o.r0*100)+'"></label>'
     +'<label class="chk">눌리는 각도 <input type="range" id="pupDeg" min="10" max="40" value="'+Math.round(o.deg)+'"></label>'
-    +'<p class="cost">'+(o.set?'사진 속 레버를 오려 받침을 축으로 돌려요. 레버 모양은 사진 그대로예요. 레버가 잘리면 굵기를 키우고, 받침 조각이 같이 움직이면 받침 크기를 키워 보세요.':'아직 레버 위치를 정하지 않았어요. 「자동으로 찾기」를 누르거나 점을 끌어 맞춰 주세요.')+'</p></div>';
+    +'<p class="cost">'+(o.set?'사진 속 레버를 오려 받침을 축으로 돌려요. 레버 모양은 사진 그대로예요. 레버가 잘리면 굵기를 키우고, 받침 조각이 같이 움직이면 받침 크기를 키워 보세요.':'아직 레버 위치를 정하지 않았어요. 그냥 「작동 영상 만들기」를 눌러도 사진 모양으로 스스로 찾아요. 먼저 확인하려면 「사진 모양으로 자동 찾기」를 누르세요.')+'</p></div>';
 }
 async function opPupPaint(){
   const cv=$('#opPupCv',side),src=opSource();if(!cv||!src)return;const m=PH.get(src.id);if(!m)return;
@@ -3265,6 +3283,7 @@ async function opPupPaint(){
   const put=(k,v)=>{const el=$('.pupmk[data-mk="'+k+'"]',side);if(el){el.style.left=(v.x*100)+'%';el.style.top=(v.y*100)+'%';}};put('pv',o.pv);put('tp',o.tp);
   let bmp=OPV.pupBmp&&OPV.pupBmp.id===src.id?OPV.pupBmp.b:null;if(!bmp){bmp=await createImageBitmap(m.blob);OPV.pupBmp={id:src.id,b:bmp};}
   if(!cv.isConnected)return;g.drawImage(bmp,0,0,pw,ph);
+  if(!o.set){const tr=OPV.pupTried||(OPV.pupTried={});if(!tr[src.id]){tr[src.id]=1;try{const det=pupLocal(bmp);if(det){pupSet(src,det);OPV.pupB=null;renderSide();return;}}catch(e){}}}
   if(!OPV.pupPlay)return;
   const key=JSON.stringify([src.id,o.pv,o.tp,o.hw,o.r0]);
   if(!OPV.pupB||OPV.pupB.key!==key){const B=pupBuild(bmp,o);if(!B){OPV.pupPlay=false;renderSide();toast('레버 위치가 맞지 않아요. 점을 다시 맞춰 주세요.',3500);return;}OPV.pupB=Object.assign(B,{key});if(B.fix){pupSet(src,B.fix);OPV.pupB=null;renderSide();return;}}
@@ -3531,21 +3550,21 @@ function opCard(){
   const opt=(arr,cur)=>arr.map(o=>'<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>').join('');
   const hint=!meth?'2단계에서 구글 키를 연결해 주세요. 구글 영상 AI(Veo)가 안 되는 키여도 이미지 키만 있으면 \'간이 방식\'으로 만들 수 있어요.':!src?'도어에 설치된 사진이 아직 없어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.':(meth==='veo'&&!model)?'이 키의 모델 목록에는 영상 모델(Veo)이 안 보여요. Veo는 결제가 켜진 구글 키에서만 쓸 수 있고, 잔액이 없으면 안 보일 수도 있어요. 아래 \'영상 모델 이름 직접 넣기\'로 시도해 볼 수 있어요(안 되면 구글이 이유를 알려 줘요. 실패한 요청은 요금이 안 들어요). \'지시문 복사\'로 구글 AI 스튜디오(또는 Flow)에서 직접 만들어 \'영상 파일 직접 올리기\'로 넣을 수도 있어요.':'';
   return '<div class="blk opv"><h3>작동 영상 (선택 · 시험 기능)</h3>'
-    +'<p class="hint"><b>도어에 설치된 사진</b>(기준 설치 사진 → 문 색상 사진)을 첫 장면으로 <b>레버가 내려갔다 올라오는 짧은 영상</b>을 만들어요(10초 영상이 계속 반복돼요). 방법은 셋이에요. ⓪ <b>레버 직접 움직이기(추천 · 무료)</b>: 사진 속 레버를 그대로 오려 받침을 축으로 돌려요(레버 모양이 안 바뀌어요 · 레버 위치는 클로드가 찾거나 직접 점을 찍어요). ① <b>구글 영상 AI(Veo)</b>: 결제가 켜진 키가 필요하고 품질이 높아요. ③ <b>간이 방식</b>: 이미지 AI가 레버를 조금씩 누른 사진 4장을 만들고, 내 컴퓨터가 레버 부분만 바꿔 가며 영상으로 이어 붙여요(이미지 키만 있으면 돼요 · 사진 한 장 약 $0.04). 둘 다 문·벽·받침은 그대로 두라고 지시해요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
+    +'<p class="hint"><b>도어에 설치된 사진</b>(기준 설치 사진 → 문 색상 사진)을 첫 장면으로 <b>레버가 내려갔다 올라오는 짧은 영상</b>을 만들어요(10초 영상이 계속 반복돼요). 방법은 셋이에요. ⓪ <b>레버 직접 움직이기(추천 · 무료)</b>: 사진 속 레버를 그대로 오려 받침을 축으로 돌려요(레버 모양이 안 바뀌어요 · 레버 위치는 사진 모양으로 스스로 찾아요 · 키가 필요 없어요). ① <b>구글 영상 AI(Veo)</b>: 결제가 켜진 키가 필요하고 품질이 높아요. ③ <b>간이 방식</b>: 이미지 AI가 레버를 조금씩 누른 사진 4장을 만들고, 내 컴퓨터가 레버 부분만 바꿔 가며 영상으로 이어 붙여요(이미지 키만 있으면 돼요 · 사진 한 장 약 $0.04). 둘 다 문·벽·받침은 그대로 두라고 지시해요. 만든 영상은 상세페이지의 <b>문 색상 칸들 바로 밑</b>에 상세페이지 폭에 맞춰(가로 16:9 기본) 들어가요(화면에서는 재생돼요). 이미지로 저장할 때는 대표 화면에 ▶ 표시로 들어가고, 스마트스토어·쿠팡에 올릴 때는 \'이미지로 저장\'에서 <b>\'영상 자리에서 나눠 저장\'</b>을 고르면 위 이미지·영상·아래 이미지를 따로 받아요. <b>손잡이 모양이 실물과 다르면 쓰지 마세요.</b></p>'
     +'<div class="acts"><label class="chk">움직임 <select id="opMotion">'+opt([['nohand','손 없이 레버만 움직이기 (모양 유지에 유리)'],['hand','손이 레버를 눌러 보여주기']],OPV.motion)+'</select></label>'
     +'<label class="chk">화면 <select id="opRatio">'+opt([['16:9','가로 · 상세페이지 폭에 맞춰요 (추천)'],['9:16','세로 · 숏폼용']],OPV.ratio)+'</select></label>'
     +'<label class="chk">첫 장면 <select id="opFit">'+opt([['fit','사진 전체 보이기 (남는 곳은 흐리게)'],['fill','화면에 꽉 채우기 (위아래/양옆을 잘라요)']],OPV.fit)+'</select></label>'
-    +'<label class="chk">만드는 방법 <select id="opMethod">'+opt([['auto','자동 (Veo가 되면 Veo, 아니면 레버 직접 움직이기)'],['puppet','레버 직접 움직이기 (무료 · 추천)'],['veo','구글 영상 AI(Veo)'],['frames','간이 방식 (이미지 AI 사진 4장 + 이어 붙이기)']],OPV.method)+'</select></label>'
+    +'<label class="chk">만드는 방법 <select id="opMethod">'+opt([['auto','자동 (레버 직접 움직이기 · 키 필요 없음)'],['puppet','레버 직접 움직이기 (무료 · 추천)'],['veo','구글 영상 AI(Veo)'],['frames','간이 방식 (이미지 AI 사진 4장 + 이어 붙이기)']],OPV.method)+'</select></label>'
     +'</div>'+(cands.length?'<div class="acts"><label class="chk">첫 장면 사진 <select id="opSrc">'+cands.map(c=>'<option value="'+c.k+'"'+(c.p===src?' selected':'')+'>'+esc(c.label)+'</option>').join('')+'</select></label></div>':'<div class="msg err">도어에 설치된 사진이 아직 없어요. 작동 영상은 도어에 설치된 사진에서 손잡이만 움직여서 만들어요. 3단계에서 기준 설치 사진을 만들어 확정하거나, 아래 \'도어 설치 사진 직접 올리기\'로 넣어 주세요.</div>')
     +(meth==='puppet'&&src?pupCard(src):'')
     +'<div class="opfirst"><div class="hint">첫 장면 미리보기 — 이 사진에서 영상이 시작돼요. 손잡이가 잘리면 위에서 \'사진 전체 보이기\'로 바꾸세요.</div><div id="opFirst"></div></div><div class="acts">'
     +(OPV.method==='veo'&&on&&(!G.videos.length||G.vman)?'<label class="chk">영상 모델 이름 직접 넣기 <input type="text" id="opModelTxt" value="'+esc(G.vman?model:'')+'" placeholder="veo-3.1-fast-generate-preview" style="min-width:260px"></label><button class="btn sm" type="button" data-act="opmodeldef">veo-3.1-fast-generate-preview로 시도</button>':'')
     +(G.videos.length>1?'<label class="chk">영상 모델 <select id="opModel">'+G.videos.map(n=>'<option value="'+esc(n)+'"'+(n===model?' selected':'')+'>'+esc(n)+(vPrice(n)?' · 초당 약 $'+vPrice(n):'')+'</option>').join('')+'</select></label>':'')+'</div>'
-    +(OPV.ask?'<div class="confirm" style="display:block">'+(meth==='puppet'?'레버 직접 움직이기로 '+OPV.loop+'초짜리 반복 영상(GIF도 같이)을 만들어요: 사진 속 레버를 오려 받침을 축으로 돌려요. 만드는 동안 이 탭을 열어 두세요. ':meth==='frames'?'간이 방식으로 '+OPV.loop+'초짜리 반복 영상(GIF도 같이)을 만들어요: 이미지 AI('+esc(G.modelEdit||G.model)+')가 레버를 누른 사진 '+FR_DEG.length+'장을 만들고 내 컴퓨터가 영상으로 이어 붙여요. 만드는 동안 이 탭을 열어 두세요. ':'영상 1개(약 '+OPV.secs+'초)를 만들어요('+esc(model)+'). ')+(meth==='puppet'?'무료예요(레버 위치를 클로드가 새로 찾을 때만 1센트 안팎). ':'요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). ')+'계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
+    +(OPV.ask?'<div class="confirm" style="display:block">'+(meth==='puppet'?'레버 직접 움직이기로 '+OPV.loop+'초짜리 반복 영상(GIF도 같이)을 만들어요: 사진 속 레버를 오려 받침을 축으로 돌려요. 만드는 동안 이 탭을 열어 두세요. ':meth==='frames'?'간이 방식으로 '+OPV.loop+'초짜리 반복 영상(GIF도 같이)을 만들어요: 이미지 AI('+esc(G.modelEdit||G.model)+')가 레버를 누른 사진 '+FR_DEG.length+'장을 만들고 내 컴퓨터가 영상으로 이어 붙여요. 만드는 동안 이 탭을 열어 두세요. ':'영상 1개(약 '+OPV.secs+'초)를 만들어요('+esc(model)+'). ')+(meth==='puppet'?'무료예요(키가 필요 없어요). ':'요금이 들 수 있어요. 예상 약 $'+price.toFixed(2)+' (대략 · 단가 일부는 확인 못 했어요). ')+'계속할까요? <button class="btn sm primary" type="button" data-act="opgo">시작</button> <button class="btn sm ghost" type="button" data-act="opno">취소</button></div>':'')
     +'<div class="acts">'+(OPV.busy?'<button class="btn sm" type="button" data-act="opstop">멈추기</button>':'<button class="btn sm primary" type="button" data-act="opask"'+(meth&&src&&(meth!=='veo'||model)?'':' disabled')+'>작동 영상 만들기'+(meth==='puppet'?' (무료)':meth&&(meth==='frames'||model)?' (약 $'+price.toFixed(2)+')':'')+'</button>')
     +(src?'<button class="btn sm" type="button" data-act="opsaveframe">첫 장면 사진 저장</button>':'')
     +'<label class="btn sm">도어 설치 사진 직접 올리기<input type="file" accept="image/*" hidden data-opfirst="1"></label><label class="btn sm">영상 파일 직접 올리기<input type="file" accept="video/*" hidden data-opfile="1"></label><button class="btn sm" type="button" data-act="opcopy">지시문 복사</button></div>'
-    +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (영상 요금이 따로 들어요)</label>'
+    +'<label class="chk"><input type="checkbox" id="opAutoChk"'+(UI.opAuto?' checked':'')+'> \'한 번에 만들기\'에 작동 영상도 포함해요 (레버 직접 움직이기는 무료)</label>'
     +'<div class="msg'+(OPV.cls?' '+OPV.cls:'')+'" id="opMsg" aria-live="polite">'+esc(OPV.msg||hint)+'</div>'
     +(on&&!G.videos.length&&G.allModels&&G.allModels.length?'<details><summary>이 키에서 쓸 수 있는 모델 이름 보기 (영상 모델이 없는 이유 확인용)</summary><div class="hint" style="word-break:break-all">'+esc(G.allModels.slice(0,80).join(' · '))+(G.allModels.length>80?' … 외 '+(G.allModels.length-80)+'개':'')+'</div></details>':'')
     +(v?'<video class="opvideo" src="'+v.url+'" controls loop muted autoplay playsinline></video><p class="cost">'+(S.opVideo&&S.opVideo.model==='puppet'?'만든 방법: 레버 직접 움직이기 · '+(S.opVideo.loopSecs||10)+'초 · 계속 반복':S.opVideo&&/^frames:/.test(S.opVideo.model||'')?'만든 방법: AI 사진 이어 붙이기(옛 방식 · 화면이 깜빡이기만 할 수 있어요). 「영상 지우기」를 누르고 \'만드는 방법\'을 「레버 직접 움직이기」로 바꿔 다시 만들어 보세요.':S.opVideo&&S.opVideo.ai===false?'직접 올린 영상':'만든 방법: '+esc((S.opVideo&&S.opVideo.model)||'구글 영상 AI(Veo)'))+'</p><div class="acts"><button class="btn sm primary" type="button" data-act="opsave">영상 저장 ('+vidExt(v.blob)+')</button>'+(S.opVideo&&S.opVideo.gif&&PH.has(S.opVideo.gif.id)?'<button class="btn sm primary" type="button" data-act="opsavegif">GIF 저장 (계속 반복 · 쇼핑몰 상세페이지용)</button>':'')+'<button class="btn sm ghost" type="button" data-act="opdel">영상 지우기</button></div>':'')
@@ -4137,8 +4156,8 @@ async function runOne(go){
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):''));
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
-  const vMeth=opMethod(),vApp=!!vMeth&&!hasPhoto(S.opVideo),vm=(G.modelVideo||'').trim()||VEO_DEFAULT,vCost=(vMeth==='frames'?priceOf(G.modelEdit||G.model)*FR_DEG.length:vPrice(vm)*OPV.secs).toFixed(2);   // 작동 영상: 도어 설치 사진에서 레버만 위아래로 움직여요
-  const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개('+(vMeth==='veo'?'약 '+OPV.secs+'초':OPV.loop+'초 반복')+')도 만들어요(')+'도어에 설치된 사진에서 레버만 위아래로 움직여요 · '+(vMeth==='puppet'?'레버 직접 움직이기(사진 속 레버를 오려 그대로 돌려요) · 무료예요(레버 위치를 클로드가 찾는 데 1센트 안팎)':vMeth==='frames'?'간이 방식(이미지 AI 사진 '+FR_DEG.length+'장 + 이어 붙이기 · '+(G.modelEdit||G.model)+') · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이에요':'영상 모델 '+vm+' · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이고 단가 일부는 확인 못 했어요')+').';
+  const vMeth=opMethod(),vApp=!!vMeth&&!hasPhoto(S.opVideo),vm=(G.modelVideo||'').trim()||VEO_DEFAULT,vCost=(vMeth==='puppet'?0:vMeth==='frames'?priceOf(G.modelEdit||G.model)*FR_DEG.length:vPrice(vm)*OPV.secs).toFixed(2);   // 작동 영상: 도어 설치 사진에서 레버만 위아래로 움직여요
+  const vLine=(genMode()==='base'&&!baseReady()?'작동 영상은 기준 사진을 확정한 뒤 두 번째 \'한 번에 만들기\'에서 만들어요(영상 1개 · ':'작동 영상 1개('+(vMeth==='veo'?'약 '+OPV.secs+'초':OPV.loop+'초 반복')+')도 만들어요(')+'도어에 설치된 사진에서 레버만 위아래로 움직여요 · '+(vMeth==='puppet'?'레버 직접 움직이기(사진 속 레버를 오려 그대로 돌려요) · 무료예요(키가 필요 없어요)':vMeth==='frames'?'간이 방식(이미지 AI 사진 '+FR_DEG.length+'장 + 이어 붙이기 · '+(G.modelEdit||G.model)+') · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이에요':'영상 모델 '+vm+' · 요금이 따로 들어요, 예상 약 $'+vCost+' · 대략 값이고 단가 일부는 확인 못 했어요')+').';
   if(why.length&&!go||(!why.length&&!go&&vApp&&UI.opAuto)){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+(vApp?'<li id="onOpLi"'+(UI.opAuto?'':' hidden')+'>'+esc(vLine)+'</li>':'')+'</ul>'+(vApp?'<label class="chk" style="display:block;margin:6px 0 10px"><input type="checkbox" id="onOp"'+(UI.opAuto?' checked':'')+'> 작동 영상도 함께 만들기</label>':'')+'<div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);
@@ -4252,8 +4271,9 @@ const ACT={
   pclear(b){setP(b.dataset.p,null);gc();renderSide();refresh();},
   restoreprev(){restorePrev();},
   puplay(){OPV.pupPlay=!OPV.pupPlay;renderSide();},
+  async puplocal(){const src=opSource();if(!src)return;try{const rf=pupLocal(await createImageBitmap(PH.get(src.id).blob));if(!rf){toast('사진에서 레버를 못 찾았어요. 점을 직접 놓아 주세요.',4500);return;}pupSet(src,rf);OPV.pupB=null;renderSide();toast('사진 모양으로 찾았어요. 빨간 점이 받침 가운데, 파란 점이 레버 맨 끝인지 확인하세요.',4500);}catch(e){toast('찾지 못했어요. 점을 직접 놓아 주세요.',3500);}},
   async pupfit(){const src=opSource(),o=src&&pupGet(src);if(!o||!o.set){toast('먼저 빨간 점(받침 가운데)과 파란 점(레버 쪽)을 놓아 주세요.',3500);return;}try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),o);if(!rf){toast('레버가 끝나는 곳을 못 찾았어요. 파란 점을 레버 맨 끝에 직접 놓아 주세요.',4500);return;}pupSet(src,rf);OPV.pupB=null;renderSide();toast('레버 끝과 굵기를 맞췄어요. 파란 점이 레버 맨 끝에 있는지 확인하세요.',4500);}catch(e){toast('맞추지 못했어요. 점을 직접 놓아 주세요.',3500);}},
-  async pupauto(){const src=opSource();if(!src)return;try{if(!(await claudeReady(2))){toast('클로드 키가 없어서 자동으로 못 찾아요. 점을 직접 맞춰 주세요.',4000);return;}toast('클로드가 레버 위치를 찾는 중이에요…',5000);const det=await pupDetect(src);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}pupSet(src,det);OPV.pupB=null;renderSide();toast('레버 위치를 찾았어요. 점이 맞는지 보고, 틀리면 끌어서 고쳐 주세요.',5000);}catch(e){toast((e&&e.text)||ASK_ERR[e&&e.code]||'레버 위치를 찾지 못했어요. 점을 직접 맞춰 주세요.',5000);}},
+  async pupauto(){const src=opSource();if(!src)return;try{if(!(await claudeReady(2))){toast('클로드 키가 없어요. 「사진 모양으로 자동 찾기」(무료)를 눌러 보세요.',4000);return;}toast('클로드가 레버 위치를 찾는 중이에요…',5000);const det=await pupDetect(src);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}pupSet(src,det);OPV.pupB=null;renderSide();toast('레버 위치를 찾았어요. 점이 맞는지 보고, 틀리면 끌어서 고쳐 주세요.',5000);}catch(e){toast((e&&e.text)||ASK_ERR[e&&e.code]||'레버 위치를 찾지 못했어요. 점을 직접 맞춰 주세요.',5000);}},
   async rotl(){await rotSrc(-90);},async rotr(){await rotSrc(90);},
   opmodeldef(){G.modelVideo='veo-3.1-fast-generate-preview';G.vman=true;G.veoNo='';G.videos=[G.modelVideo];renderSide();},
   async specai(){
