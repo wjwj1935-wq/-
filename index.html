@@ -291,7 +291,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 55</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 56</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -339,7 +339,7 @@ const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
-const PW=860,LS='wj-dp-v3',VER=55,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=56,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1243,7 +1243,8 @@ function opRect(bmp){const vert=OPV.ratio==='9:16',W=vert?720:1280,H=vert?1280:7
   if(OPV.fit==='fill')return {x:(W-bmp.width*cov)/2,y:(H-bmp.height*cov)/2,w:bmp.width*cov,h:bmp.height*cov};
   const f=Math.min(W/bmp.width,H/bmp.height),dw=bmp.width*f,dh=bmp.height*f;return {x:(W-dw)/2,y:(H-dh)/2,w:dw,h:dh};}
 function pupBuild(bmp,o){
-  try{const rf=pupRefine(bmp,o);if(rf){const L1=Math.hypot((rf.tp.x-o.pv.x)*bmp.width,(rf.tp.y-o.pv.y)*bmp.height),L0=Math.hypot((o.tp.x-o.pv.x)*bmp.width,(o.tp.y-o.pv.y)*bmp.height);if(L1>L0*1.08)o=Object.assign({},o,rf);}}catch(e){}   // 파란 점이 레버 중간에 있으면 레버 끝까지 자동으로 늘려서 레버가 반만 움직이지 않게 해요
+  let fixed=null;
+  try{const rf=pupRefine(bmp,o);if(rf){const L1=Math.hypot((rf.tp.x-(rf.pv||o.pv).x)*bmp.width,(rf.tp.y-(rf.pv||o.pv).y)*bmp.height),L0=Math.hypot((o.tp.x-o.pv.x)*bmp.width,(o.tp.y-o.pv.y)*bmp.height),sh=rf.pv?Math.hypot((rf.pv.x-o.pv.x)*bmp.width,(rf.pv.y-o.pv.y)*bmp.height):0;if(L1>L0*1.08||sh>L0*.12){fixed=rf;o=Object.assign({},o,rf);}}}catch(e){}   // 파란 점이 레버 중간에 있으면 레버 끝까지 자동으로 늘려서 레버가 반만 움직이지 않게 해요
   const k=Math.min(1,1280/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
   const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);
   const I=g.getImageData(0,0,W,H).data,Px=o.pv.x*W,Py=o.pv.y*H,Tx=o.tp.x*W,Ty=o.tp.y*H,L=Math.hypot(Tx-Px,Ty-Py);
@@ -1268,6 +1269,12 @@ function pupBuild(bmp,o){
   const mx=new Float32Array(W*H);
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){let m=0;for(let j=-2;j<=2&&m<1;j++){const yy=y+j;if(yy<0||yy>=H)continue;for(let i=-2;i<=2;i++){const xx=x+i;if(xx<0||xx>=W)continue;const v=alpha[yy*W+xx];if(v>m)m=v;}}mx[y*W+x]=m;}
   const ad=boxBlur(mx,W,H,1),plate=new ImageData(new Uint8ClampedArray(I),W,H),pd=plate.data,lev=new ImageData(W,H),ld=lev.data;
+  // 레버가 있던 자리 채우기: 레버와 거의 수직 방향(줄 단위)으로 양쪽 바깥 색을 이어서 채워요 → 문 홈 선이 비스듬히 번지지 않고 곧게 이어져요
+  {const vt=Math.abs(dy)>Math.abs(dx),la=vt?y0:x0,lb=vt?y1:x1,ta=vt?x0:y0,tb=vt?x1:y1,lim=vt?W:H,P2=(li,t)=>vt?li*W+t:t*W+li,isH=(li,t)=>{const q=P2(li,t);return reg[q]===1&&ad[q]>.004;};
+    for(let li=la;li<=lb;li++){let t=ta;while(t<=tb){if(!isH(li,t)){t++;continue;}let e=t;while(e+1<=tb&&isH(li,e+1))e++;
+      if(t-2>=0&&e+2<lim){const a1=P2(li,t-1)*4,a2=P2(li,t-2)*4,b1=P2(li,e+1)*4,b2=P2(li,e+2)*4;
+        for(let q=t;q<=e;q++){const w=(q-t+1)/(e-t+2),p=P2(li,q);for(let c=0;c<3;c++)F[p*3+c]=((I[a1+c]+I[a2+c])/2)*(1-w)+((I[b1+c]+I[b2+c])/2)*w;}}
+      t=e+1;}}}
   for(let p=0;p<W*H;p++){const q=p*4;
     if(reg[p]){const a=ad[p];if(a>0){pd[q]=I[q]*(1-a)+F[p*3]*a;pd[q+1]=I[q+1]*(1-a)+F[p*3+1]*a;pd[q+2]=I[q+2]*(1-a)+F[p*3+2]*a;}}
     const al=alpha[p];if(al>0){ld[q]=I[q];ld[q+1]=I[q+1];ld[q+2]=I[q+2];ld[q+3]=Math.round(al*255);}}
@@ -1277,7 +1284,7 @@ function pupBuild(bmp,o){
     const dd=Math.hypot(x-Px,y-Py),a=1-cl((dd-r0)/(r0*.14));if(a<=0)continue;const q=(y*W+x)*4;rd[q]=I[q];rd[q+1]=I[q+1];rd[q+2]=I[q+2];rd[q+3]=Math.round(a*255);}
   const mk=d=>{const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').putImageData(d,0,0);return c;};
   const pc=document.createElement('canvas');pc.width=W;pc.height=H;
-  return {W,H,plate:mk(plate),lever:mk(lev),ring:mk(ring),pc,Px,Py,sgn:Math.sign(dx)||1};
+  return {W,H,plate:mk(plate),lever:mk(lev),ring:mk(ring),pc,Px,Py,sgn:Math.sign(dx)||1,fix:fixed};
 }
 function pupRender(B,deg,u){   // u: 0~1 (한 번 내려갔다 올라오는 동안)
   const g=B.pc.getContext('2d');g.clearRect(0,0,B.W,B.H);g.drawImage(B.plate,0,0);
@@ -1293,19 +1300,57 @@ async function pupDetect(src,signal){   // 클로드가 사진에서 레버 위�
   const Lpx=Math.hypot((tp.x-pv.x)*m.w,(tp.y-pv.y)*m.h)||1,hwf=n(r.halfWidth),rof=n(r.rosette);
   return {pv:{x:c01(pv.x),y:c01(pv.y)},tp:{x:c01(tp.x),y:c01(tp.y)},hw:Math.min(.16,Math.max(.04,hwf>0?hwf*m.w/Lpx:PUP0.hw)),r0:Math.min(.38,Math.max(.14,rof>0?rof*m.w/Lpx:PUP0.r0)),set:true};
 }
-function pupRefine(bmp,o){   // 받침 점(빨강)에서 레버 방향으로 따라가며 레버가 끝나는 곳과 굵기를 찾아요(무료)
+function pupMask(I,W,H){   // 문 색과 다른 곳(손잡이)을 표시해요: 사진에서 가장 많은 색 = 문 색
+  const cnt=new Map(),acc=new Map();for(let i=0;i<W*H;i+=3){const q=i*4,key=(I[q]>>4)*256+(I[q+1]>>4)*16+(I[q+2]>>4);cnt.set(key,(cnt.get(key)||0)+1);let a=acc.get(key);if(!a){a=[0,0,0];acc.set(key,a);}a[0]+=I[q];a[1]+=I[q+1];a[2]+=I[q+2];}
+  let bk=-1,bc=0;cnt.forEach((c,k)=>{if(c>bc){bc=c;bk=k;}});const ba=acc.get(bk),dc=[ba[0]/bc,ba[1]/bc,ba[2]/bc],df=new Uint8Array(W*H),hist=new Float64Array(256);
+  for(let i=0;i<W*H;i++){const q=i*4,d=Math.max(Math.abs(I[q]-dc[0]),Math.abs(I[q+1]-dc[1]),Math.abs(I[q+2]-dc[2]))|0;df[i]=d>255?255:d;hist[df[i]]++;}
+  let tot=0,sa=0;for(let t=0;t<256;t++){tot+=hist[t];sa+=t*hist[t];}let wb=0,sb=0,best=-1,thr=34;
+  for(let t=0;t<256;t++){wb+=hist[t];if(!wb)continue;const wf=tot-wb;if(!wf)break;sb+=t*hist[t];const mb=sb/wb,mf=(sa-sb)/wf,v=wb*wf*(mb-mf)*(mb-mf);if(v>best){best=v;thr=t;}}
+  thr=Math.min(90,Math.max(34,thr));const m=new Uint8Array(W*H);for(let i=0;i<W*H;i++)m[i]=df[i]>thr?1:0;return m;
+}
+function pupRosette(m,W,H,Px,Py,L0){   // 받침(동그란 판): 빨간 점과 이어진 덩어리 안에서 가장 큰 원의 가운데·반지름 / 레버 방향
+  let sx=Math.round(Px),sy=Math.round(Py);sx=Math.min(W-1,Math.max(0,sx));sy=Math.min(H-1,Math.max(0,sy));
+  if(!m[sy*W+sx]){let f=false;for(let r=1;r<=Math.max(8,L0*.25)&&!f;r++)for(let j=-r;j<=r&&!f;j++)for(let i=-r;i<=r;i++){if(Math.max(Math.abs(i),Math.abs(j))!==r)continue;const x=sx+i,y=sy+j;if(x>=0&&y>=0&&x<W&&y<H&&m[y*W+x]){sx=x;sy=y;f=true;break;}}if(!f)return null;}
+  const comp=new Uint8Array(W*H),st=[sy*W+sx];comp[st[0]]=1;let n=0,bx0=W,bx1=0,by0=H,by1=0;
+  while(st.length){const q=st.pop(),x=q%W,y=(q/W)|0;n++;if(x<bx0)bx0=x;if(x>bx1)bx1=x;if(y<by0)by0=y;if(y>by1)by1=y;
+    if(x>0&&m[q-1]&&!comp[q-1]){comp[q-1]=1;st.push(q-1);}if(x<W-1&&m[q+1]&&!comp[q+1]){comp[q+1]=1;st.push(q+1);}if(y>0&&m[q-W]&&!comp[q-W]){comp[q-W]=1;st.push(q-W);}if(y<H-1&&m[q+W]&&!comp[q+W]){comp[q+W]=1;st.push(q+W);}}
+  if(n<W*H*.003||n>W*H*.6)return null;
+  const D=new Float32Array(W*H),INF=1e9;for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const q=y*W+x;D[q]=comp[q]?INF:0;}
+  const rd=(x,y)=>(x<0||y<0||x>=W||y>=H)?0:D[y*W+x];
+  for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const q=y*W+x;if(!comp[q])continue;let v=D[q];v=Math.min(v,rd(x,y-1)+1,rd(x-1,y)+1,rd(x-1,y-1)+1.414,rd(x+1,y-1)+1.414);if(x===0||y===0||x===W-1||y===H-1)v=Math.min(v,1);D[q]=v;}
+  for(let y=by1;y>=by0;y--)for(let x=bx1;x>=bx0;x--){const q=y*W+x;if(!comp[q])continue;let v=D[q];v=Math.min(v,rd(x,y+1)+1,rd(x+1,y)+1,rd(x+1,y+1)+1.414,rd(x-1,y+1)+1.414);D[q]=v;}
+  let mx=0;for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const v=D[y*W+x];if(v>mx&&v<INF/2)mx=v;}
+  if(mx<Math.max(W,H)*.03)return null;
+  let cx=0,cy=0,c=0;for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++)if(D[y*W+x]>=mx*.9&&D[y*W+x]<INF/2){cx+=x;cy+=y;c++;}cx/=c;cy/=c;
+  if(Math.hypot(cx-Px,cy-Py)>Math.max(L0*1.3,mx*2))return null;   // 받침이 아니라 레버 쪽 큰 덩어리를 찾았다면 쓰지 않아요
+  // 레버 방향: 받침 밖에서 가장 멀리 있는 점들의 가운데로 향해요
+  let dm=0;const pts=[];for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++)if(comp[y*W+x]){const d=Math.hypot(x-cx,y-cy);if(d>mx*1.15){pts.push(x,y,d);if(d>dm)dm=d;}}
+  if(dm<mx*1.6)return null;let fx=0,fy=0,fc=0;for(let i=0;i<pts.length;i+=3)if(pts[i+2]>=dm*.93){fx+=pts[i];fy+=pts[i+1];fc++;}fx/=fc;fy/=fc;
+  const L=Math.hypot(fx-cx,fy-cy);return {cx,cy,R:mx,dx:(fx-cx)/L,dy:(fy-cy)/L,dm};
+}
+function pupRefine(bmp,o){   // 사진을 보고 받침 가운데·레버 끝·굵기를 맞춰요(무료)
   const k=Math.min(1,1024/Math.max(bmp.width,bmp.height)),W=Math.max(2,Math.round(bmp.width*k)),H=Math.max(2,Math.round(bmp.height*k));
   const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(bmp,0,0,W,H);const I=g.getImageData(0,0,W,H).data;
-  const Px=o.pv.x*W,Py=o.pv.y*H,L0=Math.hypot(o.tp.x*W-Px,o.tp.y*H-Py);if(L0<W*.04)return null;
-  const dx=(o.tp.x*W-Px)/L0,dy=(o.tp.y*H-Py)/L0,nx=-dy,ny=dx,far=Math.max(L0*.5,Math.min(W,H)*.2),r0px=Math.max(6,o.r0*L0);
-  const px=(x,y)=>{if(x<2||y<2||x>=W-2||y>=H-2)return null;const j=(Math.round(y)*W+Math.round(x))*4;return [I[j],I[j+1],I[j+2]];};
-  const door=s=>{const a=px(Px+dx*s+nx*far,Py+dy*s+ny*far),b=px(Px+dx*s-nx*far,Py+dy*s-ny*far);return a&&b?[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2]:(a||b);};
-  const like=(s,u)=>{const c=px(Px+dx*s+nx*u,Py+dy*s+ny*u),d=door(s);return !!(c&&d)&&Math.max(Math.abs(c[0]-d[0]),Math.abs(c[1]-d[1]),Math.abs(c[2]-d[2]))>34;};
-  let last=-1,gap=0;for(let sv=r0px*1.1;sv<=L0*2.8;sv+=1){if(like(sv,0)||like(sv,3)||like(sv,-3)){last=sv;gap=0;}else{gap++;if(gap>14&&last>0)break;}}
-  if(last<L0*.3)return null;
+  let Px=o.pv.x*W,Py=o.pv.y*H;const L0=Math.hypot(o.tp.x*W-Px,o.tp.y*H-Py);if(L0<W*.04)return null;
+  const clamp01=v=>Math.min(1,Math.max(0,v));
+  // ① 손잡이 모양으로 받침 가운데를 찾는 방법(받침이 레버보다 굵을 때)
+  let M=null,ro=null;try{M=pupMask(I,W,H);ro=pupRosette(M,W,H,Px,Py,L0);}catch(e){ro=null;}
+  let dx,dy,r0px,like;
+  if(ro){Px=ro.cx;Py=ro.cy;dx=ro.dx;dy=ro.dy;r0px=ro.R*1.12;
+    like=(s,u)=>{const x=Math.round(Px+dx*s-dy*u),y=Math.round(Py+dy*s+dx*u);return x>=2&&y>=2&&x<W-2&&y<H-2&&!!M[y*W+x];};}
+  else{
+    dx=(o.tp.x*W-Px)/L0;dy=(o.tp.y*H-Py)/L0;r0px=Math.max(6,o.r0*L0);const nx0=-dy,ny0=dx,far=Math.max(L0*.5,Math.min(W,H)*.2);
+    const px=(x,y)=>{if(x<2||y<2||x>=W-2||y>=H-2)return null;const j=(Math.round(y)*W+Math.round(x))*4;return [I[j],I[j+1],I[j+2]];};
+    const door=s=>{const a=px(Px+dx*s+nx0*far,Py+dy*s+ny0*far),b=px(Px+dx*s-nx0*far,Py+dy*s-ny0*far);return a&&b?[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2]:(a||b);};
+    like=(s,u)=>{const c=px(Px+dx*s-dy*u,Py+dy*s+dx*u),d=door(s);return !!(c&&d)&&Math.max(Math.abs(c[0]-d[0]),Math.abs(c[1]-d[1]),Math.abs(c[2]-d[2]))>34;};
+  }
+  let last=-1,gap=0;for(let sv=r0px*1.1;sv<=L0*2.8+(ro?ro.dm:0);sv+=1){if(like(sv,0)||like(sv,3)||like(sv,-3)){last=sv;gap=0;}else{gap++;if(gap>14&&last>0)break;}}
+  if(last<(ro?r0px*1.5:L0*.3))return null;
   const Ln=last+2,sm=Math.max(r0px*1.5,(r0px+last)/2),half=sg=>{let u=0,miss=0;for(;u<Ln*.5;u++){if(like(sm,sg*u))miss=0;else{miss++;if(miss>=3)break;}}return Math.max(2,u-miss);};
-  const hwpx=(half(1)+half(-1))/2;
-  return {tp:{x:Math.min(1,Math.max(0,(Px+dx*Ln)/W)),y:Math.min(1,Math.max(0,(Py+dy*Ln)/H))},hw:Math.min(.16,Math.max(.04,1.0*hwpx/Ln)),r0:Math.min(.38,Math.max(.14,r0px/Ln))};
+  const hwpx=(half(1)+half(-1))/2,tpx=Px+dx*Ln,tpy=Py+dy*Ln;
+  const tp={x:clamp01(tpx/W),y:clamp01(tpy/H)};
+  if(ro)return {pv:{x:clamp01(Px/W),y:clamp01(Py/H)},tp,hw:Math.min(.16,Math.max(.04,hwpx/Ln)),r0:Math.min(.38,Math.max(.14,r0px/Ln))};
+  return {tp,hw:Math.min(.16,Math.max(.04,1.0*hwpx/Ln)),r0:Math.min(.38,Math.max(.14,r0px/Ln))};
 }
 async function makePupVideo(){
   if(OPV.busy)return false;
@@ -1316,7 +1361,7 @@ async function makePupVideo(){
     let o=pupGet(src);
     if(!(o&&o.set)){opMsg('클로드가 사진에서 레버 위치를 찾는 중이에요…');const det=await pupDetect(src,signal);try{const rf=pupRefine(await createImageBitmap(PH.get(src.id).blob),det);if(rf)Object.assign(det,rf);}catch(e){}pupSet(src,det);o=pupGet(src);}
     const m=PH.get(src.id),bmp=await createImageBitmap(m.blob);opMsg('레버를 사진에서 오려 내는 중이에요…');await new Promise(r=>setTimeout(r,30));
-    const B=pupBuild(bmp,o);if(!B)throw {status:-1,message:'레버 위치가 맞지 않아요. 작동 영상 칸의 사진 위에서 빨간 점(축)과 파란 점(레버 끝)을 맞춘 뒤 다시 눌러 주세요.'};
+    let B=pupBuild(bmp,o);if(B&&B.fix){pupSet(src,B.fix);o=pupGet(src);}if(!B)throw {status:-1,message:'레버 위치가 맞지 않아요. 작동 영상 칸의 사진 위에서 빨간 점(축)과 파란 점(레버 끝)을 맞춘 뒤 다시 눌러 주세요.'};
     const C0=opCompose(bmp),R=opRect(bmp),D=10,W=C0.width,H=C0.height;
     const fn=(g,u)=>{g.drawImage(C0,0,0);pupRender(B,o.deg,u);g.drawImage(B.pc,R.x,R.y,R.w,R.h);};
     const blob=await opRecordFn(W,H,fn,signal,D);
@@ -1347,7 +1392,7 @@ async function opPupPaint(){
   if(!cv.isConnected)return;g.drawImage(bmp,0,0,pw,ph);
   if(!OPV.pupPlay)return;
   const key=JSON.stringify([src.id,o.pv,o.tp,o.hw,o.r0]);
-  if(!OPV.pupB||OPV.pupB.key!==key){const B=pupBuild(bmp,o);if(!B){OPV.pupPlay=false;renderSide();toast('레버 위치가 맞지 않아요. 점을 다시 맞춰 주세요.',3500);return;}OPV.pupB=Object.assign(B,{key});}
+  if(!OPV.pupB||OPV.pupB.key!==key){const B=pupBuild(bmp,o);if(!B){OPV.pupPlay=false;renderSide();toast('레버 위치가 맞지 않아요. 점을 다시 맞춰 주세요.',3500);return;}OPV.pupB=Object.assign(B,{key});if(B.fix){pupSet(src,B.fix);OPV.pupB=null;renderSide();return;}}
   const B=OPV.pupB,tok=++OPV.pupTok,t0=performance.now(),D=Math.max(1,OPV.loop||1);
   const tick=now=>{if(!OPV.pupPlay||tok!==OPV.pupTok||!cv.isConnected)return;pupRender(B,o.deg,((now-t0)/1000/D)%1);g.drawImage(B.pc,0,0,pw,ph);requestAnimationFrame(tick);};
   requestAnimationFrame(tick);
