@@ -271,12 +271,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .cta p{margin:0;font-size:21px;line-height:1.7;color:rgba(255,255,255,.84)}
 .export-host{position:absolute;left:-12000px;top:0;width:860px;pointer-events:none}
 .vdprev video{display:block;max-width:100%;max-height:46vh;margin:0 auto;border-radius:10px;background:#000}
+.vdprev .blk{margin-top:10px}.vdprev .blk h3{margin:0 0 4px;font-size:15px}.vdprev ol{margin:0;padding-left:20px;font-size:13px;color:var(--mute);display:flex;flex-direction:column;gap:2px}
+.vdprev a.btn{text-decoration:none}.vdprev .blk .acts{justify-content:flex-start}
 </style>
 
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 67</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 68</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -325,7 +327,8 @@ const getP=(p,o)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o||S);
 const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=v;};
 /* v66 (2026-11-06): 크기 안내에 캡 모양(원형·직사각형) 선택과 직사각형 캡 가로·세로 치수를 더함 */
 /* v67 (2026-11-06): 윗줄에 '상세페이지로 영상 만들기' 버튼(세로 9:16 영상, 구역·속도·배경음 선택)을 더함 */
-const PW=860,LS='wj-dp-v3',VER=67,SITE='https://wjwj1935-wq.github.io/-/';
+/* v68 (2026-11-07): 영상에 가로 16:9(유튜브 일반 영상)를 더하고, 만든 뒤 '올릴 곳'(유튜브 쇼츠·인스타그램 릴스·틱톡·유튜브) 제목·설명·해시태그·바로가기를 보여 줌 */
+const PW=860,LS='wj-dp-v3',VER=68,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1517,7 +1520,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.b
    '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 화면을 위아래로 움직이며 이 브라우저에서 바로 녹화해요(실시간이라 영상 길이만큼 창을 켜 둬야 해요).
    글·숫자는 상세페이지에 있는 것 그대로이고, 영상에서 새로 지어내거나 더하는 글은 없어요. */
 const VW=1080,VH=1920;
-const VD={speed:'normal',music:'none',sel:null,busy:false,cancel:false,url:null,blob:null,ext:'webm'};
+const VFMT={v:{w:1080,h:1920,ox:0,l:'세로 9:16 · 1080×1920 · 쇼츠·릴스·틱톡'},h:{w:1920,h:1080,ox:420,l:'가로 16:9 · 1920×1080 · 유튜브 일반 영상'}};   // ox: 상세페이지 칸을 놓는 왼쪽 자리(가로는 가운데)
+const VD={speed:'normal',music:'none',fmt:'v',blobFmt:'v',post:null,sel:null,busy:false,cancel:false,url:null,blob:null,ext:'webm'};
 const VSPEED={slow:{l:'천천히',v:300,hold:1.8},normal:{l:'보통',v:480,hold:1.3},fast:{l:'빠르게',v:760,hold:.9}};   // v: 움직이는 속도(영상 픽셀/초), hold: 멈춰 보여 주는 시간(초)
 const VEND=2.2,VOFF=/회사소개|설치안내|질문|구매전확인/;                                                           // 글이 많은 구역은 처음에 꺼 두고, 마지막 화면은 더 오래 보여 줘요
 const VMOODS={bright:{l:'밝게',bpm:112,ch:[[60,64,67],[67,71,74],[69,72,76],[65,69,72]],pluck:1,kick:1,hat:1,clap:0,pad:.07},
@@ -1527,10 +1531,10 @@ const vName=n=>String(n).replace(/^\d+_/,'');
 const vSleep=ms=>new Promise(r=>setTimeout(r,ms));
 const vNames=()=>$$('#paper [data-slice]').map(s=>s.dataset.slice);
 /* 어디서 멈춰 보여 줄지: 구역 맨 위, 화면보다 긴 구역은 화면의 78%씩, 마지막은 페이지 맨 아래 */
-function vStops(secs){
-  const total=secs[secs.length-1].y0+secs[secs.length-1].h,maxY=Math.max(0,total-VH),st=[];
+function vStops(secs,fh){
+  fh=fh||VH;const total=secs[secs.length-1].y0+secs[secs.length-1].h,maxY=Math.max(0,total-fh),st=[];
   const push=y=>{y=Math.round(clamp(y,0,maxY));if(!st.length||Math.abs(y-st[st.length-1])>60)st.push(y);};
-  secs.forEach(s=>{const bottom=s.y0+s.h;push(s.y0);let y=s.y0;while(y+VH<bottom-40){y+=Math.round(VH*.78);push(Math.min(y,bottom-VH));}});
+  secs.forEach(s=>{const bottom=s.y0+s.h;push(s.y0);let y=s.y0;while(y+fh<bottom-40){y+=Math.round(fh*.78);push(Math.min(y,bottom-fh));}});
   push(maxY);
   return st;
 }
@@ -1558,7 +1562,7 @@ function vEst(){
   const k=VW/PW,names=vNames().filter(n=>VD.sel&&VD.sel[n]&&VD.h&&VD.h[n]);
   if(!names.length)return null;
   let y=0;const secs=names.map(n=>{const h=Math.max(1,Math.round(VD.h[n]*k)),o={y0:y,h};y+=h;return o;});
-  return vPlan(vStops(secs),VD.speed).total;
+  return vPlan(vStops(secs,(VFMT[VD.fmt]||VFMT.v).h),VD.speed).total;
 }
 function vUpdEst(){
   const e=$('#vdEst');if(!e)return;const t=vEst(),go=$('#vdGo');
@@ -1571,10 +1575,11 @@ function showVideo(msg){
   VD.h=vMeasure();if(!VD.sel)VD.sel={};names.forEach(n=>{if(!(n in VD.sel))VD.sel[n]=!VOFF.test(n);});
   const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
   veil.hidden=false;
-  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="상세페이지로 영상 만들기"><h2>상세페이지로 영상 만들기 · 세로 영상</h2>'
-   +'<div class="tip">완성된 상세페이지를 위아래로 천천히 훑어 내려가는 <b>1080×1920 세로 영상</b>이에요(쇼츠·릴스·틱톡). 영상을 만드는 동안은 <b>영상 길이만큼 이 창을 앞에 켜 두세요</b>. 영상 속 글은 상세페이지에 있는 글 그대로예요.</div>'
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="상세페이지로 영상 만들기" style="width:min(680px,100%)"><h2>상세페이지로 영상 만들기 · 올릴 곳까지</h2>'
+   +'<div class="tip">완성된 상세페이지를 위아래로 천천히 훑어 내려가는 영상이에요. <b>세로</b>는 유튜브 쇼츠·인스타그램 릴스·틱톡에, <b>가로</b>는 유튜브 일반 영상에 맞아요. 만든 뒤에는 올릴 곳별 제목·설명도 준비해 드려요. 영상을 만드는 동안은 <b>영상 길이만큼 이 창을 앞에 켜 두세요</b>. 영상 속 글은 상세페이지에 있는 글 그대로예요.</div>'
    +(nd.length?'<div class="confirm" style="display:block">아직 채울 곳이 '+nd.length+'곳 남아 있어요. 비어 있는 칸은 영상에서 빠져요.</div>':'')
    +(aiN?'<div class="tip">AI로 만든 사진이 '+aiN+'장 들어 있어요. 영상을 올리는 곳(유튜브·인스타그램·틱톡)의 AI 표시 규칙을 확인하세요(바뀔 수 있어요).</div>':'')
+   +'<div class="opts"><b class="hint">영상 모양</b>'+Object.keys(VFMT).map(k=>radio('vfmt',k,VD.fmt,VFMT[k].l)).join('')+'</div>'
    +'<div class="opts"><b class="hint">영상에 넣을 장면 (위에서 아래 순서로 나와요)</b>'+names.map(n=>{const has=!!VD.h[n];return '<label class="opt"><input type="checkbox" data-vsec="'+esc(n)+'"'+(has&&VD.sel[n]?' checked':'')+(has?'':' disabled')+'><div><b>'+esc(vName(n))+'</b>'+(has?'':'<div class="hint">비어 있어서 영상에서 빠져요</div>')+'</div></label>';}).join('')+'</div>'
    +'<div class="opts"><b class="hint">움직이는 속도</b>'+Object.keys(VSPEED).map(k=>radio('vspeed',k,VD.speed,VSPEED[k].l)).join('')+'</div>'
    +'<div class="opts"><b class="hint">배경음 (이 앱이 직접 만드는 음악이라 저작권 걱정이 없어요)</b>'+radio('vmusic','none',VD.music,'없음 · 올릴 때 앱에서 음악을 따로 고를 거예요')+Object.keys(VMOODS).map(k=>radio('vmusic',k,VD.music,VMOODS[k].l)).join('')+'</div>'
@@ -1585,17 +1590,67 @@ function showVideo(msg){
   $('#vdGo').onclick=runVideo;
   $$('input[data-vsec]',veil).forEach(c=>c.onchange=()=>{VD.sel[c.dataset.vsec]=c.checked;vUpdEst();});
   $$('input[name=vspeed]',veil).forEach(r=>r.onchange=()=>{VD.speed=r.value;vUpdEst();});
+  $$('input[name=vfmt]',veil).forEach(r=>r.onchange=()=>{VD.fmt=r.value;vUpdEst();});
   $$('input[name=vmusic]',veil).forEach(r=>r.onchange=()=>{VD.music=r.value;});
   vUpdEst();
   if(VD.blob)vShowResult();
 }
+/* ---- 올릴 곳: 영상에 쓸 제목·설명·해시태그를 상세페이지 글에서 가져와 채우고, 올리는 곳으로 바로 갈 수 있게 해요 ----
+   새로 지어내는 사양·숫자는 없어요(크기는 '크기 안내'에 적은 값만). 고쳐 쓸 수 있고, 자동으로 올리지는 않아요. */
+const VCH={
+  ys:{n:'유튜브 쇼츠',f:'v',t:1,url:'https://studio.youtube.com/',go:'유튜브 스튜디오 열기',steps:['유튜브 스튜디오 → 오른쪽 위 만들기 → 동영상 업로드','저장한 영상 파일을 고릅니다','제목·설명을 붙여 넣고, 시청자층은 "아동용이 아니에요"를 고릅니다','게시합니다']},
+  ig:{n:'인스타그램 릴스',f:'v',mp4:1,url:'https://www.instagram.com/',go:'인스타그램 열기',steps:['인스타그램 → 만들기(+) → 저장한 영상 파일을 고릅니다(릴스)','문구 칸에 아래 설명을 붙여 넣습니다','공유합니다']},
+  tt:{n:'틱톡',f:'v',mp4:1,url:'https://www.tiktok.com/upload',go:'틱톡 업로드 열기',steps:['틱톡 업로드 화면에서 저장한 영상 파일을 고릅니다','설명 칸에 아래 문구를 붙여 넣습니다','게시합니다']},
+  yl:{n:'유튜브 (가로 일반 영상)',f:'h',t:1,g:1,url:'https://studio.youtube.com/',go:'유튜브 스튜디오 열기',steps:['유튜브 스튜디오 → 오른쪽 위 만들기 → 동영상 업로드','저장한 영상 파일을 고릅니다','제목·설명·태그를 붙여 넣고, 시청자층은 "아동용이 아니에요"를 고릅니다','게시합니다']}
+};
+function vPostDraft(){
+  const one=x=>String(x==null?'':x).replace(/\s*\n\s*/g,' ').trim();
+  const mm=v=>{const t=String(v==null?'':v).trim();return /^[0-9.]+$/.test(t)?t+'mm':t;};
+  const nm=one(S.sellName)||one(S.name),hero=one(S.hero.title),sub=one(S.hero.sub),ct=one(S.concept.title),cb=one(S.concept.body);
+  const Z=S.size||{},sz=[Z.len&&'총 길이 '+mm(Z.len),Z.wid&&'총 폭 '+mm(Z.wid),
+    Z.shape==='rect'?((Z.capW&&Z.capH)?'캡 '+mm(Z.capW)+' × '+mm(Z.capH):''):(Z.cap?'캡 지름 '+mm(Z.cap):'')].filter(Boolean);
+  const safe=String(S.about.body||'').split('\n').map(x=>x.trim()).filter(x=>/안전/.test(x))[0]||'';      // 회사 소개에 적힌 안전·평화 문장이 있으면 그대로 끝에 붙여요
+  const cta=[one(S.cta.title),one(S.cta.sub)].filter(Boolean).join(' '),foot=one(S.about.foot);
+  const body=[sub,(ct&&cb)?ct+' — '+cb:(ct||cb),sz.length?'크기: '+sz.join(' · '):'',cta].filter(Boolean);
+  const tags=['#방문손잡이','#레버손잡이','#손잡이교체','#인테리어','#우진글로벌'];
+  const own=one(S.name).replace(/\s+/g,'');if(own&&tags.indexOf('#'+own)<0)tags.push('#'+own);
+  const tg=tags.join(' '),title=(hero||nm).slice(0,100);
+  const long=[].concat(body,safe?['',safe]:[],foot?[foot]:[]).join('\n').replace(/\n{3,}/g,'\n\n');
+  const cap=[hero||nm].concat([''],body,safe?['',safe]:[],foot?[foot]:[],['',tg]).join('\n').replace(/\n{3,}/g,'\n\n');
+  return {ys:{t:title,d:long+'\n\n'+tg},ig:{d:cap},tt:{d:cap},yl:{t:title,d:long+'\n\n'+tg,g:tags.map(x=>x.slice(1)).join(', ')}};
+}
+async function vCopy(t){
+  const ok=()=>toast('복사했어요. 올리는 곳에 붙여 넣으세요.');
+  try{await navigator.clipboard.writeText(t);ok();}
+  catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(a);a.select();
+    try{document.execCommand('copy');ok();}catch(e2){toast('복사하지 못했어요. 글을 직접 선택해서 복사해 주세요.');}a.remove();}
+}
+function vPostHtml(){
+  const P=VD.post||(VD.post=vPostDraft()),fmt=VD.blobFmt||'v';
+  const fld=(k,f,label,rows)=>'<div class="f"><span>'+label+'</span>'+(rows?'<textarea data-vp="'+k+'.'+f+'" rows="'+rows+'">'+esc(P[k][f])+'</textarea>':'<input type="text" data-vp="'+k+'.'+f+'" value="'+esc(P[k][f])+'">')
+    +'<div class="acts"><button class="btn sm" type="button" data-vcopy="'+k+'.'+f+'">'+label+' 복사</button></div></div>';
+  return '<div class="opts"><b class="hint">올릴 곳 · 제목·설명은 상세페이지 글에서 가져왔어요. 고쳐서 복사하세요</b>'
+   +Object.keys(VCH).filter(k=>VCH[k].f===fmt).map(k=>{const c=VCH[k];
+     return '<div class="blk" data-vch="'+k+'"><h3>'+esc(c.n)+'</h3>'
+      +((c.mp4&&VD.ext!=='mp4')?'<div class="confirm" style="display:block">이 영상은 WebM 파일이에요. 이곳은 MP4가 필요할 수 있어요. 최신 Chrome에서 다시 만들면 MP4로 나와요.</div>':'')
+      +(c.t?fld(k,'t','제목'):'')+fld(k,'d',c.t?'설명':'문구(설명)',7)+(c.g?fld(k,'g','태그 (쉼표로 나눠요)'):'')
+      +'<ol>'+c.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>'
+      +'<div class="acts"><a class="btn sm primary" href="'+c.url+'" target="_blank" rel="noopener noreferrer">'+esc(c.go)+'</a></div></div>';}).join('')
+   +'<div class="hint">자동으로 올려 주지는 않아요. 자동 올리기는 회사가 직접 받는 승인 키가 있어야 해서, 지금은 영상과 문구를 준비하고 올리는 곳을 바로 열어 드려요. 올리는 곳의 화면 이름은 바뀔 수 있어요. 영상과 문구는 올리는 곳의 규칙(AI 표시 등)을 확인하고 올려 주세요.</div></div>';
+}
 function vShowResult(){
   const pv=$('#vdPrev');if(!pv||!VD.blob)return;
   pv.hidden=false;
-  pv.innerHTML='<div class="hint">완성된 영상 (재생해서 확인하세요)</div><video controls playsinline src="'+VD.url+'"></video>'
-   +(VD.ext==='webm'?'<div class="hint">WebM 파일이에요. 유튜브 쇼츠에는 올라가지만, 인스타그램·틱톡은 MP4가 필요할 수 있어요(최신 Chrome에서 만들면 MP4로 나와요).</div>':'')
-   +'<div class="acts"><button class="btn primary" id="vdSave" type="button">영상 저장 (.'+VD.ext+')</button></div>';
-  $('#vdSave').onclick=async()=>{try{await saveFile(safeName()+'_영상.'+VD.ext,VD.blob);vMsg('저장했어요.');}catch(e){vMsg(e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.');}};
+  const ft=VD.blobFmt==='h'?'가로':'세로';
+  pv.innerHTML='<div class="hint">완성된 '+ft+' 영상 (재생해서 확인하세요)</div><video controls playsinline src="'+VD.url+'"></video>'
+   +(VD.ext==='webm'?'<div class="hint">WebM 파일이에요. 유튜브에는 올라가지만, 인스타그램·틱톡은 MP4가 필요할 수 있어요(최신 Chrome에서 만들면 MP4로 나와요).</div>':'')
+   +'<div class="acts"><button class="btn primary" id="vdSave" type="button">영상 저장 (.'+VD.ext+')</button></div>'
+   +vPostHtml();
+  const vv=pv.querySelector('video');   // 처음은 어둡게 나타나는 구간이라, 미리보기 화면은 1초쯤 지난 장면으로 보여 줘요
+  if(vv)vv.addEventListener('loadedmetadata',()=>{try{if(isFinite(vv.duration)&&vv.duration>1.5)vv.currentTime=Math.min(1,vv.duration/3);}catch(e){}});
+  $('#vdSave').onclick=async()=>{try{await saveFile(safeName()+'_영상_'+ft+'.'+VD.ext,VD.blob);vMsg('저장했어요. 아래에서 올릴 곳을 열어 영상과 문구를 올리세요.');}catch(e){vMsg(e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.');}};
+  pv.oninput=e=>{const k=e.target.dataset&&e.target.dataset.vp;if(!k)return;const a=k.split('.');if(VD.post&&VD.post[a[0]])VD.post[a[0]][a[1]]=e.target.value;};
+  pv.onclick=e=>{const b=e.target.closest&&e.target.closest('[data-vcopy]');if(!b)return;const a=b.dataset.vcopy.split('.');vCopy((VD.post[a[0]]||{})[a[1]]||'');};
 }
 /* 배경음: 브라우저 안에서 직접 만들어요(같은 초는 늘 같은 소리) */
 async function vMusic(mood,seconds){
@@ -1650,19 +1705,23 @@ async function runVideo(){
       fin++;vMsg('장면을 그리는 중이에요… '+fin+' / '+els.length,Math.round(fin/els.length*35)+3);}};
     await Promise.all(Array.from({length:Math.min(3,els.length)},wk));if(VD.cancel)throw {code:'cancel'};
     const secs=[];let yy=0;cvs.forEach(c=>{secs.push({c,y0:yy,h:c.height});yy+=c.height;});
-    const plan=vPlan(vStops(secs),VD.speed);
+    const F=VFMT[VD.fmt]||VFMT.v,plan=vPlan(vStops(secs,F.h),VD.speed);
     if(plan.total>240)throw new Error('영상이 너무 길어요(약 '+Math.round(plan.total)+'초). 장면을 줄이거나 속도를 빠르게 해 주세요.');
-    const cv=document.createElement('canvas');cv.width=VW;cv.height=VH;const g=cv.getContext('2d');
+    const cv=document.createElement('canvas');cv.width=F.w;cv.height=F.h;const g=cv.getContext('2d');
     const draw=t=>{
       const y=vYAt(plan,t);
-      g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(0,0,VW,VH);
+      g.globalAlpha=1;g.fillStyle='#ffffff';g.fillRect(0,0,F.w,F.h);
+      if(F.ox){   // 가로 영상: 상세페이지는 가운데 칸에 두고, 양옆은 어두운 남색 띠로 채워요
+        const gr=g.createLinearGradient(0,0,F.w,0);gr.addColorStop(0,'#0b1226');gr.addColorStop(.5,'#1b2b52');gr.addColorStop(1,'#0b1226');
+        g.fillStyle=gr;g.fillRect(0,0,F.w,F.h);g.fillStyle='#ffffff';g.fillRect(F.ox,0,VW,F.h);
+      }
       for(const s of secs){
-        if(s.y0+s.h<=y||s.y0>=y+VH)continue;
-        const sy=Math.max(0,y-s.y0),dy=Math.max(0,s.y0-y),h=Math.min(s.h-sy,VH-dy);
-        g.drawImage(s.c,0,sy,s.c.width,h,0,dy,VW,h);
+        if(s.y0+s.h<=y||s.y0>=y+F.h)continue;
+        const sy=Math.max(0,y-s.y0),dy=Math.max(0,s.y0-y),h=Math.min(s.h-sy,F.h-dy);
+        g.drawImage(s.c,0,sy,s.c.width,h,F.ox,dy,VW,h);
       }
       const a=t<.4?1-t/.4:t>plan.total-.5?(t-(plan.total-.5))/.5:0;   // 처음엔 어둡게 나타나고, 끝에서 어두워져요
-      if(a>0){g.globalAlpha=clamp(a,0,1);g.fillStyle='#000';g.fillRect(0,0,VW,VH);g.globalAlpha=1;}
+      if(a>0){g.globalAlpha=clamp(a,0,1);g.fillStyle='#000';g.fillRect(0,0,F.w,F.h);g.globalAlpha=1;}
     };
     let buf=null;
     if(VD.music!=='none'){vMsg('배경음을 만드는 중이에요…',40);try{buf=await vMusic(VD.music,plan.total+.3);}catch(e){buf=null;}}
@@ -1696,8 +1755,8 @@ async function runVideo(){
     if(!chunks.length)throw new Error('영상을 만들지 못했어요. 한 번 더 눌러 주세요.');
     const blob=new Blob(chunks,{type:type});
     if(VD.url){try{URL.revokeObjectURL(VD.url);}catch(e){}}
-    VD.blob=blob;VD.url=URL.createObjectURL(blob);VD.ext=/mp4/.test(type)?'mp4':'webm';
-    vMsg('다 만들었어요. (약 '+Math.round(plan.total)+'초 · '+(blob.size/1048576).toFixed(1)+'MB'+((snd&&snd.tracks.length)?' · 배경음 있음':' · 소리 없음')+') 아래에서 확인하고 저장하세요.'+(hid?' 녹화 중에 창이 가려져서 일부가 멈췄을 수 있어요. 재생해서 확인하세요.':''),100);
+    VD.blob=blob;VD.url=URL.createObjectURL(blob);VD.ext=/mp4/.test(type)?'mp4':'webm';VD.blobFmt=VD.fmt;
+    vMsg('다 만들었어요. (약 '+Math.round(plan.total)+'초 · '+(blob.size/1048576).toFixed(1)+'MB'+((snd&&snd.tracks.length)?' · 배경음 있음':' · 소리 없음')+') 아래에서 확인하고 저장한 뒤, 올릴 곳에서 문구를 복사해 올리세요.'+(hid?' 녹화 중에 창이 가려져서 일부가 멈췄을 수 있어요. 재생해서 확인하세요.':''),100);
     vShowResult();
   }catch(e){vMsg(e&&e.code==='cancel'?'멈췄어요.':(e&&e.message)||'영상을 만들지 못했어요. 한 번 더 눌러 주세요.');}
   finally{
