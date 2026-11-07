@@ -273,11 +273,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .vdprev a.btn{text-decoration:none}.vdprev .blk .acts{justify-content:flex-start}
 .ytd ol{margin:6px 0 0;padding-left:20px;font-size:13px;color:var(--mute);display:flex;flex-direction:column;gap:3px}.ytd a.btn{text-decoration:none}
 .ytd .ytlog{display:flex;flex-direction:column;gap:6px;font-size:13px}.ytd code{font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;word-break:break-all}
+.mkt-tabs{display:flex;flex-wrap:wrap;gap:6px}.mkt-tabs small{font-weight:400;opacity:.8}
+.mkt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.mkt-th{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mute);min-width:0}.mkt-th span{overflow-wrap:anywhere}
+.mkt-th img{width:100%;aspect-ratio:1/1;object-fit:cover;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mkt-th.det img{object-fit:cover;object-position:top}
+.mkt-main{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}.mkt-main .mkt-th{width:200px;flex:none}.mkt-main .txt{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.mkt a.btn{text-decoration:none}.mkt .blk .acts{justify-content:flex-start}
 </style>
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 73</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 74</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -286,6 +293,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <button class="btn" id="btnExport" type="button">이미지로 저장</button>
       <button class="btn" id="btnVideo" type="button">상세페이지로 영상 만들기</button>
       <button class="btn" id="btnPost" type="button">영상 자동 등록</button>
+      <button class="btn" id="btnMarket" type="button">쇼핑몰에 올리기</button>
       <button class="btn" id="btnNew" type="button">새 제품</button>
       <button class="btn" id="btnSave" type="button">작업 저장</button>
       <button class="btn" id="btnLoad" type="button">불러오기</button>
@@ -332,8 +340,9 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=73,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=74,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1579,8 +1588,8 @@ async function runExport(){
   }catch(e){exMsg(e&&e.code==='cancel'?'멈췄어요.':e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':(e&&e.message)||'저장하지 못했어요. 한 번 더 눌러 주세요.');}
   finally{host.remove();EX.busy=false;const g=$('#exGo'),c=$('#exClose');if(g)g.disabled=false;if(c)c.textContent='닫기';}
 }
-veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!VD.busy&&!YT.busy&&!MK.busy)veil.hidden=true;});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!VD.busy&&!YT.busy&&!MK.busy)veil.hidden=true;});
+veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!VD.busy&&!YT.busy&&!MK.busy&&!MS.busy)veil.hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!VD.busy&&!YT.busy&&!MK.busy&&!MS.busy)veil.hidden=true;});
 
 /* ============ 상세페이지로 영상 만들기: 완성된 구역을 이어 위아래로 천천히 훑는 세로 영상(1080×1920) ============
    '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 화면을 위아래로 움직이며 이 브라우저에서 바로 녹화해요(실시간이라 영상 길이만큼 창을 켜 둬야 해요).
@@ -2053,6 +2062,207 @@ async function mkSend(){
   mkShowLog();
 }
 
+/* ============ 쇼핑몰에 올리기: 네이버 쇼핑용 파일 묶음 (쿠팡·11번가·옥션·지마켓은 나중에) ============
+   만드는 것(전부 이 브라우저에서, 무료): 대표 이미지 1장(정사각 1000×1000, 글자·로고 없음) · 추가 이미지(정사각, 최대 9장) · 상세페이지 조각(가로 860, 번호순) · 등록 안내 글.
+   네이버에 자동으로 올리지는 않아요(네이버 쇼핑 API는 판매자 키와 서버 연결이 필요해요). 크기는 실무에서 많이 쓰는 값이고, 올릴 때는 등록 화면의 안내가 우선이에요. */
+const MS={tab:'naver',style:'auto',busy:false,cancel:false,res:null,urls:[]};
+const MS_SIZE=1000,MS_DW=860,MS_PIECE=2400,MS_MAXX=9;
+const MKT={
+  naver:{n:'네이버 쇼핑',ok:true,url:'https://sell.smartstore.naver.com/'},
+  coupang:{n:'쿠팡',ok:false,info:'이 앱은 쿠팡 대표 이미지에 실물 원본 사진만 쓰도록 안내하고 있어요. 알아본 값: 대표 이미지 500×500 이상, 상세 이미지 가로 780 (블로그·지원 문서 기준이라 공식 값은 아니에요).'},
+  st11:{n:'11번가',ok:false,info:'알아본 값: 대표 이미지 최소 600×600 (카페24 지원 문서), 상세 이미지 가로 800 안팎 (블로그). 공식 값은 아니에요.'},
+  auction:{n:'옥션',ok:false,info:'알아본 값: 대표 이미지 최소 600×600 (카페24 지원 문서). 상세 이미지 기준은 찾지 못했어요. 공식 값은 아니에요.'},
+  gmarket:{n:'지마켓',ok:false,info:'규격 자료를 찾지 못했어요. 판매자센터 안내를 확인한 뒤 만들어요.'}
+};
+const MS_BLUR=(()=>{try{return 'filter' in CanvasRenderingContext2D.prototype;}catch(e){return false;}})();   // 캔버스 흐림 효과를 쓸 수 있는 브라우저만(아니면 흰 바탕)
+const msCv=(w,h,fill)=>{const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d',{willReadFrequently:true});g.fillStyle=fill||'#fff';g.fillRect(0,0,w,h);g.imageSmoothingQuality='high';return [c,g];};
+const msJpg=(cv,q)=>new Promise((ok,no)=>cv.toBlob(b=>b?ok(b):no(new Error('이미지를 만들지 못했어요.')),'image/jpeg',q||.9));
+const msHex=rgb=>'#'+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+function msEdge(bmp){   // 사진 가장자리의 평균 색과 '얼마나 고른지'(작을수록 한 가지 색 배경)
+  const k=Math.min(1,160/Math.max(bmp.width,bmp.height)),w=Math.max(8,Math.round(bmp.width*k)),h=Math.max(8,Math.round(bmp.height*k)),[c,g]=msCv(w,h);
+  g.drawImage(bmp,0,0,w,h);const d=g.getImageData(0,0,w,h).data,px=[];let sr=0,sg=0,sb=0;
+  const add=(x,y)=>{const i=(y*w+x)*4;px.push(d[i],d[i+1],d[i+2]);sr+=d[i];sg+=d[i+1];sb+=d[i+2];};
+  for(let x=0;x<w;x++){add(x,0);add(x,h-1);}for(let y=1;y<h-1;y++){add(0,y);add(w-1,y);}
+  const n=px.length/3,mr=sr/n,mg=sg/n,mb=sb/n;let v=0;for(let i=0;i<px.length;i+=3)v+=(px[i]-mr)**2+(px[i+1]-mg)**2+(px[i+2]-mb)**2;
+  return {rgb:[Math.round(mr),Math.round(mg),Math.round(mb)],sd:Math.sqrt(v/n/3)};
+}
+function msContain(bmp,size){   // 사진 전체가 잘리지 않게 정사각 안에 넣어요(남는 자리는 흐린 같은 사진, 안 되는 브라우저는 흰 바탕)
+  const [c,g]=msCv(size,size),s=Math.min(size/bmp.width,size/bmp.height),w=bmp.width*s,h=bmp.height*s;
+  if(MS_BLUR&&Math.abs(w-size)+Math.abs(h-size)>8){
+    const k=Math.max(size/bmp.width,size/bmp.height);g.filter='blur(28px)';g.drawImage(bmp,(size-bmp.width*k)/2,(size-bmp.height*k)/2,bmp.width*k,bmp.height*k);g.filter='none';
+    g.fillStyle='rgba(255,255,255,.35)';g.fillRect(0,0,size,size);
+  }
+  g.imageSmoothingQuality='high';g.drawImage(bmp,(size-w)/2,(size-h)/2,w,h);return c;
+}
+async function msMain(){   // 대표 이미지: 원본 사진으로만, 글자·로고 없이 제품이 가운데에 크게
+  const m=PH.get(S.src.id),bmp=await createImageBitmap(m.blob);await ensureMask();
+  const bb=PM&&PM.id===S.src.id&&PM.bb?PM.bb:{x0:0,y0:0,x1:1,y1:1},size=MS_SIZE;
+  const pw=Math.max(1,(bb.x1-bb.x0)*m.w),ph=Math.max(1,(bb.y1-bb.y0)*m.h),cx=bb.x0*m.w+pw/2,cy=bb.y0*m.h+ph/2,box=size*.84,e=msEdge(bmp);
+  const nearWhite=e.rgb.every(v=>v>=238),fits=Math.max(pw,ph)/.84<=Math.min(m.w,m.h),sp=Math.min(box/pw,box/ph),covers=m.w*sp>=size&&m.h*sp>=size;
+  const flat=e.sd<6||(e.sd<14&&covers);   // 배경이 한 가지 색(사진이 칸을 다 덮으면 조금 고르지 않아도 이음매가 안 보여요)
+  let how,c,g,scale;
+  if(MS.style!=='crop'&&flat){   // 배경이 한 가지 색이면 그 색 위에 제품을 가운데 놓아요
+    how='place';scale=sp;[c,g]=msCv(size,size,msHex(e.rgb));
+    g.drawImage(bmp,size/2-cx*scale,size/2-cy*scale,m.w*scale,m.h*scale);
+    if(nearWhite){   // 흰색에 가까운 배경은 순백(255)이 되도록 색을 같은 비율로 아주 조금 밝혀요(이음매 없이, 제품은 거의 그대로)
+      const im=g.getImageData(0,0,size,size),d=im.data,kk=e.rgb.map(v=>255/Math.max(1,v));
+      for(let i=0;i<d.length;i+=4){d[i]=Math.min(255,d[i]*kk[0]);d[i+1]=Math.min(255,d[i+1]*kk[1]);d[i+2]=Math.min(255,d[i+2]*kk[2]);}
+      g.putImageData(im,0,0);
+    }
+  }else if(fits){   // 제품 둘레를 정사각으로 잘라요
+    how='crop';const side=Math.max(pw,ph)/.84,sx=clamp(cx-side/2,0,m.w-side),sy=clamp(cy-side/2,0,m.h-side);scale=size/side;[c,g]=msCv(size,size);g.drawImage(bmp,sx,sy,side,side,0,0,size,size);
+  }else{   // 잘라서는 제품이 잘리니 전체를 정사각 안에 넣어요
+    how='contain';c=msContain(bmp,size);scale=Math.min(size/m.w,size/m.h);
+  }
+  const cg=c.getContext('2d'),R=10;let nb=0,wc=0,sr=0,sg=0,sb=0;   // 바깥 테두리 띠 전체의 평균 색과 흰색 비율(모서리 몇 곳만 보면 틀려요)
+  for(const q of [[0,0,size,R],[0,size-R,size,R],[0,R,R,size-2*R],[size-R,R,R,size-2*R]]){const d=cg.getImageData(q[0],q[1],q[2],q[3]).data;for(let i=0;i<d.length;i+=4){nb++;sr+=d[i];sg+=d[i+1];sb+=d[i+2];if(d[i]>=240&&d[i+1]>=240&&d[i+2]>=240)wc++;}}
+  return {blob:await msJpg(c,.92),w:size,h:size,how,scale,bg:msHex([sr/nb,sg/nb,sb/nb]),white:wc/nb>=.92};
+}
+async function msZoomImg(it){   // 상세페이지의 '확대' 칸과 같은 자리를 정사각으로
+  const own=it.photo&&hasPhoto(it.photo)?PH.get(it.photo.id):null,m=own||PH.get(S.src.id),p=own?it.photo:it;
+  const bmp=await createImageBitmap(m.blob),g0=geom(m,MS_SIZE,MS_SIZE,p),[c,g]=msCv(MS_SIZE,MS_SIZE);g.drawImage(bmp,g0.x,g0.y,g0.sw,g0.sh);return c;
+}
+async function msExtras(){   // 추가 이미지: 직접 넣은 추가 사진 → 확대 3컷 → 첫 화면 → 소개 → 문 색상 순서로 최대 9장
+  const L=[],pic=(label,p)=>{if(hasPhoto(p))L.push({label,ai:!!p.ai,mk:async()=>msContain(await createImageBitmap(PH.get(p.id).blob),MS_SIZE)});};
+  (S.extra||[]).forEach((p,i)=>pic('추가 사진 '+(i+1),p));
+  S.zoom.items.forEach((it,i)=>L.push({label:'확대 '+(i+1)+(it.title?' · '+it.title:''),ai:!!(it.photo&&hasPhoto(it.photo)&&it.photo.ai),mk:()=>msZoomImg(it)}));
+  pic('첫 화면',S.hero.photo);pic('소개',S.concept.photo);
+  S.colors.items.forEach(it=>pic('문 색상 · '+(it.label||''),it.photo));
+  const use=L.slice(0,MS_MAXX),items=[];
+  for(const u of use){if(MS.cancel)throw {code:'cancel'};const c=await u.mk();items.push({label:u.label,ai:u.ai,blob:await msJpg(c,.9),w:MS_SIZE,h:MS_SIZE});}
+  return {items,skipped:L.length-use.length};
+}
+async function msDetail(tick){   // 상세페이지 조각: '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 구역 경계에서 높이 약 2400px씩 나눠요
+  const host=document.createElement('div');host.className='export-host';host.innerHTML='<div class="pg" id="expRoot">'+renderPage(true)+'</div>';document.body.appendChild(host);
+  try{
+    try{await document.fonts.load('800 40px "Noto Sans KR"','가나다라마바사 0123');await document.fonts.load('400 20px "Noto Sans KR"','가나다라마바사');await document.fonts.ready;}catch(e){}
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    const root=$('#expRoot',host),k=MS_DW/PW,secs=$$('[data-slice]',root).filter(x=>x.offsetHeight>0);
+    if(!secs.length)throw new Error('상세페이지에 그릴 내용이 없어요.');
+    const cvs=new Array(secs.length);let nx=0,fin=0;
+    const wk=async()=>{while(nx<secs.length){if(MS.cancel)throw {code:'cancel'};const i=nx++;
+      cvs[i]=await html2canvas(secs[i],{scale:k,backgroundColor:'#ffffff',useCORS:true,logging:false,imageTimeout:0,width:PW,windowWidth:PW,scrollX:0,scrollY:0,ignoreElements:n=>n.id==='app'||n.id==='veil'||n.id==='toast'});
+      fin++;tick(fin,secs.length);}};
+    await Promise.all(Array.from({length:Math.min(3,secs.length)},wk));if(MS.cancel)throw {code:'cancel'};
+    const max=MS_PIECE*k,groups=[];let cur=[],hh=0;
+    for(const c of cvs){if(cur.length&&hh+c.height>max){groups.push(cur);cur=[];hh=0;}cur.push(c);hh+=c.height;}
+    if(cur.length)groups.push(cur);
+    const out=[];
+    for(const gr of groups){const W=gr[0].width,H=gr.reduce((a,c)=>a+c.height,0),[oc,og]=msCv(W,H);let y=0;for(const c of gr){og.drawImage(c,0,y);y+=c.height;}out.push({blob:await msJpg(oc,.9),w:W,h:H});}
+    return out;
+  }finally{host.remove();}
+}
+const msNN=n=>String(n).padStart(2,'0');
+function msFiles(r){   // 묶음에 들어갈 파일(이름은 영문, 설명은 한글)
+  const f=[{name:'01_main.jpg',blob:r.main.blob,d:'대표 이미지 ('+r.main.w+'×'+r.main.h+')'}];
+  r.extras.forEach((x,i)=>f.push({name:'02_extra_'+msNN(i+1)+'.jpg',blob:x.blob,d:'추가 이미지 · '+x.label+(x.ai?' (AI로 만든 사진)':'')}));
+  r.details.forEach((x,i)=>f.push({name:'03_detail_'+msNN(i+1)+'.jpg',blob:x.blob,d:'상세페이지 조각 '+(i+1)+' ('+x.w+'×'+x.h+')'}));
+  return f;
+}
+const msYmd=d=>d.getFullYear()+msNN(d.getMonth()+1)+msNN(d.getDate());
+function msText(r){
+  const nm=S.sellName||STD_NAME,tags=vPostDraft().yl.g;
+  return ['네이버 쇼핑 올리기 안내 · '+(S.name||nm)+' · 만든 날 '+msYmd(r.at),'',
+    '[상품명 칸에 붙여 넣기]',nm,'',
+    '[태그 후보] 등록 화면의 태그 규칙에 맞춰 골라 쓰세요',tags,'',
+    '[올리는 순서] (메뉴 이름은 바뀔 수 있어요)',
+    '1. 스마트스토어센터에서 상품 등록 화면을 엽니다.',
+    '2. 상품명 칸에 위 상품명을 붙여 넣습니다.',
+    '3. 대표 이미지 칸에 01_main.jpg 를 올립니다.',
+    '4. 추가 이미지 칸에 02_extra_01.jpg 부터 차례로 올립니다. ('+r.extras.length+'장)',
+    '5. 상세설명에서 사진을 추가해 03_detail_01.jpg 부터 번호 순서대로 올립니다. ('+r.details.length+'조각, 가로 '+MS_DW+'px)','',
+    '[파일 목록]'].concat(msFiles(r).map(f=>f.name+'  —  '+f.d),['',
+    '※ 크기·용량·장수·배경 규정은 등록 화면의 안내가 우선이에요. 이 묶음은 자동으로 네이버에 올라가지 않아요.']).join('\r\n');
+}
+function msChecks(r){
+  const kb=b=>b.size>=1048576?(b.size/1048576).toFixed(1)+'MB':Math.round(b.size/1024)+'KB',m=r.main,L=[];
+  const how={place:'제품을 가운데에 크게 놓았어요(배경이 한 가지 색이라 그 색 위에).',crop:'원본 사진을 제품 둘레로 정사각으로 잘랐어요.',contain:'제품이 길어서 잘리지 않게 사진 전체를 정사각 안에 넣었어요.'}[m.how];
+  L.push({ok:true,t:'대표 이미지: 정사각 '+m.w+'×'+m.h+' JPG ('+kb(m.blob)+'), 원본 사진만 쓰고 글자·로고는 넣지 않았어요. '+how});
+  L.push(m.white?{ok:true,t:'대표 이미지 배경이 흰색이에요.'}:{ok:false,t:'대표 이미지 배경이 흰색이 아니에요('+m.bg+'). 흰 배경이 필요하면 흰 배경에서 찍은 사진을 쓰세요.'});
+  if(m.scale>1.4)L.push({ok:false,t:'원본 사진이 작아서 대표 이미지가 조금 흐릴 수 있어요(약 '+m.scale.toFixed(1)+'배로 키웠어요). 더 큰 사진이 있으면 바꿔 보세요.'});
+  L.push({ok:true,t:'추가 이미지 '+r.extras.length+'장 (정사각 '+MS_SIZE+'×'+MS_SIZE+').'});
+  if(r.skipped>0)L.push({ok:false,t:'추가 이미지는 '+MS_MAXX+'장까지만 만들어서 '+r.skipped+'장은 뺐어요.'});
+  const ai=r.extras.filter(x=>x.ai).length;
+  if(ai)L.push({ok:false,t:'AI로 만든 사진이 추가 이미지에 '+ai+'장 들어 있어요. 판매 채널의 AI 표시 규칙을 확인하세요(규칙은 바뀔 수 있어요).'});
+  L.push({ok:true,t:'상세페이지 '+r.details.length+'조각 (가로 '+MS_DW+', 한 조각 높이는 최대 약 '+MS_PIECE+'px, 구역 경계에서 나눴어요).'});
+  const left=needs().length;if(left)L.push({ok:false,t:'상세페이지에 아직 채울 곳이 '+left+'곳 남아 있어요. 비어 있는 칸은 상세 조각에서 빠졌어요.'});
+  const all=msFiles(r),tot=all.reduce((a,f)=>a+f.blob.size,0),big=all.reduce((a,f)=>Math.max(a,f.blob.size),0);
+  L.push({ok:true,t:'파일 '+all.length+'개 · 모두 '+(tot/1048576).toFixed(1)+'MB · 가장 큰 파일 '+(big/1048576).toFixed(1)+'MB.'});
+  return L;
+}
+function msFree(){MS.urls.forEach(u=>URL.revokeObjectURL(u));MS.urls=[];}
+function msSay(t,p,cls){const m=$('#msMsg');if(m){m.textContent=t;m.className='msg'+(cls?' '+cls:'');}const b=$('#msBar');if(b&&p!=null){b.hidden=false;b.firstElementChild.style.width=p+'%';}}
+async function msRun(){
+  if(MS.busy)return;
+  if(!hasPhoto(S.src)){msSay('제품 사진 한 장을 먼저 넣어 주세요.',null,'err');return;}
+  if(!window.html2canvas){msSay('이미지 도구를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 열어 주세요.',null,'err');return;}
+  MS.busy=true;MS.cancel=false;const go=$('#msGo');if(go)go.disabled=true;const cl=$('#msClose');if(cl)cl.textContent='멈추기';
+  try{
+    msSay('대표 이미지를 만드는 중이에요…',3);const main=await msMain();if(MS.cancel)throw {code:'cancel'};
+    msSay('추가 이미지를 만드는 중이에요…',12);const ex=await msExtras();if(MS.cancel)throw {code:'cancel'};
+    msSay('상세페이지를 그리는 중이에요…',22);
+    const det=await msDetail((d,t)=>msSay('상세페이지를 그리는 중이에요… '+d+' / '+t,22+Math.round(d/t*65)));
+    msSay('파일로 묶는 중이에요…',92);
+    const r={main,extras:ex.items,skipped:ex.skipped,details:det,at:new Date()};r.text=msText(r);r.checks=msChecks(r);
+    MS.res=r;msRender();msSay('다 만들었어요. 아래에서 확인하고 저장하세요.',100,'ok');
+  }catch(e){msSay(e&&e.code==='cancel'?'멈췄어요.':(e&&e.message)||'만들지 못했어요. 한 번 더 눌러 주세요.',null,'err');}
+  finally{MS.busy=false;const g=$('#msGo');if(g)g.disabled=false;const c=$('#msClose');if(c)c.textContent='닫기';}
+}
+async function msZip(){
+  const r=MS.res;if(!r)return;
+  if(!window.JSZip){toast('저장 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.',3000);return;}
+  try{
+    const z=new JSZip();msFiles(r).forEach(f=>z.file(f.name,f.blob));z.file('README.txt','﻿'+r.text);
+    await saveFile('naver_images_'+msYmd(r.at)+'.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast('네이버용 파일 묶음을 저장했어요.');
+  }catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
+}
+function msResHtml(){
+  const r=MS.res;if(!r)return '';
+  msFree();
+  const U=b=>{const u=URL.createObjectURL(b);MS.urls.push(u);return u;},kb=b=>b.size>=1048576?(b.size/1048576).toFixed(1)+'MB':Math.round(b.size/1024)+'KB';
+  const th=(b,lab,cls)=>'<div class="mkt-th'+(cls?' '+cls:'')+'"><img alt="'+esc(lab)+'" src="'+U(b)+'"><span>'+esc(lab)+' · '+kb(b)+'</span></div>';
+  const nm=S.sellName||STD_NAME;
+  return '<div class="blk" id="msRes"><h3>만들어진 파일</h3>'
+   +'<div class="mkt-main">'+th(r.main.blob,'대표 이미지','main')
+   +'<div class="txt"><div><b>상품명</b><br>'+esc(nm)+'</div><div class="acts"><button class="btn sm" id="msCopyName" type="button">상품명 복사</button><button class="btn sm" id="msCopyTags" type="button">태그 후보 복사</button><button class="btn sm" id="msMainSave" type="button">대표 이미지만 저장</button></div></div></div>'
+   +(r.extras.length?'<div class="hint">추가 이미지 '+r.extras.length+'장</div><div class="mkt-grid">'+r.extras.map((x,i)=>th(x.blob,msNN(i+1)+' '+x.label+(x.ai?' (AI)':''))).join('')+'</div>':'')
+   +'<div class="hint">상세페이지 조각 '+r.details.length+'개 (위에서부터 번호 순서)</div><div class="mkt-grid">'+r.details.map((x,i)=>th(x.blob,msNN(i+1)+' · '+x.w+'×'+x.h,'det')).join('')+'</div>'
+   +'<ul class="checks">'+r.checks.map(c=>'<li>'+(c.ok?'✓ ':'⚠ ')+esc(c.t)+'</li>').join('')+'</ul>'
+   +'<div class="acts"><button class="btn primary" id="msZip" type="button">zip으로 저장 (파일 '+msFiles(r).length+'개 + 올리는 순서 글)</button></div></div>';
+}
+function msNaverHtml(){
+  const has=hasPhoto(S.src),n=needs().length,radio=(v,t,d)=>'<label class="opt"><input type="radio" name="msstyle" value="'+v+'"'+(MS.style===v?' checked':'')+'><div><b>'+t+'</b><div class="hint">'+d+'</div></div></label>';
+  return '<div class="tip">네이버 쇼핑(스마트스토어)에 올릴 파일을 한 번에 만들어요. 이 브라우저에서만 만들고 비용은 들지 않아요.<br>① <b>대표 이미지</b> 1장 (정사각 1000×1000, 글자·로고 없이 제품만) ② <b>추가 이미지</b> (정사각, 최대 '+MS_MAXX+'장) ③ <b>상세페이지 조각</b> (가로 '+MS_DW+', 번호 순서) ④ <b>등록 안내 글</b> (상품명·태그·올리는 순서)</div>'
+   +(has?'':'<div class="confirm" style="display:block">제품 사진 한 장(1단계)을 먼저 넣어 주세요. 대표 이미지는 그 원본 사진으로 만들어요.</div>')
+   +(has&&n?'<div class="confirm" style="display:block">상세페이지에 아직 채울 곳이 '+n+'곳 남아 있어요. 비어 있는 칸은 상세 조각에서 빠져요.</div>':'')
+   +'<div class="opts"><b class="hint">대표 이미지 만드는 방법</b>'
+   +radio('auto','자동 (추천)','사진 배경이 한 가지 색이면 그 색 위에 제품을 가운데 놓고, 아니면 제품 둘레를 정사각으로 잘라요.')
+   +radio('crop','항상 정사각으로 자르기','배경을 그대로 두고 제품 둘레를 정사각으로 잘라요.')+'</div>'
+   +'<div class="hint">대표 이미지 1000×1000은 실무에서 많이 쓰는 값이고, 상세 이미지 가로 860은 검색에서 네이버 안내로 나온 값이에요. 대표 이미지의 크기·용량·장수·배경 규정은 공식 문서에서 확인하지 못했어요. 올릴 때는 등록 화면의 안내가 우선이에요.</div>'
+   +'<div class="hint">네이버에 자동으로 올리지는 않아요. 네이버 쇼핑 API는 판매자 키와 서버 연결이 필요해서, 지금은 올리기 쉬운 파일 묶음과 순서 안내까지 해요.</div>'
+   +'<div class="acts"><a class="btn" href="'+MKT.naver.url+'" target="_blank" rel="noopener noreferrer">스마트스토어센터 열기</a><button class="btn primary" id="msGo" type="button"'+(has?'':' disabled')+'>네이버용 파일 만들기</button></div>'
+   +'<div class="bar" id="msBar" hidden><i></i></div><div class="msg" id="msMsg" aria-live="polite"></div>'
+   +msResHtml();
+}
+function msRender(){
+  const t=MKT[MS.tab],b=$('#msBody');if(!b)return;
+  const tabs='<div class="mkt-tabs" role="tablist">'+Object.keys(MKT).map(k=>'<button class="btn sm'+(MS.tab===k?' primary':'')+'" type="button" role="tab" aria-selected="'+(MS.tab===k)+'" data-mt="'+k+'">'+esc(MKT[k].n)+(MKT[k].ok?'':' <small>(나중에)</small>')+'</button>').join('')+'</div>';
+  b.innerHTML=tabs+(t.ok?msNaverHtml():'<div class="blk"><h3>'+esc(t.n)+' · 나중에 만들어요</h3><div class="hint">'+esc(t.info)+'</div><div class="hint">네이버와 같은 방식(대표 이미지 → 추가 이미지 → 상세 조각 → 올리는 순서 글)으로 맞춰 만들 수 있어요. 올릴 때가 되면 말씀해 주세요. 그때 판매자센터의 최신 규격을 확인하고 만들게요.</div></div>');
+  $$('[data-mt]',b).forEach(x=>x.onclick=()=>{if(MS.busy)return;MS.tab=x.dataset.mt;msRender();});
+  $$('input[name=msstyle]',b).forEach(x=>x.onchange=()=>{MS.style=x.value;});
+  const go=$('#msGo');if(go)go.onclick=msRun;
+  const z=$('#msZip');if(z)z.onclick=msZip;
+  const ms=$('#msMainSave');if(ms)ms.onclick=async()=>{try{await saveFile('naver_main_1000x1000.jpg',MS.res.main.blob);toast('대표 이미지를 저장했어요.');}catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}};
+  const cn=$('#msCopyName');if(cn)cn.onclick=()=>vCopy(S.sellName||STD_NAME);
+  const ct=$('#msCopyTags');if(ct)ct.onclick=()=>vCopy(vPostDraft().yl.g);
+}
+function showMarket(){
+  veil.hidden=false;
+  veil.innerHTML='<div class="dlg mkt" role="dialog" aria-modal="true" aria-label="쇼핑몰에 올리기" style="width:min(780px,100%)"><h2>쇼핑몰에 올리기</h2><div id="msBody" style="display:flex;flex-direction:column;gap:12px"></div><div class="acts"><button class="btn" id="msClose" type="button">닫기</button></div></div>';
+  $('#msClose').onclick=()=>{if(MS.busy)MS.cancel=true;else veil.hidden=true;};
+  msRender();
+}
+
 /* ============ 한 번에 만들기: 글과 이미지를 동시에 → 저장 창 ============ */
 let oneBusy=false;
 async function runOne(go){
@@ -2288,6 +2498,7 @@ $('#btnOne').onclick=()=>runOne(false);
 $('#btnExport').onclick=()=>{EX.busy=false;EX.cancel=false;showExport();};
 $('#btnVideo').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;showVideo();};
 $('#btnPost').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;showPost();};
+$('#btnMarket').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy||MK.busy||MS.busy)return;showMarket();};
 $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>$('#loadFile').click();
 $('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
@@ -2308,7 +2519,7 @@ $('#btnNew').onclick=()=>{
 try{if(/[?&]t=\d+/.test(location.search))history.replaceState(null,'',location.pathname);}catch(e){}   // 주소에 붙인 시간 표시는 새 화면이 뜨면 지워요
 let LASTACT=Date.now();
 ['pointerdown','keydown','input','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{LASTACT=Date.now();},{passive:true,capture:true}));
-const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||YT.busy||MK.busy||!veil.hidden;
+const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||YT.busy||MK.busy||MS.busy||!veil.hidden;
 let updTimer=0;
 async function checkUpdate(mode){
   if(!/^https?:$/.test(location.protocol))return;
