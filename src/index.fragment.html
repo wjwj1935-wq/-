@@ -284,7 +284,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 74</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 75</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -340,9 +340,10 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=74,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=75,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -2160,19 +2161,41 @@ function msFiles(r){   // 묶음에 들어갈 파일(이름은 영문, 설명은
   return f;
 }
 const msYmd=d=>d.getFullYear()+msNN(d.getMonth()+1)+msNN(d.getDate());
+const MS_TODO=[   // 이 앱이 해 주지 않는 것(셀러 안내 글에서 확인한 항목이에요. 네이버 공식 문서가 아니라서 등록 화면에서 한 번 더 확인하세요)
+  ['카테고리','상품에 맞는 카테고리를 직접 골라요. 잘못 고르면 검색에 불리하다는 안내가 많아요.'],
+  ['판매가·재고','가격(할인가)과 재고 수량은 이 앱에 없어요. 직접 입력해요.'],
+  ['옵션','색상·방향(좌/우) 같은 옵션은 직접 입력해요. 상세페이지의 "문 색상" 그림은 문에 달아 본 연출 사진이에요(옵션이 아니에요).'],
+  ['상품주요정보','제조사·브랜드·원산지, KC 인증 대상인지(해당하면 인증 번호)를 직접 입력해요.'],
+  ['상품정보제공고시','등록할 때 입력하는 항목이에요. 직접 채워요.'],
+  ['배송·반품·교환','배송비와 방법, 반품·교환 정보를 직접 입력해요.'],
+  ['A/S','A/S 책임자 또는 상담 전화번호를 직접 입력해요.'],
+  ['태그·속성','태그 후보는 참고용이에요. 등록 화면에서 검색에 맞는 태그와 속성을 골라요.']
+];
+function msTodoHtml(){
+  return '<div class="blk" id="msTodo"><h3>직접 입력해야 하는 항목 (이 앱이 해 주지 않는 것)</h3><ul class="checks">'
+   +MS_TODO.map(x=>'<li><b>'+esc(x[0])+'</b> — '+esc(x[1])+'</li>').join('')+'</ul>'
+   +'<div class="hint">셀러 안내 글에서 확인한 항목이에요. 네이버 공식 문서가 아니라서 등록 화면에서 한 번 더 확인하세요.</div></div>';
+}
 function msText(r){
-  const nm=S.sellName||STD_NAME,tags=vPostDraft().yl.g;
-  return ['네이버 쇼핑 올리기 안내 · '+(S.name||nm)+' · 만든 날 '+msYmd(r.at),'',
-    '[상품명 칸에 붙여 넣기]',nm,'',
-    '[태그 후보] 등록 화면의 태그 규칙에 맞춰 골라 쓰세요',tags,'',
-    '[올리는 순서] (메뉴 이름은 바뀔 수 있어요)',
+  const nm=S.sellName||STD_NAME,tags=vPostDraft().yl.g,own=String(S.name||'').replace(/\s+/g,''),ownTag=!!own&&tags.split(', ').indexOf(own)>=0,L=[];
+  L.push('네이버 쇼핑 올리기 안내 · '+(S.name||nm)+' · 만든 날 '+msYmd(r.at),'',
+    '※ 이 묶음은 네이버에 자동으로 올라가지 않아요. 아래 순서대로 스마트스토어센터에서 직접 올려 주세요.','',
+    '[상품명 칸에 붙여 넣기]',nm,'(기본 이름이라 제품마다 같아요. 색상·방향 같은 구분 단어를 넣어 바꿔 쓰세요.)','',
+    '[태그 후보] 등록 화면의 태그 규칙에 맞춰 골라 쓰세요',tags);
+  if(ownTag)L.push('(마지막 태그 "'+own+'"는 사장님이 정한 제품 이름이에요. 고객이 검색하는 말이 아니면 빼세요.)');
+  L.push('','[올리는 순서] (메뉴 이름은 바뀔 수 있어요)',
     '1. 스마트스토어센터에서 상품 등록 화면을 엽니다.',
     '2. 상품명 칸에 위 상품명을 붙여 넣습니다.',
     '3. 대표 이미지 칸에 01_main.jpg 를 올립니다.',
     '4. 추가 이미지 칸에 02_extra_01.jpg 부터 차례로 올립니다. ('+r.extras.length+'장)',
-    '5. 상세설명에서 사진을 추가해 03_detail_01.jpg 부터 번호 순서대로 올립니다. ('+r.details.length+'조각, 가로 '+MS_DW+'px)','',
-    '[파일 목록]'].concat(msFiles(r).map(f=>f.name+'  —  '+f.d),['',
-    '※ 크기·용량·장수·배경 규정은 등록 화면의 안내가 우선이에요. 이 묶음은 자동으로 네이버에 올라가지 않아요.']).join('\r\n');
+    '5. 상세설명에서 사진을 추가해 03_detail_01.jpg 부터 번호 순서대로 올립니다. ('+r.details.length+'조각, 가로 '+MS_DW+'px)',
+    '6. 아래 [직접 입력해야 하는 항목]을 채우고 등록합니다.','',
+    '[직접 입력해야 하는 항목] 이 앱이 해 주지 않는 것이에요. 셀러 안내 글에서 확인한 항목이라 등록 화면에서 한 번 더 확인하세요.');
+  MS_TODO.forEach((x,i)=>L.push((i+1)+'. '+x[0]+' — '+x[1]));
+  L.push('','[파일 목록]');
+  msFiles(r).forEach(f=>L.push(f.name+'  —  '+f.d));
+  L.push('','※ 크기·용량·장수·배경 규정은 등록 화면의 안내가 우선이에요. 이 묶음은 자동으로 네이버에 올라가지 않아요.');
+  return L.join('\r\n');
 }
 function msChecks(r){
   const kb=b=>b.size>=1048576?(b.size/1048576).toFixed(1)+'MB':Math.round(b.size/1024)+'KB',m=r.main,L=[];
@@ -2232,16 +2255,18 @@ function msResHtml(){
 }
 function msNaverHtml(){
   const has=hasPhoto(S.src),n=needs().length,radio=(v,t,d)=>'<label class="opt"><input type="radio" name="msstyle" value="'+v+'"'+(MS.style===v?' checked':'')+'><div><b>'+t+'</b><div class="hint">'+d+'</div></div></label>';
-  return '<div class="tip">네이버 쇼핑(스마트스토어)에 올릴 파일을 한 번에 만들어요. 이 브라우저에서만 만들고 비용은 들지 않아요.<br>① <b>대표 이미지</b> 1장 (정사각 1000×1000, 글자·로고 없이 제품만) ② <b>추가 이미지</b> (정사각, 최대 '+MS_MAXX+'장) ③ <b>상세페이지 조각</b> (가로 '+MS_DW+', 번호 순서) ④ <b>등록 안내 글</b> (상품명·태그·올리는 순서)</div>'
+  return '<div class="confirm" style="display:block">⚠ 이 창은 네이버에 <b>자동으로 올리지는 않아요.</b> 올릴 파일과 순서 글을 만들어 드려요. 올리는 일과 가격·카테고리 같은 입력은 스마트스토어센터에서 직접 해 주세요.</div>'
+   +'<div class="tip">네이버 쇼핑(스마트스토어)에 직접 올릴 파일을 만들어요. 이 브라우저에서만 만들고 비용은 들지 않아요.<br>① <b>대표 이미지</b> 1장 (정사각 1000×1000, 글자·로고 없이 제품만) ② <b>추가 이미지</b> (정사각, 최대 '+MS_MAXX+'장) ③ <b>상세페이지 조각</b> (가로 '+MS_DW+', 번호 순서) ④ <b>등록 안내 글</b> (상품명·태그·올리는 순서)</div>'
    +(has?'':'<div class="confirm" style="display:block">제품 사진 한 장(1단계)을 먼저 넣어 주세요. 대표 이미지는 그 원본 사진으로 만들어요.</div>')
    +(has&&n?'<div class="confirm" style="display:block">상세페이지에 아직 채울 곳이 '+n+'곳 남아 있어요. 비어 있는 칸은 상세 조각에서 빠져요.</div>':'')
    +'<div class="opts"><b class="hint">대표 이미지 만드는 방법</b>'
    +radio('auto','자동 (추천)','사진 배경이 한 가지 색이면 그 색 위에 제품을 가운데 놓고, 아니면 제품 둘레를 정사각으로 잘라요.')
    +radio('crop','항상 정사각으로 자르기','배경을 그대로 두고 제품 둘레를 정사각으로 잘라요.')+'</div>'
    +'<div class="hint">대표 이미지 1000×1000은 실무에서 많이 쓰는 값이고, 상세 이미지 가로 860은 검색에서 네이버 안내로 나온 값이에요. 대표 이미지의 크기·용량·장수·배경 규정은 공식 문서에서 확인하지 못했어요. 올릴 때는 등록 화면의 안내가 우선이에요.</div>'
-   +'<div class="hint">네이버에 자동으로 올리지는 않아요. 네이버 쇼핑 API는 판매자 키와 서버 연결이 필요해서, 지금은 올리기 쉬운 파일 묶음과 순서 안내까지 해요.</div>'
+   +'<div class="hint">네이버 쇼핑 API(커머스API)로 자동 등록하는 것은 나중에 따로 만들 수 있어요. 판매자 API 키(애플리케이션 ID·시크릿)와 서버 연결이 필요해요.</div>'
    +'<div class="acts"><a class="btn" href="'+MKT.naver.url+'" target="_blank" rel="noopener noreferrer">스마트스토어센터 열기</a><button class="btn primary" id="msGo" type="button"'+(has?'':' disabled')+'>네이버용 파일 만들기</button></div>'
    +'<div class="bar" id="msBar" hidden><i></i></div><div class="msg" id="msMsg" aria-live="polite"></div>'
+   +msTodoHtml()
    +msResHtml();
 }
 function msRender(){
