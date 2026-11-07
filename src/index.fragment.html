@@ -271,11 +271,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .vdprev video{display:block;max-width:100%;max-height:46vh;margin:0 auto;border-radius:10px;background:#000}
 .vdprev .blk{margin-top:10px}.vdprev .blk h3{margin:0 0 4px;font-size:15px}.vdprev ol{margin:0;padding-left:20px;font-size:13px;color:var(--mute);display:flex;flex-direction:column;gap:2px}
 .vdprev a.btn{text-decoration:none}.vdprev .blk .acts{justify-content:flex-start}
+.ytd ol{margin:6px 0 0;padding-left:20px;font-size:13px;color:var(--mute);display:flex;flex-direction:column;gap:3px}.ytd a.btn{text-decoration:none}
+.ytd .ytlog{display:flex;flex-direction:column;gap:6px;font-size:13px}.ytd code{font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;word-break:break-all}
 </style>
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 69</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 71</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -283,6 +285,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <button class="btn primary" id="btnOne" type="button">한 번에 만들기</button>
       <button class="btn" id="btnExport" type="button">이미지로 저장</button>
       <button class="btn" id="btnVideo" type="button">상세페이지로 영상 만들기</button>
+      <button class="btn" id="btnPost" type="button">영상 자동 등록</button>
       <button class="btn" id="btnNew" type="button">새 제품</button>
       <button class="btn" id="btnSave" type="button">작업 저장</button>
       <button class="btn" id="btnLoad" type="button">불러오기</button>
@@ -326,7 +329,9 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v67 (2026-11-06): 윗줄에 '상세페이지로 영상 만들기' 버튼(세로 9:16 영상, 구역·속도·배경음 선택)을 더함 */
 /* v68 (2026-11-07): 영상에 가로 16:9(유튜브 일반 영상)를 더하고, 만든 뒤 '올릴 곳'(유튜브 쇼츠·인스타그램 릴스·틱톡·유튜브) 제목·설명·해시태그·바로가기를 보여 줌 */
 /* v69 (2026-11-07): 자동 업그레이드가 알아서 되게 고침(열 때·돌아올 때 바로, 열어 둔 채는 쉬는 때, 캐시를 피하는 주소, 같은 버전은 최대 2번 시도) */
-const PW=860,LS='wj-dp-v3',VER=69,SITE='https://wjwj1935-wq.github.io/-/';
+/* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
+/* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
+const PW=860,LS='wj-dp-v3',VER=71,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -809,7 +814,7 @@ function recogCard(){                       // 사진 인식 결과: 컴퓨터�
     +'<div class="rwrap"><div class="rimg" style="aspect-ratio:'+m.w+'/'+m.h+';background-image:url('+m.url+')">'+frame+'</div><div class="rinfo">'
     +row('손잡이 위치',pm?'찾았어요(빨간 네모). 확대 3곳과 첫 화면·소개 자리를 여기에 맞췄어요.':'찾지 못했어요. 확대 칸은 슬라이더로 맞춰 주세요.')
     +(pm&&S.lvDir&&S.lvDir.id===S.src.id?'<div class="rrow"><b>레버 방향</b><span>사진에서 레버가 <select data-lv="1" aria-label="레버 방향"><option value="L"'+(S.lvDir.dir==='L'?' selected':'')+'>왼쪽</option><option value="R"'+(S.lvDir.dir==='R'?' selected':'')+'>오른쪽</option></select>을 향해요. 문 색상 사진도 모두 이 방향으로 만들어요. 틀리면 바꿔 주세요.</span></div>':'')
-    +(r?row('종류',r.kind)+row('레버',r.lever)+row('받침',r.rosette)+row('마감',r.finish)+(r.features.length?row('특징',r.features.join(' · ')):'')
+    +(r?row('종류',r.kind)+row('레버',r.lever)+row('받침',r.rosette)+row('캡 모양',capRow(r))+row('마감',r.finish)+(r.features.length?row('특징',r.features.join(' · ')):'')
       :'<p class="cost">'+(RECOG.busy?'클로드가 사진을 보고 제품을 인식하는 중이에요…':'클로드 키가 있으면 사진을 넣을 때 제품 종류·모양·특징까지 자동으로 인식해요.')+'</p>')
     +'</div></div>'
     +'<div class="acts"><button class="btn sm" type="button" data-act="recog"'+(RECOG.busy?' disabled':'')+'>'+(r?'다시 인식하기':'클로드로 제품 인식하기')+' (약 1센트)</button></div>'
@@ -915,6 +920,7 @@ function p4(){
    +subp('s-concept','소개(CONCEPT)',fld.text('concept.eyebrow','작은 제목')+fld.text('concept.title','제목',{req:1})+fld.area('concept.body','설명 글 (비워도 돼요)',{rows:3}))
    +subp('s-size','크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 총 길이·총 폭·캡 치수를 모두 적으면 치수 그림이 나오고, 일부만 적으면 표만 나와요. 캡이 네모난 제품은 “캡 모양”을 직사각형으로 바꾸고 가로·세로를 따로 적어 주세요. 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
      +'<label class="f"><span>캡 모양 (손잡이가 문에 닿는 받침의 모양)</span><select data-sz="shape">'+[['round','원형 (둥근 받침)'],['rect','직사각형 (네모난 받침)']].map(o=>'<option value="'+o[0]+'"'+((S.size.shape||'round')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
+     +capHint()
      +(S.size.shape==='rect'?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
      +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
@@ -1347,7 +1353,7 @@ async function runChecks(list,signal){
 }
 
 /* 제품 특징 메모: 클로드가 사진을 보고, 이미지 AI가 틀리기 쉬운 이 제품만의 모양을 글로 적어요(구글에 같이 보내요) */
-const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(원판) 모양 한 문장","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
+const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양(위에서 봤을 때 둥근 원판인지, 네모난 직사각형·정사각형인지 꼭 구분)·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(원판) 모양 한 문장","rosetteShape":"받침을 위에서 본 모양. 둥글면 round, 직사각형이나 정사각형(모서리가 둥글어도)이면 rect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나만","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
 async function writeSpec(signal,keep){   // keep: 사장님이 직접 적은 특징 메모는 덮어쓰지 않아요
   if(!hasPhoto(S.src))throw {code:'unavailable'};
   const r=await claude(SPEC_PROMPT,{signal,max:900,images:[await shrink(PH.get(S.src.id).blob,1024,.88)]});
@@ -1355,7 +1361,37 @@ async function writeSpec(signal,keep){   // keep: 사장님이 직접 적은 특
   const nv=(Array.isArray(r.never)?r.never:[]).map(x=>String(x).trim().slice(0,120)).filter(Boolean).slice(0,3);
   if(!keep)S.spec=sp+(nv.length?'\n※ 이렇게 그리면 틀려요: '+nv.join(' / '):'');
   const t=(v,n)=>typeof v==='string'?v.trim().slice(0,n):'';
-  S.recog={id:S.src.id,kind:t(r.kind,40),lever:t(r.lever,120),rosette:t(r.rosette,120),finish:t(r.finish,80),features:(Array.isArray(r.features)?r.features:[]).map(x=>t(String(x),60)).filter(Boolean).slice(0,4)};
+  S.recog={id:S.src.id,kind:t(r.kind,40),lever:t(r.lever,120),rosette:t(r.rosette,120),finish:t(r.finish,80),features:(Array.isArray(r.features)?r.features:[]).map(x=>t(String(x),60)).filter(Boolean).slice(0,4),shape:capShapeOf(r.rosetteShape,r.rosette)};
+  applyCapShape(S.recog.shape);
+}
+/* ---- 캡 모양 자동 인식: 클로드가 사진에서 본 받침 모양(원형·직사각형)을 크기 안내의 '캡 모양'에 맞춰요 ----
+   직접 고른 모양(shapeSet='user')은 건드리지 않고, 확실하지 않으면(그 밖의 모양·알 수 없음) 그대로 둬요. */
+function capShapeOf(v,txt){   // 클로드의 한 단어 답 → rect | round | other | unknown (한 단어가 없으면 설명 글에서 분명한 말만 봐요)
+  const w=String(v||'').toLowerCase().trim();
+  if(/^(rect|square)/.test(w)||/직사각|정사각|네모|사각/.test(w))return 'rect';
+  if(/^(round|circle)/.test(w)||/^(원형|둥근|원|동그란)$/.test(w))return 'round';
+  if(w==='other')return 'other';
+  if(!w){const t=String(txt||'');if(/직사각|정사각|네모|사각형/.test(t))return 'rect';if(/원형|둥근|동그란|둥글/.test(t))return 'round';}
+  return 'unknown';
+}
+function applyCapShape(sh){
+  if(sh!=='rect'&&sh!=='round')return false;
+  const Z=S.size;if(!Z||Z.shapeSet==='user')return false;
+  if(Z.shapeSet!=='auto'&&Z.shape==='rect'&&sh!=='rect')return false;   // 예전에 직접 직사각형으로 바꿔 둔 작업(표시가 없던 때)은 그대로 둬요
+  Z.shapeSet='auto';
+  if(Z.shape===sh)return false;
+  Z.shape=sh;return true;
+}
+function capHint(){
+  const Z=S.size||{},r=S.recog&&S.src&&S.recog.id===S.src.id?S.recog:null,nm={rect:'직사각형',round:'원형'};
+  if(Z.shapeSet==='auto'&&nm[Z.shape])return '<div class="hint">사진을 보고 <b>'+nm[Z.shape]+'</b>으로 자동으로 맞췄어요. 틀리면 위에서 바꿔 주세요.</div>';
+  if(Z.shapeSet==='user'&&r&&nm[r.shape]&&r.shape!==Z.shape)return '<div class="hint">사진 인식 결과는 <b>'+nm[r.shape]+'</b>이에요. 직접 고른 값을 그대로 두었어요.</div>';
+  return '';
+}
+function capRow(r){   // '사진 인식 결과' 칸에 한 줄
+  const Z=S.size||{},nm={rect:'직사각형',round:'원형'};
+  if(nm[r.shape])return nm[r.shape]+(Z.shapeSet==='auto'&&Z.shape===r.shape?' · 크기 안내의 캡 모양에 맞췄어요':Z.shapeSet==='user'&&Z.shape!==r.shape?' · 크기 안내는 직접 고른 값 그대로예요':'');
+  return r.shape==='other'?'원형·직사각형이 아닌 모양이에요. 크기 안내의 캡 모양은 직접 골라 주세요.':'사진으로는 알 수 없어요. 크기 안내의 캡 모양은 직접 골라 주세요.';
 }
 const RECOG={busy:false};
 async function recognize(force){             // 사진 인식(클로드): 제품 종류·모양·특징을 적고, 글도 이 제품에 맞춰 써요
@@ -1511,8 +1547,8 @@ async function runExport(){
   }catch(e){exMsg(e&&e.code==='cancel'?'멈췄어요.':e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':(e&&e.message)||'저장하지 못했어요. 한 번 더 눌러 주세요.');}
   finally{host.remove();EX.busy=false;const g=$('#exGo'),c=$('#exClose');if(g)g.disabled=false;if(c)c.textContent='닫기';}
 }
-veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!VD.busy)veil.hidden=true;});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!VD.busy)veil.hidden=true;});
+veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!VD.busy&&!YT.busy)veil.hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!VD.busy&&!YT.busy)veil.hidden=true;});
 
 /* ============ 상세페이지로 영상 만들기: 완성된 구역을 이어 위아래로 천천히 훑는 세로 영상(1080×1920) ============
    '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 화면을 위아래로 움직이며 이 브라우저에서 바로 녹화해요(실시간이라 영상 길이만큼 창을 켜 둬야 해요).
@@ -1764,6 +1800,150 @@ async function runVideo(){
   }
 }
 
+/* ============ 영상 자동 등록(유튜브): 만든 영상을 이 브라우저에서 바로 유튜브(쇼츠·일반)에 올려요 ============
+   회사가 직접 만든 구글 '클라이언트 ID'로 구글 로그인(유튜브 올리기 권한만) → 유튜브 올리기 API(이어 올리기).
+   비밀번호·비밀 키는 이 앱에 넣지 않아요(클라이언트 ID는 비밀이 아니에요). 로그인 정보는 이 창을 닫으면 사라져요.
+   인스타그램 릴스·틱톡은 영상이 인터넷 주소로 있어야 하고 메타·틱톡의 승인이 필요해서, 이 앱만으로는 자동으로 올릴 수 없어요. */
+const YT={cid:'',token:'',exp:0,busy:false,cancel:false,priv:'private',ai:null,res:null,log:[],xhr:null};
+try{YT.cid=localStorage.getItem('wj-ytcid')||'';YT.log=JSON.parse(localStorage.getItem('wj-ytlog')||'[]')||[];}catch(e){}
+const YT_SCOPE='https://www.googleapis.com/auth/youtube.upload';
+const YT_API='https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status';
+const YT_PRIV={private:'비공개 (추천 · 나만 볼 수 있어요)',unlisted:'일부 공개 (링크를 아는 사람만)',public:'공개'};
+function ytMsg(t,pct){const m=$('#ytMsg');if(m)m.textContent=t;const b=$('#ytBar');if(b&&pct!=null){b.hidden=false;b.firstElementChild.style.width=pct+'%';}}
+function ytLoadGsi(){
+  return new Promise((ok,no)=>{
+    if(window.google&&google.accounts&&google.accounts.oauth2){ok();return;}
+    const x=document.createElement('script');x.src='https://accounts.google.com/gsi/client';x.async=true;
+    x.onload=()=>ok();x.onerror=()=>no(new Error('구글 로그인 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'));
+    document.head.appendChild(x);
+  });
+}
+async function ytToken(){
+  if(YT.token&&Date.now()<YT.exp-60000)return YT.token;
+  if(!YT.cid)throw new Error('구글 클라이언트 ID를 먼저 넣어 주세요.');
+  await ytLoadGsi();
+  return new Promise((ok,no)=>{
+    const c=google.accounts.oauth2.initTokenClient({client_id:YT.cid,scope:YT_SCOPE,
+      callback:r=>{if(r&&r.access_token){YT.token=r.access_token;YT.exp=Date.now()+(Number(r.expires_in)||3600)*1000;ok(YT.token);}else no(new Error('구글 로그인을 못 했어요'+(r&&r.error?' ('+r.error+')':'')+'. 클라이언트 ID와 "승인된 자바스크립트 원본"을 확인해 주세요.'));},
+      error_callback:e=>no(new Error(e&&e.type==='popup_closed'?'로그인 창이 닫혔어요. 다시 눌러 주세요.':e&&e.type==='popup_failed_to_open'?'로그인 창이 막혔어요. 이 사이트의 팝업을 허용하고 다시 눌러 주세요.':'구글 로그인을 못 했어요. 다시 눌러 주세요.'))});
+    c.requestAccessToken({});
+  });
+}
+function ytReq(method,url,o){   // XMLHttpRequest: 올리는 진행률을 알 수 있어요
+  o=o||{};
+  return new Promise((ok,no)=>{
+    const x=new XMLHttpRequest();x.open(method,url);
+    Object.keys(o.headers||{}).forEach(k=>x.setRequestHeader(k,o.headers[k]));
+    x.onload=()=>ok(x);x.onerror=()=>no(new Error('net'));x.onabort=()=>no({code:'cancel'});
+    if(o.onProgress&&x.upload)x.upload.onprogress=o.onProgress;
+    YT.xhr=x;x.send(o.body==null?null:o.body);
+  });
+}
+function ytErr(x){   // 유튜브가 돌려준 오류를 쉬운 말로
+  let j={};try{j=JSON.parse(x.responseText||'{}');}catch(e){}
+  const er=j.error||{},why=((er.errors||[])[0]||{}).reason||er.status||'',msg=er.message||'';
+  if(x.status===401){YT.token='';return new Error('로그인이 만료됐어요. "유튜브에 올리기"를 다시 누르면 로그인 창이 떠요.');}
+  if(/quotaExceeded|dailyLimitExceeded|rateLimitExceeded/i.test(why))return new Error('오늘 올릴 수 있는 한도를 넘었어요. 내일 다시 올려 주세요.');
+  if(/accessNotConfigured|SERVICE_DISABLED/i.test(why+msg))return new Error('구글 클라우드에서 "YouTube Data API v3"를 켜지 않았어요. 아래 "처음 한 번" 2번을 해 주세요.');
+  if(/youtubeSignupRequired/i.test(why))return new Error('이 구글 계정에 유튜브 채널이 없어요. 채널을 만든 계정으로 로그인해 주세요.');
+  if(/uploadLimitExceeded/i.test(why))return new Error('이 채널의 올리기 한도를 넘었어요. 잠시 뒤에 다시 올려 주세요.');
+  if(x.status===403)return new Error('유튜브가 올리기를 허락하지 않았어요'+(why?' ('+why+')':'')+'. 구글 설정에서 이 계정이 "테스트 사용자"로 들어 있는지 확인해 주세요.');
+  if(x.status===0)return new Error('유튜브에 연결하지 못했어요. 구글 설정의 "승인된 자바스크립트 원본"에 이 사이트 주소('+location.origin+')가 들어 있는지 확인해 주세요.');
+  return new Error('유튜브가 올리기를 받아 주지 않았어요'+(msg?': '+msg:' ('+x.status+')')+'.');
+}
+async function ytUpload(){
+  if(YT.busy)return;
+  if(!VD.blob){ytMsg('먼저 영상을 만들어 주세요.');return;}
+  const P=VD.post||(VD.post=vPostDraft()),k=VD.blobFmt==='h'?'yl':'ys',pd=P[k];
+  const title=String(pd.t||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,100);
+  if(!title){ytMsg('제목을 적어 주세요.');return;}
+  const desc=String(pd.d||'').replace(/[<>]/g,'').slice(0,4800);
+  const raw=k==='yl'?String(pd.g||'').split(','):(String(pd.d||'').match(/#[^\s#]+/g)||[]).map(x=>x.slice(1));
+  const tags=[];let tl=0;raw.forEach(t=>{t=String(t).replace(/[<>,]/g,'').trim();if(t&&tags.indexOf(t)<0&&tl+t.length+1<=450){tags.push(t);tl+=t.length+1;}});
+  YT.busy=true;YT.cancel=false;YT.res=null;$('#ytGo').disabled=true;$('#ytClose').textContent='멈추기';
+  const rs=$('#ytRes');if(rs)rs.hidden=true;
+  try{
+    ytMsg('구글 로그인을 확인하는 중이에요…',3);
+    const tok=await ytToken();
+    if(YT.cancel)throw {code:'cancel'};
+    ytMsg('유튜브에 올릴 준비를 하는 중이에요…',8);
+    const type=VD.blob.type||(VD.ext==='mp4'?'video/mp4':'video/webm');
+    const meta=ai=>({snippet:{title:title,description:desc,tags:tags,categoryId:'22'},status:Object.assign({privacyStatus:YT.priv,selfDeclaredMadeForKids:false},ai?{containsSyntheticMedia:true}:{})});
+    const init=ai=>ytReq('POST',YT_API,{headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json; charset=UTF-8','X-Upload-Content-Length':String(VD.blob.size),'X-Upload-Content-Type':type},body:JSON.stringify(meta(ai))});
+    let x=await init(!!YT.ai);
+    if(x.status===400&&YT.ai&&/containsSyntheticMedia/i.test(x.responseText||''))x=await init(false);   // 유튜브가 이 항목을 모르면 빼고 다시 해요
+    if(x.status!==200)throw ytErr(x);
+    const loc=x.getResponseHeader('Location');
+    if(!loc)throw new Error('유튜브가 올릴 주소를 알려 주지 않았어요. 한 번 더 눌러 주세요.');
+    ytMsg('올리는 중이에요… 0%',10);
+    const up=await ytReq('PUT',loc,{headers:{'Content-Type':type},body:VD.blob,onProgress:e=>{if(e.lengthComputable){const p=e.loaded/e.total;ytMsg('올리는 중이에요… '+Math.round(p*100)+'% · 창을 닫지 마세요',10+Math.round(p*85));}}});
+    if(up.status!==200&&up.status!==201)throw ytErr(up);
+    let v={};try{v=JSON.parse(up.responseText||'{}');}catch(e){}
+    if(!v.id)throw new Error('올렸지만 영상 주소를 받지 못했어요. 유튜브 스튜디오에서 확인해 주세요.');
+    const got=(v.status&&v.status.privacyStatus)||YT.priv;
+    YT.res={id:v.id,k:k,priv:got,asked:YT.priv,title:title};
+    YT.log.unshift({id:v.id,t:title,at:new Date().toISOString().slice(0,16).replace('T',' '),p:got,k:k});YT.log=YT.log.slice(0,8);
+    try{localStorage.setItem('wj-ytlog',JSON.stringify(YT.log));}catch(e){}
+    ytMsg('유튜브에 올렸어요!',100);
+    ytShowRes();ytShowLog();
+  }catch(e){
+    ytMsg(e&&e.code==='cancel'?'멈췄어요.':e&&e.message==='net'?ytErr({status:0}).message:(e&&e.message)||'올리지 못했어요. 한 번 더 눌러 주세요.');
+  }finally{YT.busy=false;YT.xhr=null;const g=$('#ytGo'),c=$('#ytClose');if(g)g.disabled=false;if(c)c.textContent='닫기';}
+}
+function ytShowRes(){
+  const r=YT.res,box=$('#ytRes');if(!box||!r)return;
+  const sh=x=>String(YT_PRIV[x]||x).split(' (')[0];
+  const link=(r.k==='ys'?'https://www.youtube.com/shorts/':'https://www.youtube.com/watch?v=')+encodeURIComponent(r.id);
+  box.hidden=false;
+  box.innerHTML='<div class="confirm" style="display:block;background:var(--accent-soft);color:var(--ink)">올렸어요 · 공개 범위: <b>'+esc(sh(r.priv))+'</b>'
+   +(r.priv!==r.asked?'<br>“'+esc(sh(r.asked))+'”를 골랐지만 유튜브가 “'+esc(sh(r.priv))+'”로 올렸어요. 새 구글 프로젝트는 유튜브 심사 전까지 비공개로만 올라가는 규칙 때문이에요. 유튜브 스튜디오에서 공개로 바꿔 주세요.':(r.priv==='private'?'<br>나만 볼 수 있어요. 공개하려면 유튜브 스튜디오에서 공개로 바꿔 주세요.':''))+'</div>'
+   +'<div class="acts" style="justify-content:flex-start"><a class="btn sm primary" href="'+link+'" target="_blank" rel="noopener noreferrer">올린 영상 보기</a>'
+   +'<a class="btn sm" href="https://studio.youtube.com/video/'+encodeURIComponent(r.id)+'/edit" target="_blank" rel="noopener noreferrer">유튜브 스튜디오에서 열기(공개 바꾸기)</a></div>';
+}
+function ytShowLog(){
+  const b=$('#ytLog');if(!b)return;
+  b.innerHTML=YT.log.length?'<b class="hint">올린 기록 (이 브라우저에 저장돼요)</b><div class="ytlog">'+YT.log.map(l=>'<div><a href="https://www.youtube.com/watch?v='+encodeURIComponent(l.id)+'" target="_blank" rel="noopener noreferrer">'+esc(l.t)+'</a> · '+esc(l.at)+' · '+esc((YT_PRIV[l.p]||l.p).split(' (')[0])+'</div>').join('')+'</div>':'';
+}
+function showPost(msg){
+  const P=VD.post||(VD.post=vPostDraft()),k=VD.blobFmt==='h'?'yl':'ys',pd=P[k],have=!!VD.blob;
+  if(YT.ai===null)YT.ai=aiCount()>0;
+  const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
+  const fld=(f,label,rows)=>'<div class="f"><span>'+label+'</span>'+(rows?'<textarea data-yp="'+f+'" rows="'+rows+'">'+esc(pd[f])+'</textarea>':'<input type="text" data-yp="'+f+'" value="'+esc(pd[f])+'">')+'</div>';
+  veil.hidden=false;
+  ytLoadGsi().catch(()=>{});   // 로그인 도구를 미리 받아 둬요(눌렀을 때 로그인 창이 바로 뜨게)
+  veil.innerHTML='<div class="dlg ytd" role="dialog" aria-modal="true" aria-label="영상 자동 등록" style="width:min(680px,100%)"><h2>영상 자동 등록 · 유튜브에 바로 올리기</h2>'
+   +'<div class="tip">만든 영상을 <b>유튜브(쇼츠·일반 영상)에 이 창에서 바로 올려요</b>. 처음 한 번만 구글 설정(약 10분)이 필요해요. 로그인은 구글 창에서 하고, 비밀번호는 이 앱이 보지 못해요.</div>'
+   +(have?'<div class="msg">올릴 영상: <b>'+(VD.blobFmt==='h'?'가로':'세로')+' 영상 (.'+VD.ext+', '+(VD.blob.size/1048576).toFixed(1)+'MB)</b> → '+(k==='ys'?'유튜브 쇼츠':'유튜브 일반 영상')+'</div>'
+     :'<div class="confirm" style="display:block">아직 만든 영상이 없어요. 먼저 영상을 만들어 주세요. <button class="btn sm" id="ytMake" type="button">영상 만들러 가기</button></div>')
+   +'<details class="sub"'+(YT.cid?'':' open')+'><summary>처음 한 번: 구글에서 "클라이언트 ID" 받기</summary><div class="body"><ol>'
+   +'<li><a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener noreferrer">구글 클라우드 콘솔</a>에 유튜브 채널이 있는 구글 계정으로 들어가 새 프로젝트를 만듭니다.</li>'
+   +'<li>"API 및 서비스 → 라이브러리"에서 <b>YouTube Data API v3</b>를 찾아 "사용"을 누릅니다.</li>'
+   +'<li>"OAuth 동의 화면"에서 "외부"를 고르고 앱 이름·이메일을 적습니다. "테스트 사용자"에 <b>유튜브 채널의 구글 이메일</b>을 추가합니다.</li>'
+   +'<li>"사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID"를 누르고 유형은 <b>웹 애플리케이션</b>으로 합니다.</li>'
+   +'<li>"승인된 자바스크립트 원본"에 이 사이트 주소 <code>'+esc(location.origin)+'</code> 를 넣고(맨 끝에 / 없이) 만듭니다.</li>'
+   +'<li>나온 <b>클라이언트 ID</b>(…apps.googleusercontent.com)를 아래 칸에 붙여 넣습니다. 클라이언트 보안 비밀번호는 필요 없어요.</li></ol>'
+   +'<div class="hint">처음 로그인하면 구글이 "확인되지 않은 앱" 화면을 보여 줘요. 내가 만든 앱이라 정상이에요. "고급 → 이동"을 누르면 돼요.</div></div></details>'
+   +'<div class="f"><span>구글 클라이언트 ID</span><input type="text" id="ytCid" placeholder="예: 1234567890-abcdef.apps.googleusercontent.com" value="'+esc(YT.cid)+'" autocomplete="off"></div>'
+   +'<div class="opts"><b class="hint">올릴 내용 (상세페이지 글에서 가져왔어요. 고쳐서 올리세요)</b>'+fld('t','제목')+fld('d','설명',6)+(k==='yl'?fld('g','태그 (쉼표로 나눠요)'):'')+'</div>'
+   +'<div class="opts"><b class="hint">공개 범위</b>'+Object.keys(YT_PRIV).map(v=>radio('ytpriv',v,YT.priv,YT_PRIV[v])).join('')+'</div>'
+   +'<div class="hint">구글 클라우드에 새로 만든 프로젝트는 유튜브 심사 전까지 "공개"를 골라도 <b>비공개로 올라가요</b>(유튜브 규칙). 올린 뒤 유튜브 스튜디오에서 공개로 바꾸면 돼요.</div>'
+   +'<label class="chk"><input type="checkbox" id="ytAi"'+(YT.ai?' checked':'')+'> AI로 만든 사진이 들어 있어요 (유튜브에 "AI 생성 콘텐츠"로 알려요)</label>'
+   +'<div class="bar" id="ytBar" hidden><i></i></div><div class="msg" id="ytMsg" aria-live="polite">'+esc(msg||'')+'</div><div id="ytRes" hidden></div>'
+   +'<div class="acts"><button class="btn" id="ytClose" type="button">닫기</button><button class="btn primary" id="ytGo" type="button"'+(have?'':' disabled')+'>유튜브에 올리기</button></div>'
+   +'<div id="ytLog"></div>'
+   +'<div class="blk"><h3>인스타그램 릴스 · 틱톡은요?</h3><div class="hint">이 앱만으로는 자동으로 올릴 수 없어요. 인스타그램은 영상이 인터넷 주소로 올라가 있어야 하고 메타(페이스북)의 승인이 필요해요. 틱톡도 승인 전에는 비공개로만 올라간다고 알려져 있어요. 지금은 영상 만들기 창의 <b>올릴 곳</b>에서 문구를 복사하고 바로가기로 올려 주세요. 자동으로 올리려면 Make 같은 자동화 서비스에 인스타그램·틱톡 계정을 연결하는 방법이 있고, 계정 연결은 회사가 직접 해야 해요.</div>'
+   +'<div class="acts"><button class="btn sm" id="ytToVideo" type="button">올릴 곳 문구·바로가기 열기</button></div></div></div>';
+  $('#ytClose').onclick=()=>{if(YT.busy){YT.cancel=true;try{if(YT.xhr)YT.xhr.abort();}catch(e){}}else veil.hidden=true;};
+  $('#ytGo').onclick=ytUpload;
+  const mk=$('#ytMake');if(mk)mk.onclick=()=>showVideo();
+  $('#ytToVideo').onclick=()=>showVideo();
+  $('#ytCid').oninput=e=>{YT.cid=e.target.value.trim();YT.token='';try{localStorage.setItem('wj-ytcid',YT.cid);}catch(x){}};
+  $('#ytAi').onchange=e=>{YT.ai=e.target.checked;};
+  $$('input[name=ytpriv]',veil).forEach(r=>r.onchange=()=>{YT.priv=r.value;});
+  $$('[data-yp]',veil).forEach(el=>el.oninput=()=>{pd[el.dataset.yp]=el.value;});
+  ytShowRes();ytShowLog();
+}
+
 /* ============ 한 번에 만들기: 글과 이미지를 동시에 → 저장 창 ============ */
 let oneBusy=false;
 async function runOne(go){
@@ -1969,7 +2149,7 @@ side.addEventListener('change',e=>{
   else if(d.lv!==undefined){setLever(t.value,false);renderSide();refresh();}
   else if(d.dir!==undefined){S.colors.items[+d.dir].flip=t.value==='R';renderSide();refresh();}
   else if(d.ic!==undefined){S.zoom.items[+d.ic].ic=t.value;refresh();}
-  else if(d.sz!==undefined){S.size[d.sz]=t.value;if(d.sz==='shape')renderSide();refresh();}
+  else if(d.sz!==undefined){S.size[d.sz]=t.value;if(d.sz==='shape'){S.size.shapeSet='user';renderSide();}refresh();}
   else if(d.basen!==undefined){S.baseN=+t.value;renderSide();updInfo();}
 });
 side.addEventListener('input',e=>{
@@ -1989,7 +2169,8 @@ side.addEventListener('drop',e=>{const t=e.target.closest('.thumb');if(!t||!t.da
 /* 윗줄 버튼 */
 $('#btnOne').onclick=()=>runOne(false);
 $('#btnExport').onclick=()=>{EX.busy=false;EX.cancel=false;showExport();};
-$('#btnVideo').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy)return;showVideo();};
+$('#btnVideo').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;showVideo();};
+$('#btnPost').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;showPost();};
 $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>$('#loadFile').click();
 $('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
@@ -2010,7 +2191,7 @@ $('#btnNew').onclick=()=>{
 try{if(/[?&]t=\d+/.test(location.search))history.replaceState(null,'',location.pathname);}catch(e){}   // 주소에 붙인 시간 표시는 새 화면이 뜨면 지워요
 let LASTACT=Date.now();
 ['pointerdown','keydown','input','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{LASTACT=Date.now();},{passive:true,capture:true}));
-const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||!veil.hidden;
+const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||YT.busy||!veil.hidden;
 let updTimer=0;
 async function checkUpdate(mode){
   if(!/^https?:$/.test(location.protocol))return;
