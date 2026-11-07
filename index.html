@@ -278,7 +278,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 68</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 69</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -328,7 +328,8 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v66 (2026-11-06): 크기 안내에 캡 모양(원형·직사각형) 선택과 직사각형 캡 가로·세로 치수를 더함 */
 /* v67 (2026-11-06): 윗줄에 '상세페이지로 영상 만들기' 버튼(세로 9:16 영상, 구역·속도·배경음 선택)을 더함 */
 /* v68 (2026-11-07): 영상에 가로 16:9(유튜브 일반 영상)를 더하고, 만든 뒤 '올릴 곳'(유튜브 쇼츠·인스타그램 릴스·틱톡·유튜브) 제목·설명·해시태그·바로가기를 보여 줌 */
-const PW=860,LS='wj-dp-v3',VER=68,SITE='https://wjwj1935-wq.github.io/-/';
+/* v69 (2026-11-07): 자동 업그레이드가 알아서 되게 고침(열 때·돌아올 때 바로, 열어 둔 채는 쉬는 때, 캐시를 피하는 주소, 같은 버전은 최대 2번 시도) */
+const PW=860,LS='wj-dp-v3',VER=69,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -2003,22 +2004,39 @@ $('#btnNew').onclick=()=>{
 };
 
 /* ============ 자동 업그레이드(인터넷 주소로 열었을 때만) ============
-   열 때마다 최신 버전인지 확인해서, 새 버전이 있으면 스스로 새로고침해요. 작업은 자동 저장돼 있어서 그대로 이어져요.
-   (한 번 새로고침했는데도 옛 화면이면 무한 반복하지 않고 맨 위에 "새 버전이 나왔어요" 버튼만 보여요) */
-async function checkUpdate(auto){
+   새 버전이 나오면 스스로 새로고침해서 바꿔요. 작업은 자동 저장돼 있어서 그대로 이어져요.
+   - 열 때, 다른 창에 갔다가 돌아올 때: 바로 바꿔요.
+   - 열어 둔 채로 있을 때: 1분마다 확인하고, 45초 동안 아무것도 안 만졌을 때 바꿔요.
+   - 사진·글을 만드는 중, 영상 녹화 중, 창이 열려 있을 때는 끝난 뒤에 바꿔요(그동안은 맨 위에 "새 버전이 나왔어요" 버튼).
+   - 새로고침 주소에 시간을 붙여서, 인터넷 저장본(캐시)이 옛 화면을 줘도 새 화면을 받아요.
+   - 같은 버전은 한 창에서 최대 2번만 자동으로 시도해요(무한 반복 방지). 그래도 안 바뀌면 버튼만 보여요. */
+try{if(/[?&]t=\d+/.test(location.search))history.replaceState(null,'',location.pathname);}catch(e){}   // 주소에 붙인 시간 표시는 새 화면이 뜨면 지워요
+let LASTACT=Date.now();
+['pointerdown','keydown','input','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{LASTACT=Date.now();},{passive:true,capture:true}));
+const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||!veil.hidden;
+let updTimer=0;
+async function checkUpdate(mode){
   if(!/^https?:$/.test(location.protocol))return;
   try{
     const r=await fetch('version.json?'+Date.now(),{cache:'no-store'}),d=await r.json();
     if(!(d&&d.v>VER))return;
-    const go=()=>{try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}try{if(G.key.trim()||C.key.trim())sessionStorage.setItem('wj-kt',JSON.stringify({g:G.key,c:C.key}));}catch(e){}location.href=location.pathname+'?v='+d.v;};
-    let tried=0;try{tried=Number(sessionStorage.getItem('wj-upd')||0);}catch(e){}
-    const busy=G.busy||oneBusy||EX.busy||VD.busy||!veil.hidden;
-    if(auto&&!busy&&tried!==d.v){try{sessionStorage.setItem('wj-upd',String(d.v));}catch(e){}go();return;}
-    const c=$('#updChip');c.hidden=false;c.onclick=go;
+    const go=()=>{try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}try{if(G.key.trim()||C.key.trim())sessionStorage.setItem('wj-kt',JSON.stringify({g:G.key,c:C.key}));}catch(e){}location.href=location.pathname+'?v='+d.v+'&t='+Date.now();};
+    const chipOn=()=>{const c=$('#updChip');c.hidden=false;c.onclick=go;};
+    let tried={};try{tried=JSON.parse(sessionStorage.getItem('wj-upd2')||'{}')||{};}catch(e){tried={};}
+    const n=Number(tried[d.v]||0),idle=Date.now()-LASTACT>45000;
+    if(!updBusy()&&n<2&&(mode!=='tick'||idle)){
+      let saved=false;try{tried[d.v]=n+1;sessionStorage.setItem('wj-upd2',JSON.stringify(tried));saved=true;}catch(e){}
+      if(saved){   // 시도 횟수를 적어 둘 수 있을 때만 자동으로 바꿔요(못 적으면 무한 반복할 수 있어서 버튼만 보여요)
+        toast('새 버전('+d.v+')으로 바꿔요. 작업은 그대로 이어져요.',1500);
+        clearTimeout(updTimer);updTimer=setTimeout(()=>{if(updBusy())chipOn();else go();},1100);
+        return;
+      }
+    }
+    chipOn();
   }catch(e){}
 }
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate(false);});   // 창으로 돌아오면 버튼으로만 알려요(작업 중 갑자기 바뀌지 않게)
-setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
+setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
 /* ============ 시작 ============ */
 (async()=>{
@@ -2029,7 +2047,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate(false);},300000);
   else if(await ensureMask()){if(S.src&&PM&&PM.id===S.src.id&&PM.dir&&(!S.lvDir||S.lvDir.id!==S.src.id))setLever(PM.dir,true);renderSide();refresh();}                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
   (async()=>{if(G.key.trim())await gCheck();})();   // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
-  checkUpdate(true);                                         // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
+  checkUpdate('open');                                       // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
 })();
 })();
 </script>
