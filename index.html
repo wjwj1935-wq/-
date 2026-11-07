@@ -280,7 +280,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 72</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 73</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -335,7 +335,8 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
-const PW=860,LS='wj-dp-v3',VER=72,SITE='https://wjwj1935-wq.github.io/-/';
+/* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
+const PW=860,LS='wj-dp-v3',VER=73,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1581,15 +1582,15 @@ async function runExport(){
   }catch(e){exMsg(e&&e.code==='cancel'?'멈췄어요.':e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':(e&&e.message)||'저장하지 못했어요. 한 번 더 눌러 주세요.');}
   finally{host.remove();EX.busy=false;const g=$('#exGo'),c=$('#exClose');if(g)g.disabled=false;if(c)c.textContent='닫기';}
 }
-veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!VD.busy&&!YT.busy)veil.hidden=true;});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!VD.busy&&!YT.busy)veil.hidden=true;});
+veil.addEventListener('click',e=>{if(e.target===veil&&!EX.busy&&!VD.busy&&!YT.busy&&!MK.busy)veil.hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!veil.hidden&&!EX.busy&&!VD.busy&&!YT.busy&&!MK.busy)veil.hidden=true;});
 
 /* ============ 상세페이지로 영상 만들기: 완성된 구역을 이어 위아래로 천천히 훑는 세로 영상(1080×1920) ============
    '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 화면을 위아래로 움직이며 이 브라우저에서 바로 녹화해요(실시간이라 영상 길이만큼 창을 켜 둬야 해요).
    글·숫자는 상세페이지에 있는 것 그대로이고, 영상에서 새로 지어내거나 더하는 글은 없어요. */
 const VW=1080,VH=1920;
 const VFMT={v:{w:1080,h:1920,ox:0,l:'세로 9:16 · 1080×1920 · 쇼츠·릴스·틱톡'},h:{w:1920,h:1080,ox:420,l:'가로 16:9 · 1920×1080 · 유튜브 일반 영상'}};   // ox: 상세페이지 칸을 놓는 왼쪽 자리(가로는 가운데)
-const VD={speed:'normal',music:'none',fmt:'v',blobFmt:'v',post:null,sel:null,busy:false,cancel:false,url:null,blob:null,ext:'webm'};
+const VD={speed:'normal',music:'none',q:'hi',fmt:'v',blobFmt:'v',post:null,sel:null,busy:false,cancel:false,url:null,blob:null,ext:'webm'};
 const VSPEED={slow:{l:'천천히',v:300,hold:1.8},normal:{l:'보통',v:480,hold:1.3},fast:{l:'빠르게',v:760,hold:.9}};   // v: 움직이는 속도(영상 픽셀/초), hold: 멈춰 보여 주는 시간(초)
 const VEND=2.2,VOFF=/회사소개|설치안내|질문|구매전확인/;                                                           // 글이 많은 구역은 처음에 꺼 두고, 마지막 화면은 더 오래 보여 줘요
 const VMOODS={bright:{l:'밝게',bpm:112,ch:[[60,64,67],[67,71,74],[69,72,76],[65,69,72]],pluck:1,kick:1,hat:1,clap:0,pad:.07},
@@ -1650,6 +1651,7 @@ function showVideo(msg){
    +'<div class="opts"><b class="hint">영상 모양</b>'+Object.keys(VFMT).map(k=>radio('vfmt',k,VD.fmt,VFMT[k].l)).join('')+'</div>'
    +'<div class="opts"><b class="hint">영상에 넣을 장면 (위에서 아래 순서로 나와요)</b>'+names.map(n=>{const has=!!VD.h[n];return '<label class="opt"><input type="checkbox" data-vsec="'+esc(n)+'"'+(has&&VD.sel[n]?' checked':'')+(has?'':' disabled')+'><div><b>'+esc(vName(n))+'</b>'+(has?'':'<div class="hint">비어 있어서 영상에서 빠져요</div>')+'</div></label>';}).join('')+'</div>'
    +'<div class="opts"><b class="hint">움직이는 속도</b>'+Object.keys(VSPEED).map(k=>radio('vspeed',k,VD.speed,VSPEED[k].l)).join('')+'</div>'
+   +'<div class="opts"><b class="hint">용량 (Make로 자동 등록할 때는 "작게"를 고르세요)</b>'+radio('vq','hi',VD.q,'보통 · 화질이 좋아요(파일이 커요)')+radio('vq','lo',VD.q,'작게 · 자동 등록용(약 5MB 이하를 목표로 해요. 영상이 길수록 화질이 낮아져요)')+'</div>'
    +'<div class="opts"><b class="hint">배경음 (이 앱이 직접 만드는 음악이라 저작권 걱정이 없어요)</b>'+radio('vmusic','none',VD.music,'없음 · 올릴 때 앱에서 음악을 따로 고를 거예요')+Object.keys(VMOODS).map(k=>radio('vmusic',k,VD.music,VMOODS[k].l)).join('')+'</div>'
    +'<div class="msg" id="vdEst"></div>'
    +'<div class="bar" id="vdBar" hidden><i></i></div><div class="msg" id="vdMsg" aria-live="polite">'+esc(msg||'')+'</div><div id="vdPrev" class="vdprev" hidden></div>'
@@ -1658,6 +1660,7 @@ function showVideo(msg){
   $('#vdGo').onclick=runVideo;
   $$('input[data-vsec]',veil).forEach(c=>c.onchange=()=>{VD.sel[c.dataset.vsec]=c.checked;vUpdEst();});
   $$('input[name=vspeed]',veil).forEach(r=>r.onchange=()=>{VD.speed=r.value;vUpdEst();});
+  $$('input[name=vq]',veil).forEach(r=>r.onchange=()=>{VD.q=r.value;});
   $$('input[name=vfmt]',veil).forEach(r=>r.onchange=()=>{VD.fmt=r.value;vUpdEst();});
   $$('input[name=vmusic]',veil).forEach(r=>r.onchange=()=>{VD.music=r.value;});
   vUpdEst();
@@ -1799,7 +1802,8 @@ async function runVideo(){
     const withSound=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus'];
     const silent=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
     const mime=((snd&&snd.tracks.length)?withSound:silent).find(sup)||'';
-    rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:8000000}:{videoBitsPerSecond:8000000});
+    const vbps=VD.q==='lo'?Math.max(250000,Math.min(8000000,Math.floor(4300000*8/Math.max(4,plan.total)-80000))):8000000;   // 작게: 약 4.3MB 안에 들어오도록 영상 길이에 맞춰 화질을 낮춰요
+    rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:vbps}:{videoBitsPerSecond:vbps});
     const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
     const stopped=new Promise(r=>{rec.onstop=r;});
     draw(0);rec.start(500);
@@ -1945,8 +1949,8 @@ function showPost(msg){
   const fld=(f,label,rows)=>'<div class="f"><span>'+label+'</span>'+(rows?'<textarea data-yp="'+f+'" rows="'+rows+'">'+esc(pd[f])+'</textarea>':'<input type="text" data-yp="'+f+'" value="'+esc(pd[f])+'">')+'</div>';
   veil.hidden=false;
   ytLoadGsi().catch(()=>{});   // 로그인 도구를 미리 받아 둬요(눌렀을 때 로그인 창이 바로 뜨게)
-  veil.innerHTML='<div class="dlg ytd" role="dialog" aria-modal="true" aria-label="영상 자동 등록" style="width:min(680px,100%)"><h2>영상 자동 등록 · 유튜브에 바로 올리기</h2>'
-   +'<div class="tip">만든 영상을 <b>유튜브(쇼츠·일반 영상)에 이 창에서 바로 올려요</b>. 처음 한 번만 구글 설정(약 10분)이 필요해요. 로그인은 구글 창에서 하고, 비밀번호는 이 앱이 보지 못해요.</div>'
+  veil.innerHTML='<div class="dlg ytd" role="dialog" aria-modal="true" aria-label="영상 자동 등록" style="width:min(680px,100%)"><h2>영상 자동 등록</h2>'
+   +'<div class="tip">만든 영상을 자동으로 올리는 방법이 두 가지예요. <b>① 유튜브에 바로</b>: 아래 유튜브 칸에서 이 창이 직접 올려요(구글 설정 약 10분, 비밀번호는 이 앱이 보지 못해요). <b>② Make 연결</b>: 맨 아래 칸에서 인스타그램 릴스·페이스북·유튜브를 대표님 Make에 맡겨요(채널마다 로그인 승인 1번).</div>'
    +(have?'<div class="msg">올릴 영상: <b>'+(VD.blobFmt==='h'?'가로':'세로')+' 영상 (.'+VD.ext+', '+(VD.blob.size/1048576).toFixed(1)+'MB)</b> → '+(k==='ys'?'유튜브 쇼츠':'유튜브 일반 영상')+'</div>'
      :'<div class="confirm" style="display:block">아직 만든 영상이 없어요. 먼저 영상을 만들어 주세요. <button class="btn sm" id="ytMake" type="button">영상 만들러 가기</button></div>')
    +'<details class="sub"'+(YT.cid?'':' open')+'><summary>처음 한 번: 구글에서 "클라이언트 ID" 받기</summary><div class="body"><ol>'
@@ -1965,7 +1969,8 @@ function showPost(msg){
    +'<div class="bar" id="ytBar" hidden><i></i></div><div class="msg" id="ytMsg" aria-live="polite">'+esc(msg||'')+'</div><div id="ytRes" hidden></div>'
    +'<div class="acts"><button class="btn" id="ytClose" type="button">닫기</button><button class="btn primary" id="ytGo" type="button"'+(have?'':' disabled')+'>유튜브에 올리기</button></div>'
    +'<div id="ytLog"></div>'
-   +'<div class="blk"><h3>인스타그램 릴스 · 틱톡은요?</h3><div class="hint">이 앱만으로는 자동으로 올릴 수 없어요. 인스타그램은 영상이 인터넷 주소로 올라가 있어야 하고 메타(페이스북)의 승인이 필요해요. 틱톡도 승인 전에는 비공개로만 올라간다고 알려져 있어요. 지금은 영상 만들기 창의 <b>올릴 곳</b>에서 문구를 복사하고 바로가기로 올려 주세요. 자동으로 올리려면 Make 같은 자동화 서비스에 인스타그램·틱톡 계정을 연결하는 방법이 있고, 계정 연결은 회사가 직접 해야 해요.</div>'
+   +mkHtml()
+   +'<div class="blk"><h3>틱톡 · 그 밖의 곳은요?</h3><div class="hint">틱톡은 승인 전에는 비공개로만 올라간다고 알려져 있어서 자동 등록에서 뺐어요. 영상 만들기 창의 <b>올릴 곳</b>에서 문구를 복사하고 바로가기로 올려 주세요. 인스타그램·페이스북·유튜브는 위 "Make 연결"로 자동 등록할 수 있어요.</div>'
    +'<div class="acts"><button class="btn sm" id="ytToVideo" type="button">올릴 곳 문구·바로가기 열기</button></div></div></div>';
   $('#ytClose').onclick=()=>{if(YT.busy){YT.cancel=true;try{if(YT.xhr)YT.xhr.abort();}catch(e){}}else veil.hidden=true;};
   $('#ytGo').onclick=ytUpload;
@@ -1975,7 +1980,80 @@ function showPost(msg){
   $('#ytAi').onchange=e=>{YT.ai=e.target.checked;};
   $$('input[name=ytpriv]',veil).forEach(r=>r.onchange=()=>{YT.priv=r.value;});
   $$('[data-yp]',veil).forEach(el=>el.oninput=()=>{pd[el.dataset.yp]=el.value;});
-  ytShowRes();ytShowLog();
+  ytShowRes();ytShowLog();mkWire();
+}
+
+/* ============ Make 연결: 인스타그램 릴스·페이스북·유튜브 자동 등록을 대표님 Make에 맡겨요 ============
+   이 앱은 영상 파일과 문구를 '자동화 주소(Make 웹훅)'로 보내기만 해요. 채널 로그인 승인(토큰)은 Make가 보관하고, 이 앱은 채널 비밀번호·키를 다루지 않아요.
+   Make 주소(https://hook.…make.com/…)만 받아요. 주소는 이 브라우저에만 저장돼요. */
+const MK={hook:'',sel:{instagram:true,facebook:true,youtube:false},busy:false,log:[]};
+try{MK.hook=localStorage.getItem('wj-mkhook')||'';MK.log=JSON.parse(localStorage.getItem('wj-mklog')||'[]')||[];}catch(e){}
+const MK_MAX=4.8*1048576;   // Make 받는 주소(웹훅)가 한 번에 받는 크기는 약 5MB까지예요
+const MK_CH={instagram:{n:'인스타그램 릴스',f:'v'},facebook:{n:'페이스북 페이지',f:'both'},youtube:{n:'유튜브 (Make로 올리기)',f:'both'}};
+const mkOk=u=>{try{const x=new URL(u);return x.protocol==='https:'&&/(^|\.)(make|integromat)\.com$/.test(x.hostname);}catch(e){return false;}};
+const mkMsg=t=>{const m=$('#mkMsg');if(m)m.textContent=t;};
+function mkShowLog(){
+  const b=$('#mkLog');if(!b)return;
+  b.innerHTML=MK.log.length?'<b class="hint">보낸 기록 (이 브라우저에 저장돼요)</b><div class="ytlog">'+MK.log.map(l=>'<div>'+esc(l.at)+' · '+esc(l.ch)+' · '+esc(l.t)+' · <b>'+esc(l.r)+'</b></div>').join('')+'</div>':'';
+}
+function mkHtml(){
+  const fmt=VD.blobFmt||'v',have=!!VD.blob,big=have&&VD.blob.size>MK_MAX;
+  const chs=Object.keys(MK_CH).filter(k=>MK_CH[k].f==='both'||MK_CH[k].f===fmt);
+  return '<div class="blk" id="mkBlk"><h3>인스타그램 릴스 · 페이스북 · 유튜브 자동 등록 (Make 연결)</h3>'
+   +'<div class="hint">대표님 Make가 영상을 받아 각 채널에 올려 줘요. 채널 로그인 승인은 Make에서 채널마다 한 번만 하면 돼요. 이 앱은 아래 "자동화 주소"로 영상과 문구를 보내기만 해요.</div>'
+   +'<div class="f"><span>자동화 주소 (Make 웹훅)</span><input type="text" id="mkHook" placeholder="https://hook.eu1.make.com/…" value="'+esc(MK.hook)+'" autocomplete="off"></div>'
+   +'<div class="hint" id="mkHookMsg"></div>'
+   +'<div class="opts"><b class="hint">올릴 곳 (위 "올릴 내용"의 글이 같이 가요)</b>'+chs.map(k=>'<label class="opt"><input type="checkbox" data-mk="'+k+'"'+(MK.sel[k]?' checked':'')+'><div><b>'+esc(MK_CH[k].n)+'</b></div></label>').join('')+'</div>'
+   +(have?'<div class="msg">보낼 영상: <b>'+(fmt==='h'?'가로':'세로')+' 영상 · '+(VD.blob.size/1048576).toFixed(1)+'MB</b></div>':'<div class="hint">먼저 영상을 만들어 주세요.</div>')
+   +(big?'<div class="confirm" style="display:block">자동화로는 약 5MB 이하만 보낼 수 있어요. 영상 만들기 창에서 <b>용량 "작게"</b>를 고르고 다시 만들어 주세요.</div>':'')
+   +'<div class="acts"><button class="btn primary" id="mkGo" type="button"'+(have?'':' disabled')+'>선택한 곳에 자동 등록 보내기</button></div>'
+   +'<div class="msg" id="mkMsg" aria-live="polite"></div><div id="mkLog"></div></div>';
+}
+function mkWire(){
+  const h=$('#mkHook');if(!h)return;
+  const chk=()=>{const m=$('#mkHookMsg');if(m)m.textContent=!MK.hook?'':mkOk(MK.hook)?'주소 모양이 맞아요.':'Make 주소(https://hook.…make.com/…)가 아니에요. Make에서 받은 주소를 그대로 붙여 넣어 주세요.';};
+  h.oninput=e=>{MK.hook=e.target.value.trim();try{localStorage.setItem('wj-mkhook',MK.hook);}catch(x){}chk();};
+  $$('input[data-mk]',veil).forEach(c=>c.onchange=()=>{MK.sel[c.dataset.mk]=c.checked;});
+  $('#mkGo').onclick=mkSend;
+  chk();mkShowLog();
+}
+async function mkSend(){
+  if(MK.busy)return;
+  if(!VD.blob){mkMsg('먼저 영상을 만들어 주세요.');return;}
+  if(!mkOk(MK.hook)){mkMsg('자동화 주소를 먼저 넣어 주세요. Make에서 받은 주소(https://hook.…make.com/…)를 붙여 넣으면 돼요.');return;}
+  const fmt=VD.blobFmt||'v',list=Object.keys(MK_CH).filter(k=>MK.sel[k]&&(MK_CH[k].f==='both'||MK_CH[k].f===fmt));
+  if(!list.length){mkMsg('올릴 곳을 하나 이상 골라 주세요.');return;}
+  if(VD.blob.size>MK_MAX){mkMsg('영상이 '+(VD.blob.size/1048576).toFixed(1)+'MB라서 자동화로 보낼 수 없어요(약 5MB 이하만 보내져요). 영상 만들기 창에서 용량 "작게"를 고르고 다시 만들어 주세요.');return;}
+  if(navigator.onLine===false){mkMsg('인터넷에 연결되어 있지 않아요. 연결을 확인하고 다시 눌러 주세요.');return;}
+  const P=VD.post||(VD.post=vPostDraft()),yk=fmt==='h'?'yl':'ys',yb=P[yk];
+  MK.busy=true;{const g=$('#mkGo');if(g)g.disabled=true;}
+  const ok=[],unsure=[],bad=[];
+  try{
+    for(const ch of list){
+      mkMsg('보내는 중이에요… '+MK_CH[ch].n+' ('+(ok.length+unsure.length+bad.length+1)+'/'+list.length+') · 창을 닫지 마세요');
+      const fd=new FormData();
+      fd.append('platform',ch);
+      fd.append('format',fmt==='h'?'horizontal':'vertical');
+      fd.append('product',String(S.sellName||S.name||''));
+      fd.append('title',ch==='instagram'?'':String(yb.t||''));
+      fd.append('description',ch==='youtube'?String(yb.d||''):String(P.ig.d||yb.d||''));
+      fd.append('tags',fmt==='h'?String(P.yl.g||''):(String(yb.d||'').match(/#[^\s#]+/g)||[]).map(x=>x.slice(1)).join(', '));
+      fd.append('source','wj-detail-page-maker');
+      fd.append('sentAt',new Date().toISOString());
+      fd.append('video',VD.blob,'wj_video_'+Date.now()+'.'+VD.ext);
+      try{const r=await fetch(MK.hook,{method:'POST',body:fd});if(r.ok)ok.push(ch);else bad.push(MK_CH[ch].n+' ('+r.status+')');}
+      catch(e){unsure.push(ch);}   // 보내진 뒤 Make가 답을 못 읽게 막은 경우일 수 있어요(받았는지 알 수 없음). 같은 것을 또 보내지는 않아요
+    }
+  }finally{MK.busy=false;const g=$('#mkGo');if(g)g.disabled=false;}
+  const name=a=>a.map(c=>MK_CH[c].n).join(', ');
+  let msg='',res='';
+  if(bad.length){msg='보내지 못한 곳이 있어요: '+bad.join(', ')+'. 주소가 맞는지, 영상이 너무 크지 않은지 확인해 주세요.'+(ok.length?' 잘 보낸 곳: '+name(ok)+'.':'');res='실패';}
+  else if(unsure.length){msg='보냈어요: '+name(ok.concat(unsure))+'. 다만 Make가 답을 알려 주지 않아 받았는지는 여기서 확인할 수 없어요. Make의 "실행 기록"에서 확인해 주세요.';res='확인 필요';}
+  else{msg='Make가 잘 받았어요: '+name(ok)+'. 각 채널에 올라가는 데 몇 분 걸릴 수 있어요. 올라갔는지는 채널에서 확인해 주세요.';res='받음';}
+  mkMsg(msg);
+  MK.log.unshift({at:new Date().toISOString().slice(0,16).replace('T',' '),ch:name(list),t:String(yb.t||S.sellName||S.name||'').slice(0,40),r:res});MK.log=MK.log.slice(0,8);
+  try{localStorage.setItem('wj-mklog',JSON.stringify(MK.log));}catch(e){}
+  mkShowLog();
 }
 
 /* ============ 한 번에 만들기: 글과 이미지를 동시에 → 저장 창 ============ */
@@ -2233,7 +2311,7 @@ $('#btnNew').onclick=()=>{
 try{if(/[?&]t=\d+/.test(location.search))history.replaceState(null,'',location.pathname);}catch(e){}   // 주소에 붙인 시간 표시는 새 화면이 뜨면 지워요
 let LASTACT=Date.now();
 ['pointerdown','keydown','input','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{LASTACT=Date.now();},{passive:true,capture:true}));
-const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||YT.busy||!veil.hidden;
+const updBusy=()=>G.busy||oneBusy||EX.busy||VD.busy||YT.busy||MK.busy||!veil.hidden;
 let updTimer=0;
 async function checkUpdate(mode){
   if(!/^https?:$/.test(location.protocol))return;
