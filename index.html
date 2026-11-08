@@ -151,6 +151,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cappick .cp b{font-size:13px}.cappick .cp small{font-size:11px;color:var(--mute)}
 .cappick .cp:hover{border-color:var(--accent)}
 .cappick .cp.on{border-color:var(--accent);background:var(--accent-soft)}.cappick .cp.on svg{fill:#c6d6f4;stroke:var(--accent)}
+.segpick{display:grid;gap:8px}.segpick.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.segpick.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.segpick .sg{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);cursor:pointer;font:inherit}
+.segpick .sg b{font-size:13px}.segpick .sg small{font-size:11px;color:var(--mute)}.segpick .sg:hover{border-color:var(--accent)}
+.segpick .sg.on{border-color:var(--accent);background:var(--accent-soft)}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;z-index:50;box-shadow:var(--shadow);max-width:90vw}
 .toast[hidden]{display:none}
@@ -298,7 +302,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 79</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 80</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -354,6 +358,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v80 (2026-11-08): 치수 그림을 손잡이 앞모습처럼 다시 그림(캡이 뒤, 레버가 캡 위에 겹쳐 캡 중심까지) · 그림 방향을 사진에서 알아본 레버 방향에 자동으로 맞추고 직접 고를 수도 있음 · 총 길이를 '캡까지 포함한 전체' 또는 '캡 중심에서'로 고름 */
 /* v79 (2026-11-08): 캡(카바) 모양 고르기를 사진 넣는 1단계로 옮기고(처음부터 열림) 그림 단추 4개(원형·정사각형·직사각형·라운드형)로 바꿈 · 모양에 따라 적을 치수 칸이 바로 아래에 나옴 */
 /* v78 (2026-11-08): 크기 안내 그림을 총 길이만 적어도 보이게(적지 않은 치수는 점선으로 대략만, 숫자는 안 씀) · 캡 모양을 원형·정사각형·직사각형·모서리가 둥근 사각형 4가지로 넓히고 사진 인식이 알아보게 함 · 캡 모양을 아직 확인하지 않았으면 알려 줌 */
 /* v77 (2026-11-08): 4단계에 '제품 규격'(백셋·적용 문 두께·문 구멍 지름·재질·마감·방향·구성품·제조국·인증) 입력칸과 상세페이지 '제품 규격' 표 구역을 더함 · 적은 것만 나옴 · 영상 글과 쇼핑몰 올리기 안내 글에도 넣음 · 기본 질문 답에서 근거 없는 말(대부분 규격이 비슷해요 / 은회색 계열)을 뺌 */
@@ -361,7 +366,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=79,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=80,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -592,42 +597,52 @@ function box(p,bw,bh,o){
 const CAP_SHAPES=['round','square','rect','rrect'],CAP_NAMES={round:'원형',square:'정사각형',rect:'직사각형',rrect:'모서리가 둥근 사각형'};
 /* 크기 안내: 사장님이 적은 치수(캡 모양·캡 치수·총 길이·총 폭)로 치수 그림과 표를 그려요. 적지 않은 숫자는 절대 채우지 않아요.
    캡 모양 4가지: 원형(지름 하나) · 정사각형(한 변 하나) · 직사각형(가로·세로) · 모서리가 둥근 사각형(가로·세로). 예전 저장본은 shape가 없어서 원형으로 읽어요.
-   총 길이만 적어도 그림이 나와요. 적지 않은 치수(총 폭·캡)는 점선으로 '대략의 모양'만 그리고 숫자는 쓰지 않아요. */
+   총 길이만 적어도 그림이 나와요. 적지 않은 치수(총 폭·캡)는 점선으로 '대략의 모양'만 그리고 숫자는 쓰지 않아요.
+   그림은 손잡이를 앞에서 본 모양이에요: 캡이 뒤에, 레버가 캡 위에 겹쳐서 캡 중심(축)까지 와요. 방향은 사진에서 알아본 레버 방향을 따라요(직접 바꿀 수도 있어요).
+   총 길이 기준: 'full' = 캡까지 포함한 전체(레버 끝~캡 반대쪽 끝), 'center' = 캡 중심에서 레버 끝까지. */
+function capFlip(){   // 그림에서 레버가 오른쪽을 향하면 true (직접 고른 방향 > 사진에서 알아본 방향 > 왼쪽)
+  const Z=S.size||{};if(Z.dir==='L')return false;if(Z.dir==='R')return true;
+  return !!(S.src&&S.lvDir&&S.lvDir.id===S.src.id&&S.lvDir.dir==='R');
+}
 function sizeBlock(ex){
   const Z=S.size||{},num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,''));return n>0&&isFinite(n)?n:0;};
-  const sh=CAP_SHAPES.indexOf(Z.shape)>=0?Z.shape:'round',boxy=sh!=='round',two=sh==='rect'||sh==='rrect';
+  const sh=CAP_SHAPES.indexOf(Z.shape)>=0?Z.shape:'round',boxy=sh!=='round',two=sh==='rect'||sh==='rrect',base=Z.base==='center'?'center':'full',flip=capFlip();
   const L=num(Z.len),W=num(Z.wid),D=num(Z.cap),CW=num(Z.capW),CH=num(Z.capH),fmt=v=>{const t=String(v||'').trim();return /^[0-9.]+$/.test(t)?t+'mm':t;};
   const cw=boxy?CW:D,ch=sh==='round'?D:sh==='square'?CW:CH;   // 캡의 가로·세로 길이(원형이면 둘 다 지름, 정사각형이면 둘 다 한 변)
   const capRows=sh==='round'?[['캡 지름',Z.cap,'size.cap']]:sh==='square'?[['캡 한 변',Z.capW,'size.capW']]:[['캡 가로',Z.capW,'size.capW'],['캡 세로',Z.capH,'size.capH']];
-  const rows=[['총 길이',Z.len,'size.len'],['총 폭',Z.wid,'size.wid']].concat(capRows).concat((Z.extra||[]).map((x,i)=>[x.l,x.v,'size.extra.'+i+'.v'])).filter(r=>String(r[0]||'').trim()&&String(r[1]||'').trim());
+  const rows=[[base==='center'?'총 길이(캡 중심 기준)':'총 길이',Z.len,'size.len'],['총 폭',Z.wid,'size.wid']].concat(capRows).concat((Z.extra||[]).map((x,i)=>[x.l,x.v,'size.extra.'+i+'.v'])).filter(r=>String(r[0]||'').trim()&&String(r[1]||'').trim());
   if(!rows.length)return ex?'':'<div class="sizeph" data-jump="size.len">손잡이 크기('+(sh==='round'?'캡 지름':sh==='square'?'캡 한 변':'캡 가로 · 캡 세로')+' · 총 길이 · 총 폭)를 적으면 여기에 크기 안내가 들어가요</div>';
   const J=p=>ex?'':' data-jump="'+p+'"';
   let dia='',part=false;
   const hasCap=!!(cw&&ch),hasW=!!W;
-  if(L&&(!hasCap||cw<=L*1.02)){
+  if(L&&(!hasCap||cw<=L*(base==='center'?2.04:1.02))){
     part=!hasCap||!hasW;
     const REFS={card:{w:85.6,h:54,t:'신용카드',s:'85.6 × 54mm'},coin:{w:26.5,h:26.5,t:'500원 동전',s:'지름 26.5mm',round:1}},R=REFS[Z.ref]||null;
     const Wd=hasW?W:L*.13,cwd=hasCap?cw:L*(sh==='square'?.36:.42),chd=hasCap?ch:(two?L*.33:cwd),vdim=two&&hasCap;   // 적지 않은 치수는 그림에서만 대략의 크기로 그려요(숫자는 쓰지 않아요)
-    const PWI=736,padX=112,padY=78,vx=vdim?172:0,gap=R?Math.max(14,L*.12):0,tot=L+(R?gap+R.w:0),sc=Math.min(6,(PWI-2*padX-vx)/tot);   // vx: 직사각형 캡의 세로 치수선 자리
-    const Hm=Math.max(chd,Wd,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=Math.max(padX,(PWI-(tot*sc+vx))/2),xL=x0+L*sc,cxp=x0+(L-cwd/2)*sc;
-    const f=n=>Math.round(n*10)/10,box=(l,t,w,h,st)=>'<i style="position:absolute;left:'+f(l)+'px;top:'+f(t)+'px;width:'+f(w)+'px;height:'+f(h)+'px;'+st+'"></i>';
+    const Lt=base==='center'?L+cwd/2:L;   // 그림에서 레버 끝부터 캡 반대쪽 끝까지의 전체 길이
+    const PWI=736,padX=112,padY=78,vx=vdim?172:0,gap=R?Math.max(18,L*.15):0,tot=Lt+(R?gap+R.w:0),sc=Math.min(6,(PWI-2*padX-vx)/tot);   // vx: 직사각형 캡의 세로 치수선 자리
+    const Hm=Math.max(chd,Wd,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=Math.max(padX,(PWI-(tot*sc+vx))/2),xL=x0+Lt*sc,cxp=x0+(Lt-cwd/2)*sc,xE=base==='center'?cxp:xL;
+    const f=n=>Math.round(n*10)/10,fx=(l,w)=>flip?PWI-l-w:l,px=x=>flip?PWI-x:x;   // 방향이 반대면 좌우를 거울처럼 뒤집어요
+    const box=(l,t,w,h,st)=>'<i style="position:absolute;left:'+f(fx(l,w))+'px;top:'+f(t)+'px;width:'+f(w)+'px;height:'+f(h)+'px;'+st+'"></i>';
     const C='#2a56a3',hl=(xa,xb,y)=>box(xa,y-1,xb-xa,2,'background:'+C)+box(xa-1,y-9,2,18,'background:'+C)+box(xb-1,y-9,2,18,'background:'+C);
     const vl=(ya,yb,x)=>box(x-1,ya,2,yb-ya,'background:'+C)+box(x-9,ya-1,18,2,'background:'+C)+box(x-9,yb-1,18,2,'background:'+C);
     const dash=(x,ya,yb)=>box(x-.75,ya,0,yb-ya,'border-left:1.5px dashed #9fb0d0'),dashH=(y,xa,xb)=>box(xa,y-.75,xb-xa,0,'border-top:1.5px dashed #9fb0d0');
-    const pill=(x,y,t)=>'<span class="sdp" style="left:'+f(x)+'px;top:'+f(y)+'px">'+esc(t)+'</span>';
+    const pill=(x,y,t)=>'<span class="sdp" style="left:'+f(px(x))+'px;top:'+f(y)+'px">'+esc(t)+'</span>';
     const yTop=cy-Hp/2-40,yBot=cy+Hp/2+40,xW=x0-44,xV=xL+70;
     const capFill=hasCap?'background:#e4e8ef;border:2px solid #8a93a4;':'background:#f1f3f8;border:2px dashed #8a93a4;';
     let h='';
-    h+=box(x0,cy-Wd*sc/2,(L-cwd/2)*sc+2,Wd*sc,'border-radius:'+f(Wd*sc/2)+'px;'+(hasW?'background:#cfd4dc;border:2px solid #7d8697;':'background:#e9ecf1;border:2px dashed #7d8697;')+'box-sizing:border-box');   // 레버
-    if(boxy){   // 네모 캡: 오른쪽 끝이 총 길이 끝과 맞고, 안쪽에 얇은 테두리(모서리가 둥근 사각형은 모서리를 많이 둥글게)
+    if(boxy){   // 캡(뒤): 네모 캡은 오른쪽 끝이 전체 길이 끝과 맞고, 안쪽에 얇은 테두리(모서리가 둥근 사각형은 모서리를 많이 둥글게)
       const rad=f(Math.min(cwd,chd)*sc*(sh==='rrect'?.3:.09));
-      h+=box(xL-cwd*sc,cy-chd*sc/2,cwd*sc,chd*sc,'border-radius:'+rad+'px;'+capFill+'box-sizing:border-box');                  // 캡
+      h+=box(xL-cwd*sc,cy-chd*sc/2,cwd*sc,chd*sc,'border-radius:'+rad+'px;'+capFill+'box-sizing:border-box');
       h+=box(cxp-cwd*sc*.38,cy-chd*sc*.38,cwd*sc*.76,chd*sc*.76,'border-radius:'+rad+'px;border:1.5px solid #aab2c0;box-sizing:border-box');
     }else{
-      h+=box(cxp-cwd*sc/2,cy-cwd*sc/2,cwd*sc,cwd*sc,'border-radius:50%;'+capFill+'box-sizing:border-box');                     // 캡
+      h+=box(cxp-cwd*sc/2,cy-cwd*sc/2,cwd*sc,cwd*sc,'border-radius:50%;'+capFill+'box-sizing:border-box');
       h+=box(cxp-cwd*sc*.26,cy-cwd*sc*.26,cwd*sc*.52,cwd*sc*.52,'border-radius:50%;border:1.5px solid #aab2c0;box-sizing:border-box');
     }
-    h+=dash(x0,yTop,cy-Wd*sc/2)+dash(xL,yTop,boxy?cy-chd*sc/2:cy)+hl(x0,xL,yTop)+pill((x0+xL)/2,yTop,'총 길이 '+fmt(Z.len));                            // 총 길이
+    const lvFill=hasW?'background:#cfd4dc;border:2px solid #7d8697;':'background:#e9ecf1;border:2px dashed #7d8697;',hr=Math.max(Wd*sc*.78,10);
+    h+=box(x0,cy-Wd*sc/2,(cxp-x0)+2,Wd*sc,'border-radius:'+f(Wd*sc/2)+'px;'+lvFill+'box-sizing:border-box');   // 레버(앞): 캡 위에 겹쳐서 캡 중심(축)까지
+    h+=box(cxp-hr,cy-hr,hr*2,hr*2,'border-radius:50%;'+lvFill+'box-sizing:border-box');                       // 레버가 붙는 축(캡 중심)
+    h+=dash(x0,yTop,cy-Wd*sc/2)+dash(xE,yTop,base==='center'?cy:(boxy?cy-chd*sc/2:cy))+hl(x0,xE,yTop)+pill((x0+xE)/2,yTop,(base==='center'?'총 길이(중심~끝) ':'총 길이 ')+fmt(Z.len));   // 총 길이
     if(hasCap){
       if(boxy)h+=dash(cxp-cwd*sc/2,cy+chd*sc/2,yBot)+dash(cxp+cwd*sc/2,cy+chd*sc/2,yBot)+hl(cxp-cwd*sc/2,cxp+cwd*sc/2,yBot)+pill(cxp,yBot,(sh==='square'?'캡 한 변 ':'캡 가로 ')+fmt(Z.capW));   // 캡 가로(정사각형은 한 변)
       else h+=dash(cxp-cwd*sc/2,cy,yBot)+dash(cxp+cwd*sc/2,cy,yBot)+hl(cxp-cwd*sc/2,cxp+cwd*sc/2,yBot)+pill(cxp,yBot,'캡 지름 '+(/^[0-9.]+$/.test(String(Z.cap).trim())?'Ø':'')+fmt(Z.cap)); // 캡 지름
@@ -637,7 +652,7 @@ function sizeBlock(ex){
     if(R){   // 같은 비율로 그린 비교 물건
       const rx=xL+vx+gap*sc,rw=R.w*sc,rh=R.h*sc;
       h+=box(rx,cy-rh/2,rw,rh,'border-radius:'+(R.round?'50%':f(3.2*sc)+'px')+';background:#f3f5f9;border:2px solid #aab2c0;box-sizing:border-box');
-      h+='<span class="sdr" style="left:'+f(rx+rw/2)+'px;top:'+f((R.round||rw<150)?cy+rh/2+34:cy)+'px">'+R.t+'<br>'+R.s+'</span>';
+      h+='<span class="sdr" style="left:'+f(px(rx+rw/2))+'px;top:'+f((R.round||rw<150)?cy+rh/2+34:cy)+'px">'+R.t+'<br>'+R.s+'</span>';
     }
     dia='<div class="sddia" style="width:'+PWI+'px;height:'+f(TH)+'px">'+h+'</div>';
   }
@@ -970,6 +985,17 @@ function p3(){
     +'<div class="tip">만든 이미지에서 제품 모양·마감이 실제와 다르면 쓰지 마세요. AI로 만든 사진은 판매 채널의 AI 표시 규칙을 확인하세요(규칙은 바뀔 수 있어요). 쿠팡 대표이미지는 실물 원본 사진만 써야 해요.</div>'
     +'<div class="list">'+rows+'</div>';
 }
+function segCtl(title,act,items,cur,cls){   // 작은 선택 단추 줄(고른 것 하나만 눌려 있어요)
+  return '<div class="f"><span>'+title+'</span><div class="segpick '+cls+'" role="radiogroup">'+items.map(it=>'<button type="button" class="sg'+(cur===it[0]?' on':'')+'" role="radio" aria-checked="'+(cur===it[0])+'" data-act="'+act+'" data-v="'+it[0]+'"><b>'+it[1]+'</b><small>'+it[2]+'</small></button>').join('')+'</div></div>';
+}
+function lenLabel(){return (S.size&&S.size.base==='center')?'총 길이 (캡 중심에서 레버 끝까지, mm)':'총 길이 (캡까지 포함한 전체 · 레버 끝에서 캡 반대쪽 끝까지, mm)';}
+function lenBasisCtl(){
+  return segCtl('총 길이를 어디서 어디까지 재셨나요?','lenbase',[['full','캡까지 포함한 전체','레버 끝 ~ 캡 반대쪽 끝'],['center','캡 중심에서','캡 중심 ~ 레버 끝']],(S.size&&S.size.base==='center')?'center':'full','c2');
+}
+function dirCtl(){
+  const Z=S.size||{},cur=(Z.dir==='L'||Z.dir==='R')?Z.dir:'auto',ld=S.src&&S.lvDir&&S.lvDir.id===S.src.id?S.lvDir.dir:'';
+  return segCtl('치수 그림 방향 — 사진 속 손잡이와 같은 방향으로 그려요','capdir',[['auto','사진 따라 자동',ld?'사진: 레버가 '+sideName(ld):'사진을 넣으면 맞춰요'],['L','레버가 왼쪽','◀ 캡은 오른쪽'],['R','레버가 오른쪽','캡은 왼쪽 ▶']],cur,'c3');
+}
 function capPicker(){   // 캡 모양을 그림 단추 4개로 고르기(고르면 직접 고른 값이 돼요)
   const cur=CAP_SHAPES.indexOf(S.size.shape)>=0?S.size.shape:'round';
   const ico={round:'<circle cx="24" cy="24" r="17"/>',square:'<rect x="9" y="9" width="30" height="30" rx="2"/>',rect:'<rect x="4" y="13" width="40" height="22" rx="2"/>',rrect:'<rect x="4" y="11" width="40" height="26" rx="10"/>'};
@@ -982,7 +1008,7 @@ function sizePanel(){
   return subp('s-size','캡 모양 · 크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. <b>① 캡(카바) 모양을 고르고 ② 그 모양에 맞는 치수를 적어요.</b> 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 총 길이만 적어도 그림이 나오고, 안 적은 치수는 점선으로 대략만 그려요(숫자는 안 나와요). 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
      +capPicker()
      +capHint()+capBtn()
-     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
+     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+lenBasisCtl()+fld.text('size.len',lenLabel(),{ph:'예: 150'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})+dirCtl()
      +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
      +fld.area('size.note','맨 아래 작은 글',{rows:2}));
@@ -1757,7 +1783,7 @@ function vPostDraft(){
   const one=x=>String(x==null?'':x).replace(/\s*\n\s*/g,' ').trim();
   const mm=v=>{const t=String(v==null?'':v).trim();return /^[0-9.]+$/.test(t)?t+'mm':t;};
   const nm=one(S.sellName)||one(S.name),hero=one(S.hero.title),sub=one(S.hero.sub),ct=one(S.concept.title),cb=one(S.concept.body);
-  const Z=S.size||{},sz=[Z.len&&'총 길이 '+mm(Z.len),Z.wid&&'총 폭 '+mm(Z.wid),
+  const Z=S.size||{},sz=[Z.len&&((Z.base==='center'?'총 길이(캡 중심 기준) ':'총 길이 ')+mm(Z.len)),Z.wid&&'총 폭 '+mm(Z.wid),
     (Z.shape==='rect'||Z.shape==='rrect')?((Z.capW&&Z.capH)?'캡 '+mm(Z.capW)+' × '+mm(Z.capH):''):Z.shape==='square'?(Z.capW?'캡 한 변 '+mm(Z.capW):''):(Z.cap?'캡 지름 '+mm(Z.cap):'')].filter(Boolean);
   const safe=String(S.about.body||'').split('\n').map(x=>x.trim()).filter(x=>/안전/.test(x))[0]||'';      // 회사 소개에 적힌 안전·평화 문장이 있으면 그대로 끝에 붙여요
   const cta=[one(S.cta.title),one(S.cta.sub)].filter(Boolean).join(' '),foot=one(S.about.foot);
@@ -2509,6 +2535,8 @@ const ACT={
     const c=S.baseCands&&S.baseCands[+b.dataset.k];if(!hasPhoto(c))return;
     S.base=Object.assign({},c);S.baseCands=[];ACT.baseok();
   },
+  lenbase(b){S.size.base=b.dataset.v==='center'?'center':'full';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="lenbase"]',side);if(nb)nb.focus();},
+  capdir(b){const v=b.dataset.v;S.size.dir=(v==='L'||v==='R')?v:'auto';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="capdir"]',side);if(nb)nb.focus();},
   capsel(b){const v=b.dataset.v;if(CAP_SHAPES.indexOf(v)<0)return;S.size.shape=v;S.size.shapeSet='user';renderSide();refresh();const nb=$('.cappick .cp.on',side);if(nb)nb.focus();},
   async capshape(){
     if(!hasPhoto(S.src)){toast('제품 사진을 먼저 넣어 주세요.');return;}
