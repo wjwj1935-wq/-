@@ -133,6 +133,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .sdr2 b{color:#586478;font-weight:700}
 .pg .sdr2 span{font-weight:800;color:#14213d;white-space:nowrap}
 .pg .sizeph{margin:36px auto 0;max-width:736px;padding:26px 20px;border:2px dashed #b8c4da;border-radius:18px;background:#eef2fa;color:#6b7a96;font-size:24px;text-align:center}
+.pg .fxbox{max-width:736px;margin:44px auto 0;border-top:3px solid #14213d}
+.pg .fxrow{display:flex;gap:24px;padding:22px 8px;border-bottom:1px solid #d9e0ec;font-size:26px;line-height:1.5;text-align:left}
+.pg .fxrow b{flex:none;width:210px;color:var(--pg-mute);font-weight:700}
+.pg .fxrow span{flex:1;min-width:0;font-weight:800;color:#14213d}
 .recog .rwrap{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:start}
 .recog .rimg{position:relative;width:120px;background:#fff center/contain no-repeat;border:1px solid var(--line);border-radius:8px}
 .recog .rbox{position:absolute;border:2px solid #e5384f;border-radius:4px}
@@ -287,7 +291,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 76</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 77</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -343,11 +347,12 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v77 (2026-11-08): 4단계에 '제품 규격'(백셋·적용 문 두께·문 구멍 지름·재질·마감·방향·구성품·제조국·인증) 입력칸과 상세페이지 '제품 규격' 표 구역을 더함 · 적은 것만 나옴 · 영상 글과 쇼핑몰 올리기 안내 글에도 넣음 · 기본 질문 답에서 근거 없는 말(대부분 규격이 비슷해요 / 은회색 계열)을 뺌 */
 /* v76 (2026-11-07): 상세페이지 글자 크기를 폰에서도 읽히게 키움(설명 글 26~28px, 가장 작은 글 22px · 가로 860 기준, 폰에서는 약 0.45배로 보여요) */
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=76,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=77,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -363,9 +368,9 @@ const TPL={
   faq:{q:'문 열리는 방향이 반대여도 되나요?',a:'좌우 방향이 다르면 판매자에게 확인해 주세요.\n문이 열리는 방향을 알려 주시면 안내해 드려요.'},faqPos:4
 };
 const FAQ_COMMON=[
-  {q:'우리 집 문에 맞나요?',a:'우리나라 방문은 대부분 규격이 비슷해요. 그래도 걱정되면 지금 달린 손잡이와 문 앞면 사진을 판매자에게 보내 주세요. 맞는지 확인해 드려요.'},
+  {q:'우리 집 문에 맞나요?',a:'문 두께와 문 구멍(백셋) 크기를 먼저 확인해 주세요. 헷갈리면 지금 달린 손잡이와 문 앞면 사진을 판매자에게 보내 주세요. 맞는지 확인해 드려요.'},
   {q:'잠금 기능이 있나요?',a:'잠금 기능과 관련해서는 판매자에게 확인해 주세요.'},
-  {q:'제품 색상 이름이 궁금해요.',a:'사진 속 제품은 은은한 은회색 계열이에요. 정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'},
+  {q:'제품 색상 이름이 궁금해요.',a:'정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'},
   {q:'혼자 달 수 있나요?',a:'보통 기존 손잡이를 풀고 나사로 고정하는 방식이에요. 구성품과 필요한 공구는 판매자에게 확인해 주세요.'},
   {q:'교환·반품은 어떻게 하나요?',a:'구매하신 판매 채널의 안내에 따라 교환·반품 내용을 확인해 주세요.'}];
 /* 클로드가 글을 새로 쓸 때 따라 할 이 회사의 기존 두 제품 글(말투·길이 기준) */
@@ -414,6 +419,7 @@ function defaults(){
     foot:CO.name+' · '+CO.place,note:''},
   guide:{eyebrow:'GUIDE',title:'이렇게 진행돼요',time:'',steps:['기존 손잡이와 나사를 풀어 떼어 내요.','문 앞면의 받침을 문에 먼저 고정해요.','전체와 바깥쪽 손잡이를 문 구멍에 맞춰 끼워요.','나사를 조여 손잡이를 단단히 고정해요.','레버를 눌러 문이 잘 열리고 닫히는지 확인해요.']},
   faq:{eyebrow:'FAQ',title:'자주 묻는 질문',items:faq},
+  facts:{backset:'',thick:'',bore:'',material:'',finish:'',dir:'',parts:'',origin:'',cert:'',extra:[],note:''},
   notice:{title:'구매 전 확인해 주세요',items:['모니터 화면에 따라 실제 색상이 다르게 보일 수 있어요.','측정 방법에 따라 약간의 오차가 있을 수 있어요.']},
   cta:{title:'우리 집 문에 달아 보세요',sub:'궁금한 점은 지금 달린 손잡이 사진과 함께\n판매자에게 물어보세요.'}};
 }
@@ -500,6 +506,7 @@ function fromSaved(o){                       // 저장본 → 현재 형식(예�
   const b=defaults(),r=Object.assign(b,o,{v:3});delete r.opv;delete r.opVideo;delete r.opFirst;delete r.opPup;   // 예전 저장 파일의 작동 영상 칸은 읽지 않아요
   if(!String(r.memo||'').trim())r.memo=defaults().memo;
   r.colors=Object.assign({},b.colors,o.colors||{});
+  r.facts=Object.assign({},b.facts,o.facts||{});if(!Array.isArray(r.facts.extra))r.facts.extra=[];   // 예전 저장본에는 제품 규격이 없어요
   r.colors.items=((o.colors&&o.colors.items)||b.colors.items).map(it=>({label:it.label||'',scene:it.scene||'',door:it.door||(it.plate&&it.plate.f)||'groove',view:it.view||'f',flip:it.flip!==undefined?!!it.flip:!!(it.pose&&it.pose.flip),photo:it.photo&&!it.photo.comp?it.photo:null}));
   ['hero','concept'].forEach(k=>{const h=Object.assign({},b[k],o[k]||{});delete h.how;if(h.photo&&h.photo.comp)h.photo=null;r[k]=h;});
   ['cut','cutL','cutC','cutS','cut2','shape','tone','seen','check','cv','desc'].forEach(k=>delete r[k]);
@@ -620,6 +627,22 @@ function sizeBlock(ex){
   const tbl='<div class="sdtb"'+J('size.len')+'>'+rows.map(r=>'<div class="sdr2"><b>'+esc(r[0])+'</b><span>'+esc(fmt(r[1]))+'</span></div>').join('')+'</div>';
   return '<div class="sizebox"><h3>크기 안내</h3>'+(dia?'<div class="sdwrap">'+dia+'</div>':'')+tbl+(Z.note?'<p class="note"'+J('size.note')+'>'+nl(Z.note)+'</p>':'')+'</div>';
 }
+/* 제품 규격: 사장님이 적은 것만 표로 나와요(적지 않은 줄은 안 나오고, 숫자를 지어내지 않아요) */
+const FX_ROWS=[['백셋','backset',1],['적용 문 두께','thick',1],['문 구멍 지름','bore',1],['재질','material',0],['마감·색상','finish',0],['좌우 방향','dir',0],['구성품','parts',0],['제조국','origin',0],['인증·시험','cert',0]];
+const fxMm=v=>{const t=String(v==null?'':v).trim();return /^[0-9.]+(\s*[~\-]\s*[0-9.]+)?$/.test(t)?t.replace(/\s+/g,'')+'mm':t;};   // 숫자(또는 35~45)만 적으면 mm를 붙여요
+function factsRows(){
+  const F=S.facts||{},R=[];
+  FX_ROWS.forEach(r=>{const v=String(F[r[1]]==null?'':F[r[1]]).trim();if(v)R.push([r[0],r[2]?fxMm(v):v,'facts.'+r[1]]);});
+  (F.extra||[]).forEach((x,i)=>{const l=String(x&&x.l||'').trim(),v=String(x&&x.v||'').trim();if(l&&v)R.push([l,v,'facts.extra.'+i+'.v']);});
+  return R;
+}
+function factsBlock(ex){
+  const R=factsRows(),F=S.facts||{},J=p=>ex?'':' data-jump="'+p+'"';
+  if(!R.length)return ex?'':'<section class="sec white" data-slice="02_규격"><div class="head"><div class="eyebrow">SPEC</div><h2>제품 규격</h2></div><div class="sizeph" data-jump="facts.backset">백셋 · 문 두께 · 재질 · 구성품을 적으면 여기에 규격 표가 들어가요 (적은 것만 나와요)</div></section>';
+  return '<section class="sec white" data-slice="02_규격"><div class="head"><div class="eyebrow">SPEC</div><h2>제품 규격</h2><p class="lead">문에 달기 전에, 지금 쓰는 손잡이와 아래 규격을 비교해 보세요.</p></div>'
+   +'<div class="fxbox">'+R.map(r=>'<div class="fxrow"'+J(r[2])+'><b>'+esc(r[0])+'</b><span>'+nl(r[1])+'</span></div>').join('')+'</div>'
+   +(String(F.note||'').trim()?'<p class="note"'+J('facts.note')+'>'+nl(F.note)+'</p>':'')+'</section>';
+}
 function renderPage(ex){
   const J=p=>ex?'':' data-jump="'+p+'"';
   const T=(path,v,o)=>{o=o||{};if(String(v==null?'':v).trim()!=='')return nl(v);return (ex||!o.req)?'':'<span class="need" data-jump="'+path+'">'+esc(o.ph||'입력 필요')+'</span>';};
@@ -633,6 +656,7 @@ function renderPage(ex){
     +(S.hero.sub||!ex?'<p'+J('hero.sub')+'>'+T('hero.sub',S.hero.sub,{req:1,ph:'설명 글'})+'</p>':'')+'</div></section>');
   // 2 소개
   out.push('<section class="sec soft" data-slice="02_소개">'+head('concept')+'<div class="card-ph">'+box(S.concept.photo,736,520,{cls:'r24',jump:'concept.photo',ex,fallback:1,hint:'소개 사진 (가로 3:2)'})+'</div>'+sizeBlock(ex)+'</section>');
+  out.push(factsBlock(ex));   // 2-2 제품 규격
   // 3 확대(원본 사진을 잘라 쓰고, 문에 설치한 실제 사진을 따로 넣으면 그걸 써요)
   const sm=S.src&&PH.get(S.src.id);
   const zi=S.zoom.items.map((it,i)=>{
@@ -747,7 +771,7 @@ const CMN=new Set(['s-about','s-guide','s-notice','s-cta']);
 const subp=(id,title,body)=>'<details class="sub" id="'+id+'" data-sub="'+id+'"'+open(id)+'><summary>'+title+(CMN.has(id)?' <span class="cmn">공통</span>':'')+' <span class="cnt" data-cnt="'+id+'" hidden></span></summary><div class="body">'+body+'</div></details>';
 function newItem(path,l){
   const T={'zoom.items':()=>({tag:'확대 '+(l.length+1),title:'',body:'',fx:.5,fy:.5,z:2,photo:null}),'colors.items':()=>mkColor(['','','groove','f',0]),
-    'size.extra':()=>({l:'',v:''}),'about.stats':()=>({v:'',l:''}),'about.patents':()=>({no:'',title:'',meta:'',badge:'등록\n완료'}),'about.grow':()=>({badge:'',title:'',body:''}),
+    'size.extra':()=>({l:'',v:''}),'facts.extra':()=>({l:'',v:''}),'about.stats':()=>({v:'',l:''}),'about.patents':()=>({no:'',title:'',meta:'',badge:'등록\n완료'}),'about.grow':()=>({badge:'',title:'',body:''}),
     'about.tl':()=>({year:'',text:''}),'guide.steps':()=>'','faq.items':()=>({q:'',a:''}),'notice.items':()=>''};
   return (T[path]||(()=>JSON.parse(JSON.stringify(l[l.length-1]))))();
 }
@@ -941,6 +965,18 @@ function p4(){
      +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
      +fld.area('size.note','맨 아래 작은 글',{rows:2}))
+   +subp('s-facts','제품 규격 (백셋 · 문 두께 · 재질 · 구성품)','<div class="tip">고객이 "우리 집 문에 맞나요?"를 가장 많이 물어요. 도면·포장·설명서에 있거나 직접 잰 <b>확실한 값만</b> 적어 주세요(추측해서 적으면 반품 원인이 돼요). 적은 칸만 상세페이지에 "제품 규격" 표로 나오고, 비워 두면 그 줄은 안 나와요. 숫자만 적으면 mm로 나와요.</div>'
+     +fld.text('facts.backset','백셋 (문 옆면에서 손잡이 구멍 중심까지 거리, mm)',{ph:'숫자만'})
+     +fld.text('facts.thick','적용 문 두께 (mm, 범위로 적어도 돼요)',{ph:'숫자 또는 숫자~숫자'})
+     +fld.text('facts.bore','문 구멍 지름 (mm)',{ph:'숫자만'})
+     +fld.text('facts.material','재질',{ph:'도면·설명서에 적힌 이름 그대로'})
+     +fld.text('facts.finish','마감·색상',{ph:'예: 무광 블랙'})
+     +fld.text('facts.dir','좌우 방향',{ph:'예: 좌우 공용'})
+     +fld.text('facts.parts','구성품',{ph:'예: 레버 2개, 받침 2개, 나사 세트'})
+     +fld.text('facts.origin','제조국',{ph:'예: 대한민국'})
+     +fld.text('facts.cert','인증·시험 (있을 때만, 번호까지)',{ph:'인증서에 적힌 그대로'})
+     +listItems('facts.extra',S.facts.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 손잡이 무게'})+fld.text(b+'.v','내용'),{title:(it,i)=>esc(it.l||'기타 규격'),add:'기타 규격 추가'})
+     +fld.area('facts.note','맨 아래 작은 글 (선택)',{rows:2}))
    +subp('s-zoom','확대(ZOOM)',fld.text('zoom.eyebrow','작은 제목')+fld.text('zoom.title','제목',{req:1})+fld.area('zoom.body','설명 글',{rows:2,req:1})
      +'<p class="hint">제목·설명은 모든 제품이 같이 써요. 확대 컷은 1단계 원본 사진을 잘라 써요. 문에 설치한 실제 사진을 넣으면 그 사진을 써요.</p>'
      +listItems('zoom.items',S.zoom.items,(it,i,b)=>fld.text(b+'.tag','표시')+fld.text(b+'.title','제목',{req:1})+fld.area(b+'.body','설명 글',{rows:2,req:1})+'<details class="pos" open><summary>어디를 확대할까요</summary>'+sliders(b)+'<label class="chk">작은 원본 사진 자리 <select data-ic="'+i+'">'+[['auto','손잡이를 안 가리는 곳 (자동)'],['tl','왼쪽 위'],['tr','오른쪽 위'],['bl','왼쪽 아래'],['br','오른쪽 아래'],['none','보이지 않게']].map(o=>'<option value="'+o[0]+'"'+((it.ic||'auto')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label></details><div class="f"><span>문에 설치한 실제 확대 사진 (선택)</span>'+photoCtl(b+'.photo','사진 넣기')+'</div>',{title:(it,i)=>'확대 '+(i+1),add:'확대 항목 추가'}))
@@ -1693,7 +1729,7 @@ function vPostDraft(){
     Z.shape==='rect'?((Z.capW&&Z.capH)?'캡 '+mm(Z.capW)+' × '+mm(Z.capH):''):(Z.cap?'캡 지름 '+mm(Z.cap):'')].filter(Boolean);
   const safe=String(S.about.body||'').split('\n').map(x=>x.trim()).filter(x=>/안전/.test(x))[0]||'';      // 회사 소개에 적힌 안전·평화 문장이 있으면 그대로 끝에 붙여요
   const cta=[one(S.cta.title),one(S.cta.sub)].filter(Boolean).join(' '),foot=one(S.about.foot);
-  const body=[sub,(ct&&cb)?ct+' — '+cb:(ct||cb),sz.length?'크기: '+sz.join(' · '):'',cta].filter(Boolean);
+  const fxr=factsRows().slice(0,5),body=[sub,(ct&&cb)?ct+' — '+cb:(ct||cb),sz.length?'크기: '+sz.join(' · '):'',fxr.length?'규격: '+fxr.map(r=>r[0]+' '+r[1]).join(' · '):'',cta].filter(Boolean);
   const tags=['#방문손잡이','#레버손잡이','#손잡이교체','#인테리어','#우진글로벌'];
   const own=one(S.name).replace(/\s+/g,'');if(own&&tags.indexOf('#'+own)<0)tags.push('#'+own);
   const tg=tags.join(' '),title=(hero||nm).slice(0,100);
@@ -2193,8 +2229,10 @@ function msText(r){
     '3. 대표 이미지 칸에 01_main.jpg 를 올립니다.',
     '4. 추가 이미지 칸에 02_extra_01.jpg 부터 차례로 올립니다. ('+r.extras.length+'장)',
     '5. 상세설명에서 사진을 추가해 03_detail_01.jpg 부터 번호 순서대로 올립니다. ('+r.details.length+'조각, 가로 '+MS_DW+'px)',
-    '6. 아래 [직접 입력해야 하는 항목]을 채우고 등록합니다.','',
-    '[직접 입력해야 하는 항목] 이 앱이 해 주지 않는 것이에요. 셀러 안내 글에서 확인한 항목이라 등록 화면에서 한 번 더 확인하세요.');
+    '6. 아래 [직접 입력해야 하는 항목]을 채우고 등록합니다.','');
+  const fr=factsRows();
+  if(fr.length){L.push('[앱에 입력해 둔 제품 규격] 상품주요정보·상품정보제공고시를 채울 때 참고하세요. (적어 두신 값 그대로예요)');fr.forEach(r=>L.push('- '+r[0]+': '+r[1]));L.push('');}
+  L.push('[직접 입력해야 하는 항목] 이 앱이 해 주지 않는 것이에요. 셀러 안내 글에서 확인한 항목이라 등록 화면에서 한 번 더 확인하세요.');
   MS_TODO.forEach((x,i)=>L.push((i+1)+'. '+x[0]+' — '+x[1]));
   L.push('','[파일 목록]');
   msFiles(r).forEach(f=>L.push(f.name+'  —  '+f.d));
