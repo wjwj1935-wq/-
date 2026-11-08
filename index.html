@@ -297,12 +297,19 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mkt-th.det img{object-fit:cover;object-position:top}
 .mkt-main{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}.mkt-main .mkt-th{width:200px;flex:none}.mkt-main .txt{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px;font-size:13px}
 .mkt a.btn{text-decoration:none}.mkt .blk .acts{justify-content:flex-start}
+.mkt-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:2px 14px 12px}
+@media (max-width:560px){.mkt-form{grid-template-columns:1fr}}
+.mkt-sheet{display:flex;flex-direction:column;gap:6px}
+.mkt-sheet .sr{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.mkt-sheet .sr b{font-size:13px}.mkt-sheet .sv{white-space:pre-wrap;font-size:13px;overflow-wrap:anywhere}
+.mkt-sheet .sr.need{background:var(--need);border-color:transparent}.mkt-sheet .sr.need .sv{color:var(--need-ink);font-weight:700}
+#msWhy>summary{cursor:pointer}#msWhy .checks{margin-top:8px}
 </style>
 
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 82</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 83</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -358,6 +365,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v83 (2026-11-08): 쇼핑몰 올리기 창에 '스마트스토어 입력 시트' — 판매가·할인가·재고·옵션(제품마다)과 카테고리·브랜드·제조사·원산지·배송·반품/교환·A/S(스토어 공통, 한 번만)를 앱에 적어 두면 항목마다 복사하고 안내 글에도 들어감 · '왜 자동으로 안 올라가요?' 분석 칸 */
 /* v82 (2026-11-08): 총 길이의 기본을 '손잡이만' = 캡 중심(그림의 둥근 축 표시)에서 레버 끝까지로 바로잡음 · '캡 가장자리부터' '캡까지 포함'으로 바꿀 수도 있음 */
 /* v81 (2026-11-08): 총 길이는 손잡이(레버) 하나만의 길이(레버 끝 ~ 캡 가장자리, 캡은 뺌)가 기본 · 치수선도 캡 가장자리까지만 그림 · '캡 중심까지' '캡까지 포함'으로 바꿀 수도 있음 */
 /* v80 (2026-11-08): 치수 그림을 손잡이 앞모습처럼 다시 그림(캡이 뒤, 레버가 캡 위에 겹쳐 캡 중심까지) · 그림 방향을 사진에서 알아본 레버 방향에 자동으로 맞추고 직접 고를 수도 있음 · 총 길이를 '캡까지 포함한 전체' 또는 '캡 중심에서'로 고름 */
@@ -368,7 +376,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=82,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=83,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -436,6 +444,7 @@ function defaults(){
   guide:{eyebrow:'GUIDE',title:'이렇게 진행돼요',time:'',steps:['기존 손잡이와 나사를 풀어 떼어 내요.','문 앞면의 받침을 문에 먼저 고정해요.','전체와 바깥쪽 손잡이를 문 구멍에 맞춰 끼워요.','나사를 조여 손잡이를 단단히 고정해요.','레버를 눌러 문이 잘 열리고 닫히는지 확인해요.']},
   faq:{eyebrow:'FAQ',title:'자주 묻는 질문',items:faq},
   facts:{backset:'',thick:'',bore:'',material:'',finish:'',dir:'',parts:'',origin:'',cert:'',extra:[],note:''},
+  sale:{price:'',discount:'',stock:'',model:'',code:'',opts:[{n:'',v:''},{n:'',v:''},{n:'',v:''}]},
   notice:{title:'구매 전 확인해 주세요',items:['모니터 화면에 따라 실제 색상이 다르게 보일 수 있어요.','측정 방법에 따라 약간의 오차가 있을 수 있어요.']},
   cta:{title:'우리 집 문에 달아 보세요',sub:'궁금한 점은 지금 달린 손잡이 사진과 함께\n판매자에게 물어보세요.'}};
 }
@@ -522,7 +531,7 @@ function fromSaved(o){                       // 저장본 → 현재 형식(예�
   const b=defaults(),r=Object.assign(b,o,{v:3});delete r.opv;delete r.opVideo;delete r.opFirst;delete r.opPup;   // 예전 저장 파일의 작동 영상 칸은 읽지 않아요
   if(!String(r.memo||'').trim())r.memo=defaults().memo;
   r.colors=Object.assign({},b.colors,o.colors||{});
-  r.facts=Object.assign({},b.facts,o.facts||{});if(!Array.isArray(r.facts.extra))r.facts.extra=[];   // 예전 저장본에는 제품 규격이 없어요
+  r.facts=Object.assign({},b.facts,o.facts||{});if(!Array.isArray(r.facts.extra))r.facts.extra=[];r.sale=Object.assign({},b.sale,o.sale||{});if(!Array.isArray(r.sale.opts)||r.sale.opts.length<3)r.sale.opts=b.sale.opts.map(x=>Object.assign({},x));   // 예전 저장본에는 제품 규격이 없어요
   r.colors.items=((o.colors&&o.colors.items)||b.colors.items).map(it=>({label:it.label||'',scene:it.scene||'',door:it.door||(it.plate&&it.plate.f)||'groove',view:it.view||'f',flip:it.flip!==undefined?!!it.flip:!!(it.pose&&it.pose.flip),photo:it.photo&&!it.photo.comp?it.photo:null}));
   ['hero','concept'].forEach(k=>{const h=Object.assign({},b[k],o[k]||{});delete h.how;if(h.photo&&h.photo.comp)h.photo=null;r[k]=h;});
   ['cut','cutL','cutC','cutS','cut2','shape','tone','seen','check','cv','desc'].forEach(k=>delete r[k]);
@@ -2262,6 +2271,75 @@ function msFiles(r){   // 묶음에 들어갈 파일(이름은 영문, 설명은
   return f;
 }
 const msYmd=d=>d.getFullYear()+msNN(d.getMonth()+1)+msNN(d.getDate());
+/* ---- 스마트스토어 입력 시트: 값은 앱에 한 번만 적고, 시트에서 항목마다 복사해 붙여 넣어요(네이버로 보내지 않아요) ---- */
+const ST_KEYS=['catPath','catId','brand','maker','origin','shipHow','shipFee','shipDays','bundle','retFee','exFee','retAddr','asTel','asGuide'];
+const ST=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('wj-store')||'{}')||{};}catch(e){}const r={};ST_KEYS.forEach(k=>{r[k]=typeof o[k]==='string'?o[k]:'';});return r;})();   // 스토어 공통 값(이 컴퓨터에만 저장, 새 제품에도 그대로)
+const stSave=()=>{try{localStorage.setItem('wj-store',JSON.stringify(ST));}catch(e){}};
+function msSheetRows(){
+  const T=ST,A=S.sale||{},F=S.facts||{},tr=v=>String(v==null?'':v).trim(),join=(a,sep)=>a.map(tr).filter(Boolean).join(sep==null?'\n':sep);
+  const digits=v=>{const t=tr(v);return /^[0-9,.]+$/.test(t)?t.replace(/,/g,''):t;},money=v=>{const t=tr(v);return /^[0-9,.]+$/.test(t)?t.replace(/,/g,'')+'원':t;},cnt=v=>{const t=tr(v);return /^[0-9,]+$/.test(t)?t.replace(/,/g,'')+'개':t;};
+  const nm=tr(S.sellName)||STD_NAME,model=tr(A.model),origin=tr(F.origin)||tr(T.origin),maker=tr(T.maker),cert=tr(F.cert);
+  const opts=(A.opts||[]).filter(o=>tr(o.n)&&tr(o.v)).map(o=>tr(o.n)+': '+tr(o.v));
+  const notice=[['품명 및 모델명',join([nm,model],' / ')],['법에 의한 인증·허가',cert],['제조국(원산지)',origin],['제조자(수입자)',maker],['재질',tr(F.material)],['색상',tr(F.finish)],['A/S 책임자와 전화번호',tr(T.asTel)]].filter(x=>x[1]).map(x=>x[0]+': '+x[1]);
+  return [
+    {k:'상품명',v:nm},
+    {k:'카테고리',v:join([T.catPath,tr(T.catId)&&'카테고리 번호 '+tr(T.catId)],' · ')},
+    {k:'판매가',v:money(A.price),c:digits(A.price)},{k:'할인가',v:money(A.discount),c:digits(A.discount)},{k:'재고 수량',v:cnt(A.stock),c:digits(A.stock)},   // c: 복사할 값(네이버 입력칸에는 숫자만 붙여 넣어요)
+    {k:'옵션',v:opts.join('\n')},
+    {k:'모델명·상품코드',v:join([model&&'모델명 '+model,tr(A.code)&&'판매자 상품코드 '+tr(A.code)],' · ')},
+    {k:'브랜드',v:tr(T.brand)},{k:'제조사',v:maker},{k:'원산지(제조국)',v:origin},{k:'KC 인증·시험',v:cert},
+    {k:'상품정보제공고시(참고값)',v:notice.join('\n')},
+    {k:'배송',v:join([tr(T.shipHow)&&'배송 방법: '+tr(T.shipHow),tr(T.shipFee)&&'배송비: '+tr(T.shipFee),tr(T.shipDays)&&'출고: '+tr(T.shipDays),tr(T.bundle)&&'묶음배송: '+tr(T.bundle)])},
+    {k:'반품·교환',v:join([tr(T.retFee)&&'반품 배송비: '+tr(T.retFee),tr(T.exFee)&&'교환 배송비: '+tr(T.exFee),tr(T.retAddr)&&'반품·교환 주소: '+tr(T.retAddr)])},
+    {k:'A/S',v:join([tr(T.asTel)&&'전화번호: '+tr(T.asTel),tr(T.asGuide)&&'안내: '+tr(T.asGuide)])},
+    {k:'태그 후보',v:vPostDraft().yl.g}
+  ];
+}
+function msSheetText(){   // 안내 글(README)에 들어가는 시트
+  const o=['[스마트스토어 입력 시트] 앱에 적어 둔 값이에요. 복사해서 등록 화면에 붙여 넣으세요. 비어 있는 항목은 직접 입력해 주세요.'];
+  msSheetRows().forEach(r=>{const v=String(r.v||'').trim();o.push('- '+r.k+': '+(v?v.replace(/\n/g,'\r\n    '):'(앱에 입력 안 됨 · 직접 입력)'));});
+  o.push('');return o;
+}
+function msSheetInner(){
+  const rows=MS.sheet=msSheetRows();
+  return rows.map((r,i)=>{const v=String(r.v||'').trim();return '<div class="sr'+(v?'':' need')+'"><b>'+esc(r.k)+'</b><div class="sv">'+(v?esc(v):'앱에 입력 안 됨 · 직접 입력')+'</div>'+(v?'<button class="btn sm" type="button" data-mcopy="'+i+'">복사</button>':'<span></span>')+'</div>';}).join('');
+}
+function msWhyHtml(){
+  return '<details class="blk" id="msWhy"><summary><b>왜 자동으로 안 올라가요? (분석)</b></summary><ul class="checks">'
+   +'<li><b>길은 있어요.</b> 네이버는 사람 대신 상품을 올려 주는 공식 방법(커머스API)을 열어 두었고, 이미지·상세 글·카테고리·가격·재고·배송·A/S까지 한 번에 보낼 수 있다고 개발자 토론글에서 확인했어요.</li>'
+   +'<li><b>사장님 스토어의 열쇠가 있어야 해요.</b> 커머스API센터에서 스토어 주인이 직접 만드는 "애플리케이션 ID·시크릿"이 필요해요. 판매자 본인 스토어에 직접 연결하는 용도라서 제가 대신 만들거나 받을 수 없어요.</li>'
+   +'<li><b>열쇠를 이 웹페이지에 넣으면 위험해요.</b> 시크릿은 비밀번호와 같고, 토큰을 받을 때 암호 서명(bcrypt)이 필요해서 보통 내 컴퓨터 프로그램이나 서버에서 해요. 브라우저에서 바로 불러도 되는지(CORS)는 확인하지 못했어요.</li>'
+   +'<li><b>호출 IP 제한이 있을 수 있어요(확인 못 함).</b> 연동 서비스 안내에 "API 호출 IP" 칸이 있어서, 정해 둔 IP에서만 부를 수 있을 가능성이 있어요.</li>'
+   +'<li><b>앱이 값을 몰랐어요.</b> 가격·재고·배송·반품·A/S·카테고리는 앱에 입력칸이 없었어요. 그래서 위 입력 시트를 만들었어요.</li>'
+   +'<li><b>카테고리는 이름이 아니라 번호가 필요해요.</b> 번호를 조회하는 방법은 확인하지 못했어요.</li>'
+   +'<li><b>진짜 스토어에 올리는 일은 시험이 어려워요.</b> 네이버 공식 문서와 API가 이 작업 환경에서 막혀 있어서 시험할 수 없었어요. 잘못 올리면 바로 판매 화면에 나갈 수 있어서, 시험 없이 만든 올리기 코드는 넣지 않았어요.</li>'
+   +'</ul><div class="hint">확인한 것: 개발자 토론글(commerce-api-naver). 확인 못 한 것: 공식 문서의 필수 항목·IP 규칙·CORS. 자동 등록으로 가려면 사장님 쪽에서 애플리케이션을 만들어 주셔야 해요.</div></details>';
+}
+function msSheetBlock(){
+  const A=S.sale||{},o=A.opts||[],inp=(grp,k,label,val,ph)=>'<label class="f"><span>'+label+'</span><input type="text" data-'+grp+'="'+k+'" value="'+esc(val==null?'':val)+'" placeholder="'+esc(ph||'')+'" autocomplete="off"></label>';
+  const opt=i=>inp('sale','opt'+i+'n','옵션 '+(i+1)+' 이름',(o[i]||{}).n,'예: 색상')+inp('sale','opt'+i+'v','옵션 '+(i+1)+' 값 (쉼표로 나눠요)',(o[i]||{}).v,'예: 블랙, 실버');
+  return '<div class="blk" id="msSheetBlk"><h3>스마트스토어 입력 시트 — 한 번 적어 두고 복사해서 붙여 넣어요</h3>'
+   +'<div class="hint">네이버에 자동으로 올리지 못하는 항목이에요. 값을 앱에 적어 두면 아래 시트에서 항목마다 복사 단추로 붙여 넣을 수 있고, 안내 글(README)에도 같이 들어가요. 적은 값은 이 컴퓨터에만 저장되고 어디로도 보내지 않아요. 적지 않은 값은 채우지 않아요.</div>'
+   +'<details class="sub" open><summary>이 제품 판매 정보 (제품마다 달라요)</summary><div class="mkt-form">'
+   +inp('sale','price','판매가 (원)',A.price,'숫자만')+inp('sale','discount','할인가 (원, 선택)',A.discount,'숫자만')+inp('sale','stock','재고 수량 (개)',A.stock,'숫자만')+inp('sale','model','모델명 (선택)',A.model,'')+inp('sale','code','판매자 상품코드 (선택)',A.code,'')
+   +'</div><div class="mkt-form">'+opt(0)+opt(1)+opt(2)+'</div><div class="hint">옵션은 색상·방향(좌/우)처럼 고객이 고르는 것이에요. 상세페이지의 "문 색상" 그림은 연출 사진이라 옵션이 아니에요.</div></details>'
+   +'<details class="sub"><summary>스토어 공통 정보 (한 번만 적어요 · 다음 제품에도 그대로 써요)</summary><div class="mkt-form">'
+   +inp('st','catPath','카테고리 (경로)',ST.catPath,'스마트스토어센터에서 고른 경로 그대로')+inp('st','catId','카테고리 번호 (선택)',ST.catId,'알고 있을 때만')
+   +inp('st','brand','브랜드',ST.brand,'')+inp('st','maker','제조사',ST.maker,'')+inp('st','origin','원산지 (제품 규격에 제조국이 있으면 그걸 써요)',ST.origin,'')
+   +inp('st','shipHow','배송 방법',ST.shipHow,'')+inp('st','shipFee','배송비',ST.shipFee,'')+inp('st','shipDays','출고 소요일',ST.shipDays,'')+inp('st','bundle','묶음배송',ST.bundle,'')
+   +inp('st','retFee','반품 배송비',ST.retFee,'')+inp('st','exFee','교환 배송비',ST.exFee,'')+inp('st','retAddr','반품·교환 주소',ST.retAddr,'')
+   +inp('st','asTel','A/S 책임자·전화번호',ST.asTel,'')+inp('st','asGuide','A/S 안내 문구',ST.asGuide,'')
+   +'</div></details>'
+   +'<div class="mkt-sheet" id="msSheet">'+msSheetInner()+'</div></div>'+msWhyHtml();
+}
+function msSheetCopyWire(){const e=$('#msSheet');if(!e)return;$$('[data-mcopy]',e).forEach(x=>{x.onclick=()=>{const r=MS.sheet[+x.dataset.mcopy]||{};vCopy(String(r.c!=null?r.c:(r.v||'')));};});}
+function msSheetRefresh(){const e=$('#msSheet');if(e){e.innerHTML=msSheetInner();msSheetCopyWire();}}
+function msSheetWire(){
+  const b=$('#msSheetBlk');if(!b)return;
+  $$('[data-st]',b).forEach(i=>{i.oninput=()=>{ST[i.dataset.st]=i.value;stSave();msSheetRefresh();};});
+  $$('[data-sale]',b).forEach(i=>{i.oninput=()=>{const k=i.dataset.sale,m=k.match(/^opt([0-2])([nv])$/);if(m)S.sale.opts[+m[1]][m[2]]=i.value;else S.sale[k]=i.value;persist();msSheetRefresh();};});
+  msSheetCopyWire();
+}
 const MS_TODO=[   // 이 앱이 해 주지 않는 것(셀러 안내 글에서 확인한 항목이에요. 네이버 공식 문서가 아니라서 등록 화면에서 한 번 더 확인하세요)
   ['카테고리','상품에 맞는 카테고리를 직접 골라요. 잘못 고르면 검색에 불리하다는 안내가 많아요.'],
   ['판매가·재고','가격(할인가)과 재고 수량은 이 앱에 없어요. 직접 입력해요.'],
@@ -2293,6 +2371,7 @@ function msText(r){
     '6. 아래 [직접 입력해야 하는 항목]을 채우고 등록합니다.','');
   const fr=factsRows();
   if(fr.length){L.push('[앱에 입력해 둔 제품 규격] 상품주요정보·상품정보제공고시를 채울 때 참고하세요. (적어 두신 값 그대로예요)');fr.forEach(r=>L.push('- '+r[0]+': '+r[1]));L.push('');}
+  msSheetText().forEach(x=>L.push(x));
   L.push('[직접 입력해야 하는 항목] 이 앱이 해 주지 않는 것이에요. 셀러 안내 글에서 확인한 항목이라 등록 화면에서 한 번 더 확인하세요.');
   MS_TODO.forEach((x,i)=>L.push((i+1)+'. '+x[0]+' — '+x[1]));
   L.push('','[파일 목록]');
@@ -2370,6 +2449,7 @@ function msNaverHtml(){
    +'<div class="hint">네이버 쇼핑 API(커머스API)로 자동 등록하는 것은 나중에 따로 만들 수 있어요. 판매자 API 키(애플리케이션 ID·시크릿)와 서버 연결이 필요해요.</div>'
    +'<div class="acts"><a class="btn" href="'+MKT.naver.url+'" target="_blank" rel="noopener noreferrer">스마트스토어센터 열기</a><button class="btn primary" id="msGo" type="button"'+(has?'':' disabled')+'>네이버용 파일 만들기</button></div>'
    +'<div class="bar" id="msBar" hidden><i></i></div><div class="msg" id="msMsg" aria-live="polite"></div>'
+   +msSheetBlock()
    +msTodoHtml()
    +msResHtml();
 }
@@ -2384,6 +2464,7 @@ function msRender(){
   const ms=$('#msMainSave');if(ms)ms.onclick=async()=>{try{await saveFile('naver_main_1000x1000.jpg',MS.res.main.blob);toast('대표 이미지를 저장했어요.');}catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}};
   const cn=$('#msCopyName');if(cn)cn.onclick=()=>vCopy(S.sellName||STD_NAME);
   const ct=$('#msCopyTags');if(ct)ct.onclick=()=>vCopy(vPostDraft().yl.g);
+  msSheetWire();
 }
 function showMarket(){
   veil.hidden=false;
