@@ -145,6 +145,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .recog .rrow b{color:var(--mute)}
 .job pre{margin:6px 0 0;white-space:pre-wrap;font:inherit;font-size:13px;color:var(--mute);background:var(--panel-2);border-radius:8px;padding:8px 10px}
 .aitag{font-size:12px;color:var(--mute);cursor:pointer}
+.cappick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cappick .cp{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px 8px;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);cursor:pointer;font:inherit}
+.cappick .cp svg{width:44px;height:44px;fill:#dfe5f1;stroke:#7d8697;stroke-width:2}
+.cappick .cp b{font-size:13px}.cappick .cp small{font-size:11px;color:var(--mute)}
+.cappick .cp:hover{border-color:var(--accent)}
+.cappick .cp.on{border-color:var(--accent);background:var(--accent-soft)}.cappick .cp.on svg{fill:#c6d6f4;stroke:var(--accent)}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;z-index:50;box-shadow:var(--shadow);max-width:90vw}
 .toast[hidden]{display:none}
@@ -292,7 +298,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 78</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 79</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -348,13 +354,14 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v79 (2026-11-08): 캡(카바) 모양 고르기를 사진 넣는 1단계로 옮기고(처음부터 열림) 그림 단추 4개(원형·정사각형·직사각형·라운드형)로 바꿈 · 모양에 따라 적을 치수 칸이 바로 아래에 나옴 */
 /* v78 (2026-11-08): 크기 안내 그림을 총 길이만 적어도 보이게(적지 않은 치수는 점선으로 대략만, 숫자는 안 씀) · 캡 모양을 원형·정사각형·직사각형·모서리가 둥근 사각형 4가지로 넓히고 사진 인식이 알아보게 함 · 캡 모양을 아직 확인하지 않았으면 알려 줌 */
 /* v77 (2026-11-08): 4단계에 '제품 규격'(백셋·적용 문 두께·문 구멍 지름·재질·마감·방향·구성품·제조국·인증) 입력칸과 상세페이지 '제품 규격' 표 구역을 더함 · 적은 것만 나옴 · 영상 글과 쇼핑몰 올리기 안내 글에도 넣음 · 기본 질문 답에서 근거 없는 말(대부분 규격이 비슷해요 / 은회색 계열)을 뺌 */
 /* v76 (2026-11-07): 상세페이지 글자 크기를 폰에서도 읽히게 키움(설명 글 26~28px, 가장 작은 글 22px · 가로 860 기준, 폰에서는 약 0.45배로 보여요) */
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=78,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=79,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -427,7 +434,7 @@ function defaults(){
 }
 let S=defaults();
 let dirty=false;        // 제품 글을 직접 고쳤는지(새 글이 덮어쓰기 전에 물어봐요)
-const UI={open:new Set(['p1','p2','p3']),scale:'fit',tab:'edit',useAI:true,check:true,autoFix:true,clearOnNew:true,autoSave:true};
+const UI={open:new Set(['p1','p2','p3','s-size']),scale:'fit',tab:'edit',useAI:true,check:true,autoFix:true,clearOnNew:true,autoSave:true};
 const isProductText=p=>/^(hero|concept|zoom\.items)\./.test(p)||(/^faq\.items\.\d+\./.test(p)&&!!(S.faq.items[+p.split('.')[2]]||{}).p);
 
 /* 글 틀 채우기(무료) */
@@ -880,6 +887,7 @@ function p1(){
     +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷과 이미지 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
     +(S.prev&&S.prev.s?'<div class="blk"><div class="acts"><button class="btn sm" type="button" data-act="restoreprev">↩ 이전 작업 되살리기</button></div><p class="cost">보관된 이전 작업: '+esc(S.prev.name||'이전 제품')+' · 이미지 '+S.prev.n+'장 · '+new Date(S.prev.at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'numeric',minute:'2-digit'})+'. 누르면 지금 작업과 서로 바뀌어요(지금 작업도 보관돼요).</p></div>':'')
     +recogCard()
+    +sizePanel()
     +'<div class="f"><span>다른 각도 사진 (선택 · 최대 2장) — 옆면·정면 실제 사진을 더 넣을수록 AI가 실제 모양을 더 정확히 따라 그려요</span><div class="acts">'+extraCtl(0)+extraCtl(1)+'</div></div>'
     +fld.area('spec','제품 특징 메모 (구글에 같이 보내요 · 틀린 곳은 고쳐 주세요)',{rows:6,ph:'비워 두면 이미지를 만들기 직전에 클로드가 사진을 보고 적어요(클로드 키가 있을 때). 직접 적어도 돼요. 예: 레버 윗면 끝쪽에 엄지가 닿는 움푹한 곳이 있어요.'})
     +'<div class="acts"><button class="btn sm" type="button" data-act="specai">클로드가 사진 보고 적기 (약 1센트)</button></div><div class="msg" id="specMsg" aria-live="polite"></div>'
@@ -962,19 +970,29 @@ function p3(){
     +'<div class="tip">만든 이미지에서 제품 모양·마감이 실제와 다르면 쓰지 마세요. AI로 만든 사진은 판매 채널의 AI 표시 규칙을 확인하세요(규칙은 바뀔 수 있어요). 쿠팡 대표이미지는 실물 원본 사진만 써야 해요.</div>'
     +'<div class="list">'+rows+'</div>';
 }
+function capPicker(){   // 캡 모양을 그림 단추 4개로 고르기(고르면 직접 고른 값이 돼요)
+  const cur=CAP_SHAPES.indexOf(S.size.shape)>=0?S.size.shape:'round';
+  const ico={round:'<circle cx="24" cy="24" r="17"/>',square:'<rect x="9" y="9" width="30" height="30" rx="2"/>',rect:'<rect x="4" y="13" width="40" height="22" rx="2"/>',rrect:'<rect x="4" y="11" width="40" height="26" rx="10"/>'};
+  const lab={round:['원형','지름 1개'],square:['정사각형','한 변 1개'],rect:['직사각형','가로·세로'],rrect:['라운드형','가로·세로']};
+  return '<div class="f"><span>캡(카바) 모양 — 손잡이가 문에 닿는 받침을 위에서 본 모양을 골라 주세요</span><div class="cappick" role="radiogroup" aria-label="캡 모양">'
+    +CAP_SHAPES.map(k=>'<button type="button" class="cp'+(cur===k?' on':'')+'" role="radio" aria-checked="'+(cur===k)+'" data-act="capsel" data-v="'+k+'" title="'+esc(CAP_NAMES[k])+'"><svg viewBox="0 0 48 48" aria-hidden="true">'+ico[k]+'</svg><b>'+lab[k][0]+'</b><small>'+lab[k][1]+'</small></button>').join('')
+    +'</div></div>';
+}
+function sizePanel(){
+  return subp('s-size','캡 모양 · 크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. <b>① 캡(카바) 모양을 고르고 ② 그 모양에 맞는 치수를 적어요.</b> 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 총 길이만 적어도 그림이 나오고, 안 적은 치수는 점선으로 대략만 그려요(숫자는 안 나와요). 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
+     +capPicker()
+     +capHint()+capBtn()
+     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
+     +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
+     +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
+     +fld.area('size.note','맨 아래 작은 글',{rows:2}));
+}
 function p4(){
   const a=S.about;
   return '<div class="acts"><button class="btn sm" type="button" data-act="tplfill">틀로 글 다시 채우기 (무료)</button><button class="btn sm" type="button" data-act="autozoom">확대 위치 자동 맞춤 (무료)</button></div>'
    +'<div class="confirm" id="genConfirm" hidden><span id="genMsg"></span><button class="btn sm" type="button" data-act="genok">계속</button><button class="btn sm ghost" type="button" data-act="genno">취소</button></div>'
    +subp('s-hero','첫 화면',fld.text('hero.badge','작은 글(파란 띠)')+fld.area('hero.title','큰 제목',{rows:2,req:1})+fld.area('hero.sub','설명 글',{rows:3,req:1}))
    +subp('s-concept','소개(CONCEPT)',fld.text('concept.eyebrow','작은 제목')+fld.text('concept.title','제목',{req:1})+fld.area('concept.body','설명 글 (비워도 돼요)',{rows:3}))
-   +subp('s-size','크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 총 길이·총 폭·캡 치수를 모두 적으면 치수 그림이 나오고, 일부만 적으면 표만 나와요. 캡이 네모난 제품은 “캡 모양”을 직사각형으로 바꾸고 가로·세로를 따로 적어 주세요. 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
-     +'<label class="f"><span>캡 모양 (손잡이가 문에 닿는 받침의 모양)</span><select data-sz="shape">'+[['round','원형 (둥근 받침)'],['square','정사각형 (네모, 가로·세로가 같아요)'],['rect','직사각형 (네모, 가로·세로가 달라요)'],['rrect','모서리가 둥근 사각형 (라운드)']].map(o=>'<option value="'+o[0]+'"'+((S.size.shape||'round')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
-     +capHint()+capBtn()
-     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
-     +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
-     +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
-     +fld.area('size.note','맨 아래 작은 글',{rows:2}))
    +subp('s-facts','제품 규격 (백셋 · 문 두께 · 재질 · 구성품)','<div class="tip">고객이 "우리 집 문에 맞나요?"를 가장 많이 물어요. 도면·포장·설명서에 있거나 직접 잰 <b>확실한 값만</b> 적어 주세요(추측해서 적으면 반품 원인이 돼요). 적은 칸만 상세페이지에 "제품 규격" 표로 나오고, 비워 두면 그 줄은 안 나와요. 숫자만 적으면 mm로 나와요.</div>'
      +fld.text('facts.backset','백셋 (문 옆면에서 손잡이 구멍 중심까지 거리, mm)',{ph:'숫자만'})
      +fld.text('facts.thick','적용 문 두께 (mm, 범위로 적어도 돼요)',{ph:'숫자 또는 숫자~숫자'})
@@ -2203,7 +2221,7 @@ async function msDetail(tick){   // 상세페이지 조각: '이미지로 저장
     for(const c of cvs){if(cur.length&&hh+c.height>max){groups.push(cur);cur=[];hh=0;}cur.push(c);hh+=c.height;}
     if(cur.length)groups.push(cur);
     const out=[];
-    for(const gr of groups){const W=gr[0].width,H=gr.reduce((a,c)=>a+c.height,0),[oc,og]=msCv(W,H);let y=0;for(const c of gr){og.drawImage(c,0,y);y+=c.height;}out.push({blob:await msJpg(oc,.9),w:W,h:H});}
+    for(const gr of groups){if(MS.cancel)throw {code:'cancel'};const W=gr[0].width,H=gr.reduce((a,c)=>a+c.height,0),[oc,og]=msCv(W,H);let y=0;for(const c of gr){og.drawImage(c,0,y);y+=c.height;}out.push({blob:await msJpg(oc,.9),w:W,h:H});}
     return out;
   }finally{host.remove();}
 }
@@ -2281,6 +2299,7 @@ async function msRun(){
     msSay('추가 이미지를 만드는 중이에요…',12);const ex=await msExtras();if(MS.cancel)throw {code:'cancel'};
     msSay('상세페이지를 그리는 중이에요…',22);
     const det=await msDetail((d,t)=>msSay('상세페이지를 그리는 중이에요… '+d+' / '+t,22+Math.round(d/t*65)));
+    if(MS.cancel)throw {code:'cancel'};
     msSay('파일로 묶는 중이에요…',92);
     const r={main,extras:ex.items,skipped:ex.skipped,details:det,at:new Date()};r.text=msText(r);r.checks=msChecks(r);
     MS.res=r;msRender();msSay('다 만들었어요. 아래에서 확인하고 저장하세요.',100,'ok');
@@ -2490,6 +2509,7 @@ const ACT={
     const c=S.baseCands&&S.baseCands[+b.dataset.k];if(!hasPhoto(c))return;
     S.base=Object.assign({},c);S.baseCands=[];ACT.baseok();
   },
+  capsel(b){const v=b.dataset.v;if(CAP_SHAPES.indexOf(v)<0)return;S.size.shape=v;S.size.shapeSet='user';renderSide();refresh();const nb=$('.cappick .cp.on',side);if(nb)nb.focus();},
   async capshape(){
     if(!hasPhoto(S.src)){toast('제품 사진을 먼저 넣어 주세요.');return;}
     if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요.',3600);UI.open.add('p2');renderSide();return;}
