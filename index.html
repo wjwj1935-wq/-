@@ -133,6 +133,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .sdr2 b{color:#586478;font-weight:700}
 .pg .sdr2 span{font-weight:800;color:#14213d;white-space:nowrap}
 .pg .sizeph{margin:36px auto 0;max-width:736px;padding:26px 20px;border:2px dashed #b8c4da;border-radius:18px;background:#eef2fa;color:#6b7a96;font-size:24px;text-align:center}
+.pg .sdnote{margin:12px auto 0;max-width:736px;text-align:center;font-size:22px;line-height:1.5;color:var(--pg-mute)}
 .pg .fxbox{max-width:736px;margin:44px auto 0;border-top:3px solid #14213d}
 .pg .fxrow{display:flex;gap:24px;padding:22px 8px;border-bottom:1px solid #d9e0ec;font-size:26px;line-height:1.5;text-align:left}
 .pg .fxrow b{flex:none;width:210px;color:var(--pg-mute);font-weight:700}
@@ -291,7 +292,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 77</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 78</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -347,12 +348,13 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v78 (2026-11-08): 크기 안내 그림을 총 길이만 적어도 보이게(적지 않은 치수는 점선으로 대략만, 숫자는 안 씀) · 캡 모양을 원형·정사각형·직사각형·모서리가 둥근 사각형 4가지로 넓히고 사진 인식이 알아보게 함 · 캡 모양을 아직 확인하지 않았으면 알려 줌 */
 /* v77 (2026-11-08): 4단계에 '제품 규격'(백셋·적용 문 두께·문 구멍 지름·재질·마감·방향·구성품·제조국·인증) 입력칸과 상세페이지 '제품 규격' 표 구역을 더함 · 적은 것만 나옴 · 영상 글과 쇼핑몰 올리기 안내 글에도 넣음 · 기본 질문 답에서 근거 없는 말(대부분 규격이 비슷해요 / 은회색 계열)을 뺌 */
 /* v76 (2026-11-07): 상세페이지 글자 크기를 폰에서도 읽히게 키움(설명 글 26~28px, 가장 작은 글 22px · 가로 860 기준, 폰에서는 약 0.45배로 보여요) */
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=77,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=78,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -580,52 +582,60 @@ function box(p,bw,bh,o){
   if(o.ex)return '<div class="pb '+(o.cls||'')+'" style="width:'+bw+'px;height:'+bh+'px"></div>';
   return '<div class="pb ph-empty '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px">'+ILLUS+'<span>'+esc(o.hint||'사진을 넣어 주세요')+'</span></div>';
 }
+const CAP_SHAPES=['round','square','rect','rrect'],CAP_NAMES={round:'원형',square:'정사각형',rect:'직사각형',rrect:'모서리가 둥근 사각형'};
 /* 크기 안내: 사장님이 적은 치수(캡 모양·캡 치수·총 길이·총 폭)로 치수 그림과 표를 그려요. 적지 않은 숫자는 절대 채우지 않아요.
-   캡 모양이 원형이면 지름 하나, 직사각형이면 가로·세로 두 칸을 써요(예전 저장본은 shape가 없어서 원형으로 읽어요). */
+   캡 모양 4가지: 원형(지름 하나) · 정사각형(한 변 하나) · 직사각형(가로·세로) · 모서리가 둥근 사각형(가로·세로). 예전 저장본은 shape가 없어서 원형으로 읽어요.
+   총 길이만 적어도 그림이 나와요. 적지 않은 치수(총 폭·캡)는 점선으로 '대략의 모양'만 그리고 숫자는 쓰지 않아요. */
 function sizeBlock(ex){
   const Z=S.size||{},num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,''));return n>0&&isFinite(n)?n:0;};
-  const rect=Z.shape==='rect';
+  const sh=CAP_SHAPES.indexOf(Z.shape)>=0?Z.shape:'round',boxy=sh!=='round',two=sh==='rect'||sh==='rrect';
   const L=num(Z.len),W=num(Z.wid),D=num(Z.cap),CW=num(Z.capW),CH=num(Z.capH),fmt=v=>{const t=String(v||'').trim();return /^[0-9.]+$/.test(t)?t+'mm':t;};
-  const cw=rect?CW:D,ch=rect?CH:D;   // 캡의 가로·세로 길이(원형이면 둘 다 지름)
-  const capRows=rect?[['캡 가로',Z.capW,'size.capW'],['캡 세로',Z.capH,'size.capH']]:[['캡 지름',Z.cap,'size.cap']];
+  const cw=boxy?CW:D,ch=sh==='round'?D:sh==='square'?CW:CH;   // 캡의 가로·세로 길이(원형이면 둘 다 지름, 정사각형이면 둘 다 한 변)
+  const capRows=sh==='round'?[['캡 지름',Z.cap,'size.cap']]:sh==='square'?[['캡 한 변',Z.capW,'size.capW']]:[['캡 가로',Z.capW,'size.capW'],['캡 세로',Z.capH,'size.capH']];
   const rows=[['총 길이',Z.len,'size.len'],['총 폭',Z.wid,'size.wid']].concat(capRows).concat((Z.extra||[]).map((x,i)=>[x.l,x.v,'size.extra.'+i+'.v'])).filter(r=>String(r[0]||'').trim()&&String(r[1]||'').trim());
-  if(!rows.length)return ex?'':'<div class="sizeph" data-jump="size.len">손잡이 크기('+(rect?'캡 가로 · 캡 세로':'캡 지름')+' · 총 길이 · 총 폭)를 적으면 여기에 크기 안내가 들어가요</div>';
+  if(!rows.length)return ex?'':'<div class="sizeph" data-jump="size.len">손잡이 크기('+(sh==='round'?'캡 지름':sh==='square'?'캡 한 변':'캡 가로 · 캡 세로')+' · 총 길이 · 총 폭)를 적으면 여기에 크기 안내가 들어가요</div>';
   const J=p=>ex?'':' data-jump="'+p+'"';
-  let dia='';
-  if(L&&W&&cw&&ch&&cw<=L*1.02){
+  let dia='',part=false;
+  const hasCap=!!(cw&&ch),hasW=!!W;
+  if(L&&(!hasCap||cw<=L*1.02)){
+    part=!hasCap||!hasW;
     const REFS={card:{w:85.6,h:54,t:'신용카드',s:'85.6 × 54mm'},coin:{w:26.5,h:26.5,t:'500원 동전',s:'지름 26.5mm',round:1}},R=REFS[Z.ref]||null;
-    const PWI=736,padX=112,padY=78,vx=rect?172:0,gap=R?Math.max(14,L*.12):0,tot=L+(R?gap+R.w:0),sc=Math.min(6,(PWI-2*padX-vx)/tot);   // vx: 직사각형 캡의 세로 치수선 자리
-    const Hm=Math.max(ch,W,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=Math.max(padX,(PWI-(tot*sc+vx))/2),xL=x0+L*sc,cxp=x0+(L-cw/2)*sc;
+    const Wd=hasW?W:L*.13,cwd=hasCap?cw:L*(sh==='square'?.36:.42),chd=hasCap?ch:(two?L*.33:cwd),vdim=two&&hasCap;   // 적지 않은 치수는 그림에서만 대략의 크기로 그려요(숫자는 쓰지 않아요)
+    const PWI=736,padX=112,padY=78,vx=vdim?172:0,gap=R?Math.max(14,L*.12):0,tot=L+(R?gap+R.w:0),sc=Math.min(6,(PWI-2*padX-vx)/tot);   // vx: 직사각형 캡의 세로 치수선 자리
+    const Hm=Math.max(chd,Wd,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=Math.max(padX,(PWI-(tot*sc+vx))/2),xL=x0+L*sc,cxp=x0+(L-cwd/2)*sc;
     const f=n=>Math.round(n*10)/10,box=(l,t,w,h,st)=>'<i style="position:absolute;left:'+f(l)+'px;top:'+f(t)+'px;width:'+f(w)+'px;height:'+f(h)+'px;'+st+'"></i>';
     const C='#2a56a3',hl=(xa,xb,y)=>box(xa,y-1,xb-xa,2,'background:'+C)+box(xa-1,y-9,2,18,'background:'+C)+box(xb-1,y-9,2,18,'background:'+C);
     const vl=(ya,yb,x)=>box(x-1,ya,2,yb-ya,'background:'+C)+box(x-9,ya-1,18,2,'background:'+C)+box(x-9,yb-1,18,2,'background:'+C);
     const dash=(x,ya,yb)=>box(x-.75,ya,0,yb-ya,'border-left:1.5px dashed #9fb0d0'),dashH=(y,xa,xb)=>box(xa,y-.75,xb-xa,0,'border-top:1.5px dashed #9fb0d0');
     const pill=(x,y,t)=>'<span class="sdp" style="left:'+f(x)+'px;top:'+f(y)+'px">'+esc(t)+'</span>';
     const yTop=cy-Hp/2-40,yBot=cy+Hp/2+40,xW=x0-44,xV=xL+70;
+    const capFill=hasCap?'background:#e4e8ef;border:2px solid #8a93a4;':'background:#f1f3f8;border:2px dashed #8a93a4;';
     let h='';
-    h+=box(x0,cy-W*sc/2,(L-cw/2)*sc+2,W*sc,'border-radius:'+f(W*sc/2)+'px;background:#cfd4dc;border:2px solid #7d8697;box-sizing:border-box');   // 레버
-    if(rect){   // 직사각형 캡: 오른쪽 끝이 총 길이 끝과 맞고, 안쪽에 얇은 테두리
-      const rad=f(Math.min(cw,ch)*sc*.09);
-      h+=box(xL-cw*sc,cy-ch*sc/2,cw*sc,ch*sc,'border-radius:'+rad+'px;background:#e4e8ef;border:2px solid #8a93a4;box-sizing:border-box');                  // 캡
-      h+=box(cxp-cw*sc*.38,cy-ch*sc*.38,cw*sc*.76,ch*sc*.76,'border-radius:'+rad+'px;border:1.5px solid #aab2c0;box-sizing:border-box');
+    h+=box(x0,cy-Wd*sc/2,(L-cwd/2)*sc+2,Wd*sc,'border-radius:'+f(Wd*sc/2)+'px;'+(hasW?'background:#cfd4dc;border:2px solid #7d8697;':'background:#e9ecf1;border:2px dashed #7d8697;')+'box-sizing:border-box');   // 레버
+    if(boxy){   // 네모 캡: 오른쪽 끝이 총 길이 끝과 맞고, 안쪽에 얇은 테두리(모서리가 둥근 사각형은 모서리를 많이 둥글게)
+      const rad=f(Math.min(cwd,chd)*sc*(sh==='rrect'?.3:.09));
+      h+=box(xL-cwd*sc,cy-chd*sc/2,cwd*sc,chd*sc,'border-radius:'+rad+'px;'+capFill+'box-sizing:border-box');                  // 캡
+      h+=box(cxp-cwd*sc*.38,cy-chd*sc*.38,cwd*sc*.76,chd*sc*.76,'border-radius:'+rad+'px;border:1.5px solid #aab2c0;box-sizing:border-box');
     }else{
-      h+=box(cxp-D*sc/2,cy-D*sc/2,D*sc,D*sc,'border-radius:50%;background:#e4e8ef;border:2px solid #8a93a4;box-sizing:border-box');                     // 캡
-      h+=box(cxp-D*sc*.26,cy-D*sc*.26,D*sc*.52,D*sc*.52,'border-radius:50%;border:1.5px solid #aab2c0;box-sizing:border-box');
+      h+=box(cxp-cwd*sc/2,cy-cwd*sc/2,cwd*sc,cwd*sc,'border-radius:50%;'+capFill+'box-sizing:border-box');                     // 캡
+      h+=box(cxp-cwd*sc*.26,cy-cwd*sc*.26,cwd*sc*.52,cwd*sc*.52,'border-radius:50%;border:1.5px solid #aab2c0;box-sizing:border-box');
     }
-    h+=dash(x0,yTop,cy-W*sc/2)+dash(xL,yTop,rect?cy-ch*sc/2:cy)+hl(x0,xL,yTop)+pill((x0+xL)/2,yTop,'총 길이 '+fmt(Z.len));                            // 총 길이
-    if(rect)h+=dash(cxp-cw*sc/2,cy+ch*sc/2,yBot)+dash(cxp+cw*sc/2,cy+ch*sc/2,yBot)+hl(cxp-cw*sc/2,cxp+cw*sc/2,yBot)+pill(cxp,yBot,'캡 가로 '+fmt(Z.capW));   // 캡 가로
-    else h+=dash(cxp-D*sc/2,cy,yBot)+dash(cxp+D*sc/2,cy,yBot)+hl(cxp-D*sc/2,cxp+D*sc/2,yBot)+pill(cxp,yBot,'캡 지름 '+(/^[0-9.]+$/.test(String(Z.cap).trim())?'Ø':'')+fmt(Z.cap)); // 캡 지름
-    h+=dashH(cy-W*sc/2,xW,x0)+dashH(cy+W*sc/2,xW,x0)+vl(cy-W*sc/2,cy+W*sc/2,xW)+pill(xW,cy,'총 폭 '+fmt(Z.wid));                                       // 총 폭
-    if(rect)h+=dashH(cy-ch*sc/2,xL,xV)+dashH(cy+ch*sc/2,xL,xV)+vl(cy-ch*sc/2,cy+ch*sc/2,xV)+pill(xV,cy,'캡 세로 '+fmt(Z.capH));                       // 캡 세로
+    h+=dash(x0,yTop,cy-Wd*sc/2)+dash(xL,yTop,boxy?cy-chd*sc/2:cy)+hl(x0,xL,yTop)+pill((x0+xL)/2,yTop,'총 길이 '+fmt(Z.len));                            // 총 길이
+    if(hasCap){
+      if(boxy)h+=dash(cxp-cwd*sc/2,cy+chd*sc/2,yBot)+dash(cxp+cwd*sc/2,cy+chd*sc/2,yBot)+hl(cxp-cwd*sc/2,cxp+cwd*sc/2,yBot)+pill(cxp,yBot,(sh==='square'?'캡 한 변 ':'캡 가로 ')+fmt(Z.capW));   // 캡 가로(정사각형은 한 변)
+      else h+=dash(cxp-cwd*sc/2,cy,yBot)+dash(cxp+cwd*sc/2,cy,yBot)+hl(cxp-cwd*sc/2,cxp+cwd*sc/2,yBot)+pill(cxp,yBot,'캡 지름 '+(/^[0-9.]+$/.test(String(Z.cap).trim())?'Ø':'')+fmt(Z.cap)); // 캡 지름
+    }
+    if(hasW)h+=dashH(cy-Wd*sc/2,xW,x0)+dashH(cy+Wd*sc/2,xW,x0)+vl(cy-Wd*sc/2,cy+Wd*sc/2,xW)+pill(xW,cy,'총 폭 '+fmt(Z.wid));                                       // 총 폭
+    if(vdim)h+=dashH(cy-chd*sc/2,xL,xV)+dashH(cy+chd*sc/2,xL,xV)+vl(cy-chd*sc/2,cy+chd*sc/2,xV)+pill(xV,cy,'캡 세로 '+fmt(Z.capH));                       // 캡 세로
     if(R){   // 같은 비율로 그린 비교 물건
       const rx=xL+vx+gap*sc,rw=R.w*sc,rh=R.h*sc;
       h+=box(rx,cy-rh/2,rw,rh,'border-radius:'+(R.round?'50%':f(3.2*sc)+'px')+';background:#f3f5f9;border:2px solid #aab2c0;box-sizing:border-box');
-      h+='<span class="sdr" style="left:'+f(rx+rw/2)+'px;top:'+f(R.round?cy+rh/2+34:cy)+'px">'+R.t+'<br>'+R.s+'</span>';
+      h+='<span class="sdr" style="left:'+f(rx+rw/2)+'px;top:'+f((R.round||rw<150)?cy+rh/2+34:cy)+'px">'+R.t+'<br>'+R.s+'</span>';
     }
     dia='<div class="sddia" style="width:'+PWI+'px;height:'+f(TH)+'px">'+h+'</div>';
   }
   const tbl='<div class="sdtb"'+J('size.len')+'>'+rows.map(r=>'<div class="sdr2"><b>'+esc(r[0])+'</b><span>'+esc(fmt(r[1]))+'</span></div>').join('')+'</div>';
-  return '<div class="sizebox"><h3>크기 안내</h3>'+(dia?'<div class="sdwrap">'+dia+'</div>':'')+tbl+(Z.note?'<p class="note"'+J('size.note')+'>'+nl(Z.note)+'</p>':'')+'</div>';
+  return '<div class="sizebox"><h3>크기 안내</h3>'+(dia?'<div class="sdwrap">'+dia+'</div>'+(part?'<p class="sdnote">점선으로 그린 부분은 치수를 적지 않아 대략의 모양만 그렸어요.</p>':''):'')+tbl+(Z.note?'<p class="note"'+J('size.note')+'>'+nl(Z.note)+'</p>':'')+'</div>';
 }
 /* 제품 규격: 사장님이 적은 것만 표로 나와요(적지 않은 줄은 안 나오고, 숫자를 지어내지 않아요) */
 const FX_ROWS=[['백셋','backset',1],['적용 문 두께','thick',1],['문 구멍 지름','bore',1],['재질','material',0],['마감·색상','finish',0],['좌우 방향','dir',0],['구성품','parts',0],['제조국','origin',0],['인증·시험','cert',0]];
@@ -959,9 +969,9 @@ function p4(){
    +subp('s-hero','첫 화면',fld.text('hero.badge','작은 글(파란 띠)')+fld.area('hero.title','큰 제목',{rows:2,req:1})+fld.area('hero.sub','설명 글',{rows:3,req:1}))
    +subp('s-concept','소개(CONCEPT)',fld.text('concept.eyebrow','작은 제목')+fld.text('concept.title','제목',{req:1})+fld.area('concept.body','설명 글 (비워도 돼요)',{rows:3}))
    +subp('s-size','크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 총 길이·총 폭·캡 치수를 모두 적으면 치수 그림이 나오고, 일부만 적으면 표만 나와요. 캡이 네모난 제품은 “캡 모양”을 직사각형으로 바꾸고 가로·세로를 따로 적어 주세요. 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
-     +'<label class="f"><span>캡 모양 (손잡이가 문에 닿는 받침의 모양)</span><select data-sz="shape">'+[['round','원형 (둥근 받침)'],['rect','직사각형 (네모난 받침)']].map(o=>'<option value="'+o[0]+'"'+((S.size.shape||'round')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
+     +'<label class="f"><span>캡 모양 (손잡이가 문에 닿는 받침의 모양)</span><select data-sz="shape">'+[['round','원형 (둥근 받침)'],['square','정사각형 (네모, 가로·세로가 같아요)'],['rect','직사각형 (네모, 가로·세로가 달라요)'],['rrect','모서리가 둥근 사각형 (라운드)']].map(o=>'<option value="'+o[0]+'"'+((S.size.shape||'round')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +capHint()+capBtn()
-     +(S.size.shape==='rect'?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
+     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+fld.text('size.len','총 길이 (레버 끝에서 캡 반대쪽 끝까지 가로 전체, mm)',{ph:'예: 130'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})
      +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
      +fld.area('size.note','맨 아래 작은 글',{rows:2}))
@@ -1405,7 +1415,7 @@ async function runChecks(list,signal){
 }
 
 /* 제품 특징 메모: 클로드가 사진을 보고, 이미지 AI가 틀리기 쉬운 이 제품만의 모양을 글로 적어요(구글에 같이 보내요) */
-const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양(위에서 봤을 때 둥근 원판인지, 네모난 직사각형·정사각형인지 꼭 구분)·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(원판) 모양 한 문장","rosetteShape":"받침을 위에서 본 모양. 둥글면 round, 직사각형이나 정사각형(모서리가 둥글어도)이면 rect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나만","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
+const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양(위에서 봤을 때 둥근 원판인지, 네모난 직사각형·정사각형인지 꼭 구분)·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(원판) 모양 한 문장","rosetteShape":"받침을 위에서 본 모양. 둥글면 round, 가로·세로가 같은 정사각형이면 square, 직사각형이면 rect, 사각형인데 모서리가 눈에 띄게 둥글면 rrect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나만","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
 async function writeSpec(signal,keep){   // keep: 사장님이 직접 적은 특징 메모는 덮어쓰지 않아요
   if(!hasPhoto(S.src))throw {code:'unavailable'};
   const r=await claude(SPEC_PROMPT,{signal,max:900,images:[await shrink(PH.get(S.src.id).blob,1024,.88)]});
@@ -1419,12 +1429,14 @@ async function writeSpec(signal,keep){   // keep: 사장님이 직접 적은 특
 /* ---- 캡 모양 자동 인식: 클로드가 사진에서 본 받침 모양(원형·직사각형)을 크기 안내의 '캡 모양'에 맞춰요 ----
    직접 고른 모양(shapeSet='user')은 건드리지 않고(버튼으로 직접 시킬 때만 바꿔요), 확실하지 않으면(그 밖의 모양·알 수 없음) 그대로 둬요.
    사진 인식을 이미 해 둔 작업(캡 모양을 아직 안 본 작업)도 열 때 한 번, 또는 버튼으로 알아봐요. */
-function capShapeOf(v,txt){   // 클로드의 한 단어 답 → rect | round | other | unknown (한 단어가 없으면 설명 글에서 분명한 말만 봐요)
+function capShapeOf(v,txt){   // 클로드의 한 단어 답 → round | square | rect | rrect | other | unknown (한 단어가 없으면 설명 글에서 분명한 말만 봐요)
   const w=String(v||'').toLowerCase().trim();
-  if(/^(rect|square)/.test(w)||/직사각|정사각|네모|사각/.test(w))return 'rect';
+  if(/^(rrect|rounded)/.test(w)||/모서리가 ?(많이 |크게 )?둥|둥근 ?사각|둥근 ?모서리|라운드/.test(w))return 'rrect';
+  if(/^square/.test(w)||/^정사각/.test(w))return 'square';
+  if(/^rect/.test(w)||/직사각|네모|사각/.test(w))return 'rect';
   if(/^(round|circle)/.test(w)||/^(원형|둥근|원|동그란)$/.test(w))return 'round';
   if(w==='other')return 'other';
-  if(!w){const t=String(txt||'');if(/직사각|정사각|네모|사각형/.test(t))return 'rect';if(/원형|둥근|동그란|둥글/.test(t))return 'round';}
+  if(!w){const t=String(txt||'');if(/모서리가 ?(많이 |크게 )?둥|둥근 ?사각|둥근 ?모서리|라운드/.test(t))return 'rrect';if(/정사각/.test(t))return 'square';if(/직사각|네모|사각형/.test(t))return 'rect';if(/원형|둥근|동그란|둥글/.test(t))return 'round';}
   return 'unknown';
 }
 function capKnown(){   // 지금 제품 사진에서 알아본 캡 모양(없으면 빈 글)
@@ -1434,22 +1446,24 @@ function capKnown(){   // 지금 제품 사진에서 알아본 캡 모양(없으
   return '';
 }
 function applyCapShape(sh,force){
-  if(sh!=='rect'&&sh!=='round')return false;
+  if(CAP_SHAPES.indexOf(sh)<0)return false;
   const Z=S.size;if(!Z)return false;
   if(!force){
     if(Z.shapeSet==='user')return false;
-    if(Z.shapeSet!=='auto'&&Z.shape==='rect'&&sh!=='rect')return false;   // 예전에 직접 직사각형으로 바꿔 둔 작업(표시가 없던 때)은 그대로 둬요
+    if(Z.shapeSet!=='auto'&&Z.shape&&Z.shape!=='round'&&sh!==Z.shape)return false;   // 예전에 직접 고른 모양(표시가 없던 때)은 그대로 둬요
   }
   Z.shapeSet='auto';
   if(Z.shape===sh)return false;
   Z.shape=sh;return true;
 }
 function capHint(){
-  const Z=S.size||{},sh=capKnown(),nm={rect:'직사각형',round:'원형'};let h='';
+  const Z=S.size||{},sh=capKnown(),nm=CAP_NAMES,cur=CAP_SHAPES.indexOf(Z.shape)>=0?Z.shape:'round';let h='';
   if(Z.shapeSet==='auto'&&nm[Z.shape])h+='<div class="hint">사진을 보고 <b>'+nm[Z.shape]+'</b>으로 자동으로 맞췄어요. 틀리면 위에서 바꿔 주세요.</div>';
   else if(Z.shapeSet==='user'&&nm[sh]&&sh!==Z.shape)h+='<div class="hint">사진 인식 결과는 <b>'+nm[sh]+'</b>이에요. 직접 고른 값을 그대로 두었어요.</div>';
+  else if(!Z.shapeSet)h+='<div class="hint">⚠ 캡 모양을 아직 확인하지 않았어요. 지금은 <b>'+nm[cur]+'</b>으로 그려요. '+(hasPhoto(S.src)?'아래 단추로 사진에서 알아보거나 ':'')+'위에서 직접 골라 주세요.</div>';
   const cap=String(Z.cap==null?'':Z.cap).trim();
-  if(Z.shape==='rect'&&cap&&!String(Z.capW||'').trim()&&!String(Z.capH||'').trim())h+='<div class="hint">원형 지름으로 적어 둔 <b>'+esc(cap)+'</b>은 직사각형의 가로·세로로 옮기지 않았어요. 아래에 캡 가로·캡 세로를 직접 적어 주세요(그림이 나와요).</div>';
+  if(cur==='square'&&cap&&!String(Z.capW||'').trim())h+='<div class="hint">원형 지름으로 적어 둔 <b>'+esc(cap)+'</b>은 정사각형의 한 변으로 옮기지 않았어요. 아래에 캡 한 변을 직접 적어 주세요(그림이 나와요).</div>';
+  else if((cur==='rect'||cur==='rrect')&&cap&&!String(Z.capW||'').trim()&&!String(Z.capH||'').trim())h+='<div class="hint">원형 지름으로 적어 둔 <b>'+esc(cap)+'</b>은 '+nm[cur]+'의 가로·세로로 옮기지 않았어요. 아래에 캡 가로·캡 세로를 직접 적어 주세요(그림이 나와요).</div>';
   return h;
 }
 function capBtn(){
@@ -1457,13 +1471,13 @@ function capBtn(){
   return '<div class="acts"><button class="btn sm" type="button" data-act="capshape"'+(CAPBUSY?' disabled':'')+'>'+(CAPBUSY?'사진을 보는 중이에요…':'사진으로 캡 모양 알아보기 (약 1센트)')+'</button></div>';
 }
 function capRow(){   // '사진 인식 결과' 칸에 한 줄
-  const Z=S.size||{},nm={rect:'직사각형',round:'원형'},sh=capKnown();
+  const Z=S.size||{},nm=CAP_NAMES,sh=capKnown();
   if(!sh)return '아직 알아보지 못했어요. 크기 안내의 "사진으로 캡 모양 알아보기"를 눌러 보세요.';
   if(nm[sh])return nm[sh]+(Z.shapeSet==='auto'&&Z.shape===sh?' · 크기 안내의 캡 모양에 맞췄어요':Z.shapeSet==='user'&&Z.shape!==sh?' · 크기 안내는 직접 고른 값 그대로예요':'');
-  return sh==='other'?'원형·직사각형이 아닌 모양이에요. 크기 안내의 캡 모양은 직접 골라 주세요.':'사진으로는 알 수 없어요. 크기 안내의 캡 모양은 직접 골라 주세요.';
+  return sh==='other'?'원형·사각형이 아닌 모양이에요. 크기 안내의 캡 모양은 직접 골라 주세요.':'사진으로는 알 수 없어요. 크기 안내의 캡 모양은 직접 골라 주세요.';
 }
 let CAPBUSY=false;
-const CAP_PROMPT='첨부한 사진은 방문(실내문) 손잡이 제품입니다. 문에 닿는 받침(캡)을 위에서 봤을 때의 모양만 알려 주세요. 둥근 원판이면 round, 직사각형이나 정사각형(모서리가 둥글어도)이면 rect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나입니다. 보이는 것만 답하고 추측하지 마세요.\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"rosetteShape":"round, rect, other, unknown 중 하나","rosette":"받침 모양 한 문장"}';
+const CAP_PROMPT='첨부한 사진은 방문(실내문) 손잡이 제품입니다. 문에 닿는 받침(캡)을 위에서 봤을 때의 모양만 알려 주세요. 사진이 비스듬해도 실제 모양을 판단하세요. 둥근 원판이면 round, 가로·세로가 같은 정사각형이면 square, 가로·세로가 다른 직사각형이면 rect, 사각형인데 모서리가 눈에 띄게 둥글면(라운드 모양) rrect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나입니다. 보이는 것만 답하고 추측하지 마세요.\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"rosetteShape":"round, square, rect, rrect, other, unknown 중 하나","rosette":"받침 모양 한 문장"}';
 async function recogShape(force){   // 사진 인식을 이미 한 작업에서도 캡 모양만 알아봐요(제품 특징 메모는 건드리지 않아요)
   if(CAPBUSY||!hasPhoto(S.src)||!(await claudeReady(1)))return null;
   const id=S.src.id;CAPBUSY=true;renderSide();
@@ -1726,7 +1740,7 @@ function vPostDraft(){
   const mm=v=>{const t=String(v==null?'':v).trim();return /^[0-9.]+$/.test(t)?t+'mm':t;};
   const nm=one(S.sellName)||one(S.name),hero=one(S.hero.title),sub=one(S.hero.sub),ct=one(S.concept.title),cb=one(S.concept.body);
   const Z=S.size||{},sz=[Z.len&&'총 길이 '+mm(Z.len),Z.wid&&'총 폭 '+mm(Z.wid),
-    Z.shape==='rect'?((Z.capW&&Z.capH)?'캡 '+mm(Z.capW)+' × '+mm(Z.capH):''):(Z.cap?'캡 지름 '+mm(Z.cap):'')].filter(Boolean);
+    (Z.shape==='rect'||Z.shape==='rrect')?((Z.capW&&Z.capH)?'캡 '+mm(Z.capW)+' × '+mm(Z.capH):''):Z.shape==='square'?(Z.capW?'캡 한 변 '+mm(Z.capW):''):(Z.cap?'캡 지름 '+mm(Z.cap):'')].filter(Boolean);
   const safe=String(S.about.body||'').split('\n').map(x=>x.trim()).filter(x=>/안전/.test(x))[0]||'';      // 회사 소개에 적힌 안전·평화 문장이 있으면 그대로 끝에 붙여요
   const cta=[one(S.cta.title),one(S.cta.sub)].filter(Boolean).join(' '),foot=one(S.about.foot);
   const fxr=factsRows().slice(0,5),body=[sub,(ct&&cb)?ct+' — '+cb:(ct||cb),sz.length?'크기: '+sz.join(' · '):'',fxr.length?'규격: '+fxr.map(r=>r[0]+' '+r[1]).join(' · '):'',cta].filter(Boolean);
@@ -2481,7 +2495,7 @@ const ACT={
     if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요.',3600);UI.open.add('p2');renderSide();return;}
     try{
       const r=await recogShape(true);if(!r)return;
-      toast(r.sh==='rect'?'사진을 보니 직사각형이에요. 크기 안내의 캡 모양을 직사각형으로 맞췄어요. 캡 가로·세로(mm)를 적어 주세요.':r.sh==='round'?'사진을 보니 원형이에요. 크기 안내의 캡 모양을 원형으로 맞췄어요.':'사진으로는 캡 모양을 알 수 없어요. 크기 안내에서 직접 골라 주세요.',4800);
+      toast(r.sh==='round'?'사진을 보니 원형이에요. 크기 안내의 캡 모양을 원형으로 맞췄어요.':CAP_NAMES[r.sh]?'사진을 보니 '+CAP_NAMES[r.sh]+'이에요. 크기 안내의 캡 모양을 '+CAP_NAMES[r.sh]+'으로 맞췄어요. '+(r.sh==='square'?'캡 한 변(mm)을 적어 주세요.':'캡 가로·세로(mm)를 적어 주세요.'):'사진으로는 캡 모양을 알 수 없어요. 크기 안내에서 직접 골라 주세요.',4800);
     }catch(e){CAPBUSY=false;renderSide();toast((e&&e.text)||ASK_ERR[e&&e.code]||'알아보지 못했어요. 한 번 더 눌러 주세요.',3600);}
   },
   async recog(){
@@ -2620,7 +2634,7 @@ setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
   else if(await ensureMask()){if(S.src&&PM&&PM.id===S.src.id&&PM.dir&&(!S.lvDir||S.lvDir.id!==S.src.id))setLever(PM.dir,true);renderSide();refresh();}                      // 제품 모양을 알아 두면 작은 사진이 손잡이를 안 가리는 구석으로 가요
   (async()=>{if(G.key.trim())await gCheck();})();   // 기억해 둔 키는 열 때 무료로 자동 확인해요
   if(C.key.trim()&&!window.claude)ACT.cCheck();
-  if(hasPhoto(S.src)&&!capKnown()&&S.size&&S.size.shapeSet!=='user')recogShape(false).then(r=>{if(r&&r.changed)toast('사진을 보고 크기 안내의 캡 모양을 '+(r.sh==='rect'?'직사각형':'원형')+'으로 맞췄어요.'+(r.sh==='rect'?' 캡 가로·세로(mm)를 적어 주세요.':''),5200);}).catch(()=>{CAPBUSY=false;});   // 사진 인식을 이미 해 둔 작업도 캡 모양을 한 번 알아봐요
+  if(hasPhoto(S.src)&&!capKnown()&&S.size&&S.size.shapeSet!=='user')recogShape(false).then(r=>{if(r&&r.changed)toast('사진을 보고 크기 안내의 캡 모양을 '+(CAP_NAMES[r.sh]||'원형')+'으로 맞췄어요.'+(r.sh==='square'?' 캡 한 변(mm)을 적어 주세요.':(r.sh==='rect'||r.sh==='rrect')?' 캡 가로·세로(mm)를 적어 주세요.':''),5200);}).catch(()=>{CAPBUSY=false;});   // 사진 인식을 이미 해 둔 작업도 캡 모양을 한 번 알아봐요
   checkUpdate('open');                                       // 열 때 최신인지 확인(새 버전이면 자동으로 새로고침)
 })();
 })();
