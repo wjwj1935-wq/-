@@ -125,10 +125,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .sddia{position:relative;margin:0 auto}
 .pg .sddia i{display:block}
 .pg .sdp{position:absolute;transform:translate(-50%,-50%);background:#fff;color:#2a56a3;font-weight:700;font-size:20px;padding:3px 9px;border:1.5px solid #2a56a3;border-radius:999px;white-space:nowrap}
-.pg .sdr{position:absolute;transform:translate(-50%,-50%);text-align:center;font-size:20px;line-height:1.35;color:#66728a;font-weight:700}
+.pg .sdr{position:absolute;transform:translate(-50%,-50%);text-align:center;font-size:20px;line-height:1.35;color:#66728a;font-weight:700;white-space:nowrap}
 .pg .sdtb{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:10px;margin:18px auto 0}
 .pg .sdr2{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid #d9e0ec;border-radius:14px;padding:14px 18px;font-size:24px}
-.pg .sdr2 b{color:#586478;font-weight:700}
+.pg .sdr2 b{color:#586478;font-weight:700;text-align:left}
 .pg .sdr2 span{font-weight:800;color:#14213d;white-space:nowrap}
 .pg .sizeph{margin:36px auto 0;max-width:736px;padding:26px 20px;border:2px dashed #b8c4da;border-radius:18px;background:#eef2fa;color:#6b7a96;font-size:24px;text-align:center}
 .pg .sdnote{margin:12px auto 0;max-width:736px;text-align:center;font-size:22px;line-height:1.5;color:var(--pg-mute)}
@@ -306,7 +306,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 83</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 84</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -362,6 +362,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v84 (2026-11-09): 총 길이는 항상 '캡 중심(축)에서 레버 끝까지'가 기본 — 예전 버전에서 저장된 기준값(뜻이 바뀐 값)은 무시하고 직접 고른 것만 따름 · 이름을 '총 길이(캡 중심~끝)'로 · 치수 그림에서 총 폭·캡 세로 표시가 손잡이 끝·캡을 덮던 것을 고침 */
 /* v83 (2026-11-08): 쇼핑몰 올리기 창에 '스마트스토어 입력 시트' — 판매가·할인가·재고·옵션(제품마다)과 카테고리·브랜드·제조사·원산지·배송·반품/교환·A/S(스토어 공통, 한 번만)를 앱에 적어 두면 항목마다 복사하고 안내 글에도 들어감 · '왜 자동으로 안 올라가요?' 분석 칸 */
 /* v82 (2026-11-08): 총 길이의 기본을 '손잡이만' = 캡 중심(그림의 둥근 축 표시)에서 레버 끝까지로 바로잡음 · '캡 가장자리부터' '캡까지 포함'으로 바꿀 수도 있음 */
 /* v81 (2026-11-08): 총 길이는 손잡이(레버) 하나만의 길이(레버 끝 ~ 캡 가장자리, 캡은 뺌)가 기본 · 치수선도 캡 가장자리까지만 그림 · '캡 중심까지' '캡까지 포함'으로 바꿀 수도 있음 */
@@ -373,7 +374,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=83,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=84,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -602,7 +603,7 @@ function box(p,bw,bh,o){
   if(o.ex)return '<div class="pb '+(o.cls||'')+'" style="width:'+bw+'px;height:'+bh+'px"></div>';
   return '<div class="pb ph-empty '+(o.cls||'')+'"'+at+' style="width:'+bw+'px;height:'+bh+'px">'+ILLUS+'<span>'+esc(o.hint||'사진을 넣어 주세요')+'</span></div>';
 }
-const LEN_ROW={center:'총 길이(손잡이만)',lever:'총 길이(캡 가장자리~끝)',full:'총 길이(캡 포함)'},LEN_PILL={center:'총 길이(손잡이만) ',lever:'총 길이(캡 가장자리~끝) ',full:'총 길이(캡 포함) '},lenBase=z=>z&&z.base==='lever'?'lever':z&&z.base==='full'?'full':'center';   // 총 길이 기준: 손잡이만 = 캡 중심(축)에서 레버 끝까지(기본) · 캡 가장자리부터 · 캡까지 포함
+const LEN_ROW={center:'총 길이(캡 중심~끝)',lever:'총 길이(캡 가장자리~끝)',full:'총 길이(캡 포함)'},LEN_PILL={center:'총 길이(캡 중심~끝) ',lever:'총 길이(캡 가장자리~끝) ',full:'총 길이(캡 포함) '},lenBase=z=>z&&z.baseSet==='user'&&z.base==='lever'?'lever':z&&z.baseSet==='user'&&z.base==='full'?'full':'center';   // 총 길이 기준: 캡 중심(축)에서 레버 끝까지(기본) · 캡 가장자리부터 · 캡까지 포함. 저장된 기준은 사장님이 직접 골랐을 때(baseSet='user')만 따른다 — 예전 버전에서 저장된 값은 뜻이 달라서 무시해요
 const CAP_SHAPES=['round','square','rect','rrect'],CAP_NAMES={round:'원형',square:'정사각형',rect:'직사각형',rrect:'모서리가 둥근 사각형'};
 /* 크기 안내: 사장님이 적은 치수(캡 모양·캡 치수·총 길이·총 폭)로 치수 그림과 표를 그려요. 적지 않은 숫자는 절대 채우지 않아요.
    캡 모양 4가지: 원형(지름 하나) · 정사각형(한 변 하나) · 직사각형(가로·세로) · 모서리가 둥근 사각형(가로·세로). 예전 저장본은 shape가 없어서 원형으로 읽어요.
@@ -629,15 +630,15 @@ function sizeBlock(ex){
     const REFS={card:{w:85.6,h:54,t:'신용카드',s:'85.6 × 54mm'},coin:{w:26.5,h:26.5,t:'500원 동전',s:'지름 26.5mm',round:1}},R=REFS[Z.ref]||null;
     const Wd=hasW?W:L*.13,cwd=hasCap?cw:L*(sh==='square'?.36:.42),chd=hasCap?ch:(two?L*.33:cwd),vdim=two&&hasCap;   // 적지 않은 치수는 그림에서만 대략의 크기로 그려요(숫자는 쓰지 않아요)
     const Lt=base==='lever'?L+cwd:base==='center'?L+cwd/2:L;   // 그림에서 레버 끝부터 캡 반대쪽 끝까지의 전체 길이
-    const PWI=736,padX=112,padY=78,vx=vdim?172:0,gap=R?Math.max(18,L*.15):0,tot=Lt+(R?gap+R.w:0),sc=Math.min(6,(PWI-2*padX-vx)/tot);   // vx: 직사각형 캡의 세로 치수선 자리
-    const Hm=Math.max(chd,Wd,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=Math.max(padX,(PWI-(tot*sc+vx))/2),xL=x0+Lt*sc,cxp=x0+(Lt-cwd/2)*sc,xE=base==='lever'?x0+L*sc:base==='center'?cxp:xL;   // 총 길이 치수선의 끝: 손잡이만=캡 가장자리 · 캡 중심까지=캡 중심 · 캡 포함=캡 반대쪽 끝
+    const PWI=736,padL=hasW?184:112,padR=hasW?64:112,padY=78,vx=vdim?190:0,gap=R?Math.max(18,L*.15):0,tot=Lt+(R?gap+R.w:0),sc=Math.min(6,(PWI-padL-padR-vx)/tot);   // padL: 총 폭 표시가 들어갈 왼쪽 자리 · vx: 캡 세로 표시가 들어갈 자리   // vx: 직사각형 캡의 세로 치수선 자리
+    const Hm=Math.max(chd,Wd,R?R.h:0),Hp=Hm*sc,TH=Hp+padY*2,cy=padY+Hp/2,x0=padL+(PWI-padL-padR-(tot*sc+vx))/2,xL=x0+Lt*sc,cxp=x0+(Lt-cwd/2)*sc,xE=base==='lever'?x0+L*sc:base==='center'?cxp:xL;   // 총 길이 치수선의 끝: 손잡이만=캡 가장자리 · 캡 중심까지=캡 중심 · 캡 포함=캡 반대쪽 끝
     const f=n=>Math.round(n*10)/10,fx=(l,w)=>flip?PWI-l-w:l,px=x=>flip?PWI-x:x;   // 방향이 반대면 좌우를 거울처럼 뒤집어요
     const box=(l,t,w,h,st)=>'<i style="position:absolute;left:'+f(fx(l,w))+'px;top:'+f(t)+'px;width:'+f(w)+'px;height:'+f(h)+'px;'+st+'"></i>';
     const C='#2a56a3',hl=(xa,xb,y)=>box(xa,y-1,xb-xa,2,'background:'+C)+box(xa-1,y-9,2,18,'background:'+C)+box(xb-1,y-9,2,18,'background:'+C);
     const vl=(ya,yb,x)=>box(x-1,ya,2,yb-ya,'background:'+C)+box(x-9,ya-1,18,2,'background:'+C)+box(x-9,yb-1,18,2,'background:'+C);
     const dash=(x,ya,yb)=>box(x-.75,ya,0,yb-ya,'border-left:1.5px dashed #9fb0d0'),dashH=(y,xa,xb)=>box(xa,y-.75,xb-xa,0,'border-top:1.5px dashed #9fb0d0');
     const pill=(x,y,t)=>'<span class="sdp" style="left:'+f(px(x))+'px;top:'+f(y)+'px">'+esc(t)+'</span>';
-    const yTop=cy-Hp/2-40,yBot=cy+Hp/2+40,xW=x0-44,xV=xL+70;
+    const yTop=cy-Hp/2-40,yBot=cy+Hp/2+40,xB=x0-20,xW=x0-104,xC=xL+20,xV=xL+110;   // 치수 괄호(xB·xC)는 손잡이·캡 바로 옆, 글자 표시(xW·xV)는 그 바깥에 둬서 그림을 덮지 않아요
     const capFill=hasCap?'background:#e4e8ef;border:2px solid #8a93a4;':'background:#f1f3f8;border:2px dashed #8a93a4;';
     let h='';
     if(boxy){   // 캡(뒤): 네모 캡은 오른쪽 끝이 전체 길이 끝과 맞고, 안쪽에 얇은 테두리(모서리가 둥근 사각형은 모서리를 많이 둥글게)
@@ -648,7 +649,7 @@ function sizeBlock(ex){
       h+=box(cxp-cwd*sc/2,cy-cwd*sc/2,cwd*sc,cwd*sc,'border-radius:50%;'+capFill+'box-sizing:border-box');
       h+=box(cxp-cwd*sc*.26,cy-cwd*sc*.26,cwd*sc*.52,cwd*sc*.52,'border-radius:50%;border:1.5px solid #aab2c0;box-sizing:border-box');
     }
-    const lvFill=hasW?'background:#cfd4dc;border:2px solid #7d8697;':'background:#e9ecf1;border:2px dashed #7d8697;',hr=Math.max(Wd*sc*.78,10);
+    const lvFill=hasW?'background:#cfd4dc;border:2px solid #7d8697;':'background:#e9ecf1;border:2px dashed #7d8697;',hr=Math.max(Math.min(Wd*sc*.78,Hp/2),10);
     h+=box(x0,cy-Wd*sc/2,(cxp-x0)+2,Wd*sc,'border-radius:'+f(Wd*sc/2)+'px;'+lvFill+'box-sizing:border-box');   // 레버(앞): 캡 위에 겹쳐서 캡 중심(축)까지
     h+=box(cxp-hr,cy-hr,hr*2,hr*2,'border-radius:50%;'+lvFill+'box-sizing:border-box');                       // 레버가 붙는 축(캡 중심)
     h+=dash(x0,yTop,cy-Wd*sc/2)+dash(xE,yTop,base==='center'?cy:(boxy?cy-chd*sc/2:cy))+hl(x0,xE,yTop)+pill((x0+xE)/2,yTop,LEN_PILL[base]+fmt(Z.len));   // 총 길이
@@ -656,8 +657,8 @@ function sizeBlock(ex){
       if(boxy)h+=dash(cxp-cwd*sc/2,cy+chd*sc/2,yBot)+dash(cxp+cwd*sc/2,cy+chd*sc/2,yBot)+hl(cxp-cwd*sc/2,cxp+cwd*sc/2,yBot)+pill(cxp,yBot,(sh==='square'?'캡 한 변 ':'캡 가로 ')+fmt(Z.capW));   // 캡 가로(정사각형은 한 변)
       else h+=dash(cxp-cwd*sc/2,cy,yBot)+dash(cxp+cwd*sc/2,cy,yBot)+hl(cxp-cwd*sc/2,cxp+cwd*sc/2,yBot)+pill(cxp,yBot,'캡 지름 '+(/^[0-9.]+$/.test(String(Z.cap).trim())?'Ø':'')+fmt(Z.cap)); // 캡 지름
     }
-    if(hasW)h+=dashH(cy-Wd*sc/2,xW,x0)+dashH(cy+Wd*sc/2,xW,x0)+vl(cy-Wd*sc/2,cy+Wd*sc/2,xW)+pill(xW,cy,'총 폭 '+fmt(Z.wid));                                       // 총 폭
-    if(vdim)h+=dashH(cy-chd*sc/2,xL,xV)+dashH(cy+chd*sc/2,xL,xV)+vl(cy-chd*sc/2,cy+chd*sc/2,xV)+pill(xV,cy,'캡 세로 '+fmt(Z.capH));                       // 캡 세로
+    if(hasW)h+=dashH(cy-Wd*sc/2,xB,x0)+dashH(cy+Wd*sc/2,xB,x0)+vl(cy-Wd*sc/2,cy+Wd*sc/2,xB)+pill(xW,cy,'총 폭 '+fmt(Z.wid));                                       // 총 폭
+    if(vdim)h+=dashH(cy-chd*sc/2,xL,xC)+dashH(cy+chd*sc/2,xL,xC)+vl(cy-chd*sc/2,cy+chd*sc/2,xC)+pill(xV,cy,'캡 세로 '+fmt(Z.capH));                       // 캡 세로
     if(R){   // 같은 비율로 그린 비교 물건
       const rx=xL+vx+gap*sc,rw=R.w*sc,rh=R.h*sc;
       h+=box(rx,cy-rh/2,rw,rh,'border-radius:'+(R.round?'50%':f(3.2*sc)+'px')+';background:#f3f5f9;border:2px solid #aab2c0;box-sizing:border-box');
@@ -997,9 +998,9 @@ function p3(){
 function segCtl(title,act,items,cur,cls){   // 작은 선택 단추 줄(고른 것 하나만 눌려 있어요)
   return '<div class="f"><span>'+title+'</span><div class="segpick '+cls+'" role="radiogroup">'+items.map(it=>'<button type="button" class="sg'+(cur===it[0]?' on':'')+'" role="radio" aria-checked="'+(cur===it[0])+'" data-act="'+act+'" data-v="'+it[0]+'"><b>'+it[1]+'</b><small>'+it[2]+'</small></button>').join('')+'</div></div>';
 }
-function lenLabel(){const b=lenBase(S.size);return b==='lever'?'총 길이 (캡 가장자리에서 레버 끝까지, mm)':b==='full'?'총 길이 (캡까지 포함한 전체 · 레버 끝에서 캡 반대쪽 끝까지, mm)':'총 길이 (손잡이만의 길이 · 캡 중심(축)에서 레버 끝까지, mm)';}
+function lenLabel(){const b=lenBase(S.size);return b==='lever'?'총 길이 (캡 가장자리에서 레버 끝까지, mm)':b==='full'?'총 길이 (캡까지 포함한 전체 · 레버 끝에서 캡 반대쪽 끝까지, mm)':'총 길이 (캡 중심(축)에서 레버 끝까지, mm)';}
 function lenBasisCtl(){
-  return segCtl('총 길이를 어디서부터 재셨나요? (기본: 손잡이만)','lenbase',[['center','손잡이만','캡 중심(축) ~ 레버 끝'],['lever','캡 가장자리부터','캡 가장자리 ~ 레버 끝'],['full','캡까지 포함','캡 반대쪽 끝 ~ 레버 끝']],lenBase(S.size),'c3');
+  return segCtl('총 길이를 어디서부터 재셨나요? (기본: 캡 중심부터)','lenbase',[['center','캡 중심부터','캡 중심(축) ~ 레버 끝'],['lever','캡 가장자리부터','캡 가장자리 ~ 레버 끝'],['full','캡까지 포함','캡 반대쪽 끝 ~ 레버 끝']],lenBase(S.size),'c3');
 }
 function dirCtl(){
   const Z=S.size||{},cur=(Z.dir==='L'||Z.dir==='R')?Z.dir:'auto',ld=S.src&&S.lvDir&&S.lvDir.id===S.src.id?S.lvDir.dir:'';
@@ -2616,7 +2617,7 @@ const ACT={
     const c=S.baseCands&&S.baseCands[+b.dataset.k];if(!hasPhoto(c))return;
     S.base=Object.assign({},c);S.baseCands=[];ACT.baseok();
   },
-  lenbase(b){S.size.base=b.dataset.v==='lever'?'lever':b.dataset.v==='full'?'full':'center';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="lenbase"]',side);if(nb)nb.focus();},
+  lenbase(b){S.size.base=b.dataset.v==='lever'?'lever':b.dataset.v==='full'?'full':'center';S.size.baseSet='user';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="lenbase"]',side);if(nb)nb.focus();},
   capdir(b){const v=b.dataset.v;S.size.dir=(v==='L'||v==='R')?v:'auto';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="capdir"]',side);if(nb)nb.focus();},
   capsel(b){const v=b.dataset.v;if(CAP_SHAPES.indexOf(v)<0)return;S.size.shape=v;S.size.shapeSet='user';renderSide();refresh();const nb=$('.cappick .cp.on',side);if(nb)nb.focus();},
   async capshape(){
