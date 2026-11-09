@@ -112,6 +112,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .job .nm{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .job .ratio{font-size:12px;font-weight:700;color:var(--mute);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
 .job .done{font-size:12px;color:var(--ok);font-weight:700}
+.m3dv{display:flex;flex-wrap:wrap;gap:6px}.m3dv figure{margin:0;width:92px;text-align:center;font-size:11px;color:var(--mute,#667)}.m3dv img{width:92px;height:92px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+#m3dJson{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;min-height:150px}
 .cutbox{background:repeating-conic-gradient(#8a8f98 0 25%,#767b84 0 50%) 50%/20px 20px;padding:10px;border-radius:10px}.cutbox img{max-width:100%;display:block;margin:0 auto}
 .capchips{gap:6px}.cchip{display:inline-flex;align-items:center;gap:2px}.cchip .ib{width:26px;height:26px}
 .job details{grid-column:1/-1}
@@ -311,7 +313,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 88</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 89</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -367,6 +369,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v89 (2026-11-09): 3D 모형(실험) — 클로드가 사진과 치수로 받침·목·레버의 3D 모형을 추정하고(사진과 비교해 최대 2번 고침), 앱이 정면·비스듬히·옆으로 렌더링해서 구글 참고 사진에 구조 참고도로 같이 보냄 · 값(JSON)을 고쳐 무료로 다시 렌더링 · 켜고 끄기 */
 /* v88 (2026-11-09): 실물 합성(선택) — 문 사진만 AI가 그리고 제품은 1단계 실제 사진에서 오려 붙임 · 첫 화면·소개는 구글 없이 컴퓨터가 어두운 배경에 실제 제품을 올려 만듦 · 크기·위아래·그림자 조절과 무료 다시 합성 */
 /* v87 (2026-11-09): 받침 목록(원형·직사각·정사각 규격을 저장해 고르면 잠김) · 레버 방향 잠금과 '좌우 뒤집기' · 중심~레버 끝이 받침 가로의 몇 배인지 지시문·검수에 · '바뀌면 안 되는 것' 고정 메모 */
 /* v86 (2026-11-09): 천천히 확실하게 만들기 — 한 장씩 보내고, 칸마다 검수해서 합격할 때까지 최대 4번(같은 지시→지적한 점을 넣어서→정밀 모델→단순한 구도), 한도·구글 오류는 그 칸만 기다렸다 다시, 끝까지 안 되면 '보류' 칸(이유 저장), 최대 요금 상한, 저장 전 최종 점검표 */
@@ -383,7 +386,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=88,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=89,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -436,7 +439,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'레버 작동 각도는 30도이고, 내려갔다 원위치로 돌아와요. 적은 동작으로 열려요(우리 회사 제품의 특징이에요).',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,holds:{},fixed:'',flipOk:false,comp:{scale:70,dy:0,shadow:35,tol:40},lvDir:null,prev:null,opPup:null,size:{len:'',wid:'',cap:'',shape:'round',capW:'',capH:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'레버 작동 각도는 30도이고, 내려갔다 원위치로 돌아와요. 적은 동작으로 열려요(우리 회사 제품의 특징이에요).',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,holds:{},fixed:'',flipOk:false,comp:{scale:70,dy:0,shadow:35,tol:40},model3d:null,model3dUse:true,lvDir:null,prev:null,opPup:null,size:{len:'',wid:'',cap:'',shape:'round',capW:'',capH:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -977,6 +980,7 @@ function p1(){
     +'<div class="f"><span>다른 각도 사진 (선택 · 최대 2장) — 옆면·정면 실제 사진을 더 넣을수록 AI가 실제 모양을 더 정확히 따라 그려요</span><div class="acts">'+extraCtl(0)+extraCtl(1)+'</div></div>'
     +fld.area('spec','제품 특징 메모 (구글에 같이 보내요 · 틀린 곳은 고쳐 주세요)',{rows:6,ph:'비워 두면 이미지를 만들기 직전에 클로드가 사진을 보고 적어요(클로드 키가 있을 때). 직접 적어도 돼요. 예: 레버 윗면 끝쪽에 엄지가 닿는 움푹한 곳이 있어요.'})
     +'<div class="acts"><button class="btn sm" type="button" data-act="specai">클로드가 사진 보고 적기 (약 1센트)</button></div><div class="msg" id="specMsg" aria-live="polite"></div>'
+    +m3dPanel()
     +fld.area('fixed','바뀌면 안 되는 것 (사장님이 직접 적는 고정 메모 · 지시문과 검수에 같이 가요)',{rows:3,ph:'예: 받침 두께 8mm / 받침과 레버 사이에 이음 없음 / 레버 끝은 둥글게 / 나사는 안 보임'})
     +fld.area('memo','아는 내용 (선택)',{rows:2,ph:'확실한 것만 적어요. 재질, 색상, 크기, 구성품 등. 적지 않은 사양은 글에 넣지 않아요.'});
 }
@@ -1225,8 +1229,8 @@ async function plateCrop(box){
 }
 async function buildRefs(){
   if(!hasPhoto(S.src))throw {status:-1,message:'1단계의 제품 사진을 먼저 넣어 주세요.'};
-  const ex=(S.extra||[]).filter(hasPhoto),di=detailIdx(),pb=await plateBox();
-  const sig=[S.src.id,ex.map(p=>p.id).join(','),di.map(i=>{const it=S.zoom.items[i];return [it.fx,it.fy,it.z].join(':');}).join(','),pb?[pb.x0,pb.y0,pb.x1,pb.y1].map(v=>v.toFixed(3)).join(','):'-'].join('|');
+  const ex=(S.extra||[]).filter(hasPhoto),di=detailIdx(),pb=await plateBox(),m3=model3dFor();
+  const sig=[S.src.id,ex.map(p=>p.id).join(','),di.map(i=>{const it=S.zoom.items[i];return [it.fx,it.fy,it.z].join(':');}).join(','),pb?[pb.x0,pb.y0,pb.x1,pb.y1].map(v=>v.toFixed(3)).join(','):'-',m3?m3.views.map(v=>v&&v.id).join(','):'-'].join('|');
   if(REF.sig===sig&&REF.val)return REF.val;
   const imgs=[await toB64(await shrink(PH.get(S.src.id).blob,1024,.85))],notes=['첨부 사진 1: 실제 제품 전체 사진입니다(이것이 정답 기준).'];
   for(const p of ex)imgs.push(await toB64(await shrink(PH.get(p.id).blob,1024,.85)));
@@ -1235,6 +1239,10 @@ async function buildRefs(){
   for(const i of di)imgs.push(await cropRef(S.zoom.items[i]));
   if(di.length)notes.push('첨부 사진 '+from+(di.length>1?'~'+(from+di.length-1):'')+': 같은 제품의 확대 사진입니다('+di.map(i=>i?'레버와 목이 만나는 부분':'레버 끝 부분').join(' / ')+'). 이 부분의 윤곽, 움푹 파인 곳, 굴곡, 이음매를 그대로 따라 그리세요.');
   if(pb){imgs.push(await plateCrop(pb));notes.push('첨부 사진 '+imgs.length+': 같은 제품의 받침(카바) 부분을 크게 오려 낸 사진입니다. 받침의 모양(가로·세로 비율, 모서리 모양)을 이 사진 그대로 따라 그리세요. 정사각형이나 원형으로 바꾸지 마세요.');}
+  if(m3){   // 3D 모형 렌더링(정면·비스듬히·옆): 구조 참고도
+    const from3=imgs.length+1;for(const k of M3D_SEND){const v=m3.views[k];if(v&&hasPhoto(v))imgs.push(await toB64(await shrink(PH.get(v.id).blob,768,.88)));}
+    notes.push('첨부 사진 '+from3+(imgs.length>from3?'~'+imgs.length:'')+': 이 제품을 3D 모형(사진과 치수로 추정)으로 만들어 정면·비스듬히·옆에서 렌더링한 구조 참고도입니다. 레버의 길이·굵기 변화·끝 모양, 목 부분, 받침의 크기·두께, 받침에서 레버가 문 쪽으로 튀어나온 높이를 이해하는 데만 쓰세요. 색·질감·무늬·광택은 따르지 말고 첨부 사진 1을 따르세요. 이 렌더링이 사진 1과 다르면 사진 1이 맞습니다.');
+  }
   REF={sig,val:{imgs,note:'\n'+notes.join('\n'),sig}};return REF.val;
 }
 async function gCheck(){
@@ -1354,6 +1362,175 @@ async function regenBad(list,signal){            // 정밀 모델로 한 번 더
     catch(e){if(e&&e.name==='AbortError')return;err=gErr(e);}}};
   await Promise.all(Array.from({length:Math.min(3,list.length)},wk));
   return {done,err};
+}
+/* ===== 3D 모형 (v89, 실험) =====
+   클로드가 제품 사진과 사장님이 적은 치수로 3D 모형을 '숫자 값'으로 추정하고(받침·목·레버의 굵기 변화),
+   이 앱이 직접 렌더링해요(거리 함수를 따라 가는 방식, 컴퓨터 안·무료). 렌더링은 구글에 구조 참고도로 같이 가요. */
+const M3D={busy:false,msg:''};
+const M3D_SEND=[0,1,3];   // 구글에 보내는 것: 정면·비스듬히(앞)·옆 (0 정면, 1 비스듬히A, 2 비스듬히B, 3 옆)
+const M3D_VIEWS=['front','tq1','tq2','side'],M3D_NAMES={front:'정면',tq1:'비스듬히 A',tq2:'비스듬히 B',side:'옆'};
+const M3D_DEF={finish:{color:'#b8bcc4',metal:.9,gloss:.7},plate:{shape:'round',w:60,h:60,t:8,edge:2,cr:8},collar:{d:20,h:6},
+  lever:{len:150,lift:20,root:6,corner:4,tipRound:6,droop:0,profile:[{x:0,w:18,h:14},{x:.5,w:15,h:11},{x:1,w:13,h:10}]}};
+function model3dFor(){
+  const m=S.model3d;if(!m||!S.src||m.id!==S.src.id||S.model3dUse===false||!Array.isArray(m.views))return null;
+  return M3D_SEND.every(k=>m.views[k]&&hasPhoto(m.views[k]))?m:null;
+}
+function m3dDir(){return S.lvDir&&S.src&&S.lvDir.id===S.src.id?S.lvDir.dir:(PM&&S.src&&PM.id===S.src.id&&PM.dir)||'R';}
+function m3dLock(){   // 사장님이 직접 적은 확실한 치수(mm)
+  const Z=S.size||{},ci=capInfo(),r=reachInfo(),L=mmv(Z.len),o={};
+  if(r)o.len=Math.round(r.reach*10)/10;else if(L&&lenBase(Z)==='center')o.len=L;
+  if(ci){o.shape=ci.shape;
+    if(ci.shape==='round'){if(ci.d){o.w=ci.d;o.h=ci.d;}}else if(ci.shape==='square'){if(ci.w){o.w=ci.w;o.h=ci.w;}}else{if(ci.w)o.w=ci.w;if(ci.h)o.h=ci.h;}}
+  if(mmv(Z.wid))o.wid=mmv(Z.wid);
+  return o;
+}
+function m3dFacts(lock){
+  const t=[];
+  if(lock.len)t.push('받침 중심에서 레버 끝까지 '+lock.len+'mm');
+  if(lock.shape){const nm=CAP_NAMES[lock.shape];t.push('받침 '+nm+(lock.shape==='round'?(lock.w?' 지름 '+lock.w+'mm':''):lock.shape==='square'?(lock.w?' 한 변 '+lock.w+'mm':''):(lock.w&&lock.h?' 가로(레버가 뻗는 방향) '+lock.w+' × 세로 '+lock.h+'mm':'')));}
+  if(lock.wid)t.push('레버의 가장 넓은 폭 '+lock.wid+'mm');
+  return t.length?t.join(' / '):'(없음 — 사진의 비율로 일반적인 방문 손잡이 크기(받침 50~70mm, 레버 길이 120~170mm)에 맞춰 추정하세요)';
+}
+function m3dNorm(raw,lock){
+  raw=raw&&typeof raw==='object'?raw:{};lock=lock||{};
+  const D=M3D_DEF,fin=raw.finish||{},pl=raw.plate||{},co=raw.collar||{},lv=raw.lever||{};
+  const num=(v,d,a,b)=>{const x=parseFloat(v);return isFinite(x)?Math.max(a,Math.min(b,x)):d;};
+  const shape=CAP_SHAPES.indexOf(lock.shape||pl.shape)>=0?(lock.shape||pl.shape):D.plate.shape;
+  let w=num(lock.w||pl.w,D.plate.w,20,160),h=num(lock.h||pl.h,D.plate.h,20,160);
+  if(shape==='round'||shape==='square'){const pw0=[pl.w,pl.h].map(parseFloat).find(isFinite),s1=lock.w||lock.h?num(lock.w||lock.h,w,20,160):num(pw0,D.plate.w,20,160);w=s1;h=s1;}
+  const t=num(pl.t,D.plate.t,2,30),len=num(lock.len||lv.len,D.lever.len,60,420);
+  const lp=Array.isArray(lv.profile)?lv.profile:[];
+  let prof=lp.filter(q=>q&&isFinite(parseFloat(q.x))&&isFinite(parseFloat(q.w))&&isFinite(parseFloat(q.h))).map(q=>({x:num(q.x,0,0,1),w:num(q.w,10,4,60),h:num(q.h,8,3,40)})).sort((a,b)=>a.x-b.x).slice(0,8);
+  if(prof.length<2)prof=D.lever.profile.map(q=>Object.assign({},q));
+  prof[0].x=0;prof[prof.length-1].x=1;
+  const wmax=Math.max.apply(null,prof.map(q=>q.w));
+  if(lock.wid&&wmax>0){const k=lock.wid/wmax;prof.forEach(q=>{q.w=Math.max(4,Math.min(60,q.w*k));});}   // 레버 가장 넓은 폭은 사장님이 적은 값
+  const root=num(lv.root,D.lever.root,0,50);
+  return {
+    finish:{color:/^#[0-9a-f]{6}$/i.test(String(fin.color||''))?String(fin.color):D.finish.color,metal:num(fin.metal,D.finish.metal,0,1),gloss:num(fin.gloss,D.finish.gloss,0,1)},
+    plate:{shape,w,h,t,edge:num(pl.edge,D.plate.edge,0,Math.min(t/2-.1,8)),cr:num(pl.cr,D.plate.cr,0,Math.min(w,h)/2)},
+    collar:{d:num(co.d,D.collar.d,8,80),h:num(co.h,D.collar.h,0,50)},
+    lever:{len,lift:num(lv.lift,D.lever.lift,6,70),root:Math.min(root,len-20),corner:num(lv.corner,D.lever.corner,.5,20),tipRound:num(lv.tipRound,D.lever.tipRound,.5,30),droop:num(lv.droop,D.lever.droop,0,40),profile:prof}
+  };
+}
+function m3dMerge(P,patch){
+  patch=patch&&typeof patch==='object'?patch:{};const lv=patch.lever||{};
+  return {finish:Object.assign({},P.finish,patch.finish),plate:Object.assign({},P.plate,patch.plate),collar:Object.assign({},P.collar,patch.collar),
+    lever:Object.assign({},P.lever,lv,{profile:Array.isArray(lv.profile)?lv.profile:P.lever.profile})};
+}
+/* 모형의 거리 함수: 점에서 모형 겉면까지의 가까운 거리(바깥이면 +, 안이면 -). flip이면 모형을 z축으로 180도 돌려 레버가 왼쪽을 향하게 해요(거울상이 아니에요) */
+function m3dSdfOf(M,flip){
+  const P=M.plate,C=M.collar,V=M.lever,pr=V.profile,n=pr.length,t=P.t,zl=V.lift,x0=V.root,x1=V.len,span=Math.max(1,x1-x0),sg=flip?-1:1;
+  const rect=P.shape!=='round',hw=P.w/2,hh=P.h/2,cr=P.shape==='rect'?Math.min(1.5,hw,hh):P.shape==='square'?Math.min(2,hw):Math.min(P.cr,hw,hh),e=Math.max(.05,Math.min(P.edge,t/2-.05));
+  const cd=C.d/2,ctop=zl+pr[0].h*.35;let PW=0,PH=0;
+  const prof=s=>{if(s<=pr[0].x){PW=pr[0].w;PH=pr[0].h;return;}for(let i=1;i<n;i++){if(s<=pr[i].x){const a=pr[i-1],b=pr[i],u=(s-a.x)/Math.max(1e-6,b.x-a.x);PW=a.w+(b.w-a.w)*u;PH=a.h+(b.h-a.h)*u;return;}}PW=pr[n-1].w;PH=pr[n-1].h;};
+  const smin=(a,b,k)=>{const q=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-q*q*k*.25;};
+  return (wx,wy,pz)=>{
+    const px=wx*sg,py=wy*sg;
+    let dxy;
+    if(!rect)dxy=Math.hypot(px,py)-hw;else{const qx=Math.abs(px)-(hw-cr),qy=Math.abs(py)-(hh-cr);dxy=Math.hypot(Math.max(qx,0),Math.max(qy,0))+Math.min(Math.max(qx,qy),0)-cr;}
+    const a1=dxy+e,a2=Math.abs(pz-t/2)-t/2+e,dPlate=Math.hypot(Math.max(a1,0),Math.max(a2,0))+Math.min(Math.max(a1,a2),0)-e;
+    const b1=Math.hypot(px,py)-cd+2,b2=Math.max(t-1-pz,pz-ctop)+2,dCol=Math.hypot(Math.max(b1,0),Math.max(b2,0))+Math.min(Math.max(b1,b2),0)-2;
+    const s=Math.min(1,Math.max(0,(px-x0)/span));prof(s);
+    const zc=zl-V.droop*s*s,r=Math.max(.2,Math.min(V.corner,PW/2-.05,PH/2-.05)),qy2=Math.abs(py)-(PW/2-r),qz=Math.abs(pz-zc)-(PH/2-r);
+    const d2=Math.hypot(Math.max(qy2,0),Math.max(qz,0))+Math.min(Math.max(qy2,qz),0)-r;
+    const dxl=Math.max(x0-px,px-x1),rr=Math.max(.5,Math.min(V.tipRound,PW/2,PH/2)),c1=d2+rr,c2=dxl+rr,dLev=Math.hypot(Math.max(c1,0),Math.max(c2,0))+Math.min(Math.max(c1,c2),0)-rr;
+    return smin(smin(dPlate,dCol,1.5),dLev,2.5);
+  };
+}
+const M3D_CAM={front:{f:[0,0,-1],u:[0,1,0]},side:{f:[0,1,0],u:[0,0,1]},tq1:{f:[.34,.36,-.87],u:[0,1,0]},tq2:{f:[-.38,.32,-.87],u:[0,1,0]}};
+const v3n=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/l,a[1]/l,a[2]/l];},v3c=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],v3d=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+async function m3dRender(M,view,dir,o){
+  o=o||{};const size=o.size||288,flip=dir==='L',sdf=m3dSdfOf(M,flip),sg=flip?-1:1,P=M.plate,V=M.lever,C=M.collar;
+  const wmax=Math.max.apply(null,V.profile.map(q=>q.w)),hmax=Math.max.apply(null,V.profile.map(q=>q.h));
+  const xa=-(P.w/2+4),xb=V.len+Math.max(8,V.tipRound)+4,wx0=sg>0?xa:-xb,wx1=sg>0?xb:-xa,zt=V.lift+hmax/2+8;
+  const cx=(wx0+wx1)/2,cz=zt/2,cam=M3D_CAM[view]||M3D_CAM.front,f=v3n(cam.f);let up=v3n(cam.u);const ud=v3d(up,f);up=v3n([up[0]-ud*f[0],up[1]-ud*f[1],up[2]-ud*f[2]]);const rt=v3n(v3c(f,up));
+  const halfW=(wx1-wx0)/2,halfY=Math.max(P.h/2,wmax/2,C.d/2)+4,ext=view==='front'?Math.max(halfW,halfY)*1.06:view==='side'?Math.max(halfW,zt/2+6)*1.08:Math.hypot(halfW,halfY,zt/2)*.92;
+  const D=ext*3,ctr=[cx,0,view==='side'?cz:cz*.6];
+  const col=M.finish.color,fc=[parseInt(col.slice(1,3),16)/255,parseInt(col.slice(3,5),16)/255,parseInt(col.slice(5,7),16)/255],metal=M.finish.metal,gloss=M.finish.gloss;
+  const door=[.86,.83,.77],L1=v3n([-.4,.55,.75]),L2=v3n([.6,-.25,.45]),H1=v3n([L1[0]-f[0],L1[1]-f[1],L1[2]-f[2]]);
+  const cv=document.createElement('canvas');cv.width=cv.height=size;const g=cv.getContext('2d'),im=g.createImageData(size,size),px=im.data,eps=.35;
+  const env=r=>{const h=r[2]*.5+.5,band=Math.exp(-Math.pow((r[1]-.25)*3.2,2));return .22+.62*h+.4*band;};   // 가짜 주변 풍경(위는 밝고 아래는 어둡고 가운데에 밝은 띠)
+  const sceneD=(x,y,z)=>{const dp=sdf(x,y,z),dd=Math.max(z,-10-z);return dp<dd?dp:dd;};
+  for(let y=0;y<size;y++){
+    if((y&15)===0)await new Promise(r=>setTimeout(r,0));
+    for(let x=0;x<size;x++){
+      const u=((x+.5)/size*2-1)*ext,v=(1-(y+.5)/size*2)*ext;
+      const ox=ctr[0]-f[0]*D+rt[0]*u+up[0]*v,oy=ctr[1]-f[1]*D+rt[1]*u+up[1]*v,oz=ctr[2]-f[2]*D+rt[2]*u+up[2]*v;
+      let t=0,hit=false,hx=0,hy=0,hz=0;
+      for(let i=0;i<140&&t<D*2.2;i++){const X=ox+f[0]*t,Y=oy+f[1]*t,Z=oz+f[2]*t,d=sceneD(X,Y,Z);if(d<.04){hit=true;hx=X;hy=Y;hz=Z;break;}t+=Math.max(d*.85,.02);}
+      const o4=(y*size+x)*4;let r=.95,gg=.95,bb=.96;
+      if(hit){
+        const nx=sceneD(hx+eps,hy,hz)-sceneD(hx-eps,hy,hz),ny=sceneD(hx,hy+eps,hz)-sceneD(hx,hy-eps,hz),nz=sceneD(hx,hy,hz+eps)-sceneD(hx,hy,hz-eps),nl=Math.hypot(nx,ny,nz)||1,n=[nx/nl,ny/nl,nz/nl];
+        const isDoor=hz<.5&&sdf(hx,hy,hz)>1.5;
+        const df=.18+.7*Math.max(0,v3d(n,L1))+.22*Math.max(0,v3d(n,L2));
+        if(isDoor){const sh=Math.max(0,1-Math.max(0,sdf(hx+3,hy-3,hz+.5))*.12),dk=1-.28*sh;r=door[0]*df*dk;gg=door[1]*df*dk;bb=door[2]*df*dk;}
+        else{
+          const dn=v3d(n,f),rf=[f[0]-2*dn*n[0],f[1]-2*dn*n[1],f[2]-2*dn*n[2]],ev=env(rf),sp=Math.pow(Math.max(0,v3d(n,H1)),40+gloss*160)*gloss;
+          r=fc[0]*df*(1-metal)+fc[0]*ev*metal+sp*.55;gg=fc[1]*df*(1-metal)+fc[1]*ev*metal+sp*.55;bb=fc[2]*df*(1-metal)+fc[2]*ev*metal+sp*.55;
+        }
+      }
+      px[o4]=Math.min(255,Math.pow(Math.max(0,r),1/2.2)*255);px[o4+1]=Math.min(255,Math.pow(Math.max(0,gg),1/2.2)*255);px[o4+2]=Math.min(255,Math.pow(Math.max(0,bb),1/2.2)*255);px[o4+3]=255;
+    }
+  }
+  g.putImageData(im,0,0);
+  return new Promise(r=>cv.toBlob(r,'image/jpeg',.9));
+}
+const M3D_SCHEMA='{\n "finish":{"color":"#RRGGBB(금속 색)","metal":0~1,"gloss":0~1},\n "plate":{"shape":"round|square|rect|rrect","w":받침 가로(레버가 뻗는 방향),"h":받침 세로,"t":받침 두께,"edge":모서리 둥글기,"cr":사각형일 때 모서리 반지름},\n "collar":{"d":받침에서 솟은 목(원통)의 지름,"h":목 높이},\n "lever":{"len":받침 중심에서 레버 끝까지,"lift":문에서 레버 중심까지 높이,"root":레버가 시작하는 위치,"corner":단면 모서리 둥글기,"tipRound":끝 둥글기,"droop":끝이 문 쪽으로 처진 정도,\n  "profile":[{"x":0,"w":폭,"h":두께},{"x":0.25,"w":,"h":},{"x":0.5,"w":,"h":},{"x":0.75,"w":,"h":},{"x":1,"w":,"h":}]},\n "notes":["추정한 것·확실하지 않은 것을 한 문장씩, 최대 4개"]\n}';
+const M3D_PROMPT=(lock,n)=>'첨부한 사진'+(n>1?'(첫 번째가 제품 전체 사진, 나머지는 다른 각도)':'')+'은 실제 방문(실내문) 레버 손잡이 제품입니다. 이 제품을 간단한 3D 모형으로 나타낼 수 있게 치수를 추정해 주세요. 3D 모형으로 나타낼 때의 좌표: 문은 평평한 바닥(z=0), 받침은 문에 붙어 있고, 받침 가운데에서 레버가 +x 방향으로 문과 나란히 뻗어요.\n'
+  +'확실한 치수(사장님이 직접 잰 값이라 그대로 쓰세요): '+m3dFacts(lock)+'\n'
+  +'규칙: 단위는 mm. 사진에서 보이는 윤곽으로 추정하세요. profile의 w는 앞(문 쪽에서 본 정면)에서 본 레버 폭, h는 문에서 튀어나오는 방향의 두께예요. 굵기가 변하는 곳에 점을 더 찍어서 4~6개로 적으세요. 사진으로 보이지 않는 두께(h)는 폭의 0.45~0.85배 안에서 입체감을 보고 추정하고, 추정한 것은 notes에 쓰세요. 없는 부품(나사, 장식)은 만들지 마세요.\n'
+  +'아래 JSON 하나만 답하세요(다른 글 없이).\n'+M3D_SCHEMA;
+const M3D_REFINE=lock=>'첫 번째 사진은 실제 방문 손잡이 제품 사진이고, 두 번째 사진은 이 제품을 3D 모형으로 추정해 같은 방향에서 렌더링한 그림입니다(문은 베이지색 바닥, 금속 색과 반사는 실제와 달라도 돼요). 두 사진의 모양을 비교해 3D 모형이 실제와 얼마나 같은지 점수(0~10)를 매기세요. 볼 것: ① 레버 길이 대비 받침 크기 ② 레버 굵기가 위치에 따라 변하는 모양(끝이 가늘어지는지, 중간이 볼록한지) ③ 레버 끝 모양 ④ 받침 모양과 가로세로 비율 ⑤ 레버와 받침을 잇는 목의 위치와 굵기. 색·반사 차이는 무시하세요.\n'
+  +'바꾸지 말 확실한 치수: '+m3dFacts(lock)+'\n점수가 8 이하이면 고칠 값만 patch에 적으세요(키 이름은 모형과 같게 finish·plate·collar·lever, lever.profile을 고칠 때는 목록 전체를 다시 적으세요).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"score":0,"patch":{},"notes":["고친 이유 한 문장씩, 최대 3개"]}';
+async function m3dRenderAll(M,dir){
+  const out=[];for(const v of M3D_VIEWS)out.push(await m3dRender(M,v,dir));return out;
+}
+async function m3dStore(M,extra){   // 렌더링한 4장을 작업에 저장해요
+  const dir=m3dDir(),blobs=await m3dRenderAll(M,dir);
+  const prev=S.model3d&&S.model3d.id===S.src.id?S.model3d:null;
+  S.model3d={id:S.src.id,p:M,score:extra&&extra.score!=null?extra.score:(prev?prev.score:0),notes:extra&&extra.notes?extra.notes:(prev?prev.notes:[]),dir,views:[null,null,null,null]};
+  for(let k=0;k<blobs.length;k++)await setPhoto('model3d.views.'+k,blobs[k],{});
+  gc();REF={sig:'',val:null};
+}
+async function m3dBuild(){
+  if(M3D.busy||!hasPhoto(S.src))return;
+  if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요(클로드 안에서 열었다면 바로 써요).',3600);UI.open.add('p2');renderSide();return;}
+  M3D.busy=true;M3D.msg='클로드가 사진을 보고 3D 모형을 추정하는 중이에요…';renderSide();
+  try{
+    const lock=m3dLock(),imgs=[await shrink(PH.get(S.src.id).blob,1024,.88)];
+    for(const p of (S.extra||[]).filter(hasPhoto).slice(0,2))imgs.push(await shrink(PH.get(p.id).blob,768,.85));
+    const raw=await claude(M3D_PROMPT(lock,imgs.length),{images:imgs,max:1800,tier:'default'});
+    let P=m3dNorm(raw,lock),notes=(Array.isArray(raw&&raw.notes)?raw.notes:[]).map(x=>String(x).slice(0,120)).slice(0,4),score=0;const dir=m3dDir();
+    for(let it=0;it<2;it++){   // 렌더링과 사진을 비교해서 고쳐요(최대 2번)
+      M3D.msg='렌더링해서 사진과 비교하는 중이에요… ('+(it+1)+'/2)';renderSide();
+      const front=await m3dRender(P,'front',dir),r=await claude(M3D_REFINE(lock),{images:[imgs[0],await shrink(front,512,.9)],max:900,tier:'default'});
+      score=Math.max(0,Math.min(10,Number(r&&r.score)||0));
+      if(score>=9||!r||!r.patch||typeof r.patch!=='object'||!Object.keys(r.patch).length)break;
+      P=m3dNorm(m3dMerge(P,r.patch),lock);
+      (Array.isArray(r.notes)?r.notes:[]).slice(0,3).forEach(x=>notes.push('고침: '+String(x).slice(0,120)));
+    }
+    M3D.msg='모형을 여러 각도로 렌더링하는 중이에요…';renderSide();
+    await m3dStore(P,{score,notes:notes.slice(0,8)});
+    M3D.msg='';toast('3D 모형을 만들었어요(사진과 비교 점수 '+score+'/10). 구글에 구조 참고도로 같이 보내요.',4200);
+  }catch(e){M3D.msg='';toast((e&&e.text)||ASK_ERR[e&&e.code]||'3D 모형을 만들지 못했어요. 한 번 더 눌러 주세요.',4200);}
+  finally{M3D.busy=false;renderSide();refresh();}
+}
+function m3dPanel(){
+  if(!S.src)return '';
+  const m=S.model3d&&S.model3d.id===S.src.id?S.model3d:null,ok=m&&Array.isArray(m.views)&&m.views.every(v=>v&&hasPhoto(v));
+  let h='<div class="blk"><h3>3D 모형 (실험) — 사진을 3D 모형으로 추정해 구글에 구조 참고도로 같이 보내요</h3>'
+    +'<p class="hint">클로드가 제품 사진과 위에 적은 치수로 받침·목·레버의 3D 모형을 숫자로 추정하고, 사진과 비교해 고친 뒤 앱이 정면·비스듬히·옆에서 렌더링해요. 이 그림을 구글에 같이 보내면 레버 두께·받침이 튀어나온 높이 같은 입체 구조를 덜 틀릴 수 있어요. 사진에 안 보이는 면과 두께는 추정이라 틀릴 수 있어서, 색·질감은 항상 실제 사진을 따르게 해요. 효과는 켜고 끄고 후보를 만들어 비교해 보세요.</p>'
+    +'<div class="acts"><button class="btn sm primary" type="button" data-act="m3dbuild"'+(M3D.busy?' disabled':'')+'>'+(ok?'3D 모형 다시 만들기':'클로드로 3D 모형 만들기')+' (약 5~10센트)</button>'+(ok?'<button class="btn sm" type="button" data-act="m3dclear">모형 지우기</button>':'')+'</div>';
+  if(M3D.msg)h+='<div class="msg" style="display:block">'+esc(M3D.msg)+'</div>';
+  if(ok){
+    h+='<div class="m3dv">'+m.views.map((v,k)=>'<figure><img alt="'+M3D_NAMES[M3D_VIEWS[k]]+'" src="'+PH.get(v.id).url+'">'+M3D_NAMES[M3D_VIEWS[k]]+(M3D_SEND.includes(k)?' ✓':'')+'</figure>').join('')+'</div>'
+      +'<p class="cost">사진과 비교한 점수 <b>'+(m.score||0)+'/10</b> · ✓ 표시한 3장을 구글에 보내요.</p>'
+      +(m.notes&&m.notes.length?'<ul class="checks">'+m.notes.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')
+      +'<label class="chk"><input type="checkbox" id="m3dUse"'+(S.model3dUse!==false?' checked':'')+'> 이미지를 만들 때 3D 구조 참고도를 같이 보내요</label>'
+      +'<details><summary class="aitag">모형 값 보기·고치기 (고급)</summary><textarea id="m3dJson" spellcheck="false" aria-label="3D 모형 값">'+esc(JSON.stringify(m.p,null,1))+'</textarea><div class="acts"><button class="btn sm" type="button" data-act="m3drerender">고친 값으로 다시 렌더링 (무료)</button></div></details>';
+  }
+  return h+'</div>';
 }
 /* ===== 실물 합성 (v88): 문 사진만 AI가 그리고, 제품은 1단계 실제 사진에서 오려 붙여요 ===== */
 const COMP_DEF={scale:70,dy:0,shadow:35,tol:40};
@@ -1821,7 +1998,7 @@ async function claudeReady(images){                // 클로드 안에서 열었
 /* 클로드를 부르는 길은 이 함수 하나예요(글 쓰기와 검수가 같이 써요) */
 async function claude(prompt,o){
   o=o||{};const imgs=o.images||[],sm=await claudeAvail();
-  if(sm){try{return await sm.json(prompt,Object.assign({signal:o.signal,modelTier:'quick'},imgs.length?{images:imgs}:{}));}catch(e){throw e&&e.name==='AbortError'?{code:'cancelled'}:e;}}
+  if(sm){try{return await sm.json(prompt,Object.assign({signal:o.signal,modelTier:o.tier||'quick'},imgs.length?{images:imgs}:{}));}catch(e){throw e&&e.name==='AbortError'?{code:'cancelled'}:e;}}
   if(!C.key.trim())throw {code:'unavailable'};
   const content=[];for(const b of imgs)content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await toB64(b)}});content.push({type:'text',text:prompt});
   let r;
@@ -3032,7 +3209,7 @@ function clearMade(){
   made+=candList().length;S.baseCands=[];
   S.colors.items.forEach((it,i)=>wipe('colors.items.'+i+'.photo'));
   (S.extra||[]).forEach((p,i)=>{if(hasPhoto(p)){setP('extra.'+i,null);extra++;}});
-  S.holds={};G.cache.clear();gc();
+  S.holds={};S.model3d=null;G.cache.clear();gc();
   return {made,extra,kept};
 }
 async function rotSrc(deg){       // 제품 사진이 옆으로 누워 있을 때 90도씩 돌려요(돌린 사진이 새 제품 사진이 돼요)
@@ -3123,6 +3300,16 @@ const ACT={
     const k=b.dataset.k,i=/^colors\.items\.(\d+)\./.exec(k);if(!i||G.busy)return;
     try{if(await recompPath(k,S.colors.items[+i[1]].flip?'R':'L')){renderSide();refresh();toast('다시 합성했어요(무료).',2200);}}catch(e){toast(gErr(e),4200);}
   },
+  m3dbuild(){m3dBuild();},
+  m3dclear(){S.model3d=null;gc();REF={sig:'',val:null};renderSide();refresh();toast('3D 모형을 지웠어요.',2000);},
+  async m3drerender(){
+    const ta=$('#m3dJson');if(!ta||!S.model3d||M3D.busy)return;
+    let raw;try{raw=JSON.parse(ta.value);}catch(e){toast('값을 읽지 못했어요. 글이 JSON 모양인지 확인해 주세요.',3600);return;}
+    M3D.busy=true;M3D.msg='다시 렌더링하는 중이에요…';renderSide();
+    try{await m3dStore(m3dNorm(raw,m3dLock()),null);M3D.msg='';toast('고친 값으로 다시 렌더링했어요(무료).',2400);}
+    catch(e){M3D.msg='';toast('다시 렌더링하지 못했어요.',3000);}
+    finally{M3D.busy=false;renderSide();refresh();}
+  },
   acceptchk(b){const k=b.dataset.k,p=getP(k);if(!p)return;p.chk={ok:true,issues:[],manual:true};clearHold(k);renderSide();refresh();toast('이 칸은 사장님이 확인한 걸로 표시했어요.',2200);},
   capuse(b){const c=CAPS.find(x=>x.id===b.dataset.id);if(!c)return;const Z=S.size;Z.shape=c.shape;Z.shapeSet='user';Z.cap=c.cap||'';Z.capW=c.capW||'';Z.capH=c.capH||'';Z.capPreset=c.id;renderSide();refresh();toast('받침 "'+capTitle(c)+'"을 골랐어요. 모양과 치수가 고정돼요.',2600);},
   capunlock(){delete S.size.capPreset;renderSide();refresh();},
@@ -3201,7 +3388,7 @@ side.addEventListener('click',e=>{
 });
 const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
-  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},lvLock(t){if(S.lvDir){S.lvDir.locked=t.checked;S.lvDir.auto=!t.checked;}renderSide();refresh();},flipOk(t){S.flipOk=t.checked;persist();},useSlow(t){UI.careful=t.checked;try{localStorage.setItem('wj-slow',t.checked?'1':'0');}catch(e){}renderSide();},useClear(t){UI.clearOnNew=t.checked;},
+  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},lvLock(t){if(S.lvDir){S.lvDir.locked=t.checked;S.lvDir.auto=!t.checked;}renderSide();refresh();},flipOk(t){S.flipOk=t.checked;persist();},m3dUse(t){S.model3dUse=t.checked;REF={sig:'',val:null};persist();},useSlow(t){UI.careful=t.checked;try{localStorage.setItem('wj-slow',t.checked?'1':'0');}catch(e){}renderSide();},useClear(t){UI.clearOnNew=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
   colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.',comp:'실물 합성으로 바꿨어요. 먼저 기준 사진 후보(빈 문 + 실제 제품)를 만들어 모양을 확인하세요. 첫 화면·소개 사진도 실제 제품 사진으로 만들어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
@@ -3285,7 +3472,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
