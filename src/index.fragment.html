@@ -110,6 +110,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .job .nm{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .job .ratio{font-size:12px;font-weight:700;color:var(--mute);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
 .job .done{font-size:12px;color:var(--ok);font-weight:700}
+.cutbox{background:repeating-conic-gradient(#8a8f98 0 25%,#767b84 0 50%) 50%/20px 20px;padding:10px;border-radius:10px}.cutbox img{max-width:100%;display:block;margin:0 auto}
 .capchips{gap:6px}.cchip{display:inline-flex;align-items:center;gap:2px}.cchip .ib{width:26px;height:26px}
 .job details{grid-column:1/-1}
 .job.base{grid-template-columns:1fr;border:2px solid var(--accent,#2b59c3)}
@@ -307,7 +308,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 87</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 88</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -363,6 +364,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v88 (2026-11-09): 실물 합성(선택) — 문 사진만 AI가 그리고 제품은 1단계 실제 사진에서 오려 붙임 · 첫 화면·소개는 구글 없이 컴퓨터가 어두운 배경에 실제 제품을 올려 만듦 · 크기·위아래·그림자 조절과 무료 다시 합성 */
 /* v87 (2026-11-09): 받침 목록(원형·직사각·정사각 규격을 저장해 고르면 잠김) · 레버 방향 잠금과 '좌우 뒤집기' · 중심~레버 끝이 받침 가로의 몇 배인지 지시문·검수에 · '바뀌면 안 되는 것' 고정 메모 */
 /* v86 (2026-11-09): 천천히 확실하게 만들기 — 한 장씩 보내고, 칸마다 검수해서 합격할 때까지 최대 4번(같은 지시→지적한 점을 넣어서→정밀 모델→단순한 구도), 한도·구글 오류는 그 칸만 기다렸다 다시, 끝까지 안 되면 '보류' 칸(이유 저장), 최대 요금 상한, 저장 전 최종 점검표 */
 /* v85 (2026-11-09): 직사각형 받침(카바)이 이미지 AI에게 전달되게 — 크기 안내의 받침 모양·가로세로 숫자를 지시문·검수에 넣고, '받침 원판' 말투를 없애고, 클로드가 짚은 받침 부분을 크게 오려 참고 사진으로 같이 보냄 */
@@ -378,7 +380,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=87,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=88,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -431,7 +433,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'레버 작동 각도는 30도이고, 내려갔다 원위치로 돌아와요. 적은 동작으로 열려요(우리 회사 제품의 특징이에요).',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,holds:{},fixed:'',flipOk:false,lvDir:null,prev:null,opPup:null,size:{len:'',wid:'',cap:'',shape:'round',capW:'',capH:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'레버 작동 각도는 30도이고, 내려갔다 원위치로 돌아와요. 적은 동작으로 열려요(우리 회사 제품의 특징이에요).',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,holds:{},fixed:'',flipOk:false,comp:{scale:70,dy:0,shadow:35,tol:40},lvDir:null,prev:null,opPup:null,size:{len:'',wid:'',cap:'',shape:'round',capW:'',capH:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -482,7 +484,7 @@ function newProduct(){
   const o=defaults(),c=S,pv=snapPrev();
   ['about','guide','notice','cta'].forEach(k=>{o[k]=c[k];});o.sellName=c.sellName;
   Object.assign(o.zoom,{eyebrow:c.zoom.eyebrow,title:c.zoom.title,body:c.zoom.body});
-  o.colors=Object.assign({},c.colors,{items:c.colors.items.map(i=>Object.assign({},i,{photo:null}))});
+  o.colors=Object.assign({},c.colors,{items:c.colors.items.map(i=>Object.assign({},i,{photo:null}))});o.comp=Object.assign({},c.comp);
   o.faq=Object.assign({},c.faq,{items:c.faq.items.filter(q=>!q.p)});
   o.name='';o.hero=Object.assign({},o.hero,{badge:'',title:'',sub:''});o.concept=Object.assign({},o.concept,{title:'',body:''});
   o.zoom.items.forEach(z=>{z.title='';z.body='';});
@@ -533,7 +535,8 @@ function fromSaved(o){                       // 저장본 → 현재 형식(예�
   const b=defaults(),r=Object.assign(b,o,{v:3});delete r.opv;delete r.opVideo;delete r.opFirst;delete r.opPup;   // 예전 저장 파일의 작동 영상 칸은 읽지 않아요
   if(!String(r.memo||'').trim())r.memo=defaults().memo;
   r.colors=Object.assign({},b.colors,o.colors||{});
-  if(!r.holds||typeof r.holds!=='object'||Array.isArray(r.holds))r.holds={};   // 만들지 못한 칸의 이유(새로 고침해도 남겨요)
+  if(!r.holds||typeof r.holds!=='object'||Array.isArray(r.holds))r.holds={};
+  r.comp=Object.assign({},b.comp,o.comp||{});   // 만들지 못한 칸의 이유(새로 고침해도 남겨요)
   r.facts=Object.assign({},b.facts,o.facts||{});if(!Array.isArray(r.facts.extra))r.facts.extra=[];r.sale=Object.assign({},b.sale,o.sale||{});if(!Array.isArray(r.sale.opts)||r.sale.opts.length<3)r.sale.opts=b.sale.opts.map(x=>Object.assign({},x));   // 예전 저장본에는 제품 규격이 없어요
   r.colors.items=((o.colors&&o.colors.items)||b.colors.items).map(it=>({label:it.label||'',scene:it.scene||'',door:it.door||(it.plate&&it.plate.f)||'groove',view:it.view||'f',flip:it.flip!==undefined?!!it.flip:!!(it.pose&&it.pose.flip),photo:it.photo&&!it.photo.comp?it.photo:null}));
   ['hero','concept'].forEach(k=>{const h=Object.assign({},b[k],o[k]||{});delete h.how;if(h.photo&&h.photo.comp)h.photo=null;r[k]=h;});
@@ -861,6 +864,7 @@ function newItem(path,l){
 }
 /* ---------- 지시문(구글에 보내는 글) ---------- */
 function promptOf(j){
+  if(genMode()==='comp'&&(j.kind==='base'||j.kind==='comp'))return doorPrompt(j);   // 실물 합성: 손잡이 없는 빈 문만 시켜요
   const spec=String(S.spec||'').trim().slice(0,900);
   const base='첨부한 사진 속 "'+(S.name||'이 제품')+'" 제품이 이 작업의 정답(기준)입니다. 이 제품을 그대로 옮겨서 이미지를 만들어 주세요.\n'
     +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 흔한 손잡이처럼 단순하게 바꾸거나 비슷한 다른 손잡이를 새로 만들지 마세요. 레버의 길이·굵기·끝 모양과 윗면의 굴곡(움푹 파인 곳 포함), 레버와 받침을 잇는 목 부분, 받침의 크기·두께·테두리, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n'
@@ -898,7 +902,7 @@ function promptOf(j){
   return base+'장면: '+sc+'에 이 손잡이가 실제로 설치된 모습을 찍은 사진. 문 표면이 배경을 채우되 문 전체는 보이지 않는 구도.\n'+FRAME+'\n카메라: '+vw+'.\n'+LEVERDIR(dir)+' 레버 끝이 화면 '+dir+' 가장자리에서 충분히 떨어져 보이게.\n'+(fr?'문: '+fr+'.\n':'')
     +real+'손잡이 모양과 마감은 첨부 사진과 똑같이 유지하고, 문의 색과 질감만 위 설명대로 바꿔 주세요. 비율은 정사각형 1:1.';
 }
-const ASPECT={hero:'4:5',concept:'3:2',color:'1:1',sheet:'1:1',base:'1:1',edit:'1:1'};
+const ASPECT={hero:'4:5',concept:'3:2',color:'1:1',sheet:'1:1',base:'1:1',edit:'1:1',comp:'1:1'};
 /* 시트 방식: 문 색상 여러 칸을 구글에 "한 장짜리 시트"로 만들게 하고, 프로그램이 칸별로 잘라 써요(자르기는 무료).
    손이 나오는 사용 컷은 시트에 안 넣고 따로 만들어요. */
 const isHand=it=>/손/.test(String(it.scene||it.label||'').trim());
@@ -914,6 +918,14 @@ const baseN=()=>clamp(Math.round(+(S.baseN||3)),1,4);              // 기준 사
 const candList=()=>(S.baseCands||[]).filter(hasPhoto);
 function jobs(){
   const j=[{key:'hero.photo',name:'첫 화면 사진',ratio:'세로 4:5',kind:'hero'},{key:'concept.photo',name:'소개 사진',ratio:'가로 3:2',kind:'concept'}];
+  if(genMode()==='comp'){   // 실물 합성: 첫 화면·소개는 컴퓨터가(무료), 문 색은 빈 문 + 실제 제품, 흰 문·손 컷은 기준 사진 방식
+    j.forEach(x=>{x.local=true;x.ratio='실물 합성 · 무료';});
+    j.push({key:'base',name:'기준 설치 사진 (흰 문)',ratio:'문만 AI · 후보 '+baseN()+'장 · 제품은 실제 사진',kind:'base'});
+    S.colors.items.forEach((it,i)=>j.push(i===whiteIdx()||isHand(it)
+      ?{key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:i===whiteIdx()?'기준 사진 그대로':'기준 사진에서 손만 더해요',kind:'edit',i}
+      :{key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:'문만 AI + 제품은 실제 사진',kind:'comp',i}));
+    return j;
+  }
   if(genMode()==='base'){
     j.push({key:'base',name:'기준 설치 사진 (흰 문)',ratio:'최고급 · 후보 '+baseN()+'장',kind:'base'});
     S.colors.items.forEach((it,i)=>j.push({key:'colors.items.'+i+'.photo',name:it.label||('문 색상 '+(i+1)),ratio:i===whiteIdx()?'기준 사진 그대로':'기준 사진에서 '+(isHand(it)?'손만 더해요':'문 색만 바꿔요'),kind:'edit',i}));
@@ -924,6 +936,7 @@ function jobs(){
   return j;
 }
 const needJob=j=>j.kind==='sheet'?sheetIdx().some(i=>!hasPhoto(S.colors.items[i].photo))
+  :j.kind==='comp'?(baseReady()&&!hasPhoto(getP(j.key)))
   :j.kind==='edit'?(baseReady()&&j.i!==whiteIdx()&&!hasPhoto(getP(j.key)))   // 편집 칸은 기준 사진을 확정한 뒤에만 만들어요
   :j.kind==='base'?(!hasPhoto(S.base)&&!candList().length)                   // 후보가 있으면 사장님이 고를 차례라 더 만들지 않아요
   :!hasPhoto(getP(j.key));
@@ -1002,8 +1015,8 @@ function baseRow(j,idx,on){                   // ① 기준 설치 사진: 실�
   else body='<div class="bcmp">'+big(sm&&sm.url,'실물 사진 (1단계)')+big('','기준 사진')+'</div>';
   return '<div class="job base'+(S.baseOk&&m?' ok':'')+'" data-pk="base"><div class="meta">'
     +'<div class="nm">① 기준 설치 사진 <span class="ratio">흰 문 · 최고급(정밀 모델·큰 크기)</span>'+(S.baseOk&&m?'<span class="done">확정</span>':'')+'</div>'
-    +'<p class="hint">문 색상 칸은 모두 이 사진에서 <b>문 색만 바꿔서</b> 만들어요. 그래서 이 한 장은 비용이 더 들어도 정밀 모델·큰 크기로 후보를 여러 장 만들고, 사장님이 실물과 가장 같은 걸 골라요.</p>'
-    +capUiLine()
+    +(genMode()==='comp'?'<p class="hint">이 사진은 <b>AI가 그린 빈 문 위에 1단계의 실제 제품 사진을 오려 붙인</b> 거예요. 손잡이 모양은 실물 그대로이니, 문 분위기와 제품이 문에 자연스럽게 앉았는지만 보고 고르세요.</p>':'<p class="hint">문 색상 칸은 모두 이 사진에서 <b>문 색만 바꿔서</b> 만들어요. 그래서 이 한 장은 비용이 더 들어도 정밀 모델·큰 크기로 후보를 여러 장 만들고, 사장님이 실물과 가장 같은 걸 골라요.</p>')
+    +(genMode()==='comp'?'':capUiLine())
     +body
     +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m||cn?'후보 다시 만들기':'후보 만들기')+' ('+N+'장'+estJobs([j],null,true)+')</button>':'')
     +'<label class="chk">후보 <select data-basen="1">'+[1,2,3,4].map(n=>'<option value="'+n+'"'+(n===N?' selected':'')+'>'+n+'장</option>').join('')+'</select></label>'
@@ -1016,24 +1029,24 @@ function p3(){
   const on=G.state==='on',cm=colorMode(),fl=flagged(),hasAi=jobs().some(j=>{const p=getP(j.key);return p&&p.ai&&hasPhoto(p);});
   const rows=jobs().map((j,idx)=>{
     if(j.kind==='base')return baseRow(j,idx,on);
-    const p=getP(j.key),m=p&&PH.get(p.id),it=j.kind==='color'?S.colors.items[j.i]:null;
-    if(j.kind==='edit'&&(!baseReady()||j.i===whiteIdx()))   // 기준 사진 확정 전이거나 흰 문 칸(기준 사진 그대로)이면 만들기 버튼 없이 보여 줘요
+    const p=getP(j.key),m=p&&PH.get(p.id),it=(j.kind==='color'||j.kind==='comp')?S.colors.items[j.i]:null;
+    if((j.kind==='edit'||j.kind==='comp')&&(!baseReady()||j.i===whiteIdx()))   // 기준 사진 확정 전이거나 흰 문 칸(기준 사진 그대로)이면 만들기 버튼 없이 보여 줘요
       return '<div class="job" data-pk="'+j.key+'"><div class="thumb"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'대기')+'</div><div class="meta"><div class="nm">'+esc(j.name)+' <span class="ratio">'+j.ratio+'</span>'+(m?'<span class="done">완료</span>':'')+'</div>'+chkLine(p)
         +'<p class="cost">'+(j.i===whiteIdx()?'기준 사진을 확정하면 이 칸에 그대로 들어가요.':'기준 사진을 확정하면 만들 수 있어요.')+'</p></div></div>';
     return '<div class="job" data-pk="'+j.key+'"><div class="thumb" data-drop="'+j.key+'"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'끌어다<br>놓기')+'</div>'
       +'<div class="meta"><div class="nm">'+esc(j.name)+' <span class="ratio">'+j.ratio+'</span>'+(m?(p&&p.chk&&!p.chk.ok?'<span class="done" style="color:var(--bad)">보류</span>':'<span class="done">완료</span>'):'')+'</div>'+chkLine(p)+(!m&&holdWhy(j.key)?'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 보류 · 못 만들었어요: '+esc(holdWhy(j.key))+'</div>':'')
-      +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'AI로 만들기')+'</button>':'')+(m&&p&&p.chk&&!p.chk.ok?'<button class="btn sm" type="button" data-act="acceptchk" data-k="'+j.key+'">이대로 쓸게요</button>':'')+(m?'<button class="btn sm" type="button" data-act="flipphoto" data-k="'+j.key+'" title="레버 방향이 반대로 나왔을 때 사진을 좌우로 뒤집어요(무료)">좌우 뒤집기</button>':'')
+      +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'AI로 만들기')+'</button>':'')+(m&&p&&p.chk&&!p.chk.ok?'<button class="btn sm" type="button" data-act="acceptchk" data-k="'+j.key+'">이대로 쓸게요</button>':'')+(m&&p&&p.real&&p.bg?'<button class="btn sm" type="button" data-act="recomp1" data-k="'+j.key+'">다시 합성 (무료)</button>':'')+(m?'<button class="btn sm" type="button" data-act="flipphoto" data-k="'+j.key+'" title="레버 방향이 반대로 나왔을 때 사진을 좌우로 뒤집어요(무료)">좌우 뒤집기</button>':'')
       +(on&&m&&G.modelHi&&G.modelHi!==G.model?'<button class="btn sm" type="button" data-act="gonehi" data-i="'+idx+'">정밀 모델로 다시 (약 $'+(priceOf(G.modelHi)||'')+')</button>':'')
       +'<button class="btn sm" type="button" data-act="copyp" data-i="'+idx+'">지시문 복사</button><label class="btn sm">사진 넣기<input type="file" accept="image/*" hidden data-file="'+j.key+'" data-ai="1"></label></div>'
-      +(it?'<div class="acts"><label class="chk">카메라 각도 <select data-view="'+j.i+'">'+Object.keys(CAMS).map(v=>'<option value="'+v+'"'+(it.view===v?' selected':'')+'>'+CAM_NAME[v]+'</option>').join('')+'</select></label>'
+      +(it?'<div class="acts">'+(j.kind==='comp'?'':'<label class="chk">카메라 각도 <select data-view="'+j.i+'">'+Object.keys(CAMS).map(v=>'<option value="'+v+'"'+(it.view===v?' selected':'')+'>'+CAM_NAME[v]+'</option>').join('')+'</select></label>')
         +'<label class="chk">레버 방향 <select data-dir="'+j.i+'"><option value="L"'+(it.flip?'':' selected')+'>왼쪽으로</option><option value="R"'+(it.flip?' selected':'')+'>오른쪽으로</option></select></label></div>':'')
       +'</div><details><summary class="aitag">지시문 보기</summary><pre data-j="'+idx+'">'+esc(promptOf(j))+'</pre></details></div>';
   }).join('');
   return '<label class="f"><span>문 색상 칸 구성 (구글 이미지 장수가 달라져요)</span><select id="colorMode"><option value="full"'+(cm==='full'?' selected':'')+'>10칸 · 참고 페이지와 같은 구성</option><option value="lite"'+(cm==='lite'?' selected':'')+'>5칸 · 비용 절약 (화이트, 월넛, 라이트 그레이, 블랙, 사용 컷)</option></select></label>'
     +'<label class="f"><span>문 색상 사진 만드는 방식</span><select id="colorGen">'
-      +[['base','기준 사진 1장 확정 → 문 색만 바꾸기 (추천 · 손잡이가 모든 칸에서 같아요)'],['each','한 칸씩 새로 그리기 (칸마다 손잡이가 달라질 수 있어요)'],['sheet','시트 한 장으로 (가장 싸지만 칸마다 손잡이가 달라질 수 있어요)']].map(o=>'<option value="'+o[0]+'"'+(genMode()===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
+      +[['base','기준 사진 1장 확정 → 문 색만 바꾸기 (추천 · 손잡이가 모든 칸에서 같아요)'],['each','한 칸씩 새로 그리기 (칸마다 손잡이가 달라질 수 있어요)'],['sheet','시트 한 장으로 (가장 싸지만 칸마다 손잡이가 달라질 수 있어요)'],['comp','실물 합성 — 문은 AI가 그리고 제품은 실제 사진을 오려 붙임 (제품 모양이 그대로 · 정면만 · 실험)']].map(o=>'<option value="'+o[0]+'"'+(genMode()===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
     +(genMode()==='base'?'<p class="hint"><b>순서:</b> ① 기준 설치 사진 1장을 만들고(또는 문에 단 실제 사진을 넣고) ② 실물과 같은지 보고 <b>확정</b>을 누르면 ③ 나머지 문 색상은 그 사진에서 <b>문 색만</b> 바꿔서 만들어요. 확정 전에는 나머지 칸에 돈을 쓰지 않아요.'+(G.modelEdit?' 문 색 바꾸기는 값싼 모델('+esc(G.modelEdit)+')로 해요.':'')+'</p>':'')
-    +(sheetOn()?'<p class="hint"><b>시트 방식:</b> 구글에 문 색상 '+sheetIdx().length+'칸이 들어간 시트 1장을 만들게 하고, 프로그램이 칸별로 자르는 건 무료예요. 칸 하나하나는 크기가 작아지고, 칸 모양이 어긋나면 잘릴 수 있어요. 먼저 <b>1장만 시험</b>(시트 1장)으로 칸 품질을 확인해 보세요. 사용 컷은 손이 나와서 따로 만들어요. 구글 AI 스튜디오 웹에서 직접 만든 시트도 \'사진 넣기\'로 넣으면 자동으로 잘라요.</p>':'')
+    +compCtl()+(sheetOn()?'<p class="hint"><b>시트 방식:</b> 구글에 문 색상 '+sheetIdx().length+'칸이 들어간 시트 1장을 만들게 하고, 프로그램이 칸별로 자르는 건 무료예요. 칸 하나하나는 크기가 작아지고, 칸 모양이 어긋나면 잘릴 수 있어요. 먼저 <b>1장만 시험</b>(시트 1장)으로 칸 품질을 확인해 보세요. 사용 컷은 손이 나와서 따로 만들어요. 구글 AI 스튜디오 웹에서 직접 만든 시트도 \'사진 넣기\'로 넣으면 자동으로 잘라요.</p>':'')
     +'<p class="hint">문 색상 칸은 구글이 "문에 달린 사진"으로 만들어요. 손잡이 모양은 1단계 원본 그대로 두고 문 색과 카메라 각도만 바뀌어요. 처음에는 <b>1장만 시험</b>해 보고 나머지를 만드세요.</p>'
     +lvCtl()
     +(UI.careful?'<p class="hint"><b>천천히 확실하게 모드(기본)</b>: 한 장씩 만들고 칸마다 검수해요. 합격하지 못하면 최대 '+TRIES+'번까지 다시 만들고, 그래도 안 되면 \'보류\' 칸으로 남겨 이유를 보여 줘요. 시간은 더 걸리지만 칸이 조용히 빠지지 않아요. 2단계에서 끌 수 있어요.</p>':'')
@@ -1142,7 +1155,7 @@ const priceOf=model=>{const m=MPRICE.find(x=>x[0].test(model||''));return m?m[1]
 function estText(n,model,short){const p=priceOf(model||G.model);if(!p||!n)return '';const t='약 $'+(p*n).toFixed(2);return short?' · 예상 '+t:' 예상 '+t+' (대략 · 외부 가격표 기준 · 1K 크기).';}
 // 시트(큰 크기 한 장)는 같은 모델이라도 장당 값이 더 높아요(대략)
 const priceSheet=model=>/pro-image/.test(model||'')?priceOf(model):(/gemini-3(\.\d+)?-flash-image/.test(model||'')?0.101:priceOf(model)*1.5);
-const priceJob=(j,model)=>{const m=model||(j&&(j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j&&j.kind==='edit'&&G.modelEdit)||G.model;const p=j&&j.kind==='sheet'?priceSheet(m):priceOf(m);return j&&j.kind==='base'&&!model?p*baseN():p;};   // 기준 사진은 후보 장수만큼
+const priceJob=(j,model)=>{if(j&&j.local)return 0;const m=model||(j&&j.kind==='base'&&genMode()==='comp'?G.model:null)||(j&&(j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j&&j.kind==='edit'&&G.modelEdit)||G.model;const p=j&&j.kind==='sheet'?priceSheet(m):priceOf(m);return j&&j.kind==='base'&&!model?p*baseN():p;};   // 기준 사진은 후보 장수만큼
 const mNote=(l,m)=>(m||G.model)+(!m&&G.modelHi&&l.some(j=>j.kind==='base'||j.kind==='hero')?' · 기준 사진·첫 화면은 최고급 '+G.modelHi:'')+(!m&&G.modelEdit&&l.some(j=>j.kind==='edit')?' · 문 색 바꾸기는 '+G.modelEdit:'');
 const nImgs=l=>l.reduce((s,j)=>s+(j.kind==='base'?baseN():1),0);   // 실제로 만들 이미지 장수(기준 사진은 후보 장수만큼)
 function estJobs(list,model,short){
@@ -1256,10 +1269,12 @@ function gErr(e){
 }
 const sleepA=(ms,sig)=>new Promise((ok,no)=>{const t=setTimeout(ok,ms);if(sig)sig.addEventListener('abort',()=>{clearTimeout(t);no(Object.assign(new Error('abort'),{name:'AbortError'}));},{once:true});});
 async function gOne(j,signal,opts){
-  const model=((opts&&opts.model)||((j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j.kind==='edit'&&G.modelEdit)||G.model).trim(),refs=j.kind==='edit'?await baseRef():await buildRefs();   // 기준 사진·첫 화면은 최고급(정밀 모델)
+  const doorOnly=genMode()==='comp'&&(j.kind==='base'||j.kind==='comp');   // 빈 문 사진은 제품 사진을 보내지 않아요(보내면 손잡이를 그려 넣어요)
+  const model=((opts&&opts.model)||(doorOnly?G.model:((j.kind==='base'||j.kind==='hero')&&G.modelHi)||(j.kind==='edit'&&G.modelEdit)||G.model)).trim(),refs=doorOnly?{imgs:[],note:'',sig:'door'}:j.kind==='edit'?await baseRef():await buildRefs();   // 기준 사진·첫 화면은 최고급(정밀 모델)
   let prompt=promptOf(j)+refs.note;
   const cur=getP(j.key);   // 다시 만들 때는 검수에서 지적된 점을 알려 줘요
   if(opts&&opts.fresh&&cur&&cur.chk&&!cur.chk.ok&&cur.chk.issues.length)prompt+='\n이전에 만든 이미지는 원본과 이렇게 달랐습니다: '+cur.chk.issues.join(' / ')+'. 이번에는 원본 사진과 똑같이 바로잡아 주세요.';
+  if(opts&&opts.issues)prompt+='\n이전에 만든 이미지는 이렇게 달랐습니다: '+String(opts.issues).slice(0,200)+'. 이번에는 바로잡아 주세요.';
   if(opts&&opts.soft)prompt+='\n(가장 단순하게 만들어 주세요: 소품·장식 없이, 사람이 나오면 손만 가까이 잘라서 손목 위는 보이지 않게. 손잡이와 받침은 첨부 사진 그대로.)';
   const ck=hashStr(model+'|'+prompt+'|'+refs.sig+'|'+((opts&&opts.variant)||0));
   if(!(opts&&opts.fresh)&&G.cache.has(ck))return {blob:G.cache.get(ck),cached:true,ck};   // 같은 요청은 다시 돈을 쓰지 않아요(다시 만들기는 예외)
@@ -1337,6 +1352,190 @@ async function regenBad(list,signal){            // 정밀 모델로 한 번 더
   await Promise.all(Array.from({length:Math.min(3,list.length)},wk));
   return {done,err};
 }
+/* ===== 실물 합성 (v88): 문 사진만 AI가 그리고, 제품은 1단계 실제 사진에서 오려 붙여요 ===== */
+const COMP_DEF={scale:70,dy:0,shadow:35,tol:40};
+const compSet=()=>Object.assign({},COMP_DEF,S.comp||{});
+let CUT={id:'',p:null};
+const CUT_ERR='제품 사진에서 제품만 오려 내지 못했어요. 흰색이나 단색 배경에서 정면으로 찍은 제품 사진을 쓰거나, 배경을 뺀 PNG 사진을 1단계에 넣어 주세요.';
+function getCutout(){
+  if(!hasPhoto(S.src))return Promise.reject({status:-1,message:'1단계의 제품 사진을 먼저 넣어 주세요.'});
+  const tol=Math.max(10,Math.min(80,Number(compSet().tol)||40)),key=S.src.id+'|'+tol;if(CUT.id===key&&CUT.p)return CUT.p;
+  const p=cutProduct(PH.get(S.src.id).blob,tol).catch(e=>{if(CUT.id===key)CUT={id:'',p:null};throw {status:-1,message:CUT_ERR};});
+  CUT={id:key,p};return p;
+}
+async function cutProduct(blob,tol){
+  tol=tol||40;
+  const bmp=await createImageBitmap(blob),k=Math.min(1,900/Math.max(bmp.width,bmp.height)),w=Math.max(16,Math.round(bmp.width*k)),h=Math.max(16,Math.round(bmp.height*k));
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d',{willReadFrequently:true});
+  g.drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();   // 투명 PNG는 투명한 곳이 그대로 남아요
+  const im=g.getImageData(0,0,w,h),d=im.data,N=w*h;let tr=0;for(let p=0;p<N;p++)if(d[p*4+3]<20)tr++;
+  let fg=new Uint8Array(N);
+  const inv01=a=>{const o=new Uint8Array(a.length);for(let p=0;p<a.length;p++)o[p]=a[p]?0:1;return o;};
+  if(tr>N*.03){for(let p=0;p<N;p++)fg[p]=d[p*4+3]>=128?1:0;}   // 이미 배경이 빠진 사진
+  else{
+    // 배경색 = 사진 테두리 점들의 가운데 값
+    const bd=[[],[],[]];const ed=(x,y)=>{const i=(y*w+x)*4;bd[0].push(d[i]);bd[1].push(d[i+1]);bd[2].push(d[i+2]);};
+    for(let x=0;x<w;x++){ed(x,0);ed(x,h-1);}for(let y=0;y<h;y++){ed(0,y);ed(w-1,y);}
+    const med=a=>{a.sort((p,q)=>p-q);return a[a.length>>1];},br=med(bd[0]),bgc=med(bd[1]),bb=med(bd[2]);
+    const dist=p=>{const i=p*4;return (Math.abs(d[i]-br)+Math.abs(d[i+1]-bgc)+Math.abs(d[i+2]-bb))/3;};
+    // ① 배경과 색이 많이 다른 점(민감도 tol)  ② 윤곽선으로 둘러싸인 안쪽 — 둘을 합쳐요
+    const L=new Float32Array(N);for(let p=0;p<N;p++)L[p]=.299*d[p*4]+.587*d[p*4+1]+.114*d[p*4+2];
+    const E=new Uint8Array(N);
+    for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const p=y*w+x;if(Math.abs(L[p+1]-L[p-1])+Math.abs(L[p+w]-L[p-w])>24)E[p]=1;}
+    const flood=(blockers)=>{const out=new Uint8Array(N),st=[];const pu=p=>{if(blockers[p]||out[p])return;out[p]=1;st.push(p);};
+      for(let x=0;x<w;x++){pu(x);pu((h-1)*w+x);}for(let y=0;y<h;y++){pu(y*w);pu(y*w+w-1);}
+      while(st.length){const p=st.pop(),x=p%w,y=(p/w)|0;if(x>0)pu(p-1);if(x<w-1)pu(p+1);if(y>0)pu(p-w);if(y<h-1)pu(p+w);}return out;};
+    const outE=flood(dil(E,w,h,3)),C=new Uint8Array(N);
+    for(let p=0;p<N;p++)C[p]=(dist(p)>tol||!outE[p])?1:0;
+    const closed=inv01(dil(inv01(dil(C,w,h,4)),w,h,4));   // 틈 메우기(닫기): 부풀렸다가 같은 만큼 깎아요
+    const out2=flood(closed),fill=new Uint8Array(N);for(let p=0;p<N;p++)fill[p]=out2[p]?0:1;   // 안쪽 구멍 메우기
+    const lab=new Int32Array(N);let best=0,bestN=0,id=0;
+    for(let s0=0;s0<N;s0++){if(!fill[s0]||lab[s0])continue;id++;let n=0;const q=[s0];lab[s0]=id;
+      while(q.length){const p=q.pop();n++;const x=p%w,y=(p/w)|0;
+        if(x>0&&fill[p-1]&&!lab[p-1]){lab[p-1]=id;q.push(p-1);}if(x<w-1&&fill[p+1]&&!lab[p+1]){lab[p+1]=id;q.push(p+1);}
+        if(y>0&&fill[p-w]&&!lab[p-w]){lab[p-w]=id;q.push(p-w);}if(y<h-1&&fill[p+w]&&!lab[p+w]){lab[p+w]=id;q.push(p+w);}}
+      if(n>bestN){bestN=n;best=id;}}
+    if(bestN<N*.01||bestN>N*.85)throw new Error('cut');
+    const raw=new Uint8Array(N);for(let p=0;p<N;p++)if(lab[p]===best)raw[p]=1;
+    const dd=dil(inv01(raw),w,h,1);for(let p=0;p<N;p++)fg[p]=dd[p]?0:raw[p];   // 1픽셀 깎아서 가장자리의 배경색 섞임을 줄여요
+    const near=dil(out2,w,h,6);   // 바깥 가까이에서 배경색과 거의 똑같은 점(좁은 틈)은 지워요
+    for(let p=0;p<N;p++)if(fg[p]&&near[p]&&dist(p)<9)fg[p]=0;
+  }
+  let n=0,sx=0,sy=0,x0=w,y0=h,x1=-1,y1=-1;
+  for(let p=0;p<N;p++)if(fg[p]){const x=p%w,y=(p/w)|0;n++;sx+=x;sy+=y;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  if(n<N*.005||x1-x0<w*.1)throw new Error('cut');
+  // 손잡이 방향: 가장 긴 축을 따라 두꺼운 쪽 끝이 받침이고, 받침에서 레버 끝으로 가는 방향이 레버가 향한 쪽이에요
+  const cx=sx/n,cy=sy/n;let a=0,b=0,c2=0;
+  for(let p=0;p<N;p++)if(fg[p]){const dx=p%w-cx,dy=((p/w)|0)-cy;a+=dx*dx;b+=dx*dy;c2+=dy*dy;}
+  const th=.5*Math.atan2(2*b,a-c2),ux=Math.cos(th),uy=Math.sin(th);let t0=1e9,t1=-1e9;
+  for(let p=0;p<N;p++)if(fg[p]){const t=((p%w)-cx)*ux+(((p/w)|0)-cy)*uy;if(t<t0)t0=t;if(t>t1)t1=t;}
+  const len=Math.max(1,t1-t0),bins=20,cnt=new Float32Array(bins);
+  for(let p=0;p<N;p++)if(fg[p]){const t=((p%w)-cx)*ux+(((p/w)|0)-cy)*uy;cnt[Math.min(bins-1,((t-t0)/len*bins)|0)]++;}
+  const m1=(cnt[0]+cnt[1]+cnt[2])/3,m2=(cnt[bins-1]+cnt[bins-2]+cnt[bins-3])/3,ros=m2>=m1?1:-1;   // 받침이 축의 어느 끝인지
+  let vx=ros>0?-ux:ux,vy=ros>0?-uy:uy;
+  {   // 레버 부분(받침 반대쪽 55%)만으로 축을 다시 구해요: 받침이 한쪽으로 치우쳐도 기울기가 틀어지지 않게
+    let m=0,mx=0,my=0;const Aof=p=>{const tt=((p%w)-cx)*ux+(((p/w)|0)-cy)*uy;return ros>0?(tt-t0)/len:(t1-tt)/len;};
+    for(let p=0;p<N;p++)if(fg[p]&&Aof(p)<=.55){m++;mx+=p%w;my+=(p/w)|0;}
+    if(m>N*.002){const qx=mx/m,qy=my/m;let a2=0,b2=0,c3=0;
+      for(let p=0;p<N;p++)if(fg[p]&&Aof(p)<=.55){const dx=p%w-qx,dy=((p/w)|0)-qy;a2+=dx*dx;b2+=dx*dy;c3+=dy*dy;}
+      const th2=.5*Math.atan2(2*b2,a2-c3);let wx=Math.cos(th2),wy=Math.sin(th2);if(wx*vx+wy*vy<0){wx=-wx;wy=-wy;}vx=wx;vy=wy;}
+  }
+  const ang=Math.atan2(vy,vx),dir=vx>=0?'R':'L';
+  // 가장자리를 1픽셀쯤 부드럽게(3×3 평균) → 투명도. 가장자리 점의 색은 안쪽 제품 색으로 바꿔서 흰 테두리가 안 생기게 해요
+  const bx0=Math.max(0,x0-3),by0=Math.max(0,y0-3),bx1=Math.min(w-1,x1+3),by1=Math.min(h-1,y1+3),cw=bx1-bx0+1,ch=by1-by0+1;
+  const iv2=new Uint8Array(N);for(let p=0;p<N;p++)iv2[p]=fg[p]?0:1;const d4=dil(iv2,w,h,4),core=new Uint8Array(N);for(let p=0;p<N;p++)core[p]=d4[p]?0:1;   // 안쪽(가장자리에서 4픽셀 이상 떨어진 곳)
+  const grow=dil(fg,w,h,2),oc=document.createElement('canvas');oc.width=cw;oc.height=ch;const og=oc.getContext('2d'),od=og.createImageData(cw,ch);
+  for(let y=0;y<ch;y++)for(let x=0;x<cw;x++){
+    const X=bx0+x,Y=by0+y,pi=Y*w+X;let s9=0;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const xx=X+i,yy=Y+j;if(xx>=0&&xx<w&&yy>=0&&yy<h&&fg[yy*w+xx])s9++;}
+    const si=pi*4,di=(y*cw+x)*4;let r0=d[si],g0=d[si+1],b0=d[si+2];
+    if(s9>0&&!core[pi]&&grow[pi]){   // 가장자리 띠: 근처 안쪽 점들의 평균 색
+      let rr=0,gg=0,bb2=0,k2=0;for(let rad=5;rad<=11&&!k2;rad+=6)for(let j=-rad;j<=rad;j++)for(let i=-rad;i<=rad;i++){const xx=X+i,yy=Y+j;if(xx>=0&&xx<w&&yy>=0&&yy<h&&core[yy*w+xx]&&fg[yy*w+xx]){const q=(yy*w+xx)*4;rr+=d[q];gg+=d[q+1];bb2+=d[q+2];k2++;}}
+      if(k2){r0=rr/k2;g0=gg/k2;b0=bb2/k2;}
+    }
+    od.data[di]=r0;od.data[di+1]=g0;od.data[di+2]=b0;od.data[di+3]=Math.round(s9/9*255);
+  }
+  og.putImageData(od,0,0);
+  return {cv:oc,w:cw,h:ch,ang,dir,cover:n/N};
+}
+function trimAlpha(c){
+  const w=c.width,h=c.height,d=c.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>10){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  if(x1<0)return c;const o=document.createElement('canvas');o.width=x1-x0+1;o.height=y1-y0+1;o.getContext('2d').drawImage(c,x0,y0,o.width,o.height,0,0,o.width,o.height);return o;
+}
+function orientCut(cut,wantDir,rot){   // 원하는 방향이면 좌우로 뒤집고, rot이면 레버가 수평이 되게 돌려요
+  const mirror=!!wantDir&&wantDir!==cut.dir;let ang=mirror?Math.PI-cut.ang:cut.ang;
+  let r=0;if(rot){const target=(wantDir||cut.dir)==='R'?0:Math.PI;r=target-ang;while(r>Math.PI)r-=2*Math.PI;while(r<=-Math.PI)r+=2*Math.PI;}
+  const cw=cut.cv.width,ch=cut.cv.height,cs=Math.abs(Math.cos(r)),sn=Math.abs(Math.sin(r)),nw=Math.ceil(cw*cs+ch*sn)+4,nh=Math.ceil(cw*sn+ch*cs)+4;
+  const c=document.createElement('canvas');c.width=nw;c.height=nh;const g=c.getContext('2d');
+  g.translate(nw/2,nh/2);g.rotate(r);if(mirror)g.scale(-1,1);g.imageSmoothingQuality='high';g.drawImage(cut.cv,-cw/2,-ch/2);
+  return trimAlpha(c);
+}
+const jpegOf=(c,q)=>new Promise(r=>c.toBlob(r,'image/jpeg',q||.94));
+async function composeReal(doorBlob,wantDir,o){   // 빈 문 사진 위에 실제 제품을 올려요(그림자 포함)
+  const set=Object.assign(compSet(),o||{}),cut=await getCutout(),W=1024,H=1024;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const bmp=await createImageBitmap(doorBlob),sc0=Math.max(W/bmp.width,H/bmp.height);
+  g.fillStyle='#ddd';g.fillRect(0,0,W,H);g.drawImage(bmp,(W-bmp.width*sc0)/2,(H-bmp.height*sc0)/2,bmp.width*sc0,bmp.height*sc0);if(bmp.close)bmp.close();
+  const prod=orientCut(cut,wantDir,true),sc=Math.min(set.scale/100*W/prod.width,.62*H/prod.height),pw=prod.width*sc,ph=prod.height*sc,x=(W-pw)/2,y=(H-ph)/2+set.dy/100*H,a=Math.max(0,Math.min(1,set.shadow/100));
+  g.imageSmoothingQuality='high';
+  g.save();g.shadowColor='rgba(0,0,0,'+(a*.55)+')';g.shadowBlur=pw*.035;g.shadowOffsetX=pw*.012;g.shadowOffsetY=pw*.03;g.drawImage(prod,x,y,pw,ph);g.restore();   // 넓고 흐린 그림자
+  g.save();g.shadowColor='rgba(0,0,0,'+(a*.7)+')';g.shadowBlur=pw*.008;g.shadowOffsetX=pw*.004;g.shadowOffsetY=pw*.008;g.drawImage(prod,x,y,pw,ph);g.restore();      // 문에 닿은 곳의 좁고 진한 그림자
+  return jpegOf(c,.94);
+}
+async function composeStudio(kind){   // 첫 화면·소개: 어두운 배경에 실제 제품(사진 그대로의 방향)을 올려요. 구글을 쓰지 않아요
+  const cut=await getCutout(),hero=kind==='hero',W=hero?1024:1200,H=hero?1280:800;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,hero?'#13295c':'#17253f');bg.addColorStop(1,hero?'#050a1a':'#0a1020');g.fillStyle=bg;g.fillRect(0,0,W,H);
+  const prod=orientCut(cut,cut.dir,false),cy=hero?H*.30:H*.5,sc=Math.min((hero?.74:.68)*W/prod.width,(hero?.30:.52)*H/prod.height),pw=prod.width*sc,ph=prod.height*sc,x=(W-pw)/2,y=cy-ph/2;
+  const gl=g.createRadialGradient(W/2,cy,0,W/2,cy,W*.55);gl.addColorStop(0,'rgba(95,135,225,.30)');gl.addColorStop(1,'rgba(95,135,225,0)');g.fillStyle=gl;g.fillRect(0,0,W,H);
+  g.imageSmoothingQuality='high';
+  g.save();g.shadowColor='rgba(0,0,0,.55)';g.shadowBlur=pw*.04;g.shadowOffsetY=ph*.1;g.drawImage(prod,x,y,pw,ph);g.restore();
+  const rc=document.createElement('canvas');rc.width=Math.ceil(pw);rc.height=Math.ceil(ph);const rg=rc.getContext('2d');   // 바닥에 비친 모습
+  rg.translate(0,rc.height);rg.scale(1,-1);rg.drawImage(prod,0,0,rc.width,rc.height);rg.setTransform(1,0,0,1,0,0);rg.globalCompositeOperation='destination-in';
+  const gr=rg.createLinearGradient(0,0,0,rc.height);gr.addColorStop(0,'rgba(0,0,0,.30)');gr.addColorStop(.6,'rgba(0,0,0,0)');rg.fillStyle=gr;rg.fillRect(0,0,rc.width,rc.height);
+  g.drawImage(rc,x,y+ph+ph*.03);
+  return jpegOf(c,.94);
+}
+function doorPrompt(j){
+  const it=j.kind==='base'?(S.colors.items[whiteIdx()]||{scene:'깨끗한 흰색 실내 문',door:'groove'}):S.colors.items[j.i]||{},sc=String(it.scene||it.label||'깨끗한 흰색 실내 문').trim(),f=DOORF[it.door]||'';
+  return '손잡이·문고리·레버·도어락·열쇠 구멍·경첩 같은 금속 부품이 전혀 없는 빈 실내 문 사진을 만드세요.\n장면: '+sc+'. 카메라가 문 앞에서 문과 정면으로 마주 보는 구도로, 문 표면이 화면을 가득 채우고 문 전체는 보이지 않게.\n'
+    +(f?'문: '+f+'(이런 선은 문 가장자리 쪽에만 두세요).\n':'')
+    +'화면 가운데 부분(가로 15%~85%, 세로 25%~75%)은 몰딩·홈·그림자·무늬 없이 편평하고 깨끗한 문 표면이어야 합니다(나중에 여기에 손잡이를 붙일 거예요). 조명은 창가의 은은한 실내 빛으로, 실제 인테리어 사진처럼 사실적으로. 사람, 손, 글자, 로고, 워터마크, 다른 물체는 넣지 마세요. 비율은 정사각형 1:1.';
+}
+const DOOR_CHK=sc=>'이 사진은 AI가 만든 "빈 문" 사진이어야 합니다. 이 칸의 문은 "'+sc+'"이어야 합니다. 다음을 확인하세요. ① 손잡이·문고리·레버·도어락·열쇠 구멍·경첩 같은 금속 부품이나 손잡이처럼 생긴 물체가 보이면 ok를 false로 하고 issues에 "문에 손잡이가 그려졌어요"를 넣으세요. ② 사람이나 손이 보이면 "사람이 보여요". ③ 문 색·재질이 설명과 눈에 띄게 다르면 "문 색이 달라요". ④ 화면 가운데(가로 15~85%, 세로 25~75%)를 몰딩·선·큰 그림자가 가로질러 편평하지 않으면 "가운데가 편평하지 않아요". 사소한 차이는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["문제를 짧은 한국어 문장으로, 최대 3개. 없으면 빈 목록"]}';
+async function doorCheck(blob,j,signal){
+  const it=j.kind==='base'?(S.colors.items[whiteIdx()]||{}):(S.colors.items[j.i]||{}),sc=String(it.scene||it.label||'깨끗한 흰색 실내 문').trim();
+  const r=await claude(DOOR_CHK(sc),{signal,max:300,images:[await shrink(blob,800,.85)]});
+  if(!r||typeof r!=='object'||typeof r.ok!=='boolean')return null;
+  return {ok:r.ok,issues:(Array.isArray(r.issues)?r.issues:[]).map(x=>String(x).slice(0,100)).filter(Boolean).slice(0,3)};
+}
+async function putComp(key,finalBlob,rawBlob,extra){   // 합성한 사진과, 합성에 쓴 원래 문 사진(다시 합성할 때 무료로 쓰려고)을 같이 보관해요
+  const bm=await ingest(await jpegOf(await (async()=>{const b=await createImageBitmap(rawBlob),c=document.createElement('canvas');c.width=b.width;c.height=b.height;c.getContext('2d').drawImage(b,0,0);if(b.close)b.close();return c;})(),.9));
+  try{await setPhoto(key,finalBlob,Object.assign({},extra,{bg:{id:bm.id,w:bm.w,h:bm.h}}));}finally{PENDING.delete(bm.id);}
+  gc();
+}
+async function setBaseCandsComp(list){
+  S.base=null;S.baseOk=false;S.baseCands=[];
+  for(let k=0;k<list.length;k++){S.baseCands.push(null);await putComp('baseCands.'+k,list[k].blob,list[k].raw,{ai:true,real:true});}
+  gc();
+}
+async function makeDoorCand(j,signal,oo,k){   // 기준 사진 후보 한 장: 빈 문 → 손잡이가 없는지 검사 → 실제 제품 합성
+  let why='';
+  for(let a=0;a<3;a++){
+    const r=await gOne(j,signal,Object.assign({},oo,{fresh:true,variant:k+1+a*7,issues:why}));
+    const sn=await imgStat(r.blob).catch(()=>null);
+    if(sn&&(sn.sd<5||sn.mean<6||sn.mean>250)){why='거의 한 가지 색인 빈 그림이 왔어요';continue;}
+    if(UI.check&&await claudeReady(1)){
+      let v=null;try{v=await doorCheck(r.blob,j,signal);}catch(e){if(e&&(e.name==='AbortError'||e.code==='cancelled'))throw {name:'AbortError'};}
+      if(v&&!v.ok){why=v.issues.join(' / ')||'문 사진이 요청과 달라요';continue;}
+    }
+    const fin=await composeReal(r.blob,(S.colors.items[whiteIdx()]||{}).flip?'R':'L');
+    return {blob:fin,raw:r.blob,model:r.model};
+  }
+  throw {status:0,blocked:true,message:'빈 문 사진을 만들지 못했어요: '+why};
+}
+async function recompPath(path,dir){
+  const p=getP(path);if(!p||!p.bg||!p.real||!hasPhoto(p.bg))return false;
+  const fin=await composeReal(PH.get(p.bg.id).blob,dir),keep={ai:!!p.ai,real:true,bg:p.bg,fx:p.fx,fy:p.fy,z:p.z};
+  await setPhoto(path,fin,keep);const q=getP(path);if(q&&p.chk&&p.chk.door)q.chk={ok:true,issues:[],door:true};
+  return true;
+}
+async function recompAll(){   // 크기·위치·그림자를 바꾼 뒤 모든 합성 칸을 무료로 다시 합성해요
+  const W=whiteIdx(),wd=(S.colors.items[W]||{}).flip?'R':'L';let n=0;
+  for(let k=0;k<(S.baseCands||[]).length;k++)if(await recompPath('baseCands.'+k,wd))n++;
+  if(await recompPath('base',wd))n++;
+  for(let i=0;i<S.colors.items.length;i++)if(await recompPath('colors.items.'+i+'.photo',S.colors.items[i].flip?'R':'L'))n++;
+  for(const [k,key,kind] of [['hero','hero.photo','hero'],['concept','concept.photo','concept']]){const p=getP(key);if(p&&p.real&&!p.ai&&hasPhoto(p)){await setPhoto(key,await composeStudio(kind),{ai:false,real:true});n++;}}
+  gc();return n;
+}
+function compCtl(){
+  if(genMode()!=='comp')return '';
+  const c=compSet(),sl=(t,k,mn,mx,v,u)=>'<label class="f"><span>'+t+' <b data-compv="'+k+'">'+v+'</b>'+(u||'')+'</span><input type="range" min="'+mn+'" max="'+mx+'" value="'+v+'" data-comp="'+k+'"></label>';
+  return '<div class="blk"><h3>실물 합성 설정 (바꾼 뒤 \'다시 합성\'은 무료예요)</h3>'
+    +'<p class="hint">문 사진만 AI가 그리고, 손잡이는 <b>1단계의 실제 제품 사진</b>에서 제품만 오려 붙여요. 그래서 모양·마감이 사진 그대로예요. 흰색 같은 단색 배경에서 정면으로 찍은 사진이나, 배경을 뺀 PNG가 잘 맞아요. 카메라 각도는 정면만 쓰고, 방향을 바꾸면 사진이 좌우로 뒤집혀요(좌우 공용 제품에만 쓰세요). 첫 화면·소개 사진도 구글 없이 이 사진으로 만들어요. 아직 실험 기능이라, 먼저 기준 사진 후보로 모양을 확인하세요.</p>'
+    +'<div class="acts"><button class="btn sm" type="button" data-act="cutprev">제품 오려내기 확인 (무료)</button><button class="btn sm primary" type="button" data-act="recompall">모든 합성 칸 다시 합성 (무료)</button></div><div id="cutPrev"></div>'
+    +sl('제품 크기(화면 폭에 대해)','scale',50,90,c.scale,'%')+sl('위아래 위치','dy',-15,15,c.dy,'%')+sl('그림자 세기','shadow',0,100,c.shadow,'%')+sl('배경과 구분하는 정도 (높이면 사진 속 그림자가 빠지고, 낮추면 밝은 가장자리가 들어와요 · 바꾼 뒤 오려내기 확인을 눌러 보세요)','tol',12,70,c.tol,'')+'</div>';
+}
 /* ===== 천천히 확실하게 (v86) =====
    한 장씩 보내고, 칸마다 바로 검수하고, 합격할 때까지 사다리를 올라가며 다시 만들어요.
    1번째 같은 지시 → 2번째 검수에서 지적된 점을 넣어서 → 3번째 정밀 모델 → 4번째 가장 단순한 구도.
@@ -1387,6 +1586,7 @@ async function careTile(j,cx){
   for(let a=0;a<TRIES;a++){
     if(sig.aborted)return {state:'abort'};
     const opt=Object.assign({},o,a?{fresh:true}:{});
+    if(a&&j.kind==='comp'&&why)opt.issues=why;   // 빈 문 사진은 칸에 저장하지 않으니, 앞 시도의 문제를 직접 알려 줘요
     if(a>=2&&G.modelHi&&!o.model)opt.model=G.modelHi;   // 3번째부터 정밀 모델
     if(a>=3)opt.soft=true;                                  // 4번째는 가장 단순한 구도
     const pj=priceJob(j,opt.model)||0;
@@ -1403,6 +1603,22 @@ async function careTile(j,cx){
     }
     lastErr=null;
     if(r.cached)cx.cachedN++;else{const pr=priceJob(j,r.model||opt.model)||0;G.made++;G.spent+=pr;cx.spent.v+=pr;}
+    if(j.kind==='comp'){   // 실물 합성: 빈 문 검사 → 실제 제품 합성 → 같은 그림 검사 → 저장
+      const sc2=G.coolScale===undefined?1:G.coolScale;
+      let s0;try{s0=await imgStat(r.blob);}catch(e){s0={sd:99,mean:100};}
+      if(s0.sd<5||s0.mean<6||s0.mean>250){why='거의 한 가지 색인 빈 그림이 왔어요';if(r.ck)G.cache.delete(r.ck);try{await sleepA(1500*sc2,sig);}catch(x){return {state:'abort'};}continue;}
+      let verdict=null;
+      if(canCheck){try{verdict=await doorCheck(r.blob,j,sig);}catch(e){if(e&&(e.name==='AbortError'||e.code==='cancelled'))return {state:'abort'};verdict=null;}}
+      if(verdict&&!verdict.ok){why=verdict.issues.join(' / ')||'문 사진이 요청과 달라요';if(r.ck)G.cache.delete(r.ck);continue;}
+      let fin;try{fin=await composeReal(r.blob,S.colors.items[j.i].flip?'R':'L');}catch(e){why=gErr(e);return stop('fatal');}
+      let s1;try{s1=await sane({kind:'color',i:j.i},fin);}catch(e){s1={ok:true,hs:null};}
+      if(!s1.ok){why=s1.why;if(r.ck)G.cache.delete(r.ck);continue;}
+      await putComp(j.key,fin,r.blob,s1.hs?{ai:true,real:true,hs:s1.hs}:{ai:true,real:true});
+      got=true;clearHold(j.key);refresh();
+      const pc=getP(j.key);
+      if(verdict&&pc){pc.chk={ok:true,issues:[],door:true};state='pass';why='';}else{state='unchecked';why='문 사진 검수를 하지 못했어요';}
+      break;
+    }
     let sn;try{sn=await sane(j,r.blob);}catch(e){sn={ok:true,hs:null};}
     if(!sn.ok){
       why=sn.why;if(r.ck)G.cache.delete(r.ck);
@@ -1455,7 +1671,10 @@ function gateHtml(gt){
 async function gRun(list,opts){
   const o=opts||{};
   if(G.busy)return {done:0,total:list.length,stopped:'이미 만드는 중이에요.'};
-  const careful=o.careful!==undefined?!!o.careful:UI.careful;   // 천천히 확실하게
+  const careful=(o.careful!==undefined?!!o.careful:UI.careful)||list.some(j=>j.kind==='comp');   // 천천히 확실하게(실물 합성은 항상)
+  if(list.some(j=>j.local||j.kind==='comp'||(j.kind==='base'&&genMode()==='comp'))){   // 실물 합성: 돈을 쓰기 전에 제품을 오려 낼 수 있는지부터 봐요(무료)
+    try{await getCutout();}catch(e){const w=gErr(e);if(!o.quiet)gMsg(w,'err');return {done:0,total:list.length,cachedN:0,stopped:w,sec:0,chk:null,fails:[],holds:[],passN:0,unN:0};}
+  }
   G.busy=true;const ctl=G.ctl=new AbortController(),st=$('#gStop'),all=$('#gAll');if(st)st.hidden=false;if(all)all.disabled=true;
   const par=careful?1:clamp(list.length&&list.every(j=>j.kind==='edit')?Math.min(G.par,3):G.par,1,5),total=list.length,t0=Date.now();   // 문 색 편집은 한꺼번에 많이 보내면 구글이 막을 수 있어 최대 3개씩
   let next=0,done=0,cachedN=0,consec=0,stopped='',halt=false,passN=0,unN=0,consecT=0;const fails=[],holds=[];G.fail=G.fail||{};
@@ -1464,7 +1683,7 @@ async function gRun(list,opts){
   const doJob=async(j,extra)=>{
     const oo=extra?Object.assign({},o,extra):o;
     if(j.kind==='base'){   // 기준 사진: 후보 여러 장을 동시에 만들어요(하나라도 되면 그걸로 골라요)
-      const mk=k=>gOne(j,ctl.signal,Object.assign({},oo,{fresh:true,variant:k+1}));let rs;
+      const mk=k=>genMode()==='comp'?makeDoorCand(j,ctl.signal,oo,k):gOne(j,ctl.signal,Object.assign({},oo,{fresh:true,variant:k+1}));let rs;
       if(careful){rs=[];for(let k=0;k<baseN();k++){   // 후보도 한 장씩(동시에 보내지 않아요)
         if(ctl.signal.aborted)break;
         try{rs.push({status:'fulfilled',value:await mk(k)});}
@@ -1472,7 +1691,7 @@ async function gRun(list,opts){
       }}else rs=await Promise.allSettled(Array.from({length:baseN()},(_,k)=>mk(k)));
       const ok=rs.filter(x=>x.status==='fulfilled').map(x=>x.value);
       if(!ok.length)throw (rs[0]&&rs[0].reason)||Object.assign(new Error('abort'),{name:'AbortError'});
-      await setBaseCands(ok.map(x=>x.blob));done++;G.made+=ok.length;ok.forEach(x=>{G.spent+=priceOf(x.model);});
+      if(genMode()==='comp')await setBaseCandsComp(ok);else await setBaseCands(ok.map(x=>x.blob));done++;G.made+=ok.length;ok.forEach(x=>{G.spent+=priceOf(x.model);});
     }else{
       const r=await gOne(j,ctl.signal,oo);await putResult(j,r.blob,{ai:true});done++;
       if(r.cached)cachedN++;else{G.made++;G.spent+=priceJob(j,r.model);}
@@ -1481,6 +1700,11 @@ async function gRun(list,opts){
   const worker=async()=>{
     while(!halt&&!ctl.signal.aborted){
       const i=next++;if(i>=total)return;const j=list[i];
+      if(j.local){   // 첫 화면·소개(실물 합성): 구글 없이 컴퓨터가 만들어요
+        try{const b=await composeStudio(j.kind);await putResult(j,b,{ai:false,real:true});done++;delete G.fail[j.key];clearHold(j.key);refresh();if(o.onTick)o.onTick(done+fails.length,total);}
+        catch(e){if(e&&e.name==='AbortError')return;const w=gErr(e);G.fail[j.key]=w;setHold(j.key,w);fails.push({name:j.name,why:w});holds.push({name:j.name,why:w,empty:true});if(isFatal(e)){halt=true;stopped=w;ctl.abort();return;}}
+        continue;
+      }
       if(careful&&j.kind!=='base'){
         let R;try{R=await careTile(j,cx);}catch(e){if(e&&e.name==='AbortError')return;const w=gErr(e);setHold(j.key,w);R={state:'fatal',why:w,empty:!hasPhoto(getP(j.key))};}
         if(R.state==='abort')return;
@@ -1668,7 +1892,7 @@ const chkPrompt=(kind,dirTxt,cx)=>{const sp=String(S.spec||'').trim().slice(0,90
   +(capLine()?'\n받침 정보(사장님이 확인한 값): '+capLine()+' 두 번째 사진의 받침이 이 모양·가로세로 비율과 눈에 띄게 다르면(원근 때문에 비스듬히 보여서 생기는 작은 차이는 감안하세요) ok를 false로 하고 issues에 "받침 모양이 달라요"와 어떻게 다른지(정사각형·원형·세로로 긴 모양 등)를 적으세요.\n':'')
   +(ratioLine()?'\n레버 길이 비율(사장님이 확인한 값): '+ratioLine()+' 두 번째 사진의 레버가 받침에 비해 눈에 띄게 더 짧거나 더 길면(원근 때문에 짧아 보이는 작은 차이는 감안하세요) ok를 false로 하고 issues에 "레버 길이 비율이 달라요"를 넣으세요.\n':'')
   +(fixedLine()?'\n바뀌면 안 되는 것(사장님이 직접 적은 고정 사항): '+fixedLine()+' 두 번째 사진이 이 사항과 다르면 ok를 false로 하고 issues에 "고정 사항이 달라요"와 무엇이 다른지 적으세요.\n':'')
-  +(kind==='color'?sceneChk(cx):'')+(kind==='hero'?' 이 사진은 세로 4:5 첫 화면용입니다. 제품이 화면 위쪽 약 60% 안에 가로로 가운데쯤 모두 들어와 있고 아래 40%는 어둡게 비어 있어야 합니다. 제품이 아래로 내려와 아래쪽 글자 자리를 침범하거나 한쪽으로 크게 치우쳐 있으면 ok를 false로 하고 issues에 "제품 위치가 치우쳤어요"를 넣으세요.':'')
+  +((kind==='color'||kind==='comp')?sceneChk(cx):'')+(kind==='hero'?' 이 사진은 세로 4:5 첫 화면용입니다. 제품이 화면 위쪽 약 60% 안에 가로로 가운데쯤 모두 들어와 있고 아래 40%는 어둡게 비어 있어야 합니다. 제품이 아래로 내려와 아래쪽 글자 자리를 침범하거나 한쪽으로 크게 치우쳐 있으면 ok를 false로 하고 issues에 "제품 위치가 치우쳤어요"를 넣으세요.':'')
   +(kind==='concept'?' 이 사진은 가로 3:2 소개용입니다. 제품이 가운데에 전체가 보이게 있어야 하고, 한쪽으로 치우치거나 잘리면 ok를 false로 하세요.':'')
   +(kind==='sheet'?'':' 레버 방향: 원본에서 받침 기준으로 레버 끝이 어느 쪽(왼쪽/오른쪽)에 있는지 보고, 두 번째 사진에서 좌우가 뒤집혀(거울상) 있으면 ok를 false로 하고 issues에 "레버 방향이 반대예요"를 넣으세요. 연출 사진이라 각도가 조금 달라지는 것은 괜찮습니다.'+(dirTxt?' 이 사진에서 레버 끝은 받침에서 화면 '+dirTxt+'을 향해야 합니다.':''))
   +' 비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(카바)의 모양(원형·정사각형·직사각형)과 가로세로 비율·크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 또, 두 번째 사진에서 손잡이(레버 끝부터 받침까지)가 화면 가장자리에서 잘려 있거나 일부가 화면 밖으로 나가 있으면 ok를 false로 하고 issues에 "손잡이가 화면 밖으로 잘렸어요"를 넣으세요(손이 가리는 것은 잘린 것이 아닙니다). 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
@@ -1677,8 +1901,8 @@ async function checkOne(j,signal){
   const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
   const ed=j.kind==='edit'&&hasPhoto(S.base);   // 편집 칸은 확정한 기준 사진과 비교해요(비슷한 두 장 비교라 값싼 기본 모델로 충분해요)
   const imgs=[await shrink(PH.get(ed?S.base.id:S.src.id).blob,800,.85),await shrink(m.blob,j.kind==='sheet'?1400:800,.85)];
-  const dt=ed?'':j.kind==='color'?sideName(S.colors.items[j.i]&&S.colors.items[j.i].flip?'R':'L'):j.kind==='base'?sideName((S.colors.items[whiteIdx()]||{}).flip?'R':'L'):(j.kind==='hero'||j.kind==='concept')&&S.lvDir&&S.src&&S.lvDir.id===S.src.id?sideName(S.lvDir.dir):'';
-  const it0=(j.kind==='edit'||j.kind==='color')?S.colors.items[j.i]:null,cx=it0?{scene:String(it0.scene||it0.label||'').trim(),hand:isHand(it0)}:null;
+  const dt=ed?'':(j.kind==='color'||j.kind==='comp')?sideName(S.colors.items[j.i]&&S.colors.items[j.i].flip?'R':'L'):j.kind==='base'?sideName((S.colors.items[whiteIdx()]||{}).flip?'R':'L'):(j.kind==='hero'||j.kind==='concept')&&S.lvDir&&S.src&&S.lvDir.id===S.src.id?sideName(S.lvDir.dir):'';
+  const it0=(j.kind==='edit'||j.kind==='color'||j.kind==='comp')?S.colors.items[j.i]:null,cx=it0?{scene:String(it0.scene||it0.label||'').trim(),hand:isHand(it0)}:null;
   let r;
   try{r=await claude(chkPrompt(ed?'edit':j.kind,dt,cx),{signal,max:400,images:imgs,model:((C.model||'').trim()||ed)?'':chkModel});}
   catch(e){if(e&&e.status===404&&chkModel&&!ed){chkModel='';r=await claude(chkPrompt(j.kind,dt,cx),{signal,max:400,images:imgs,model:''});}else throw e;}
@@ -2753,7 +2977,7 @@ async function runOne(go){
   if(!cOn)why.push('⚠ 클로드 키가 연결되지 않았어요. 사진 인식과 제품 글은 기본 틀로 채워요.');
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
   if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):'')+carefulNote(list)+dirNote());
-  if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
+  if(on&&(genMode()==='base'||genMode()==='comp')&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
     $('#onNo').onclick=()=>{veil.hidden=true;};$('#onGo').onclick=()=>runOne(true);
@@ -2785,7 +3009,7 @@ async function runOne(go){
   if(ctl.signal.aborted){veil.hidden=true;toast('멈췄어요.');return;}
   const bad=tErr||((imgRes&&imgRes.stopped&&imgRes.stopped!=='멈췄어요.')?imgRes.stopped:'');
   if(bad){const m=$('#oMsg');if(m){m.className='msg err';m.textContent=bad;}const b=$('#oStop');if(b){b.textContent='닫기';b.onclick=()=>{veil.hidden=true;};}return;}
-  if(genMode()==='base'&&!baseReady()&&(hasPhoto(S.base)||candList().length)){   // 기준 사진은 사장님이 골라 확정해야 해서 여기서 멈춰요
+  if((genMode()==='base'||genMode()==='comp')&&!baseReady()&&(hasPhoto(S.base)||candList().length)){   // 기준 사진은 사장님이 골라 확정해야 해서 여기서 멈춰요
     veil.hidden=true;UI.open.add('p3');setTab('edit');renderSide();
     toast('① 기준 설치 사진 후보를 만들었어요. 3단계에서 실물과 가장 같은 후보의 \'이 후보로 확정\'을 누른 뒤 \'한 번에 만들기\'를 한 번 더 누르면 나머지 문 색상을 만들어요.',9000);
     const b=$('[data-pk="base"]',side);if(b)b.scrollIntoView({block:'center'});return;
@@ -2799,7 +3023,7 @@ async function runOne(go){
 // 새 제품 사진으로 바꿀 때: 이전 사진으로 만든 이미지(구글·AI로 만든 것)와 다른 각도 사진을 지워요. 직접 넣은 실제 사진은 남겨요.
 function clearMade(){
   let made=0,extra=0,kept=0;
-  const wipe=path=>{const p=getP(path);if(!hasPhoto(p))return;if(p.ai){setP(path,null);made++;}else kept++;};
+  const wipe=path=>{const p=getP(path);if(!hasPhoto(p))return;if(p.ai||p.real){setP(path,null);made++;}else kept++;};
   wipe('hero.photo');wipe('concept.photo');wipe('sheetImg');
   if(hasPhoto(S.base)){S.base=null;made++;}S.baseOk=false;   // 기준 사진과 후보도 옛 제품 것이라 지워요
   made+=candList().length;S.baseCands=[];
@@ -2882,6 +3106,20 @@ const ACT={
   gStop(){if(G.ctl)G.ctl.abort();},
   gtest(){const l=gList(),j=l.find(x=>x.kind==='base')||l.find(x=>x.kind==='sheet')||l.find(x=>x.kind==='color')||l[0];if(j)gAsk([j]);else gMsg('만들 빈 칸이 없어요.','err');},
   gone(b){regen(jobs()[+b.dataset.i]);},
+  async cutprev(){
+    const box=$('#cutPrev',side);if(box)box.innerHTML='<p class="cost">오려 내는 중…</p>';
+    try{const cut=await getCutout();const u=cut.cv.toDataURL('image/png');if(box)box.innerHTML='<div class="cutbox"><img alt="오려 낸 제품" src="'+u+'"></div><p class="cost">회색 바탕 위에 올린 모습이에요. 제품 둘레에 흰 테두리가 있거나 잘린 곳이 없는지 보세요. 틀리면 배경을 뺀 PNG 사진을 1단계에 넣어 주세요. (레버가 향한 쪽: '+(cut.dir==='R'?'오른쪽':'왼쪽')+')</p>';}
+    catch(e){if(box)box.innerHTML='<p class="msg err" style="display:block">'+esc(gErr(e))+'</p>';}
+  },
+  async recompall(){
+    if(G.busy||oneBusy)return;G.busy=true;gMsg('다시 합성하는 중이에요…');
+    try{const n=await recompAll();G.busy=false;renderSide();refresh();toast(n?'모든 합성 칸('+n+'장)을 다시 합성했어요. 구글 요금은 들지 않았어요.':'다시 합성할 칸이 없어요(합성 사진이 아직 없어요).',3200);}
+    catch(e){G.busy=false;renderSide();toast(gErr(e),4200);}
+  },
+  async recomp1(b){
+    const k=b.dataset.k,i=/^colors\.items\.(\d+)\./.exec(k);if(!i||G.busy)return;
+    try{if(await recompPath(k,S.colors.items[+i[1]].flip?'R':'L')){renderSide();refresh();toast('다시 합성했어요(무료).',2200);}}catch(e){toast(gErr(e),4200);}
+  },
   acceptchk(b){const k=b.dataset.k,p=getP(k);if(!p)return;p.chk={ok:true,issues:[],manual:true};clearHold(k);renderSide();refresh();toast('이 칸은 사장님이 확인한 걸로 표시했어요.',2200);},
   capuse(b){const c=CAPS.find(x=>x.id===b.dataset.id);if(!c)return;const Z=S.size;Z.shape=c.shape;Z.shapeSet='user';Z.cap=c.cap||'';Z.capW=c.capW||'';Z.capH=c.capH||'';Z.capPreset=c.id;renderSide();refresh();toast('받침 "'+capTitle(c)+'"을 골랐어요. 모양과 치수가 고정돼요.',2600);},
   capunlock(){delete S.size.capPreset;renderSide();refresh();},
@@ -2962,7 +3200,7 @@ const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
   useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},lvLock(t){if(S.lvDir){S.lvDir.locked=t.checked;S.lvDir.auto=!t.checked;}renderSide();refresh();},flipOk(t){S.flipOk=t.checked;persist();},useSlow(t){UI.careful=t.checked;try{localStorage.setItem('wj-slow',t.checked?'1':'0');}catch(e){}renderSide();},useClear(t){UI.clearOnNew=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
-  colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
+  colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.',comp:'실물 합성으로 바꿨어요. 먼저 기준 사진 후보(빈 문 + 실제 제품)를 만들어 모양을 확인하세요. 첫 화면·소개 사진도 실제 제품 사진으로 만들어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
 };
 side.addEventListener('change',e=>{
@@ -2986,6 +3224,7 @@ side.addEventListener('input',e=>{
   else if(t.id==='cKey'){C.key=t.value;C.ok=false;C.bad=false;saveCKey();chip();}
   else if(t.id==='cModel')C.model=t.value;
   else if(t.id==='capUsd')G.capUsd=t.value;
+  else if(d.comp!==undefined){if(!S.comp)S.comp={};S.comp[d.comp]=Number(t.value);const bv=$('[data-compv="'+d.comp+'"]',side);if(bv)bv.textContent=t.value;persist();}
 });
 function syncPrompts(){const J=jobs();$$('.job pre',side).forEach(p=>{const j=J[+p.dataset.j];if(j)p.textContent=promptOf(j);});}
 ['dragover','dragenter'].forEach(ev=>side.addEventListener(ev,e=>{const t=e.target.closest('.thumb');if(t&&t.dataset.drop){e.preventDefault();t.classList.add('drag');}}));
@@ -3043,7 +3282,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
