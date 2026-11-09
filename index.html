@@ -309,7 +309,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 84</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 85</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -365,6 +365,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v85 (2026-11-09): 직사각형 받침(카바)이 이미지 AI에게 전달되게 — 크기 안내의 받침 모양·가로세로 숫자를 지시문·검수에 넣고, '받침 원판' 말투를 없애고, 클로드가 짚은 받침 부분을 크게 오려 참고 사진으로 같이 보냄 */
 /* v84 (2026-11-09): 총 길이는 항상 '캡 중심(축)에서 레버 끝까지'가 기본 — 예전 버전에서 저장된 기준값(뜻이 바뀐 값)은 무시하고 직접 고른 것만 따름 · 이름을 '총 길이(캡 중심~끝)'로 · 치수 그림에서 총 폭·캡 세로 표시가 손잡이 끝·캡을 덮던 것을 고침 */
 /* v83 (2026-11-08): 쇼핑몰 올리기 창에 '스마트스토어 입력 시트' — 판매가·할인가·재고·옵션(제품마다)과 카테고리·브랜드·제조사·원산지·배송·반품/교환·A/S(스토어 공통, 한 번만)를 앱에 적어 두면 항목마다 복사하고 안내 글에도 들어감 · '왜 자동으로 안 올라가요?' 분석 칸 */
 /* v82 (2026-11-08): 총 길이의 기본을 '손잡이만' = 캡 중심(그림의 둥근 축 표시)에서 레버 끝까지로 바로잡음 · '캡 가장자리부터' '캡까지 포함'으로 바꿀 수도 있음 */
@@ -377,7 +378,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=84,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=85,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -420,11 +421,11 @@ const LITE=['화이트 도어','월넛 우드 도어','라이트 그레이 도�
 const mkColor=([label,scene,door,view,flip])=>({label,scene,door,view,flip:!!flip,photo:null});
 const CAMS={
   f:'문 앞쪽에서 찍은 구도. 문과 거의 마주 보되 아주 살짝만 비스듬히. 손잡이 전체가 한눈에 보이게',
-  l:'문의 왼쪽 앞에서 약 30도 비스듬히 찍은 구도. 받침 원판의 두께와 레버가 문에서 떠 있는 입체감, 문 표면이 안쪽으로 깊어지는 원근이 느껴지게. 손잡이 전체가 화면 안에 들어오게',
-  c:'문 앞에서 손잡이에 가까이 다가가 찍은 구도(가까운 거리). 레버 끝부터 받침 원판까지 손잡이 전체가 한 화면에 다 들어오고, 초점은 받침과 레버에, 문 배경은 살짝 흐리게',
+  l:'문의 왼쪽 앞에서 약 30도 비스듬히 찍은 구도. 받침의 두께와 레버가 문에서 떠 있는 입체감, 문 표면이 안쪽으로 깊어지는 원근이 느껴지게. 손잡이 전체가 화면 안에 들어오게',
+  c:'문 앞에서 손잡이에 가까이 다가가 찍은 구도(가까운 거리). 레버 끝부터 받침까지 손잡이 전체가 한 화면에 다 들어오고, 초점은 받침과 레버에, 문 배경은 살짝 흐리게',
   s:'문의 오른쪽 옆에서 낮은 각도로 비스듬히 찍은 구도. 레버의 옆 두께와 받침이 문에서 튀어나온 높이가 보이고 문 표면이 길게 이어지게. 손잡이 전체가 화면 안에 들어오게'};
 const CAM_NAME={f:'정면',l:'왼쪽 앞에서 비스듬히',c:'가까이 (손잡이 전체가 보이게)',s:'옆면(낮은 각도)'};
-const FRAME='구도 규칙(가장 중요): 손잡이 전체, 곧 레버 끝부터 받침 원판까지가 화면 안에 완전히 보여야 합니다. 레버 끝이나 받침 원판이 화면 가장자리에서 잘리거나 화면 밖으로 나가면 안 되고, 손잡이 둘레로 문 표면 여백이 사방에 화면 폭의 10% 이상 남아야 합니다. 손잡이는 화면 가운데 부근에 두고 화면 폭의 약 65~75%를 차지하게 하세요.';
+const FRAME='구도 규칙(가장 중요): 손잡이 전체, 곧 레버 끝부터 받침까지가 화면 안에 완전히 보여야 합니다. 레버 끝이나 받침이 화면 가장자리에서 잘리거나 화면 밖으로 나가면 안 되고, 손잡이 둘레로 문 표면 여백이 사방에 화면 폭의 10% 이상 남아야 합니다. 손잡이는 화면 가운데 부근에 두고 화면 폭의 약 65~75%를 차지하게 하세요.';
 const LEVERDIR=d=>'레버 방향 규칙(가장 중요): 받침에서 레버가 화면 '+d+'으로 거의 수평(문 바닥과 나란히, 아주 살짝 아래로 처진 정도)으로 뻗어야 합니다. 위로 솟거나 아래로 꺾이거나 비스듬히 서 있으면 안 되고, 레버 끝이 향한 쪽을 좌우로 뒤집으면(거울상) 안 됩니다.';
 const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 보이게',panel:'몰딩으로 구획된 문틀 패널의 선이 보이게',seam:'문 가장자리와 이음선이 화면 한쪽 끝에 살짝 보이게'};
 
@@ -826,6 +827,7 @@ function promptOf(j){
   const base='첨부한 사진 속 "'+(S.name||'이 제품')+'" 제품이 이 작업의 정답(기준)입니다. 이 제품을 그대로 옮겨서 이미지를 만들어 주세요.\n'
     +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 흔한 손잡이처럼 단순하게 바꾸거나 비슷한 다른 손잡이를 새로 만들지 마세요. 레버의 길이·굵기·끝 모양과 윗면의 굴곡(움푹 파인 곳 포함), 레버와 받침을 잇는 목 부분, 받침의 크기·두께·테두리, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n'
     +(spec?'이 제품의 특징(사진과 함께 반드시 지킬 것):\n'+spec+'\n':'')
+    +(capLine()?'받침 정보(사장님이 직접 확인한 값이라, 위 특징 메모와 다르면 이 값이 맞습니다. 반드시 지킬 것): '+capLine()+'\n':'')
     +'글자, 로고, 워터마크는 넣지 마세요.\n';
   if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 짙은 남색~검정 스튜디오 배경에 이 제품 하나만, 가로로는 화면 가운데, 세로로는 위쪽 60% 영역의 한가운데(위에서 약 30% 높이)에 화면 폭의 70~80% 크기로(레버 끝과 받침이 모두 잘리지 않고 위·좌·우 여백이 6% 이상 남게) 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
   if(j.kind==='concept')return base+'장면: 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 어두운 남회색 스튜디오 배경에 이 제품 하나만 정중앙에 화면 폭의 65~75% 크기로(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
@@ -958,6 +960,7 @@ function baseRow(j,idx,on){                   // ① 기준 설치 사진: 실�
   return '<div class="job base'+(S.baseOk&&m?' ok':'')+'" data-pk="base"><div class="meta">'
     +'<div class="nm">① 기준 설치 사진 <span class="ratio">흰 문 · 최고급(정밀 모델·큰 크기)</span>'+(S.baseOk&&m?'<span class="done">확정</span>':'')+'</div>'
     +'<p class="hint">문 색상 칸은 모두 이 사진에서 <b>문 색만 바꿔서</b> 만들어요. 그래서 이 한 장은 비용이 더 들어도 정밀 모델·큰 크기로 후보를 여러 장 만들고, 사장님이 실물과 가장 같은 걸 골라요.</p>'
+    +capUiLine()
     +body
     +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m||cn?'후보 다시 만들기':'후보 만들기')+' ('+N+'장'+estJobs([j],null,true)+')</button>':'')
     +'<label class="chk">후보 <select data-basen="1">'+[1,2,3,4].map(n=>'<option value="'+n+'"'+(n===N?' selected':'')+'>'+n+'장</option>').join('')+'</select></label>'
@@ -1132,10 +1135,37 @@ async function baseRef(){                     // 편집 칸은 확정한 기준 
   const b=await toB64(await shrink(PH.get(S.base.id).blob,1024,.9));
   BREF={id:S.base.id,val:{imgs:[b],note:'',sig:'base:'+S.base.id}};return BREF.val;
 }
+/* 받침(카바) 부분을 크게 오려서 참고 사진으로 같이 보내요: 클로드가 받침 위치를 짚고(사진마다 한 번, 약 1센트), 프로그램이 그 부분을 크게 잘라요 */
+const PLATE_PROMPT='첨부한 사진은 방문(실내문) 손잡이 제품입니다. 문에 닿는 받침(카바) 부분 전체가 들어가는 가장 작은 사각 영역을 찾아 주세요. 레버가 받침과 만나는 목 부분은 조금 포함해도 됩니다. 좌표는 사진 전체의 폭·높이에 대한 0~1 비율로, 왼쪽 위 모서리(x0,y0)와 오른쪽 아래 모서리(x1,y1)입니다. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"found":true,"x0":0.0,"y0":0.0,"x1":0.0,"y1":0.0}\n받침이 보이지 않으면 {"found":false}.';
+let PLATE={id:'',box:null,p:null};
+async function plateFind(id){
+  try{
+    if(!(await claudeReady(1)))return null;
+    const r=await claude(PLATE_PROMPT,{max:200,images:[await shrink(PH.get(id).blob,1024,.88)]});
+    if(!r||r.found!==true)return null;
+    const x0=Number(r.x0),y0=Number(r.y0),x1=Number(r.x1),y1=Number(r.y1);
+    if(![x0,y0,x1,y1].every(isFinite)||!(x1>x0)||!(y1>y0)||x0<-.02||y0<-.02||x1>1.02||y1>1.02||(x1-x0)<.1||(y1-y0)<.1||(x1-x0)*(y1-y0)>.9)return null;   // 엉뚱한 상자는 쓰지 않아요
+    const px=(x1-x0)*.12,py=(y1-y0)*.12;
+    return {x0:clamp(x0-px,0,1),y0:clamp(y0-py,0,1),x1:clamp(x1+px,0,1),y1:clamp(y1+py,0,1)};
+  }catch(e){return null;}
+}
+async function plateBox(){
+  if(!hasPhoto(S.src))return null;
+  const id=S.src.id;if(PLATE.id!==id)PLATE={id,box:null,p:plateFind(id)};
+  const box=await PLATE.p;if(!S.src||S.src.id!==id)return null;   // 그 사이 사진이 바뀌었으면 버려요
+  PLATE.box=box;return box;
+}
+async function plateCrop(box){
+  const m=PH.get(S.src.id),bmp=await createImageBitmap(m.blob),sx=box.x0*m.w,sy=box.y0*m.h,sw=(box.x1-box.x0)*m.w,sh=(box.y1-box.y0)*m.h;
+  const k=clamp(768/Math.max(sw,sh),.5,3),c=document.createElement('canvas');   // 작으면 키우고(최대 3배) 너무 크면 줄여요
+  c.width=Math.max(1,Math.round(sw*k));c.height=Math.max(1,Math.round(sh*k));
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.imageSmoothingQuality='high';g.drawImage(bmp,sx,sy,sw,sh,0,0,c.width,c.height);
+  return toB64(await new Promise(r=>c.toBlob(r,'image/jpeg',.9)));
+}
 async function buildRefs(){
   if(!hasPhoto(S.src))throw {status:-1,message:'1단계의 제품 사진을 먼저 넣어 주세요.'};
-  const ex=(S.extra||[]).filter(hasPhoto),di=detailIdx();
-  const sig=[S.src.id,ex.map(p=>p.id).join(','),di.map(i=>{const it=S.zoom.items[i];return [it.fx,it.fy,it.z].join(':');}).join(',')].join('|');
+  const ex=(S.extra||[]).filter(hasPhoto),di=detailIdx(),pb=await plateBox();
+  const sig=[S.src.id,ex.map(p=>p.id).join(','),di.map(i=>{const it=S.zoom.items[i];return [it.fx,it.fy,it.z].join(':');}).join(','),pb?[pb.x0,pb.y0,pb.x1,pb.y1].map(v=>v.toFixed(3)).join(','):'-'].join('|');
   if(REF.sig===sig&&REF.val)return REF.val;
   const imgs=[await toB64(await shrink(PH.get(S.src.id).blob,1024,.85))],notes=['첨부 사진 1: 실제 제품 전체 사진입니다(이것이 정답 기준).'];
   for(const p of ex)imgs.push(await toB64(await shrink(PH.get(p.id).blob,1024,.85)));
@@ -1143,6 +1173,7 @@ async function buildRefs(){
   const from=imgs.length+1;
   for(const i of di)imgs.push(await cropRef(S.zoom.items[i]));
   if(di.length)notes.push('첨부 사진 '+from+(di.length>1?'~'+(from+di.length-1):'')+': 같은 제품의 확대 사진입니다('+di.map(i=>i?'레버와 목이 만나는 부분':'레버 끝 부분').join(' / ')+'). 이 부분의 윤곽, 움푹 파인 곳, 굴곡, 이음매를 그대로 따라 그리세요.');
+  if(pb){imgs.push(await plateCrop(pb));notes.push('첨부 사진 '+imgs.length+': 같은 제품의 받침(카바) 부분을 크게 오려 낸 사진입니다. 받침의 모양(가로·세로 비율, 모서리 모양)을 이 사진 그대로 따라 그리세요. 정사각형이나 원형으로 바꾸지 마세요.');}
   REF={sig,val:{imgs,note:'\n'+notes.join('\n'),sig}};return REF.val;
 }
 async function gCheck(){
@@ -1445,10 +1476,11 @@ const chkPrompt=(kind,dirTxt)=>{const sp=String(S.spec||'').trim().slice(0,900);
   return '첫 번째 사진은 실제 제품(원본)이고, 두 번째 사진은 AI가 만든 연출 사진입니다. 두 번째 사진 속 손잡이가 원본과 같은 제품으로 보이는지 꼼꼼히 비교하세요.'
   +(kind==='sheet'?' 두 번째 사진은 여러 칸(문 색상별)을 이어 붙인 시트입니다. 모든 칸의 손잡이를 각각 원본과 비교하고, 한 칸이라도 다르거나 잘려 있으면 ok를 false로 하며 issues에 몇 번째 칸인지(왼쪽에서 오른쪽, 위에서 아래 순서)를 적으세요. 칸 구분선이 칸 안쪽을 심하게 침범해 칸이 잘려 보여도 false입니다.':'')
   +(sp?'\n원본 제품의 특징 메모(이 특징이 빠졌거나 바뀌었으면 다른 제품입니다):\n'+sp+'\n':' ')
+  +(capLine()?'\n받침 정보(사장님이 확인한 값): '+capLine()+' 두 번째 사진의 받침이 이 모양·가로세로 비율과 눈에 띄게 다르면(원근 때문에 비스듬히 보여서 생기는 작은 차이는 감안하세요) ok를 false로 하고 issues에 "받침 모양이 달라요"와 어떻게 다른지(정사각형·원형·세로로 긴 모양 등)를 적으세요.\n':'')
   +(kind==='hero'?' 이 사진은 세로 4:5 첫 화면용입니다. 제품이 화면 위쪽 약 60% 안에 가로로 가운데쯤 모두 들어와 있고 아래 40%는 어둡게 비어 있어야 합니다. 제품이 아래로 내려와 아래쪽 글자 자리를 침범하거나 한쪽으로 크게 치우쳐 있으면 ok를 false로 하고 issues에 "제품 위치가 치우쳤어요"를 넣으세요.':'')
   +(kind==='concept'?' 이 사진은 가로 3:2 소개용입니다. 제품이 가운데에 전체가 보이게 있어야 하고, 한쪽으로 치우치거나 잘리면 ok를 false로 하세요.':'')
   +(kind==='sheet'?'':' 레버 방향: 원본에서 받침 기준으로 레버 끝이 어느 쪽(왼쪽/오른쪽)에 있는지 보고, 두 번째 사진에서 좌우가 뒤집혀(거울상) 있으면 ok를 false로 하고 issues에 "레버 방향이 반대예요"를 넣으세요. 연출 사진이라 각도가 조금 달라지는 것은 괜찮습니다.'+(dirTxt?' 이 사진에서 레버 끝은 받침에서 화면 '+dirTxt+'을 향해야 합니다.':''))
-  +' 비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(원판)의 크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 또, 두 번째 사진에서 손잡이(레버 끝부터 받침 원판까지)가 화면 가장자리에서 잘려 있거나 일부가 화면 밖으로 나가 있으면 ok를 false로 하고 issues에 "손잡이가 화면 밖으로 잘렸어요"를 넣으세요(손이 가리는 것은 잘린 것이 아닙니다). 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
+  +' 비교할 것: 레버의 길이·굵기·끝 모양, 레버 윗면의 굴곡이나 움푹 파인 곳(원본에 있는데 매끈하게 사라졌는지), 레버와 받침을 잇는 목 부분, 받침(카바)의 모양(원형·정사각형·직사각형)과 가로세로 비율·크기·두께·테두리·안쪽 링, 금속 마감, 나사 구멍 같은 작은 부분. 각도·조명·배경·문 색 차이는 무시하세요. 또, 두 번째 사진에서 손잡이(레버 끝부터 받침까지)가 화면 가장자리에서 잘려 있거나 일부가 화면 밖으로 나가 있으면 ok를 false로 하고 issues에 "손잡이가 화면 밖으로 잘렸어요"를 넣으세요(손이 가리는 것은 잘린 것이 아닙니다). 이 제품만의 알아볼 수 있는 특징이 달라졌거나 흔한 다른 손잡이처럼 단순해졌다면 ok를 false로 하세요. 사소한 차이만 있을 때는 ok를 true로 하세요. 아래 JSON 하나만 답하세요(다른 글 없이).\n{"ok":true,"issues":["다른 점을 짧은 한국어 문장으로, 최대 3개. 같으면 빈 목록"]}';};
 let chkModel='claude-sonnet-5-5';   // 검수는 사진을 더 정확히 보는 모델로(없으면 기본 모델로 물러나요)
 async function checkOne(j,signal){
   const p=getP(j.key),m=p&&p.id&&PH.get(p.id);if(!m||!hasPhoto(S.src))return false;
@@ -1472,7 +1504,7 @@ async function runChecks(list,signal){
 }
 
 /* 제품 특징 메모: 클로드가 사진을 보고, 이미지 AI가 틀리기 쉬운 이 제품만의 모양을 글로 적어요(구글에 같이 보내요) */
-const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(원판)의 모양(위에서 봤을 때 둥근 원판인지, 네모난 직사각형·정사각형인지 꼭 구분)·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(원판) 모양 한 문장","rosetteShape":"받침을 위에서 본 모양. 둥글면 round, 가로·세로가 같은 정사각형이면 square, 직사각형이면 rect, 사각형인데 모서리가 눈에 띄게 둥글면 rrect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나만","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
+const SPEC_PROMPT='첨부한 사진은 실제 방문(실내문) 손잡이 제품입니다. 이미지 AI가 이 제품을 정확히 다시 그릴 수 있도록, 사진에 실제로 보이는 모양만 글로 적어 주세요. 보이지 않는 것은 추측하지 말고, 재질 이름이나 사양 수치는 쓰지 마세요.\n적을 것: ① 레버 전체 모양(굵기가 어디서 어떻게 변하는지, 끝 모양, 윗면이나 옆면의 굴곡·움푹 파인 곳·홈의 위치) ② 레버가 받침과 만나는 목 부분의 모양 ③ 받침(카바)의 모양(위에서 봤을 때 둥근 원판인지, 네모난 직사각형·정사각형인지 꼭 구분하고, 직사각형이면 가로와 세로 중 어느 쪽이 얼마나 긴지 대략의 비율도)·두께·테두리·안쪽 링 ④ 뒤쪽에 보이는 나사·기둥 ⑤ 금속 마감과 색 느낌 ⑥ 레버 길이와 받침 지름의 대략적인 비율.\n그리고 이미지 AI가 흔히 틀리게 그리는 부분을 최대 3개 적어 주세요(예: 움푹 파인 곳을 없애고 매끈한 막대로 그림).\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"kind":"제품 종류를 짧게(예: 레버형 방문 손잡이)","lever":"레버 모양 한 문장","rosette":"받침(카바) 모양 한 문장(직사각형이면 어느 쪽이 얼마나 긴지도)","rosetteShape":"받침을 위에서 본 모양. 둥글면 round, 가로·세로가 같은 정사각형이면 square, 직사각형이면 rect, 사각형인데 모서리가 눈에 띄게 둥글면 rrect, 타원·육각 등 그 밖은 other, 사진으로 알 수 없으면 unknown 중 하나만","finish":"금속 마감과 색 한 문장","features":["이 제품만의 눈에 띄는 특징을 짧게, 최대 4개"],"spec":"쉬운 한국어로 4~7문장","never":["이렇게 그리면 틀려요 한 문장"]}';
 async function writeSpec(signal,keep){   // keep: 사장님이 직접 적은 특징 메모는 덮어쓰지 않아요
   if(!hasPhoto(S.src))throw {code:'unavailable'};
   const r=await claude(SPEC_PROMPT,{signal,max:900,images:[await shrink(PH.get(S.src.id).blob,1024,.88)]});
@@ -1501,6 +1533,29 @@ function capKnown(){   // 지금 제품 사진에서 알아본 캡 모양(없으
   if(S.capShape&&S.capShape.id===id)return S.capShape.shape||'';
   if(S.recog&&S.recog.id===id&&S.recog.shape)return S.recog.shape;   // 버전 71에서 인식한 작업
   return '';
+}
+function capInfo(){   // 받침(카바) 모양·크기 정보. 사장님이 고르거나 클로드가 알아본 모양일 때만 써요(확인 안 된 기본값 '원형'은 쓰지 않아요)
+  const Z=S.size||{};let sh=(Z.shapeSet==='user'||Z.shapeSet==='auto')?Z.shape:'';
+  if(CAP_SHAPES.indexOf(sh)<0)sh=capKnown();
+  if(CAP_SHAPES.indexOf(sh)<0)return null;
+  const n=v=>{const x=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,''));return x>0&&isFinite(x)?x:0;};
+  const d=n(Z.cap),w=n(Z.capW),h=n(Z.capH),f=v=>String(Math.round(v*10)/10);let t='';
+  if(sh==='round')t='둥근 원판(원형)이고'+(d?' 지름이 약 '+f(d)+'mm입니다':'입니다')+'. 사각형으로 바꾸지 마세요.';
+  else if(sh==='square')t='정사각형이고'+(w?' 한 변이 약 '+f(w)+'mm입니다':'입니다')+'. 직사각형이나 원형으로 바꾸지 마세요.';
+  else{
+    const nm=sh==='rrect'?'모서리가 둥근 직사각형':'직사각형';
+    if(w&&h){const r=w/h;t=nm+'이고, 레버를 가로로 놓고 정면에서 봤을 때 가로(좌우) 약 '+f(w)+'mm × 세로(위아래) 약 '+f(h)+'mm입니다(가로:세로 ≈ '+(Math.round(r*100)/100)+' : 1, '+(r>1.08?'가로로 긴 모양':r<.92?'세로로 긴 모양':'거의 정사각형')+'). 사진이 비스듬해 보여도 실제 모양은 이 수치입니다. 정사각형이나 원형으로 바꾸지 마세요.';}
+    else t=nm+'입니다(정사각형·원형이 아님). 가로와 세로 길이가 다른 모양을 사진 그대로 유지하세요.';
+  }
+  return {shape:sh,text:t,w:w,h:h,d:d};
+}
+const capLine=()=>{const c=capInfo();return c?'받침(카바)은 '+c.text:'';};
+function capUiLine(){   // 기준 설치 사진 칸: 어떤 받침 정보가 AI에게 가는지 보여 줘요
+  const c=capInfo();
+  if(!c)return '<p class="hint" style="color:var(--bad)">⚠ 받침(캡) 모양을 아직 정하지 않았어요. 정하지 않으면 AI가 받침 모양을 마음대로 바꿀 수 있어요. 크기 안내의 <b>캡 모양</b>에서 골라 주세요.</p>';
+  const nm=CAP_NAMES[c.shape],dims=c.shape==='round'?(c.d?' · 지름 '+c.d+'mm':''):c.shape==='square'?(c.w?' · 한 변 '+c.w+'mm':''):(c.w&&c.h?' · 가로 '+c.w+' × 세로 '+c.h+'mm':'');
+  const miss=c.shape==='round'?!c.d:c.shape==='square'?!c.w:!(c.w&&c.h);
+  return '<p class="hint">받침 정보(지시문과 검수에 같이 보내요): <b>'+nm+dims+'</b>'+(miss?' <span style="color:var(--bad)">· 치수를 적으면 비율까지 지켜요</span>':'')+'. 클로드를 쓸 수 있으면 받침 부분을 크게 오려서 참고 사진으로도 같이 보내요.</p>';
 }
 function applyCapShape(sh,force){
   if(CAP_SHAPES.indexOf(sh)<0)return false;
@@ -2758,6 +2813,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
