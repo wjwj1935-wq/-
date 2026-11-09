@@ -112,6 +112,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .job .nm{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .job .ratio{font-size:12px;font-weight:700;color:var(--mute);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
 .job .done{font-size:12px;color:var(--ok);font-weight:700}
+.capchips{gap:6px}.cchip{display:inline-flex;align-items:center;gap:2px}.cchip .ib{width:26px;height:26px}
 .job details{grid-column:1/-1}
 .job.base{grid-template-columns:1fr;border:2px solid var(--accent,#2b59c3)}
 .job.base.ok{border-color:var(--ok)}
@@ -309,7 +310,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 86</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 87</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -365,6 +366,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v87 (2026-11-09): 받침 목록(원형·직사각·정사각 규격을 저장해 고르면 잠김) · 레버 방향 잠금과 '좌우 뒤집기' · 중심~레버 끝이 받침 가로의 몇 배인지 지시문·검수에 · '바뀌면 안 되는 것' 고정 메모 */
 /* v86 (2026-11-09): 천천히 확실하게 만들기 — 한 장씩 보내고, 칸마다 검수해서 합격할 때까지 최대 4번(같은 지시→지적한 점을 넣어서→정밀 모델→단순한 구도), 한도·구글 오류는 그 칸만 기다렸다 다시, 끝까지 안 되면 '보류' 칸(이유 저장), 최대 요금 상한, 저장 전 최종 점검표 */
 /* v85 (2026-11-09): 직사각형 받침(카바)이 이미지 AI에게 전달되게 — 크기 안내의 받침 모양·가로세로 숫자를 지시문·검수에 넣고, '받침 원판' 말투를 없애고, 클로드가 짚은 받침 부분을 크게 오려 참고 사진으로 같이 보냄 */
 /* v84 (2026-11-09): 총 길이는 항상 '캡 중심(축)에서 레버 끝까지'가 기본 — 예전 버전에서 저장된 기준값(뜻이 바뀐 값)은 무시하고 직접 고른 것만 따름 · 이름을 '총 길이(캡 중심~끝)'로 · 치수 그림에서 총 폭·캡 세로 표시가 손잡이 끝·캡을 덮던 것을 고침 */
@@ -379,7 +381,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=86,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=87,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -432,7 +434,7 @@ const DOORF={groove:'문 표면에 가는 세로 홈(몰딩) 선이 한두 줄 �
 
 function defaults(){
   const faq=FAQ_COMMON.map(x=>Object.assign({},x));faq.splice(TPL.faqPos,0,Object.assign({p:true},TPL.faq));
-  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'레버 작동 각도는 30도이고, 내려갔다 원위치로 돌아와요. 적은 동작으로 열려요(우리 회사 제품의 특징이에요).',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,holds:{},lvDir:null,prev:null,opPup:null,size:{len:'',wid:'',cap:'',shape:'round',capW:'',capH:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},
+  return {v:3,name:'메탈 방문 손잡이',sellName:STD_NAME,memo:'레버 작동 각도는 30도이고, 내려갔다 원위치로 돌아와요. 적은 동작으로 열려요(우리 회사 제품의 특징이에요).',src:null,spec:'',extra:[null,null],sheetImg:null,base:null,baseOk:false,baseCands:[],baseN:3,holds:{},fixed:'',flipOk:false,lvDir:null,prev:null,opPup:null,size:{len:'',wid:'',cap:'',shape:'round',capW:'',capH:'',ref:'card',extra:[],note:'※ 그림은 치수 위치를 보여 주는 도식이에요(실제 모양과 달라요). 치수는 측정 방법에 따라 조금 다를 수 있어요.'},
   hero:Object.assign({photo:null},TPL.hero),
   concept:Object.assign({eyebrow:'CONCEPT',photo:null},TPL.concept),
   zoom:{eyebrow:'ZOOM',title:'중요한 부분, 크게 확대해서 보세요',body:'올려 주신 제품 사진을 그대로 확대한 컷이에요.\n하나하나 꼼꼼히 확인해 보세요.',items:TPL.zoom.map((z,i)=>Object.assign({tag:'확대 '+(i+1),photo:null},z))},
@@ -612,6 +614,42 @@ function box(p,bw,bh,o){
 }
 const LEN_ROW={center:'총 길이(캡 중심~끝)',lever:'총 길이(캡 가장자리~끝)',full:'총 길이(캡 포함)'},LEN_PILL={center:'총 길이(캡 중심~끝) ',lever:'총 길이(캡 가장자리~끝) ',full:'총 길이(캡 포함) '},lenBase=z=>z&&z.baseSet==='user'&&z.base==='lever'?'lever':z&&z.baseSet==='user'&&z.base==='full'?'full':'center';   // 총 길이 기준: 캡 중심(축)에서 레버 끝까지(기본) · 캡 가장자리부터 · 캡까지 포함. 저장된 기준은 사장님이 직접 골랐을 때(baseSet='user')만 따른다 — 예전 버전에서 저장된 값은 뜻이 달라서 무시해요
 const CAP_SHAPES=['round','square','rect','rrect'],CAP_NAMES={round:'원형',square:'정사각형',rect:'직사각형',rrect:'모서리가 둥근 사각형'};
+/* ===== 받침 목록 (v87): 원형·직사각·정사각 받침 규격을 한 번 저장해 두고 제품마다 골라 써요(고르면 모양·치수가 잠겨요) ===== */
+const CAPKEY='wj-caps';
+let CAPS=[];
+try{const a=JSON.parse(localStorage.getItem(CAPKEY)||'[]');if(Array.isArray(a))CAPS=a.filter(c=>c&&typeof c.id==='string'&&CAP_SHAPES.indexOf(c.shape)>=0).slice(0,40);}catch(e){CAPS=[];}
+const saveCaps=()=>{try{localStorage.setItem(CAPKEY,JSON.stringify(CAPS));}catch(e){}};
+const mmv=v=>{const x=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,''));return x>0&&isFinite(x)?x:0;};
+const capDimText=c=>c.shape==='round'?'지름 '+c.cap+'mm':c.shape==='square'?'한 변 '+c.capW+'mm':'가로 '+c.capW+' × 세로 '+c.capH+'mm';
+const capTitle=c=>(c.name&&String(c.name).trim())||(CAP_NAMES[c.shape]+' '+capDimText(c));
+function capNow(){   // 지금 크기 안내에 적힌 받침(치수가 모두 있어야 저장할 수 있어요)
+  const Z=S.size||{},sh=CAP_SHAPES.indexOf(Z.shape)>=0?Z.shape:'round';
+  if(sh==='round'){const d=mmv(Z.cap);return d?{shape:sh,cap:String(d),capW:'',capH:''}:null;}
+  if(sh==='square'){const w=mmv(Z.capW);return w?{shape:sh,cap:'',capW:String(w),capH:''}:null;}
+  const w=mmv(Z.capW),h=mmv(Z.capH);return w&&h?{shape:sh,cap:'',capW:String(w),capH:String(h)}:null;
+}
+const capPreset=()=>{const id=S.size&&S.size.capPreset;return id?(CAPS.find(c=>c.id===id)||null):null;};
+const capLocked=()=>{const c=capPreset(),Z=S.size;if(!c||Z.shape!==c.shape)return false;return c.shape==='round'?mmv(Z.cap)===mmv(c.cap):c.shape==='square'?mmv(Z.capW)===mmv(c.capW):(mmv(Z.capW)===mmv(c.capW)&&mmv(Z.capH)===mmv(c.capH));};   // 그 모양에 쓰는 치수만 비교해요
+function capCatalog(){
+  const cur=capPreset(),lk=capLocked(),now=capNow();
+  const chips=CAPS.map(c=>{const on=cur&&cur.id===c.id;return '<span class="cchip"><button type="button" class="btn sm'+(on?' primary':'')+'" data-act="capuse" data-id="'+esc(c.id)+'" title="'+esc(capTitle(c))+'">'+(on&&lk?'🔒 ':'')+esc(capTitle(c))+'</button><button type="button" class="ib" data-act="capdel" data-id="'+esc(c.id)+'" aria-label="목록에서 지우기">✕</button></span>';}).join('');
+  return '<div class="blk"><h3>내 받침 목록 (한 번 저장해 두고 제품마다 골라 써요)</h3>'
+    +(CAPS.length?'<div class="acts capchips">'+chips+'</div>':'<p class="hint">아직 저장한 받침이 없어요. 아래에서 받침 모양과 치수를 적고 \'목록에 저장\'을 누르면, 다음 제품부터는 목록에서 고르기만 하면 돼요.</p>')
+    +(lk?'<p class="hint">🔒 <b>'+esc(capTitle(cur))+'</b>로 고정됐어요. 이 값이 이미지 지시문·검수·치수 그림에 같이 쓰여요. 바꾸려면 \'고정 풀기\'를 누르세요.</p><div class="acts"><button class="btn sm" type="button" data-act="capunlock">고정 풀기</button></div>'
+      :'<div class="acts"><input type="text" id="capName" placeholder="이름(비우면 자동) 예: 직사각 70×54" aria-label="받침 이름" style="flex:1;min-width:140px"><button class="btn sm primary" type="button" data-act="capsave">지금 받침을 목록에 저장</button></div><p class="cost">아래에서 모양을 고르고 치수를 모두 적은 뒤 누르세요.</p>')
+    +'</div>';
+}
+/* ===== 레버 길이 비율 · 고정 메모 (v87) ===== */
+function reachInfo(){   // 받침 중심에서 레버 끝까지의 거리와, 받침 가로(레버가 뻗는 방향) 길이
+  const Z=S.size||{},L=mmv(Z.len),ci=capInfo();if(!L||!ci)return null;
+  const cw=ci.shape==='round'?mmv(Z.cap):mmv(Z.capW);if(!cw)return null;
+  const b=lenBase(Z),reach=b==='lever'?L+cw/2:b==='full'?L-cw/2:L;
+  if(!(reach>cw*.55))return null;   // 받침보다 레버가 짧거나 숫자가 이상하면 쓰지 않아요
+  return {reach,cw,ratio:reach/cw};
+}
+const ratioLine=()=>{const r=reachInfo();if(!r)return '';const f=v=>String(Math.round(v*10)/10);return '받침 중심에서 레버 끝까지의 거리는 받침 가로 길이(레버가 뻗는 방향)의 약 '+f(r.ratio)+'배입니다(받침 '+f(r.cw)+'mm, 중심~레버 끝 '+f(r.reach)+'mm). 받침 크기를 기준으로 레버 길이를 이 비율에 맞추세요.';};
+const fixedLine=()=>String(S.fixed||'').replace(/\s+/g,' ').trim().slice(0,400);
+
 /* 크기 안내: 사장님이 적은 치수(캡 모양·캡 치수·총 길이·총 폭)로 치수 그림과 표를 그려요. 적지 않은 숫자는 절대 채우지 않아요.
    캡 모양 4가지: 원형(지름 하나) · 정사각형(한 변 하나) · 직사각형(가로·세로) · 모서리가 둥근 사각형(가로·세로). 예전 저장본은 shape가 없어서 원형으로 읽어요.
    총 길이만 적어도 그림이 나와요. 적지 않은 치수(총 폭·캡)는 점선으로 '대략의 모양'만 그리고 숫자는 쓰지 않아요.
@@ -794,7 +832,7 @@ $$('[data-zoom]').forEach(b=>b.addEventListener('click',()=>{UI.scale=b.dataset.
 /* ---------- 입력 칸 만들기 ---------- */
 const open=id=>UI.open.has(id)?' open':'';
 const fld={
-  text:(k,label,o)=>{o=o||{};const v=getP(k)||'';return '<label class="f"><span>'+label+'</span><input type="text" data-k="'+k+'" value="'+esc(v)+'" placeholder="'+esc(o.ph||'')+'"'+(o.req?' data-req="1"':'')+(o.req&&!v.trim()?' class="blank"':'')+'></label>';},
+  text:(k,label,o)=>{o=o||{};const v=getP(k)||'';return '<label class="f"><span>'+label+'</span><input type="text" data-k="'+k+'" value="'+esc(v)+'" placeholder="'+esc(o.ph||'')+'"'+(o.req?' data-req="1"':'')+(o.dis?' disabled':'')+(o.req&&!v.trim()?' class="blank"':'')+'></label>';},
   area:(k,label,o)=>{o=o||{};const v=getP(k)||'';return '<label class="f"><span>'+label+'</span><textarea data-k="'+k+'" rows="'+(o.rows||3)+'" placeholder="'+esc(o.ph||'')+'"'+(o.req?' data-req="1"':'')+(o.req&&!v.trim()?' class="blank"':'')+'>'+esc(v)+'</textarea></label>';}
 };
 function sliders(path){
@@ -831,9 +869,11 @@ function promptOf(j){
     +'제품의 모양, 무늬, 금속 마감, 색, 크기 비율, 받침 모양은 절대 바꾸거나 새로 그리지 말고 사진 그대로 유지하세요. 흔한 손잡이처럼 단순하게 바꾸거나 비슷한 다른 손잡이를 새로 만들지 마세요. 레버의 길이·굵기·끝 모양과 윗면의 굴곡(움푹 파인 곳 포함), 레버와 받침을 잇는 목 부분, 받침의 크기·두께·테두리, 나사 구멍 같은 작은 부분까지 똑같이 두고, 없는 무늬나 장식을 더하지 마세요.\n'
     +(spec?'이 제품의 특징(사진과 함께 반드시 지킬 것):\n'+spec+'\n':'')
     +(capLine()?'받침 정보(사장님이 직접 확인한 값이라, 위 특징 메모와 다르면 이 값이 맞습니다. 반드시 지킬 것): '+capLine()+'\n':'')
+    +(ratioLine()?'레버 길이 비율(사장님이 직접 확인한 값. 반드시 지킬 것): '+ratioLine()+'\n':'')
+    +(fixedLine()?'바뀌면 안 되는 것(사장님이 직접 적은 고정 사항이라 반드시 지킬 것): '+fixedLine()+'\n':'')
     +'글자, 로고, 워터마크는 넣지 마세요.\n';
-  if(j.kind==='hero')return base+'장면: 고급 제품 광고 사진. 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 짙은 남색~검정 스튜디오 배경에 이 제품 하나만, 가로로는 화면 가운데, 세로로는 위쪽 60% 영역의 한가운데(위에서 약 30% 높이)에 화면 폭의 70~80% 크기로(레버 끝과 받침이 모두 잘리지 않고 위·좌·우 여백이 6% 이상 남게) 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
-  if(j.kind==='concept')return base+'장면: 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 어두운 남회색 스튜디오 배경에 이 제품 하나만 정중앙에 화면 폭의 65~75% 크기로(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
+  if(j.kind==='hero')return base+dirLock()+'장면: 고급 제품 광고 사진. 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 짙은 남색~검정 스튜디오 배경에 이 제품 하나만, 가로로는 화면 가운데, 세로로는 위쪽 60% 영역의 한가운데(위에서 약 30% 높이)에 화면 폭의 70~80% 크기로(레버 끝과 받침이 모두 잘리지 않고 위·좌·우 여백이 6% 이상 남게) 놓고, 한쪽에서 오는 부드러운 빛이 금속의 결과 윤곽을 살려 주세요. 제품 아래에 은은한 반사. 화면 아래쪽 40%는 어둡게 비워 두세요(글자가 들어갈 자리). 다른 물체나 글자는 넣지 마세요. 비율은 세로 4:5.';
+  if(j.kind==='concept')return base+dirLock()+'장면: 첨부 사진 1 속 제품을 같은 각도·같은 모양 그대로 옮겨 쓰고(제품을 새로 그리거나 다른 각도로 돌리지 마세요), 배경과 조명만 바꾸세요. 제품을 좌우로 뒤집지 마세요(레버 끝이 사진 속에서 향한 쪽 그대로). 어두운 남회색 스튜디오 배경에 이 제품 하나만 정중앙에 화면 폭의 65~75% 크기로(전체가 잘리지 않게) 놓고, 옆에서 비추는 부드러운 빛으로 레버 끝과 받침의 금속 질감이 선명하게 보이게, 바닥에 은은한 반사. 다른 물체나 글자는 넣지 마세요. 비율은 가로 3:2.';
   const real='실제 인테리어 사진처럼 사실적으로. 손잡이 받침은 문에 단단히 붙어 있고, 받침과 레버 아래·옆으로 부드러운 접촉 그림자가 드리우게. 금속 표면에는 은은한 하이라이트, 배경은 살짝 흐리게(얕은 심도), 창가의 자연스러운 실내 빛. ';
   if(j.kind==='base'){   // 기준 설치 사진: 이 한 장을 사장님이 확인·확정하면, 나머지 문 색상은 이 사진에서 문 색만 바꿔요
     const w=S.colors.items[whiteIdx()]||{scene:'깨끗한 흰색 실내 문',view:'l',door:'groove',flip:false};
@@ -924,6 +964,7 @@ function p1(){
     +'<div class="f"><span>다른 각도 사진 (선택 · 최대 2장) — 옆면·정면 실제 사진을 더 넣을수록 AI가 실제 모양을 더 정확히 따라 그려요</span><div class="acts">'+extraCtl(0)+extraCtl(1)+'</div></div>'
     +fld.area('spec','제품 특징 메모 (구글에 같이 보내요 · 틀린 곳은 고쳐 주세요)',{rows:6,ph:'비워 두면 이미지를 만들기 직전에 클로드가 사진을 보고 적어요(클로드 키가 있을 때). 직접 적어도 돼요. 예: 레버 윗면 끝쪽에 엄지가 닿는 움푹한 곳이 있어요.'})
     +'<div class="acts"><button class="btn sm" type="button" data-act="specai">클로드가 사진 보고 적기 (약 1센트)</button></div><div class="msg" id="specMsg" aria-live="polite"></div>'
+    +fld.area('fixed','바뀌면 안 되는 것 (사장님이 직접 적는 고정 메모 · 지시문과 검수에 같이 가요)',{rows:3,ph:'예: 받침 두께 8mm / 받침과 레버 사이에 이음 없음 / 레버 끝은 둥글게 / 나사는 안 보임'})
     +fld.area('memo','아는 내용 (선택)',{rows:2,ph:'확실한 것만 적어요. 재질, 색상, 크기, 구성품 등. 적지 않은 사양은 글에 넣지 않아요.'});
 }
 function p2(){
@@ -984,7 +1025,7 @@ function p3(){
         +'<p class="cost">'+(j.i===whiteIdx()?'기준 사진을 확정하면 이 칸에 그대로 들어가요.':'기준 사진을 확정하면 만들 수 있어요.')+'</p></div></div>';
     return '<div class="job" data-pk="'+j.key+'"><div class="thumb" data-drop="'+j.key+'"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'끌어다<br>놓기')+'</div>'
       +'<div class="meta"><div class="nm">'+esc(j.name)+' <span class="ratio">'+j.ratio+'</span>'+(m?(p&&p.chk&&!p.chk.ok?'<span class="done" style="color:var(--bad)">보류</span>':'<span class="done">완료</span>'):'')+'</div>'+chkLine(p)+(!m&&holdWhy(j.key)?'<div class="cost" style="color:var(--bad);font-weight:700">⚠ 보류 · 못 만들었어요: '+esc(holdWhy(j.key))+'</div>':'')
-      +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'AI로 만들기')+'</button>':'')+(m&&p&&p.chk&&!p.chk.ok?'<button class="btn sm" type="button" data-act="acceptchk" data-k="'+j.key+'">이대로 쓸게요</button>':'')
+      +'<div class="acts">'+(on?'<button class="btn sm" type="button" data-act="gone" data-i="'+idx+'">'+(m?'다시 만들기':'AI로 만들기')+'</button>':'')+(m&&p&&p.chk&&!p.chk.ok?'<button class="btn sm" type="button" data-act="acceptchk" data-k="'+j.key+'">이대로 쓸게요</button>':'')+(m?'<button class="btn sm" type="button" data-act="flipphoto" data-k="'+j.key+'" title="레버 방향이 반대로 나왔을 때 사진을 좌우로 뒤집어요(무료)">좌우 뒤집기</button>':'')
       +(on&&m&&G.modelHi&&G.modelHi!==G.model?'<button class="btn sm" type="button" data-act="gonehi" data-i="'+idx+'">정밀 모델로 다시 (약 $'+(priceOf(G.modelHi)||'')+')</button>':'')
       +'<button class="btn sm" type="button" data-act="copyp" data-i="'+idx+'">지시문 복사</button><label class="btn sm">사진 넣기<input type="file" accept="image/*" hidden data-file="'+j.key+'" data-ai="1"></label></div>'
       +(it?'<div class="acts"><label class="chk">카메라 각도 <select data-view="'+j.i+'">'+Object.keys(CAMS).map(v=>'<option value="'+v+'"'+(it.view===v?' selected':'')+'>'+CAM_NAME[v]+'</option>').join('')+'</select></label>'
@@ -997,6 +1038,7 @@ function p3(){
     +(genMode()==='base'?'<p class="hint"><b>순서:</b> ① 기준 설치 사진 1장을 만들고(또는 문에 단 실제 사진을 넣고) ② 실물과 같은지 보고 <b>확정</b>을 누르면 ③ 나머지 문 색상은 그 사진에서 <b>문 색만</b> 바꿔서 만들어요. 확정 전에는 나머지 칸에 돈을 쓰지 않아요.'+(G.modelEdit?' 문 색 바꾸기는 값싼 모델('+esc(G.modelEdit)+')로 해요.':'')+'</p>':'')
     +(sheetOn()?'<p class="hint"><b>시트 방식:</b> 구글에 문 색상 '+sheetIdx().length+'칸이 들어간 시트 1장을 만들게 하고, 프로그램이 칸별로 자르는 건 무료예요. 칸 하나하나는 크기가 작아지고, 칸 모양이 어긋나면 잘릴 수 있어요. 먼저 <b>1장만 시험</b>(시트 1장)으로 칸 품질을 확인해 보세요. 사용 컷은 손이 나와서 따로 만들어요. 구글 AI 스튜디오 웹에서 직접 만든 시트도 \'사진 넣기\'로 넣으면 자동으로 잘라요.</p>':'')
     +'<p class="hint">문 색상 칸은 구글이 "문에 달린 사진"으로 만들어요. 손잡이 모양은 1단계 원본 그대로 두고 문 색과 카메라 각도만 바뀌어요. 처음에는 <b>1장만 시험</b>해 보고 나머지를 만드세요.</p>'
+    +lvCtl()
     +(UI.careful?'<p class="hint"><b>천천히 확실하게 모드(기본)</b>: 한 장씩 만들고 칸마다 검수해요. 합격하지 못하면 최대 '+TRIES+'번까지 다시 만들고, 그래도 안 되면 \'보류\' 칸으로 남겨 이유를 보여 줘요. 시간은 더 걸리지만 칸이 조용히 빠지지 않아요. 2단계에서 끌 수 있어요.</p>':'')
     +'<p class="cost" id="costLine">'+costLine()+'</p><p class="cost" id="gSpent">'+esc(spentText())+'</p>'
     +'<div class="acts"><button class="btn sm" type="button" data-act="gtest"'+(on?'':' disabled')+'>먼저 1장만 시험</button><button class="btn sm primary" type="button" id="gAll"'+(on?'':' disabled')+'>빈 칸 모두 만들기</button><button class="btn sm" type="button" id="gStop" hidden>멈추기</button></div>'
@@ -1023,14 +1065,14 @@ function capPicker(){   // 캡 모양을 그림 단추 4개로 고르기(고르�
   const ico={round:'<circle cx="24" cy="24" r="17"/>',square:'<rect x="9" y="9" width="30" height="30" rx="2"/>',rect:'<rect x="4" y="13" width="40" height="22" rx="2"/>',rrect:'<rect x="4" y="11" width="40" height="26" rx="10"/>'};
   const lab={round:['원형','지름 1개'],square:['정사각형','한 변 1개'],rect:['직사각형','가로·세로'],rrect:['라운드형','가로·세로']};
   return '<div class="f"><span>캡(카바) 모양 — 손잡이가 문에 닿는 받침을 위에서 본 모양을 골라 주세요</span><div class="cappick" role="radiogroup" aria-label="캡 모양">'
-    +CAP_SHAPES.map(k=>'<button type="button" class="cp'+(cur===k?' on':'')+'" role="radio" aria-checked="'+(cur===k)+'" data-act="capsel" data-v="'+k+'" title="'+esc(CAP_NAMES[k])+'"><svg viewBox="0 0 48 48" aria-hidden="true">'+ico[k]+'</svg><b>'+lab[k][0]+'</b><small>'+lab[k][1]+'</small></button>').join('')
+    +CAP_SHAPES.map(k=>'<button type="button" class="cp'+(cur===k?' on':'')+'" role="radio" aria-checked="'+(cur===k)+'" data-act="capsel" data-v="'+k+'" title="'+esc(CAP_NAMES[k])+'"'+(capLocked()?' disabled':'')+'><svg viewBox="0 0 48 48" aria-hidden="true">'+ico[k]+'</svg><b>'+lab[k][0]+'</b><small>'+lab[k][1]+'</small></button>').join('')
     +'</div></div>';
 }
 function sizePanel(){
   return subp('s-size','캡 모양 · 크기 안내 (손잡이 치수)','<div class="tip">고객이 손잡이 크기를 알 수 있게 치수를 적는 칸이에요. <b>① 캡(카바) 모양을 고르고 ② 그 모양에 맞는 치수를 적어요.</b> 도면·카탈로그에 있거나 자로 직접 잰 <b>확실한 숫자만</b> 적어 주세요(추측으로 적으면 반품 원인이 돼요). 숫자만 적으면 mm로 나와요. 총 길이만 적어도 그림이 나오고, 안 적은 치수는 점선으로 대략만 그려요(숫자는 안 나와요). 모두 비우면 이 부분은 저장 이미지에서 빠져요.</div>'
-     +capPicker()
+     +capCatalog()+capPicker()
      +capHint()+capBtn()
-     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70'})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54'}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60'}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52'}))+lenBasisCtl()+fld.text('size.len',lenLabel(),{ph:'예: 150'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})+dirCtl()
+     +((S.size.shape==='rect'||S.size.shape==='rrect')?fld.text('size.capW','캡 가로 (받침의 가로 길이, 그림에서 레버가 뻗은 방향, mm)',{ph:'예: 70',dis:capLocked()})+fld.text('size.capH','캡 세로 (받침의 세로 길이, mm)',{ph:'예: 54',dis:capLocked()}):S.size.shape==='square'?fld.text('size.capW','캡 한 변 (정사각형 받침의 한 변 길이, mm)',{ph:'예: 60',dis:capLocked()}):fld.text('size.cap','캡 지름 (받침 원판의 지름, mm)',{ph:'예: 52',dis:capLocked()}))+lenBasisCtl()+fld.text('size.len',lenLabel(),{ph:'예: 150'})+fld.text('size.wid','총 폭 (레버의 가장 넓은 폭, mm)',{ph:'예: 24'})+dirCtl()
      +'<label class="f"><span>크기 비교 물건 (같은 비율로 옆에 그려요)</span><select data-sz="ref">'+[['card','신용카드 85.6 × 54mm'],['coin','500원 동전 지름 26.5mm'],['none','그리지 않기']].map(o=>'<option value="'+o[0]+'"'+((S.size.ref||'card')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +listItems('size.extra',S.size.extra,(it,i,b)=>fld.text(b+'.l','항목 이름',{ph:'예: 문에서 튀어나온 길이'})+fld.text(b+'.v','치수',{ph:'예: 48'}),{title:(it,i)=>esc(it.l||'기타 치수'),add:'기타 치수 추가'})
      +fld.area('size.note','맨 아래 작은 글',{rows:2}));
@@ -1379,6 +1421,15 @@ async function careTile(j,cx){
     if(!c||!p||!p.chk){state='unchecked';why='검수를 하지 못했어요';break;}
     if(p.chk.ok){state='pass';why='';break;}
     why=p.chk.issues.length?p.chk.issues.join(' / '):'원본과 달라 보여요';
+    if(S.flipOk&&p.chk.issues.some(x=>/방향|거울/.test(x))){   // 좌우 공용 제품: 방향이 반대인 사진은 다시 그리지 않고 좌우로 뒤집은 뒤 다시 검수해요(무료)
+      try{
+        if(await flipPhoto(j.key)){
+          const c2=await checkOne(j,sig),p2=getP(j.key);
+          if(c2&&p2&&p2.chk&&p2.chk.ok){state='pass';why='';cx.flipN=(cx.flipN||0)+1;break;}
+          if(p2&&p2.chk&&!p2.chk.ok&&p2.chk.issues.length)why=p2.chk.issues.join(' / ');
+        }
+      }catch(e){if(e&&(e.name==='AbortError'||e.code==='cancelled'))return {state:'abort'};}
+    }
   }
   if(state==='pass'||state==='unchecked'){clearHold(j.key);return {state,why};}
   setHold(j.key,why||'만들지 못했어요');
@@ -1396,7 +1447,7 @@ function gateInfo(){
   if(dups.length)hard.push('거의 같은 그림이 있어요: '+dups.join(', ')+'.');
   const un=jobs().filter(j=>j.kind!=='base'&&j.kind!=='sheet'&&!(j.kind==='edit'&&j.i===whiteIdx())).filter(j=>{const p=getP(j.key);return p&&p.ai&&hasPhoto(p)&&!p.chk;});   // 흰 문 칸은 사장님이 확정한 기준 사진 그대로라 뺐어요
   if(un.length)soft.push('검수를 하지 못한 AI 사진 '+un.length+'장이 있어요(클로드 연결이 없거나 검수를 껐어요). 눈으로 한 번 확인하세요.');
-  if(hasPhoto(S.src)&&!(S.lvDir&&S.lvDir.id===S.src.id))soft.push('레버 방향을 아직 확인하지 않았어요(3단계 \'레버 방향\').');
+  if(hasPhoto(S.src)&&!lvLocked())soft.push('레버 방향을 아직 확인하지 않았어요(3단계 맨 위 \'레버 방향\'에서 실물과 맞는지 체크하세요).');
   return {hard,soft};
 }
 const gateLocked=()=>gateInfo().hard.length>0&&!EX.ack;
@@ -1494,7 +1545,7 @@ function gAsk(list,opts){                      // 돈이 드는 일은 한 번 �
   if(G.state!=='on'){gMsg('먼저 2단계에서 구글 키를 넣고 연결을 확인해 주세요.','err');UI.open.add('p2');renderSide();return;}
   if(!list.length){gMsg('만들 칸이 없어요. 이미 모두 채워져 있어요.','err');return;}
   if(!hasPhoto(S.src)){gMsg('1단계의 제품 사진을 먼저 넣어 주세요.','err');return;}
-  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=nImgs(list)+'장을 만들어요('+mNote(list,opts&&opts.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estJobs(list,opts&&opts.model)+(((opts&&opts.model)||G.model)!==G.modelHi?fixNote(list.length):'')+carefulNote(list,opts)+' 계속할까요?';$('#gConfirm').hidden=false;
+  G.pending=list;G.pendingOpts=opts||null;$('#gWhy').textContent=nImgs(list)+'장을 만들어요('+mNote(list,opts&&opts.model)+'). 만들 때마다 구글 요금이 들 수 있어요.'+estJobs(list,opts&&opts.model)+(((opts&&opts.model)||G.model)!==G.modelHi?fixNote(list.length):'')+carefulNote(list,opts)+dirNote()+' 계속할까요?';$('#gConfirm').hidden=false;
 }
 
 /* 색상 칸 구성: 10칸(기본) / 5칸(비용 절약) */
@@ -1618,6 +1669,8 @@ const chkPrompt=(kind,dirTxt,cx)=>{const sp=String(S.spec||'').trim().slice(0,90
   +(kind==='sheet'?' 두 번째 사진은 여러 칸(문 색상별)을 이어 붙인 시트입니다. 모든 칸의 손잡이를 각각 원본과 비교하고, 한 칸이라도 다르거나 잘려 있으면 ok를 false로 하며 issues에 몇 번째 칸인지(왼쪽에서 오른쪽, 위에서 아래 순서)를 적으세요. 칸 구분선이 칸 안쪽을 심하게 침범해 칸이 잘려 보여도 false입니다.':'')
   +(sp?'\n원본 제품의 특징 메모(이 특징이 빠졌거나 바뀌었으면 다른 제품입니다):\n'+sp+'\n':' ')
   +(capLine()?'\n받침 정보(사장님이 확인한 값): '+capLine()+' 두 번째 사진의 받침이 이 모양·가로세로 비율과 눈에 띄게 다르면(원근 때문에 비스듬히 보여서 생기는 작은 차이는 감안하세요) ok를 false로 하고 issues에 "받침 모양이 달라요"와 어떻게 다른지(정사각형·원형·세로로 긴 모양 등)를 적으세요.\n':'')
+  +(ratioLine()?'\n레버 길이 비율(사장님이 확인한 값): '+ratioLine()+' 두 번째 사진의 레버가 받침에 비해 눈에 띄게 더 짧거나 더 길면(원근 때문에 짧아 보이는 작은 차이는 감안하세요) ok를 false로 하고 issues에 "레버 길이 비율이 달라요"를 넣으세요.\n':'')
+  +(fixedLine()?'\n바뀌면 안 되는 것(사장님이 직접 적은 고정 사항): '+fixedLine()+' 두 번째 사진이 이 사항과 다르면 ok를 false로 하고 issues에 "고정 사항이 달라요"와 무엇이 다른지 적으세요.\n':'')
   +(kind==='color'?sceneChk(cx):'')+(kind==='hero'?' 이 사진은 세로 4:5 첫 화면용입니다. 제품이 화면 위쪽 약 60% 안에 가로로 가운데쯤 모두 들어와 있고 아래 40%는 어둡게 비어 있어야 합니다. 제품이 아래로 내려와 아래쪽 글자 자리를 침범하거나 한쪽으로 크게 치우쳐 있으면 ok를 false로 하고 issues에 "제품 위치가 치우쳤어요"를 넣으세요.':'')
   +(kind==='concept'?' 이 사진은 가로 3:2 소개용입니다. 제품이 가운데에 전체가 보이게 있어야 하고, 한쪽으로 치우치거나 잘리면 ok를 false로 하세요.':'')
   +(kind==='sheet'?'':' 레버 방향: 원본에서 받침 기준으로 레버 끝이 어느 쪽(왼쪽/오른쪽)에 있는지 보고, 두 번째 사진에서 좌우가 뒤집혀(거울상) 있으면 ok를 false로 하고 issues에 "레버 방향이 반대예요"를 넣으세요. 연출 사진이라 각도가 조금 달라지는 것은 괜찮습니다.'+(dirTxt?' 이 사진에서 레버 끝은 받침에서 화면 '+dirTxt+'을 향해야 합니다.':''))
@@ -1697,7 +1750,7 @@ function capUiLine(){   // 기준 설치 사진 칸: 어떤 받침 정보가 AI�
   if(!c)return '<p class="hint" style="color:var(--bad)">⚠ 받침(캡) 모양을 아직 정하지 않았어요. 정하지 않으면 AI가 받침 모양을 마음대로 바꿀 수 있어요. 크기 안내의 <b>캡 모양</b>에서 골라 주세요.</p>';
   const nm=CAP_NAMES[c.shape],dims=c.shape==='round'?(c.d?' · 지름 '+c.d+'mm':''):c.shape==='square'?(c.w?' · 한 변 '+c.w+'mm':''):(c.w&&c.h?' · 가로 '+c.w+' × 세로 '+c.h+'mm':'');
   const miss=c.shape==='round'?!c.d:c.shape==='square'?!c.w:!(c.w&&c.h);
-  return '<p class="hint">받침 정보(지시문과 검수에 같이 보내요): <b>'+nm+dims+'</b>'+(miss?' <span style="color:var(--bad)">· 치수를 적으면 비율까지 지켜요</span>':'')+'. 클로드를 쓸 수 있으면 받침 부분을 크게 오려서 참고 사진으로도 같이 보내요.</p>';
+  return '<p class="hint">받침 정보(지시문과 검수에 같이 보내요): <b>'+nm+dims+'</b>'+(miss?' <span style="color:var(--bad)">· 치수를 적으면 비율까지 지켜요</span>':'')+'. 클로드를 쓸 수 있으면 받침 부분을 크게 오려서 참고 사진으로도 같이 보내요.'+(reachInfo()?' 레버 길이 비율(받침 가로의 약 '+(Math.round(reachInfo().ratio*10)/10)+'배)과 ':' 총 길이와 받침 치수를 모두 적으면 레버 길이 비율도 알려 줘요. ')+(fixedLine()?'고정 메모도 같이 가요.':'')+'</p>';
 }
 function applyCapShape(sh,force){
   if(CAP_SHAPES.indexOf(sh)<0)return false;
@@ -1827,8 +1880,26 @@ function pickCorner(g){
   return {k:best,sz:sm};
 }
 /* 레버 방향: 사진에서 레버 끝이 받침의 왼쪽/오른쪽 어디인지 읽어서, 모든 문 색상 칸을 같은 방향으로 맞춰요(칸마다 뒤집히지 않게) */
-function setLever(dir,auto){if(!S.src)return;dir=dir==='R'?'R':'L';S.lvDir={id:S.src.id,dir,auto:!!auto};S.colors.items.forEach(it=>{it.flip=dir==='R';});}
+function setLever(dir,auto){if(!S.src)return;dir=dir==='R'?'R':'L';S.lvDir={id:S.src.id,dir,auto:!!auto,locked:!auto};S.colors.items.forEach(it=>{it.flip=dir==='R';});}
 const sideName=d=>d==='R'?'오른쪽':'왼쪽';
+const lvLocked=()=>!!(S.lvDir&&S.src&&S.lvDir.id===S.src.id&&(S.lvDir.locked||S.lvDir.auto===false));   // 사장님이 실물과 맞춰 보고 잠근 방향(직접 바꾼 값도 포함)
+const dirLock=()=>lvLocked()?'레버 방향 고정(사장님이 실물과 비교해 확인한 값): 원본 사진에서 레버 끝은 받침에서 화면 '+sideName(S.lvDir.dir)+'을 향합니다. 이 좌우 방향을 절대 바꾸거나 거울상으로 뒤집지 마세요.\n':'';
+function dirNote(){return !hasPhoto(S.src)||lvLocked()?'':' ⚠ 레버 방향(자동으로 읽은 값)을 아직 확인하지 않았어요. 취소하고 3단계 맨 위 \'레버 방향\'에서 실물과 맞는지 체크하면 방향이 반대로 나오는 일을 막아요.';}
+async function flipPhoto(key){   // 사진을 좌우로 뒤집어 다시 넣어요(컴퓨터 안에서 하는 일이라 무료). 검수 결과는 지워져요
+  const p=getP(key),m=p&&PH.get(p.id);if(!m)return false;
+  const bmp=await createImageBitmap(m.blob),c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;
+  const g=c.getContext('2d');g.translate(c.width,0);g.scale(-1,1);g.drawImage(bmp,0,0);if(bmp.close)bmp.close();
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.94));if(!blob)return false;
+  await setPhoto(key,blob,{ai:!!p.ai,fx:p.fx,fy:p.fy,z:p.z,flipped:!p.flipped});clearHold(key);return true;
+}
+function lvCtl(){   // 3단계 맨 위: 레버 방향 확인·잠금
+  if(!(S.lvDir&&S.src&&S.lvDir.id===S.src.id))return '<p class="hint">레버 방향: 1단계에 제품 사진을 넣으면 사진에서 레버 끝이 왼쪽인지 오른쪽인지 읽어요.</p>';
+  const lk=lvLocked();
+  return '<div class="blk"><h3>레버 방향 (문 색상 사진이 모두 이 방향으로 만들어져요)</h3><div class="acts"><label class="chk">사진에서 레버 끝이 <select data-lv="1" aria-label="레버 방향"><option value="L"'+(S.lvDir.dir==='L'?' selected':'')+'>왼쪽</option><option value="R"'+(S.lvDir.dir==='R'?' selected':'')+'>오른쪽</option></select>을 향해요</label>'
+    +'<label class="chk"><input type="checkbox" id="lvLock"'+(lk?' checked':'')+'> 실물 사진과 맞아요 · 방향 잠금</label></div>'
+    +(lk?'<p class="hint">🔒 방향이 잠겼어요. 지시문과 검수에 "레버 끝은 화면 '+sideName(S.lvDir.dir)+'"이 고정으로 들어가요.</p>':'<p class="msg err" style="display:block">⚠ 자동으로 읽은 값이라 틀릴 수 있어요. 1단계 실물 사진과 비교해서 맞으면 체크하세요. 방향이 반대로 나오는 문제를 막아 줘요.</p>')
+    +'<label class="chk"><input type="checkbox" id="flipOk"'+(S.flipOk?' checked':'')+'> 이 제품은 좌우 공용이에요 — 방향이 반대로 나온 사진은 AI에게 다시 시키지 않고 좌우로 뒤집어 써도 돼요(무료)</label></div>';
+}
 async function autoZoom(keepDir){
   const m=S.src&&PH.get(S.src.id);if(!m)return false;
   let P;try{P=await findParts(m.blob);}catch(e){return false;}
@@ -2684,7 +2755,7 @@ async function runOne(go){
   if(!on)why.push('⚠ 구글 키가 연결되지 않았어요. 이대로 시작하면 구글 이미지(첫 화면·소개·문 색상)는 만들지 않고 원본 사진으로만 채워요.');
   if(!cOn)why.push('⚠ 클로드 키가 연결되지 않았어요. 사진 인식과 제품 글은 기본 틀로 채워요.');
   if(dirty)why.push('이 제품 글(첫 화면·소개·확대·전용 질문)이 새 글로 바뀌어요.');
-  if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):'')+carefulNote(list));
+  if(list.length)why.push('구글로 이미지 '+nImgs(list)+'장을 만들어요('+mNote(list)+'). 요금이 들 수 있어요.'+estJobs(list)+(G.model!==G.modelHi?fixNote(list.length):'')+carefulNote(list)+dirNote());
   if(on&&genMode()==='base'&&!baseReady())why.push('문 색상은 먼저 ① 기준 설치 사진 1장만 만들고 멈춰요. 사장님이 실물과 같은지 보고 확정한 뒤에 나머지를 만들어요(그 전에는 돈을 쓰지 않아요).');
   if(why.length&&!go){                          // 돈이 들거나 글이 덮어써질 때만 한 번 물어요
     veil.hidden=false;veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="한 번에 만들기"><h2>한 번에 만들기</h2><ul class="checks">'+why.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul><div class="acts"><button class="btn" id="onNo" type="button">취소</button>'+(!on||!cOn?'<button class="btn primary" id="onKey" type="button">키 넣으러 가기</button><button class="btn" id="onGo" type="button">그래도 시작</button>':'<button class="btn primary" id="onGo" type="button">시작</button>')+'</div></div>';
@@ -2815,6 +2886,21 @@ const ACT={
   gtest(){const l=gList(),j=l.find(x=>x.kind==='base')||l.find(x=>x.kind==='sheet')||l.find(x=>x.kind==='color')||l[0];if(j)gAsk([j]);else gMsg('만들 빈 칸이 없어요.','err');},
   gone(b){regen(jobs()[+b.dataset.i]);},
   acceptchk(b){const k=b.dataset.k,p=getP(k);if(!p)return;p.chk={ok:true,issues:[],manual:true};clearHold(k);renderSide();refresh();toast('이 칸은 사장님이 확인한 걸로 표시했어요.',2200);},
+  capuse(b){const c=CAPS.find(x=>x.id===b.dataset.id);if(!c)return;const Z=S.size;Z.shape=c.shape;Z.shapeSet='user';Z.cap=c.cap||'';Z.capW=c.capW||'';Z.capH=c.capH||'';Z.capPreset=c.id;renderSide();refresh();toast('받침 "'+capTitle(c)+'"을 골랐어요. 모양과 치수가 고정돼요.',2600);},
+  capunlock(){delete S.size.capPreset;renderSide();refresh();},
+  capsave(){
+    const now=capNow();if(!now){toast('모양을 고르고 치수를 모두 적어 주세요.');return;}
+    const dup=CAPS.find(c=>c.shape===now.shape&&mmv(c.cap)===mmv(now.cap)&&mmv(c.capW)===mmv(now.capW)&&mmv(c.capH)===mmv(now.capH)),ni=$('#capName'),nm=((ni&&ni.value)||'').trim().slice(0,30);
+    let c=dup;if(!c){c=Object.assign({id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:nm},now);CAPS.push(c);if(CAPS.length>40)CAPS.shift();}else if(nm)c.name=nm;
+    saveCaps();S.size.capPreset=c.id;S.size.shapeSet='user';renderSide();refresh();toast(dup?'이미 있는 받침이에요. 그 받침으로 고정했어요.':'받침 "'+capTitle(c)+'"을 목록에 저장하고 고정했어요.',2600);
+  },
+  capdel(b){const i=CAPS.findIndex(x=>x.id===b.dataset.id);if(i<0)return;const c=CAPS[i];CAPS.splice(i,1);saveCaps();if(S.size.capPreset===c.id)delete S.size.capPreset;renderSide();refresh();toast('"'+capTitle(c)+'"을 목록에서 지웠어요.',2200);},
+  async flipphoto(b){
+    const k=b.dataset.k;if(!getP(k)||G.busy)return;
+    if(!(await flipPhoto(k)))return;
+    renderSide();refresh();toast('좌우로 뒤집었어요.'+(UI.check?' 다시 검수하는 중…':''),2400);
+    if(UI.check&&await claudeReady(2)){const j=jobs().find(x=>x.key===k);if(j){try{await checkOne(j);}catch(e){}renderSide();refresh();}}
+  },
   gonehi(b){regen(jobs()[+b.dataset.i],{model:G.modelHi,fresh:true});},
   gfix(){const l=flagged();if(l.length)gAsk(l,{model:G.modelHi||G.model,fresh:true});},
   basepick(b){                                // 후보 중 하나를 기준 사진으로 확정(나머지 후보는 지워요)
@@ -2823,7 +2909,7 @@ const ACT={
   },
   lenbase(b){S.size.base=b.dataset.v==='lever'?'lever':b.dataset.v==='full'?'full':'center';S.size.baseSet='user';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="lenbase"]',side);if(nb)nb.focus();},
   capdir(b){const v=b.dataset.v;S.size.dir=(v==='L'||v==='R')?v:'auto';renderSide();refresh();const nb=$('.segpick .sg.on[data-act="capdir"]',side);if(nb)nb.focus();},
-  capsel(b){const v=b.dataset.v;if(CAP_SHAPES.indexOf(v)<0)return;S.size.shape=v;S.size.shapeSet='user';renderSide();refresh();const nb=$('.cappick .cp.on',side);if(nb)nb.focus();},
+  capsel(b){if(capLocked())return;const v=b.dataset.v;if(CAP_SHAPES.indexOf(v)<0)return;S.size.shape=v;S.size.shapeSet='user';renderSide();refresh();const nb=$('.cappick .cp.on',side);if(nb)nb.focus();},
   async capshape(){
     if(!hasPhoto(S.src)){toast('제품 사진을 먼저 넣어 주세요.');return;}
     if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요.',3600);UI.open.add('p2');renderSide();return;}
@@ -2877,7 +2963,7 @@ side.addEventListener('click',e=>{
 });
 const CHANGE={
   gRem(t){G.remember=t.checked;saveKey();},cRem(t){C.remember=t.checked;saveCKey();},
-  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},useSlow(t){UI.careful=t.checked;try{localStorage.setItem('wj-slow',t.checked?'1':'0');}catch(e){}renderSide();},useClear(t){UI.clearOnNew=t.checked;},
+  useAI(t){UI.useAI=t.checked;},useChk(t){UI.check=t.checked;},useFix(t){UI.autoFix=t.checked;},lvLock(t){if(S.lvDir){S.lvDir.locked=t.checked;S.lvDir.auto=!t.checked;}renderSide();refresh();},flipOk(t){S.flipOk=t.checked;persist();},useSlow(t){UI.careful=t.checked;try{localStorage.setItem('wj-slow',t.checked?'1':'0');}catch(e){}renderSide();},useClear(t){UI.clearOnNew=t.checked;},
   gModelSel(t){G.model=t.value;G.auto=false;renderSide();},
   colorGen(t){S.colors.gen=t.value;S.colors.sheet=t.value==='sheet';UI.open.add('p3');renderSide();refresh();toast({base:'기준 사진 방식으로 바꿨어요. 기준 사진 1장을 먼저 만들고 확정하세요.',sheet:'시트 방식으로 바꿨어요. 문 색상 칸을 구글 1장으로 만들어요.',each:'한 칸씩 만드는 방식으로 바꿨어요.'}[t.value]+' 이미 만든 칸은 그대로 남아요.',3600);},
   colorMode(t){const k=setColorMode(t.value);UI.open.add('p3');renderSide();refresh();toast(t.value==='lite'?'5칸으로 바꿨어요.'+(k?' 사진이 있는 '+k+'칸은 남겼어요.':''):'10칸으로 바꿨어요. 새 칸은 비어 있어요.',2600);}
@@ -2896,7 +2982,7 @@ side.addEventListener('change',e=>{
 });
 side.addEventListener('input',e=>{
   const t=e.target,d=t.dataset;
-  if(d.k!==undefined){setP(d.k,t.value);if(d.k==='spec')S.specAuto=false;if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name')syncPrompts();refresh();}
+  if(d.k!==undefined){setP(d.k,t.value);if(d.k==='spec')S.specAuto=false;if(isProductText(d.k))dirty=true;if(d.req)t.classList.toggle('blank',!t.value.trim());if(d.k==='name'||d.k==='fixed')syncPrompts();refresh();}
   else if(d.s){setP(d.s,Number(t.value)/100);if(t.nextElementSibling)t.nextElementSibling.textContent=t.value;refresh();}
   else if(t.id==='gKey'){G.key=t.value;if(G.state!=='idle')G.state='idle';saveKey();chip();}
   else if(t.id==='gModel'){G.model=t.value;G.auto=false;}
@@ -2960,7 +3046,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
