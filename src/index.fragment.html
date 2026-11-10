@@ -311,7 +311,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 91</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 92</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -367,6 +367,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v92 (2026-11-10): 영상 올릴 때 쓰는 제목·설명·태그를 클로드가 자동으로 씀 — 제목 후보 3개(검색 낱말 앞쪽)·설명·태그·해시태그·고정 댓글·인스타/틱톡 문구, 상세페이지에 없는 숫자·과장·가격 말은 걸러냄, AI 사진이면 안내 문장을 앱이 붙임, 처음 문구로 되돌리기 */
 /* v91 (2026-11-10): 쇼츠 광고 영상 모드 — 상세페이지 훑기 대신 사진을 장면으로 직접 그린 20초 안팎 세로 영상(훅 → 문 색 몽타주 → 확대 3컷 → 규격 큰 숫자 → 마지막 문구), 박자에 맞춘 컷·큰 자막·천천히 확대·배경음 기본 켜짐, 글·숫자는 상세페이지에 있는 것만 */
 /* v90 (2026-11-10): 영상·이미지 저장 전 '만들기 전 점검' — 임시 원본 사진·문 색상 없음·소리 없음·재질 표기·총 폭 비율·글의 색과 사진 색 불일치(무료) + 클로드가 글(색·모양 설명)과 치수 비율이 사진과 맞는지 점검(눌렀을 때만), 다르다고 나오면 확인 체크 전에는 막음 */
 /* v89 (2026-11-09): 3D 모형(실험) — 클로드가 사진과 치수로 받침·목·레버의 3D 모형을 추정하고(사진과 비교해 최대 2번 고침), 앱이 정면·비스듬히·옆으로 렌더링해서 구글 참고 사진에 구조 참고도로 같이 보냄 · 값(JSON)을 고쳐 무료로 다시 렌더링 · 켜고 끄기 */
@@ -386,7 +387,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=91,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=92,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1363,6 +1364,73 @@ async function regenBad(list,signal){            // 정밀 모델로 한 번 더
   await Promise.all(Array.from({length:Math.min(3,list.length)},wk));
   return {done,err};
 }
+/* ===== 제목·설명 자동 (v92) =====
+   영상이 만들어지면 올릴 곳에 붙여 넣을 제목·설명·태그를 클로드가 써 줘요. 근거는 상세페이지·크기·규격에 적힌 것뿐이고,
+   새 숫자가 든 글·과장·가격 말은 걸러서 빼요. 실패하면 예전 기본 문구를 그대로 둬요. */
+const POST_BAN=/최고|최초|유일|완벽|100\s?%|혁신|1위|무조건|역대|기적|최저가|특가|할인|무료\s?배송|가격|충격|대박/;
+function postFacts(){
+  const one=x=>adCap(x,200),L=[];
+  L.push('제품 이름: '+one(S.name)+(S.sellName&&S.sellName!==S.name?' / 판매 상품명: '+one(S.sellName):''));
+  L.push('첫 화면 글: '+[S.hero.badge,S.hero.title,S.hero.sub].map(one).filter(Boolean).join(' / '));
+  L.push('소개: '+[S.concept.title,S.concept.body].map(one).filter(Boolean).join(' '));
+  (S.zoom.items||[]).slice(0,3).forEach((z,i)=>{if(z&&(z.title||z.body))L.push('확대 '+(i+1)+': '+[z.title,z.body].map(one).filter(Boolean).join(' '));});
+  const rows=adRows();if(rows.length)L.push('크기·규격(영상에 나와요): '+rows.map(r=>r[0]+' '+r[1]).join(' / '));
+  const fx=factsRows().slice(0,6);if(fx.length)L.push('제품 규격: '+fx.map(r=>r[0]+' '+r[1]).join(' / '));
+  const dn=adDoorItems().map(d=>adLabel(d.it));if(dn.length)L.push('영상 속 문 사진 '+dn.length+'장: '+dn.join(', '));
+  L.push('마지막 문구: '+[S.cta.title,S.cta.sub].map(one).filter(Boolean).join(' '));
+  L.push('AI로 만든 사진 사용: '+(aiCount()>0?'예':'아니오'));
+  return L.join('\n');
+}
+function postAllowed(){   // 글에 써도 되는 숫자: 위 확인된 정보에 있는 것 + 영상에 실제로 들어간 문 사진 수
+  const set=new Set(postFacts().match(/\d+(?:\.\d+)?/g)||[]);set.add(String(adDoorItems().length));return set;
+}
+const POST_PROMPT=f=>'당신은 한국 쇼핑몰의 제품 영상을 유튜브 쇼츠·인스타그램 릴스·틱톡에 올릴 때 붙이는 제목·설명을 쓰는 사람입니다. 아래 "확인된 정보"만 근거로 쓰세요.\n'
+  +'규칙: 1) 쉬운 한국어, 짧은 문장. 2) 확인된 정보에 없는 사양·치수·재질·인증·수치·가격·날짜·실적은 절대 쓰지 마세요. 숫자는 확인된 정보에 적힌 글자를 그대로 복사하세요. 3) 과장(최고·최초·완벽·100%·유일·혁신·무조건)과 가격·할인·배송 말은 쓰지 마세요. 4) 낚시 말(충격, 대박, 알고 보니)은 쓰지 마세요. 5) 영상에서 실제로 보이는 것만 말하세요(문 사진은 "영상 속 문 사진"이 있을 때만).\n'
+  +'만들 것:\n- titles: 쇼츠 제목 후보 3개. 각 40자 이내. 첫 후보는 사람들이 검색할 말(확인된 정보에 있는 제품 종류 낱말, 예: 방문 손잡이·레버 손잡이)을 앞쪽에 두세요. 후보마다 방식을 다르게(검색형 / 보여 주는 형 / 궁금증 해결형).\n'
+  +'- desc: 유튜브 설명. 첫 두 줄(100자 안쪽)은 영상이 보여 주는 핵심, 이어서 확인된 규격 한두 줄, 마지막에 "궁금한 점은 판매자에게 물어보세요" 같은 안내. 6줄 이내.\n'
+  +'- tags: 검색 태그 8~12개(띄어쓰기 없는 짧은 낱말, # 없이).\n- hashtags: 설명 끝에 붙일 해시태그 3~5개(#포함).\n- pinned: 올린 뒤 달 고정 댓글 한 문장(문의를 이끄는 말, 가격·할인 말 금지).\n- short: 인스타그램·틱톡용 짧은 문구 2~3줄(120자 이내).\n'
+  +'확인된 정보:\n'+f+'\n\n아래 JSON 하나만 답하세요(다른 글 없이).\n{"titles":["","",""],"desc":"","tags":[""],"hashtags":["#"],"pinned":"","short":""}';
+function postNorm(r,al){
+  r=r&&typeof r==='object'?r:{};let dropped=0;
+  const nums=t=>String(t).match(/\d+(?:\.\d+)?/g)||[],bad=t=>POST_BAN.test(t)||nums(t).some(x=>!al.has(x));
+  const clean=(t,n)=>String(t==null?'':t).replace(/\s+/g,' ').trim().slice(0,n);
+  const titles=[];(Array.isArray(r.titles)?r.titles:[]).forEach(x=>{const t=clean(x,60).replace(/^["'“”‘’]+|["'“”‘’]+$/g,'');if(!t)return;if(bad(t)){dropped++;return;}if(!titles.includes(t))titles.push(t);});
+  if(!titles.length)throw {code:'invalid_json'};
+  const sents=v=>String(v==null?'':v).split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>(l.match(/[^.!?。…]+[.!?。…]*/g)||[l]).map(x=>x.trim()).filter(Boolean).filter(x=>{if(bad(x)){dropped++;return false;}return true;}).join(' ')).filter(Boolean);
+  const tg=(a,hash)=>{const o=[];(Array.isArray(a)?a:[]).forEach(x=>{let t=clean(x,20).replace(/^#+/,'').replace(/\s+/g,'');if(!t||POST_BAN.test(t)||nums(t).some(n=>!al.has(n)))return;if(hash)t='#'+t;if(!o.includes(t))o.push(t);});return o;};
+  return {titles:titles.slice(0,3),desc:sents(r.desc).slice(0,8).join('\n').slice(0,1500),tags:tg(r.tags,false).slice(0,12),hashtags:tg(r.hashtags,true).slice(0,5),pinned:sents(r.pinned).join(' ').slice(0,200),short:sents(r.short).slice(0,3).join('\n').slice(0,160),dropped};
+}
+function postApply(c){
+  const base=vPostDraft(),P=VD.post||(VD.post=base),ai=aiCount()>0?'※ 영상 속 문 사진은 AI로 만든 연출 이미지예요.':'',x=base.x||{},ht=c.hashtags.join(' ');
+  const yd=c.desc?[c.desc,ht,ai,x.safe,x.foot].filter(Boolean).join('\n\n'):[base.ys.d,ai].filter(Boolean).join('\n\n'),sh=[c.short||'',ht,ai].filter(Boolean).join('\n\n')||base.ig.d,tags=c.tags.join(', ');
+  P.ys=Object.assign({},P.ys,{t:c.titles[0],d:yd,g:tags,p:c.pinned});
+  P.yl=Object.assign({},P.yl,{t:c.titles[0],d:yd,g:tags||P.yl.g,p:c.pinned});
+  P.ig={d:sh};P.tt={d:sh};VD.postAlt=c.titles;
+}
+function vPostBar(){
+  const alt=VD.postAlt||[];
+  return '<div class="acts"><button class="btn sm primary" type="button" data-vai="run"'+(VD.postBusy?' disabled':'')+'>'+(VD.postBusy?'쓰는 중이에요…':'클로드로 제목·설명 다시 쓰기 (약 2센트)')+'</button>'+(VD.postAI?'<button class="btn sm" type="button" data-vai="reset">처음 문구로 되돌리기</button>':'')+'</div>'
+    +(VD.postMsg?'<p class="cost">'+esc(VD.postMsg)+'</p>':'')
+    +(alt.length?'<div class="acts"><span class="hint">제목 후보</span>'+alt.map((t,i)=>'<button class="btn sm'+(VD.postSel===i?' primary':'')+'" type="button" data-valt="'+i+'" title="'+esc(t)+'">'+(i+1)+'. '+esc(t.length>24?t.slice(0,24)+'…':t)+'</button>').join('')+'</div>':'');
+}
+function vPostRefresh(){const b=$('#vpBox');if(b)b.outerHTML=vPostHtml();}
+async function vPostRun(auto){
+  if(VD.postBusy)return;
+  if(!(await claudeReady(0))){if(!auto)toast('클로드 키를 2단계에서 넣어 주세요(클로드 안에서 열었다면 바로 써요).',3600);return;}
+  VD.postBusy=true;VD.postMsg='클로드가 제목·설명을 쓰는 중이에요…';vPostRefresh();
+  try{
+    const r=await claude(POST_PROMPT(postFacts()),{max:1500,tier:'default'}),c=postNorm(r,postAllowed());
+    postApply(c);VD.postAI=true;VD.postSel=0;
+    VD.postMsg='클로드가 쓴 제목·설명이에요. 상세페이지에 없는 숫자나 과장·가격 말이 든 '+c.dropped+'곳은 뺐어요. 읽어 보고 고쳐서 쓰세요.';
+  }catch(e){VD.postMsg=auto?'클로드가 제목·설명을 쓰지 못해서 기본 문구를 그대로 뒀어요. 단추로 다시 시켜 볼 수 있어요.':((e&&e.text)||ASK_ERR[e&&e.code]||'제목·설명을 쓰지 못했어요. 한 번 더 눌러 주세요.');}
+  finally{VD.postBusy=false;vPostRefresh();}
+}
+async function vPostAuto(){   // 영상이 만들어지면 한 번만 자동으로(직접 고친 적이 있으면 건드리지 않아요)
+  if(VD.postFor===VD.url)return;VD.postFor=VD.url;
+  if(!UI.useAI||VD.postTouched||VD.postAI)return;
+  await vPostRun(true);
+}
+function vPostPick(i){const P=VD.post;if(!P||!(VD.postAlt||[])[i])return;VD.postSel=i;P.ys.t=VD.postAlt[i];P.yl.t=VD.postAlt[i];vPostRefresh();}
 /* ===== 쇼츠 광고 영상 (v91) =====
    상세페이지를 훑는 녹화가 아니라, 사진을 장면으로 직접 그려 만든 20초 안팎의 세로 영상이에요.
    훅(문에 단 모습 + 큰 한 줄) → 문 색 몽타주 → 확대 3컷 → 규격 큰 숫자 → 마지막 문구.
@@ -2819,7 +2887,7 @@ function vPostDraft(){
   const tg=tags.join(' '),title=(hero||nm).slice(0,100);
   const long=[].concat(body,safe?['',safe]:[],foot?[foot]:[]).join('\n').replace(/\n{3,}/g,'\n\n');
   const cap=[hero||nm].concat([''],body,safe?['',safe]:[],foot?[foot]:[],['',tg]).join('\n').replace(/\n{3,}/g,'\n\n');
-  return {ys:{t:title,d:long+'\n\n'+tg},ig:{d:cap},tt:{d:cap},yl:{t:title,d:long+'\n\n'+tg,g:tags.map(x=>x.slice(1)).join(', ')}};
+  return {ys:{t:title,d:long+'\n\n'+tg},ig:{d:cap},tt:{d:cap},yl:{t:title,d:long+'\n\n'+tg,g:tags.map(x=>x.slice(1)).join(', ')},x:{safe,foot}};
 }
 async function vCopy(t){
   const ok=()=>toast('복사했어요. 올리는 곳에 붙여 넣으세요.');
@@ -2831,14 +2899,14 @@ function vPostHtml(){
   const P=VD.post||(VD.post=vPostDraft()),fmt=VD.blobFmt||'v';
   const fld=(k,f,label,rows)=>'<div class="f"><span>'+label+'</span>'+(rows?'<textarea data-vp="'+k+'.'+f+'" rows="'+rows+'">'+esc(P[k][f])+'</textarea>':'<input type="text" data-vp="'+k+'.'+f+'" value="'+esc(P[k][f])+'">')
     +'<div class="acts"><button class="btn sm" type="button" data-vcopy="'+k+'.'+f+'">'+label+' 복사</button></div></div>';
-  return '<div class="opts"><b class="hint">올릴 곳 · 제목·설명은 상세페이지 글에서 가져왔어요. 고쳐서 복사하세요</b>'
+  return '<div id="vpBox"><div class="opts"><b class="hint">올릴 곳 · 제목·설명은 '+(VD.postAI?'클로드가 상세페이지 글을 바탕으로 썼어요':'상세페이지 글에서 가져왔어요')+'. 고쳐서 복사하세요</b>'+vPostBar()
    +Object.keys(VCH).filter(k=>VCH[k].f===fmt).map(k=>{const c=VCH[k];
      return '<div class="blk" data-vch="'+k+'"><h3>'+esc(c.n)+'</h3>'
       +((c.mp4&&VD.ext!=='mp4')?'<div class="confirm" style="display:block">이 영상은 WebM 파일이에요. 이곳은 MP4가 필요할 수 있어요. 최신 Chrome에서 다시 만들면 MP4로 나와요.</div>':'')
-      +(c.t?fld(k,'t','제목'):'')+fld(k,'d',c.t?'설명':'문구(설명)',7)+(c.g?fld(k,'g','태그 (쉼표로 나눠요)'):'')
+      +(c.t?fld(k,'t','제목'):'')+fld(k,'d',c.t?'설명':'문구(설명)',7)+((c.g||P[k].g!=null)?fld(k,'g','태그 (쉼표로 나눠요)'):'')+(P[k].p!=null?fld(k,'p','고정 댓글 (올린 뒤 직접 달아 주세요)',2):'')
       +'<ol>'+c.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol>'
       +'<div class="acts"><a class="btn sm primary" href="'+c.url+'" target="_blank" rel="noopener noreferrer">'+esc(c.go)+'</a></div></div>';}).join('')
-   +'<div class="hint">자동으로 올려 주지는 않아요. 자동 올리기는 회사가 직접 받는 승인 키가 있어야 해서, 지금은 영상과 문구를 준비하고 올리는 곳을 바로 열어 드려요. 올리는 곳의 화면 이름은 바뀔 수 있어요. 영상과 문구는 올리는 곳의 규칙(AI 표시 등)을 확인하고 올려 주세요.</div></div>';
+   +'<div class="hint">자동으로 올려 주지는 않아요. 자동 올리기는 회사가 직접 받는 승인 키가 있어야 해서, 지금은 영상과 문구를 준비하고 올리는 곳을 바로 열어 드려요. 올리는 곳의 화면 이름은 바뀔 수 있어요. 영상과 문구는 올리는 곳의 규칙(AI 표시 등)을 확인하고 올려 주세요.</div></div></div>';
 }
 function vShowResult(){
   const pv=$('#vdPrev');if(!pv||!VD.blob)return;
@@ -2851,8 +2919,14 @@ function vShowResult(){
   const vv=pv.querySelector('video');   // 처음은 어둡게 나타나는 구간이라, 미리보기 화면은 1초쯤 지난 장면으로 보여 줘요
   if(vv)vv.addEventListener('loadedmetadata',()=>{try{if(isFinite(vv.duration)&&vv.duration>1.5)vv.currentTime=Math.min(1,vv.duration/3);}catch(e){}});
   $('#vdSave').onclick=async()=>{try{await saveFile(safeName()+'_영상_'+ft+'.'+VD.ext,VD.blob);vMsg('저장했어요. 아래에서 올릴 곳을 열어 영상과 문구를 올리세요.');}catch(e){vMsg(e&&e.code==='declined'?'저장을 취소했어요. 다시 저장할 수 있어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.');}};
-  pv.oninput=e=>{const k=e.target.dataset&&e.target.dataset.vp;if(!k)return;const a=k.split('.');if(VD.post&&VD.post[a[0]])VD.post[a[0]][a[1]]=e.target.value;};
-  pv.onclick=e=>{const b=e.target.closest&&e.target.closest('[data-vcopy]');if(!b)return;const a=b.dataset.vcopy.split('.');vCopy((VD.post[a[0]]||{})[a[1]]||'');};
+  pv.oninput=e=>{const k=e.target.dataset&&e.target.dataset.vp;if(!k)return;const a=k.split('.');if(VD.post&&VD.post[a[0]])VD.post[a[0]][a[1]]=e.target.value;VD.postTouched=true;};
+  pv.onclick=e=>{
+    const ai=e.target.closest&&e.target.closest('[data-vai]');
+    if(ai){if(ai.dataset.vai==='reset'){VD.post=vPostDraft();VD.postAI=false;VD.postAlt=null;VD.postTouched=false;VD.postMsg='처음 문구로 되돌렸어요.';vPostRefresh();}else vPostRun(false);return;}
+    const al=e.target.closest&&e.target.closest('[data-valt]');if(al){vPostPick(+al.dataset.valt);return;}
+    const b=e.target.closest&&e.target.closest('[data-vcopy]');if(!b)return;const a=b.dataset.vcopy.split('.');vCopy((VD.post[a[0]]||{})[a[1]]||'');
+  };
+  vPostAuto();
 }
 /* 배경음: 브라우저 안에서 직접 만들어요(같은 초는 늘 같은 소리) */
 async function vMusic(mood,seconds){
@@ -3815,7 +3889,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
