@@ -112,6 +112,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .job .nm{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .job .ratio{font-size:12px;font-weight:700;color:var(--mute);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
 .job .done{font-size:12px;color:var(--ok);font-weight:700}
+.checks.pre{list-style:none;padding:0;margin:6px 0}.checks.pre li{margin:5px 0;line-height:1.5}.checks.pre li.bad{color:var(--bad);font-weight:700}.checks.pre li.warn{color:var(--ink)}
 .m3dv{display:flex;flex-wrap:wrap;gap:6px}.m3dv figure{margin:0;width:92px;text-align:center;font-size:11px;color:var(--mute,#667)}.m3dv img{width:92px;height:92px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
 #m3dJson{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;min-height:150px}
 .cutbox{background:repeating-conic-gradient(#8a8f98 0 25%,#767b84 0 50%) 50%/20px 20px;padding:10px;border-radius:10px}.cutbox img{max-width:100%;display:block;margin:0 auto}
@@ -313,7 +314,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 89</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 90</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -369,6 +370,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v90 (2026-11-10): 영상·이미지 저장 전 '만들기 전 점검' — 임시 원본 사진·문 색상 없음·소리 없음·재질 표기·총 폭 비율·글의 색과 사진 색 불일치(무료) + 클로드가 글(색·모양 설명)과 치수 비율이 사진과 맞는지 점검(눌렀을 때만), 다르다고 나오면 확인 체크 전에는 막음 */
 /* v89 (2026-11-09): 3D 모형(실험) — 클로드가 사진과 치수로 받침·목·레버의 3D 모형을 추정하고(사진과 비교해 최대 2번 고침), 앱이 정면·비스듬히·옆으로 렌더링해서 구글 참고 사진에 구조 참고도로 같이 보냄 · 값(JSON)을 고쳐 무료로 다시 렌더링 · 켜고 끄기 */
 /* v88 (2026-11-09): 실물 합성(선택) — 문 사진만 AI가 그리고 제품은 1단계 실제 사진에서 오려 붙임 · 첫 화면·소개는 구글 없이 컴퓨터가 어두운 배경에 실제 제품을 올려 만듦 · 크기·위아래·그림자 조절과 무료 다시 합성 */
 /* v87 (2026-11-09): 받침 목록(원형·직사각·정사각 규격을 저장해 고르면 잠김) · 레버 방향 잠금과 '좌우 뒤집기' · 중심~레버 끝이 받침 가로의 몇 배인지 지시문·검수에 · '바뀌면 안 되는 것' 고정 메모 */
@@ -386,7 +388,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=89,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=90,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1363,6 +1365,94 @@ async function regenBad(list,signal){            // 정밀 모델로 한 번 더
   await Promise.all(Array.from({length:Math.min(3,list.length)},wk));
   return {done,err};
 }
+/* ===== 만들기 전 점검 (v90) =====
+   영상·이미지를 만들거나 저장하기 전에, 글과 사진이 어긋난 곳을 알려 줘요.
+   ⛔ 글과 사진이 다르다(색·모양 설명)고 나온 것: '알고 있어요' 체크 전에는 영상 만들기·이미지 저장이 잠겨요
+   ⚠ 임시 사진·문 색상 없음·소리 없음·표기 문제처럼 알려만 주는 것 */
+const PRE={busy:false,ack:false,ctx:'',cache:null};
+const COLORG=[['black',/검정|검은|블랙|black/i],['white',/흰색|하얀|화이트|white/i],['silver',/은색|실버|크롬|니켈|스테인리스|스틸|회색|그레이|건메탈|gunmetal|gray|grey|silver|nickel|chrome/i],['gold',/금색|골드|황동|브론즈|gold|brass|bronze/i]];
+const COLORG_NAME={black:'검정',white:'흰색',silver:'은색·회색 계열',gold:'금색 계열'};
+const cgOf=t=>COLORG.filter(g=>g[1].test(String(t||''))).map(g=>g[0]);
+function preSig(){
+  const z=(S.zoom&&S.zoom.items||[]).map(i=>[i.title,i.body]),Z=S.size||{};
+  return hashStr(JSON.stringify([S.src&&S.src.id,S.name,S.hero.badge,S.hero.title,S.hero.sub,S.concept.title,S.concept.body,z,Z.wid,Z.cap,Z.capW,Z.capH,Z.shape,S.facts&&S.facts.finish]));
+}
+function preTexts(){
+  const one=v=>String(v==null?'':v).replace(/\s+/g,' ').trim(),z=(S.zoom&&S.zoom.items||[]);
+  return {head:[S.name,S.hero.badge,S.hero.title,S.hero.sub].map(one).filter((v,i,a)=>v&&a.indexOf(v)===i).join(' / '),concept:[S.concept.title,S.concept.body].map(one).filter(Boolean).join(' '),zoom:[0,1,2].map(i=>z[i]?[z[i].title,z[i].body].map(one).filter(Boolean).join(' '):'')};
+}
+function preSizeRatio(){   // 입력한 치수로 본 '레버 폭 ÷ 받침의 짧은 변'
+  const Z=S.size||{},ci=capInfo(),wid=mmv(Z.wid);if(!ci||!wid)return null;
+  const sh=ci.shape==='round'?ci.d:ci.shape==='square'?ci.w:Math.min(ci.w||0,ci.h||0);
+  return sh>0?{r:wid/sh,wid,short:sh}:null;
+}
+function preItems(ctx){
+  const out=[],add=(lvl,id,text)=>out.push({lvl,id,text}),F=S.facts||{};
+  if(ctx==='video'){
+    if(!hasPhoto(S.hero.photo))add('warn','hero','첫 화면 사진이 아직 없어서 영상 첫 장면에 원본 사진(임시)이 나와요. 영상은 첫 1~2초가 중요해요. 3단계에서 첫 화면 사진을 만들거나(실물 합성은 구글 없이 무료) 직접 넣고 만드세요.');
+    const have=S.colors.items.filter(it=>hasPhoto(it.photo)).length;
+    if(!have)add('warn','door','문 색상(문에 단 사진)이 하나도 없어요. 영상에서 가장 눈길을 끄는 장면이 빠져요. 3단계에서 먼저 만들어 보세요.');
+    else if(have<S.colors.items.length)add('warn','door2','문 색상 '+(S.colors.items.length-have)+'칸이 비어 있어서 그 칸은 영상에서 빠져요.');
+    if(VD.music==='none')add('warn','silent','배경음이 "없음"이에요. 쇼츠·릴스는 소리를 켜고 보는 사람이 많아요. 아래 배경음에서 하나 골라 보세요.');
+  }
+  const mat=String(F.material||'').trim();
+  if(mat&&(/[가-힣A-Za-z]\.[가-힣A-Za-z]/.test(mat)||mat.split(/[.,/·\s]+/).filter(Boolean).length>=4))
+    add('warn','material','재질 칸이 "'+mat+'"처럼 여러 재질이 한꺼번에 적혀 있어요. 실제 제품에 쓴 재질만 적고 "·"로 나눠 주세요. 한꺼번에 적으면 믿기 어려워 보여요.');
+  const sr=preSizeRatio();
+  if(sr&&(sr.r<.12||sr.r>.95))add('warn','wid','총 폭 '+sr.wid+'mm는 받침의 짧은 변('+Math.round(sr.short)+'mm)에 비해 '+(sr.r<.12?'너무 가늘어요':'너무 넓어요')+'. 숫자를 한 번 더 확인해 주세요.');
+  // 글의 색 표현 ↔ 사진 인식(또는 직접 적은 마감·색상)
+  const head=preTexts().head,ref=String(F.finish||'').trim()||(S.recog&&S.recog.id===(S.src&&S.src.id)?String(S.recog.finish||''):''),tg=cgOf(head),rg=cgOf(ref);
+  if(tg.length&&rg.length&&!tg.some(x=>rg.includes(x)))add('bad','color','제품 이름·첫 화면 글에는 "'+tg.map(x=>COLORG_NAME[x]).join('·')+'"이라고 썼는데, '+(String(F.finish||'').trim()?'규격의 마감·색상 칸':'사진 인식')+'에서는 "'+ref.slice(0,40)+'"로 나와요. 글이 사진과 맞는지 확인해 주세요.');
+  // 클로드 점검 결과(글·사진이 그대로일 때만 믿어요)
+  const c=PRE.cache;
+  if(c&&c.sig===preSig()&&c.res){
+    const r=c.res;
+    if(r.color&&r.color.ok===false)add('bad','aicolor','클로드 점검: 제품 이름·첫 화면 글의 색·마감이 사진과 달라 보여요. '+(r.color.why||''));
+    (r.words||[]).forEach(w=>{if(w&&w.ok===false)add('bad','ai_'+w.id,'클로드 점검: '+(w.id==='concept'?'소개':'확대 '+String(w.id).replace('zoom',''))+' 글이 사진의 모양과 달라 보여요. '+(w.why||''));});
+    if(r.ratio>0&&sr){const q=sr.r/r.ratio;if(q>1.7||q<1/1.7)add('warn','airatio','클로드 점검: 사진에서 레버 폭은 받침 짧은 변의 약 '+(Math.round(r.ratio*100)/100)+'배로 보이는데, 입력한 치수로는 '+(Math.round(sr.r*100)/100)+'배예요. 총 폭 숫자를 확인해 주세요.');}
+  }
+  return out;
+}
+const preLocked=ctx=>preItems(ctx).some(x=>x.lvl==='bad')&&!PRE.ack;
+const PRE_PROMPT=t=>'첨부한 사진은 실제 방문(실내문) 손잡이 제품 사진입니다. 아래는 이 제품의 상세페이지에 들어갈 글과 입력한 치수입니다. 글이 사진과 맞는지 점검해 주세요. 사진에서 보이는 것만 근거로 하고, 확실하지 않으면 ok를 true로 하세요.\n'
+  +'① 색·마감: "제품 이름·첫 화면 글"에 나온 색이나 마감 표현(검정, 흰색, 은색, 회색, 금색, 니켈, 무광 등)이 사진의 실제 금속 색·마감과 눈에 띄게 다르면 color.ok를 false로 하고 why에 사진에서 보이는 색을 적으세요.\n'
+  +'② 모양 설명: 소개 글과 확대 3곳의 글이 사진에 실제로 보이는 모양(레버 끝이 둥근지 각진지, 받침 모양, 줄무늬·결, 목 모양 등)과 다르면 그 항목의 ok를 false로 하고 why에 사진에서 보이는 모양을 적으세요.\n'
+  +'③ 치수 비율: 사진에서 레버의 가장 넓은 폭이 받침(카바)의 짧은 변의 몇 배쯤인지 눈대중으로 ratio에 숫자(예: 0.35)로 적으세요. 받침이 안 보이면 null.\n'
+  +'제품 이름·첫 화면 글: '+t.head+'\n소개: '+t.concept+'\n확대1: '+t.zoom[0]+'\n확대2: '+t.zoom[1]+'\n확대3: '+t.zoom[2]+'\n입력한 치수: '+(m3dFacts(m3dLock()))+'\n'
+  +'아래 JSON 하나만 답하세요(다른 글 없이).\n{"color":{"ok":true,"why":""},"words":[{"id":"concept","ok":true,"why":""},{"id":"zoom1","ok":true,"why":""},{"id":"zoom2","ok":true,"why":""},{"id":"zoom3","ok":true,"why":""}],"ratio":0.3}';
+function preNorm(r){
+  r=r&&typeof r==='object'?r:{};const t=(v,n)=>typeof v==='string'?v.trim().slice(0,n):'';
+  const words=(Array.isArray(r.words)?r.words:[]).filter(w=>w&&/^(concept|zoom[123])$/.test(String(w.id))).map(w=>({id:String(w.id),ok:w.ok!==false,why:t(w.why,120)}));
+  const ra=parseFloat(r.ratio);
+  return {color:{ok:!(r.color&&r.color.ok===false),why:t(r.color&&r.color.why,120)},words,ratio:isFinite(ra)&&ra>0&&ra<5?ra:null};
+}
+async function preRun(){
+  if(PRE.busy)return;
+  if(!hasPhoto(S.src)){toast('1단계의 제품 사진을 먼저 넣어 주세요.');return;}
+  if(!(await claudeReady(1))){toast('클로드 키를 2단계에서 넣어 주세요(클로드 안에서 열었다면 바로 써요).',3600);return;}
+  PRE.busy=true;preRedraw();
+  try{
+    const r=await claude(PRE_PROMPT(preTexts()),{images:[await shrink(PH.get(S.src.id).blob,1024,.88)],max:900,tier:'default'});
+    PRE.cache={sig:preSig(),res:preNorm(r),at:Date.now()};
+  }catch(e){toast((e&&e.text)||ASK_ERR[e&&e.code]||'점검하지 못했어요. 한 번 더 눌러 주세요.',4200);}
+  finally{PRE.busy=false;preRedraw();}
+}
+function preRedraw(){if(veil.hidden)return;if(PRE.ctx==='video'&&!VD.busy)showVideo();else if(PRE.ctx==='export'&&!EX.busy)showExport();}
+function preBoxHtml(ctx,withAck){
+  const L=preItems(ctx),bad=L.filter(x=>x.lvl==='bad'),c=PRE.cache,stale=c&&c.sig!==preSig(),ic={bad:'⛔',warn:'⚠'};
+  return '<div id="preBox"><div class="blk"><h3>만들기 전 점검</h3>'
+    +(L.length?'<ul class="checks pre">'+L.map(x=>'<li class="'+x.lvl+'">'+ic[x.lvl]+' '+esc(x.text)+'</li>').join('')+'</ul>':'<p class="hint">✓ 걸린 곳이 없어요.</p>')
+    +'<p class="cost">'+(c?(stale?'클로드 점검 이후 글이나 사진이 바뀌었어요. 다시 점검해 주세요.':'클로드 점검을 마쳤어요('+(c.res.words.length?'소개·확대 글':'')+(c.res.ratio?' · 치수 비율':'')+').'):'클로드 점검(글이 사진과 맞는지 · 치수 비율)은 아직 안 했어요.')+'</p>'
+    +'<div class="acts"><button class="btn sm" type="button" data-pre="run"'+(PRE.busy?' disabled':'')+'>'+(PRE.busy?'점검하는 중이에요…':'클로드로 글·치수 점검 (약 3센트)')+'</button></div>'
+    +(withAck&&bad.length?'<label class="chk"><input type="checkbox" data-pre="ack"'+(PRE.ack?' checked':'')+'> ⛔ 표시를 확인했어요. 그래도 영상을 만들어요</label>':'')
+    +'</div></div>';
+}
+function preBoxRefresh(){const b=$('#preBox');if(!b)return;b.outerHTML=preBoxHtml('video',true);preWire('video');vUpdEst();}
+function preWire(ctx){
+  PRE.ctx=ctx;
+  $$('[data-pre="run"]',veil).forEach(b=>b.onclick=preRun);
+  $$('[data-pre="ack"]',veil).forEach(c=>c.onchange=()=>{PRE.ack=c.checked;vUpdEst();});
+}
 /* ===== 3D 모형 (v89, 실험) =====
    클로드가 제품 사진과 사장님이 적은 치수로 3D 모형을 '숫자 값'으로 추정하고(받침·목·레버의 굵기 변화),
    이 앱이 직접 렌더링해요(거리 함수를 따라 가는 방식, 컴퓨터 안·무료). 렌더링은 구글에 구조 참고도로 같이 가요. */
@@ -1841,6 +1931,7 @@ function gateInfo(){
   const un=jobs().filter(j=>j.kind!=='base'&&j.kind!=='sheet'&&!(j.kind==='edit'&&j.i===whiteIdx())).filter(j=>{const p=getP(j.key);return p&&p.ai&&hasPhoto(p)&&!p.chk;});   // 흰 문 칸은 사장님이 확정한 기준 사진 그대로라 뺐어요
   if(un.length)soft.push('검수를 하지 못한 AI 사진 '+un.length+'장이 있어요(클로드 연결이 없거나 검수를 껐어요). 눈으로 한 번 확인하세요.');
   if(hasPhoto(S.src)&&!lvLocked())soft.push('레버 방향을 아직 확인하지 않았어요(3단계 맨 위 \'레버 방향\'에서 실물과 맞는지 체크하세요).');
+  preItems('export').forEach(x=>{if(x.lvl==='bad')hard.push(x.text);else soft.push(x.text);});
   return {hard,soft};
 }
 const gateLocked=()=>gateInfo().hard.length>0&&!EX.ack;
@@ -2319,7 +2410,7 @@ function showExport(msg){
   const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
   const gt=gateInfo();EX.ack=false;
   veil.hidden=false;
-  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="이미지로 저장"><h2>이미지로 저장 · 긴 이미지 한 장</h2>'+gateHtml(gt)
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="이미지로 저장"><h2>이미지로 저장 · 긴 이미지 한 장</h2>'+gateHtml(gt)+'<div class="acts"><button class="btn sm" type="button" data-pre="run"'+(PRE.busy?' disabled':'')+'>'+(PRE.busy?'점검하는 중이에요…':'클로드로 글·치수 점검 (약 3센트)')+'</button></div>'
    +(n.length?'<div class="confirm" style="display:block">아직 채울 곳이 '+n.length+'곳 남아 있어요. 비어 있는 칸은 이미지에서 빠져요.</div>':'')
    +(ab?'<div class="confirm" style="display:block">회사 소개의 특허·실적·연도 기록 '+ab+'곳이 비어 있어서 그 부분이 짧게 나와요. 4단계 \'회사 소개\'에서 채워 주세요.</div>':'')
    +(!hasPhoto(S.hero.photo)||!hasPhoto(S.concept.photo)?'<div class="confirm" style="display:block">첫 화면·소개 사진이 아직 없어서, 원본 사진을 인식한 손잡이 자리에 맞춰 잘리지 않게 넣어요. 3단계에서 만들면 더 좋아요.</div>':'')
@@ -2333,6 +2424,7 @@ function showExport(msg){
    +'<div class="acts"><button class="btn" id="exClose" type="button">닫기</button><button class="btn primary" id="exGo" type="button">'+'한 장으로 저장'+'</button></div></div>';
   $('#exClose').onclick=()=>{if(EX.busy)EX.cancel=true;else veil.hidden=true;};
   $('#exGo').onclick=runExport;
+  preWire('export');
   if(gt.hard.length){const g=$('#exGo'),a=$('#exAck');if(g&&a){g.disabled=true;a.onchange=()=>{EX.ack=a.checked;g.disabled=!a.checked;};}}   // 걸린 곳을 확인해야 저장 단추가 켜져요
   const ea=$('#exAuto');if(ea)ea.onchange=()=>{UI.autoSave=ea.checked;};
   $$('input[type=radio]',veil).forEach(r=>r.onchange=()=>{EX[r.name]=r.name==='w'?Number(r.value):r.value;});
@@ -2426,7 +2518,7 @@ function vEst(){
 function vUpdEst(){
   const e=$('#vdEst');if(!e)return;const t=vEst(),go=$('#vdGo');
   e.textContent=t==null?'장면을 하나 이상 골라 주세요.':'예상 길이 약 '+Math.round(t)+'초'+(t>90?' · 길어요. 장면을 줄이면 끝까지 보는 사람이 많아요.':'');
-  if(go&&!VD.busy)go.disabled=t==null;
+  if(go&&!VD.busy)go.disabled=t==null||preLocked('video');
 }
 function vMsg(t,pct){const m=$('#vdMsg');if(m)m.textContent=t;const b=$('#vdBar');if(b&&pct!=null){b.hidden=false;b.firstElementChild.style.width=pct+'%';}}
 function showVideo(msg){
@@ -2438,6 +2530,7 @@ function showVideo(msg){
    +'<div class="tip">완성된 상세페이지를 위아래로 천천히 훑어 내려가는 영상이에요. <b>세로</b>는 유튜브 쇼츠·인스타그램 릴스·틱톡에, <b>가로</b>는 유튜브 일반 영상에 맞아요. 만든 뒤에는 올릴 곳별 제목·설명도 준비해 드려요. 영상을 만드는 동안은 <b>영상 길이만큼 이 창을 앞에 켜 두세요</b>. 영상 속 글은 상세페이지에 있는 글 그대로예요.</div>'
    +(nd.length?'<div class="confirm" style="display:block">아직 채울 곳이 '+nd.length+'곳 남아 있어요. 비어 있는 칸은 영상에서 빠져요.</div>':'')
    +(aiN?'<div class="tip">AI로 만든 사진이 '+aiN+'장 들어 있어요. 영상을 올리는 곳(유튜브·인스타그램·틱톡)의 AI 표시 규칙을 확인하세요(바뀔 수 있어요).</div>':'')
+   +preBoxHtml('video',true)
    +'<div class="opts"><b class="hint">영상 모양</b>'+Object.keys(VFMT).map(k=>radio('vfmt',k,VD.fmt,VFMT[k].l)).join('')+'</div>'
    +'<div class="opts"><b class="hint">영상에 넣을 장면 (위에서 아래 순서로 나와요)</b>'+names.map(n=>{const has=!!VD.h[n];return '<label class="opt"><input type="checkbox" data-vsec="'+esc(n)+'"'+(has&&VD.sel[n]?' checked':'')+(has?'':' disabled')+'><div><b>'+esc(vName(n))+'</b>'+(has?'':'<div class="hint">비어 있어서 영상에서 빠져요</div>')+'</div></label>';}).join('')+'</div>'
    +'<div class="opts"><b class="hint">움직이는 속도</b>'+Object.keys(VSPEED).map(k=>radio('vspeed',k,VD.speed,VSPEED[k].l)).join('')+'</div>'
@@ -2452,7 +2545,8 @@ function showVideo(msg){
   $$('input[name=vspeed]',veil).forEach(r=>r.onchange=()=>{VD.speed=r.value;vUpdEst();});
   $$('input[name=vq]',veil).forEach(r=>r.onchange=()=>{VD.q=r.value;});
   $$('input[name=vfmt]',veil).forEach(r=>r.onchange=()=>{VD.fmt=r.value;vUpdEst();});
-  $$('input[name=vmusic]',veil).forEach(r=>r.onchange=()=>{VD.music=r.value;});
+  $$('input[name=vmusic]',veil).forEach(r=>r.onchange=()=>{VD.music=r.value;preBoxRefresh();});
+  preWire('video');
   vUpdEst();
   if(VD.blob)vShowResult();
 }
@@ -2545,6 +2639,7 @@ function vPlay(buf){   // 녹화 화면에 섞을 소리 줄기(스피커로는 
   return {tracks:dest.stream.getAudioTracks(),stop(){try{src.stop();}catch(e){}ac.close&&ac.close();}};
 }
 async function runVideo(){
+  if(!VD.busy&&preLocked('video')){vMsg('⛔ 표시를 확인하고 "그래도 영상을 만들어요"에 체크해 주세요.');return;}
   if(VD.busy)return;
   const picked=vNames().filter(n=>VD.sel&&VD.sel[n]&&VD.h&&VD.h[n]);
   if(!picked.length){vMsg('장면을 하나 이상 골라 주세요.');return;}
@@ -3472,7 +3567,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
