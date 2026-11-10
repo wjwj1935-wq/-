@@ -316,7 +316,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 93</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 94</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -329,7 +329,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <button class="btn" id="btnNew" type="button">새 제품</button>
       <button class="btn" id="btnLib" type="button" title="전에 만든 상세페이지를 목록에서 골라 다시 열어요">내 상세페이지</button>
       <button class="btn" id="btnSave" type="button">작업 저장</button>
-      <button class="btn" id="btnLoad" type="button" title="'작업 저장'으로 받아 둔 zip 파일을 열어요">파일 불러오기</button>
+      <button class="btn" id="btnLoad" type="button" title="'작업 저장'으로 만든 파일만 골라서 보여 주고 바로 열어요">파일 불러오기</button>
       <input type="file" id="loadFile" accept=".zip" hidden>
     </div>
   </header>
@@ -373,6 +373,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v94 (2026-11-10): '작업 파일 찾기' — '작업 저장' 파일에 이름표를 달고, 작업 폴더(크롬·엣지)에 자동 정리·같은 페이지는 같은 파일에 덮어씀, 폴더를 고르면 작업 파일만 목록에 보여 주고 바로 열기 */
 /* v93 (2026-11-10): '내 상세페이지' — 만들던 상세페이지를 이 브라우저에 자동 보관하고 목록에서 골라 다시 열기(이름 바꾸기·🔒 안 지우기·파일 저장·지우기, 최대 20개), 새 제품·다른 페이지 열기·파일 불러오기 전에 지금 페이지를 먼저 보관 */
 /* v92 (2026-11-10): 영상 올릴 때 쓰는 제목·설명·태그를 클로드가 자동으로 씀 — 제목 후보 3개(검색 낱말 앞쪽)·설명·태그·해시태그·고정 댓글·인스타/틱톡 문구, 상세페이지에 없는 숫자·과장·가격 말은 걸러냄, AI 사진이면 안내 문장을 앱이 붙임, 처음 문구로 되돌리기 */
 /* v91 (2026-11-10): 쇼츠 광고 영상 모드 — 상세페이지 훑기 대신 사진을 장면으로 직접 그린 20초 안팎 세로 영상(훅 → 문 색 몽타주 → 확대 3컷 → 규격 큰 숫자 → 마지막 문구), 박자에 맞춘 컷·큰 자막·천천히 확대·배경음 기본 켜짐, 글·숫자는 상세페이지에 있는 것만 */
@@ -394,7 +395,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=93,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=94,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -634,12 +635,14 @@ async function libOpen(id){
 async function libZip(id){   // 보관된 페이지 하나를 zip 파일로(다른 컴퓨터·다른 주소로 옮기거나 백업할 때)
   if(!window.JSZip){toast('저장 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.',3000);return;}
   try{
+    const dir=await dirReady(true);
     if(S.libId===id)await libSaveNow();
     const e=await idb.get(LK+id);if(!e||typeof e.s!=='string')throw new Error('x');
     const z=new JSZip(),idx=[];z.file('state.json',e.s);
     for(const pid of e.ids){const r=await idb.get(pid);if(r&&r.blob){z.file('photos/'+pid+'.bin',r.blob);idx.push({id:pid,w:r.w,h:r.h,type:r.blob.type});}}
     z.file('photos/index.json',JSON.stringify(idx));
-    await saveFile(String(libName(e)).replace(/[\\/:*?"<>|\s]+/g,'_').slice(0,40)+'_작업.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast('파일로 저장했어요.');
+    let wd='';try{wd=JSON.parse(e.s).wid||'';}catch(x){}const meta={wj:1,wid:wd,name:String(libName(e)).slice(0,60),at:Date.now(),n:e.n||0,v:VER};
+    await putWork(String(libName(e)).replace(/[\\/:*?"<>|\s]+/g,'_').slice(0,40)+'_작업.zip',await z.generateAsync({type:'blob',compression:'STORE',comment:JSON.stringify(meta)}),meta,dir);
   }catch(err){toast(err&&err.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
 }
 function libFmt(t){const d=new Date(t),p=n=>String(n).padStart(2,'0');return (d.getMonth()+1)+'월 '+d.getDate()+'일 '+p(d.getHours())+':'+p(d.getMinutes());}
@@ -693,10 +696,10 @@ function showLib(){
     +(idb.db?'':'<div class="msg err">이 브라우저에서는 보관 기능을 쓸 수 없어서, 새로 고침하면 이 목록이 사라져요. \'작업 저장\'으로 파일도 만들어 두세요.</div>')
     +'<div id="libList" class="liblist"></div><p class="cost" id="libUse"></p>'
     +'<div class="cost">이 목록은 <b>지금 쓰는 이 주소의 이 브라우저에만</b> 있어요. 다른 컴퓨터나 다른 주소(클로드 화면 ↔ github.io)로 옮기거나 브라우저 데이터를 지우면 볼 수 없으니, 오래 두려면 각 칸의 <b>파일</b> 단추로 zip을 받아 두세요.</div>'
-    +'<div class="acts"><button class="btn" id="libFile" type="button">파일(zip)에서 불러오기</button><button class="btn primary" id="libClose" type="button">닫기</button></div></div>';
+    +'<div class="acts"><button class="btn" id="libFile" type="button">작업 파일에서 불러오기</button><button class="btn primary" id="libClose" type="button">닫기</button></div></div>';
   libRender();
   $('#libClose').onclick=()=>{veil.hidden=true;libRevoke();};
-  $('#libFile').onclick=()=>{veil.hidden=true;libRevoke();$('#loadFile').click();};
+  $('#libFile').onclick=()=>{libRevoke();showWork();};
   const L=$('#libList');L.onclick=libClick;
   L.onkeydown=ev=>{
     if(ev.key==='Enter'&&ev.target.classList&&ev.target.classList.contains('libin')){ev.preventDefault();libClick({target:$('[data-lib="rensave"]',L)});}
@@ -733,7 +736,7 @@ async function restore(){
   try{const o=fromSaved(JSON.parse(raw));if(!o)return;S=o;await loadPhotos();}catch(e){S=defaults();}
 }
 /* 한글 파일 이름이 깨질 수 있어 내 컴퓨터에서는 영문 이름으로 내려받아요 */
-const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];return (/작업/.test(n)?'detailpage-work':'detailpage')+'-'+new Date().toISOString().slice(0,10)+ext;};
+const asciiName=n=>{if(/^[\x20-\x7e]+$/.test(n))return n;const ext=(n.match(/\.[A-Za-z0-9]+$/)||[''])[0];const d=new Date(),p=v=>String(v).padStart(2,'0'),wk=/작업/.test(n);return (wk?'detailpage-work':'detailpage')+'-'+d.toISOString().slice(0,10)+(wk?'-'+p(d.getHours())+p(d.getMinutes()):'')+ext;};
 async function saveFile(name,blob){
   let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;}catch(e){}
   if(dl){await dl.save({filename:name,data:blob});return;}
@@ -743,21 +746,163 @@ const safeName=()=>String(S.name||'상세페이지').replace(/[\\/:*?"<>|\s]+/g,
 async function saveWork(){
   if(!window.JSZip){toast('저장 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.',3000);return;}
   try{
+    const dir=await dirReady(true);   // 작업 폴더 허락은 단추를 누른 바로 뒤에 물어야 브라우저가 받아 줘요
+    await libSaveNow();if(!S.wid){S.wid=uid();persist();}   // wid: 이 페이지의 파일 번호(같은 페이지는 같은 파일에 덮어써요)
     const z=new JSZip();z.file('state.json',JSON.stringify(S));
     const u=usedIds();for(const id of u){const m=PH.get(id);if(m)z.file('photos/'+id+'.bin',m.blob);}
     z.file('photos/index.json',JSON.stringify([...u].map(id=>{const m=PH.get(id);return m?{id,w:m.w,h:m.h,type:m.blob.type}:null;}).filter(Boolean)));
-    await saveFile(safeName()+'_작업.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast('작업을 저장했어요.');
+    const meta=workMeta(S,libCount());
+    await putWork(safeName()+'_작업.zip',await z.generateAsync({type:'blob',compression:'STORE',comment:JSON.stringify(meta)}),meta,dir);
   }catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
 }
 async function loadWork(f){
-  if(!window.JSZip){toast('불러오기 도구를 불러오지 못했어요.',3000);return;}
-  if(!(await libSaveNow())){toast('지금 작업을 보관하지 못해서 불러오지 않았어요. \'작업 저장\'으로 파일을 먼저 만들어 두세요.',6500);return;}   // 지금 페이지는 '내 상세페이지'에 먼저 보관해요
+  if(!window.JSZip){toast('불러오기 도구를 불러오지 못했어요.',3000);return false;}
+  if(!(await libSaveNow())){toast('지금 작업을 보관하지 못해서 불러오지 않았어요. \'작업 저장\'으로 파일을 먼저 만들어 두세요.',6500);return false;}   // 지금 페이지는 '내 상세페이지'에 먼저 보관해요
   try{
     const z=await JSZip.loadAsync(f),st=fromSaved(JSON.parse(await z.file('state.json').async('string')));if(!st)throw new Error('v');
     const idx=JSON.parse(await z.file('photos/index.json').async('string'));
     for(const it of idx){const fl=z.file('photos/'+it.id+'.bin');if(!fl)continue;const blob=new Blob([await fl.async('blob')],{type:it.type||'image/jpeg'});remember(it.id,blob,it.w,it.h);await idb.put(it.id,{blob,w:it.w,h:it.h});}
-    delete st.libId;S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();else await ensureMask();renderSide();refresh();toast('작업을 불러왔어요.'+(LIB.ready?' \'내 상세페이지\'에도 보관돼요.':''));   // 파일에서 불러온 것은 새 페이지로(이미 있는 페이지를 덮어쓰지 않아요)
-  }catch(err){toast('이 파일은 불러올 수 없어요. 이 프로그램에서 저장한 zip인지 확인해 주세요.',3500);}
+    delete st.libId;S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();else await ensureMask();renderSide();refresh();toast('작업을 불러왔어요.'+(LIB.ready?' \'내 상세페이지\'에도 보관돼요.':''));return true;   // 파일에서 불러온 것은 새 페이지로(이미 있는 페이지를 덮어쓰지 않아요)
+  }catch(err){toast('이 파일은 불러올 수 없어요. 이 프로그램에서 저장한 zip인지 확인해 주세요.',3500);return false;}
+}
+
+/* ============ 작업 파일 찾기 (v94) ============
+   '작업 저장'으로 만든 파일에는 이름표(zip 설명)를 달아요: 제품 이름·저장 시각·사진 수·페이지 번호(wid).
+   - 파일 끝 몇 KB만 읽어 이름표를 알아내서, 폴더에 파일이 많아도 빨라요. 이름표가 없는 예전 파일은 이름이 '…_작업.zip'일 때만 후보로 보여 줘요.
+   - 작업 폴더(최상위 창의 크롬·엣지): 한 번 정하면 기억하고, '작업 저장'이 그 폴더에 저장해요. 같은 페이지(wid)는 같은 파일에 덮어써서 파일이 늘지 않아요.
+   - 폴더 고르기(어디서나): 고른 폴더 안에서 작업 파일만 목록에 보여 줘요. 다른 파일은 안 보여요.
+   - 목록에서 '열기'를 누르면 바로 불러와요. */
+const WDIR='wj:dir';
+const WF={h:null,perm:'',items:[],note:'',src:'',busy:false,blocked:false};
+const workMeta=(st,n)=>({wj:1,wid:String((st&&st.wid)||''),name:String((st&&st.name)||'').trim().slice(0,60),at:Date.now(),n:n||0,v:VER});
+const legacyName=n=>/_작업(\s\(\d+\))?\.zip$/i.test(n)||/^detailpage-work.*\.zip$/i.test(n);
+async function zipMeta(file){   // 파일 끝(zip 설명 칸)만 읽어서 작업 파일 이름표를 꺼내요
+  try{
+    const n=Math.min(file.size,65557),buf=new Uint8Array(await file.slice(file.size-n).arrayBuffer());
+    for(let i=buf.length-22;i>=0;i--){
+      if(buf[i]===0x50&&buf[i+1]===0x4b&&buf[i+2]===5&&buf[i+3]===6){
+        const len=buf[i+20]|(buf[i+21]<<8);if(i+22+len!==buf.length)continue;
+        if(!len)return null;
+        const m=JSON.parse(new TextDecoder().decode(buf.subarray(i+22,i+22+len)));
+        return m&&m.wj===1?m:null;
+      }
+    }
+  }catch(e){}
+  return null;
+}
+const dirOK=()=>{try{return !WF.blocked&&typeof window.showDirectoryPicker==='function'&&window.top===window;}catch(e){return false;}};
+async function dirLoad(){if(WF.h)return WF.h;try{const r=await idb.get(WDIR);if(r&&r.h&&typeof r.h.values==='function')WF.h=r.h;}catch(e){}return WF.h;}
+async function dirPerm(h,ask){try{let p=await h.queryPermission({mode:'readwrite'});if(p==='prompt'&&ask)p=await h.requestPermission({mode:'readwrite'});return p;}catch(e){return 'denied';}}
+async function dirReady(ask){if(!dirOK())return null;const h=await dirLoad();if(!h)return null;return (await dirPerm(h,ask))==='granted'?h:null;}   // 쓸 수 있는 작업 폴더(없으면 null)
+async function dirScan(dir){   // 폴더 안의 작업 파일만(이름표가 있거나 예전 이름 규칙)
+  const out=[];
+  for await(const fh of dir.values()){
+    if(fh.kind!=='file'||!/\.zip$/i.test(fh.name))continue;
+    try{const f=await fh.getFile(),m=await zipMeta(f);if(m||legacyName(fh.name))out.push({name:fh.name,handle:fh,meta:m,at:(m&&m.at)||f.lastModified,size:f.size});}catch(e){}
+  }
+  return out.sort((a,b)=>b.at-a.at);
+}
+async function scanFiles(files){   // '폴더 고르기'로 받은 파일들 중에서
+  const out=[];
+  for(const f of files){
+    if(!/\.zip$/i.test(f.name))continue;
+    const m=await zipMeta(f);if(m||legacyName(f.name))out.push({name:f.name,file:f,meta:m,at:(m&&m.at)||f.lastModified,size:f.size,path:f.webkitRelativePath||f.name});
+  }
+  return out.sort((a,b)=>b.at-a.at);
+}
+async function putWork(name,blob,meta,dir){   // 작업 폴더가 있으면 거기에(같은 페이지는 덮어쓰기), 없으면 예전처럼 내려받기
+  if(dir){
+    try{
+      const items=await dirScan(dir),old=meta.wid?items.find(x=>x.meta&&x.meta.wid===meta.wid):null;
+      let nm;
+      if(old)nm=old.name;
+      else{const used=new Set();for await(const fh of dir.values())used.add(fh.name);const base=name.replace(/\.zip$/i,'');nm=base+'.zip';for(let i=2;used.has(nm);i++)nm=base+' ('+i+').zip';}   // 폴더에 있는 다른 파일은 절대 덮어쓰지 않아요
+      let fh=old?old.handle:null;
+      if(!fh){
+        try{fh=await dir.getFileHandle(nm,{create:true});}
+        catch(e1){   // 이 폴더가 한글 파일 이름을 받지 않으면 영문 이름으로 한 번 더
+          const d=new Date(),p=v=>String(v).padStart(2,'0'),used=new Set();for await(const x of dir.values())used.add(x.name);
+          const base='detailpage-work-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes());nm=base+'.zip';for(let i=2;used.has(nm);i++)nm=base+'-'+i+'.zip';
+          fh=await dir.getFileHandle(nm,{create:true});
+        }
+      }
+      const w=await fh.createWritable();await w.write(blob);await w.close();
+      toast('작업 폴더「'+dir.name+'」에 저장했어요: '+nm+(old?' (같은 페이지 파일에 덮어썼어요)':''),5500);return nm;
+    }catch(e){toast('작업 폴더에 쓰지 못해서 일반 저장으로 바꿔요.',3500);}
+  }
+  await saveFile(name,blob);toast('작업을 저장했어요.');return name;
+}
+async function wfRefresh(ask){
+  WF.note='';
+  if(dirOK()){
+    const h=await dirLoad();
+    if(h){
+      WF.perm=await dirPerm(h,ask);
+      if(WF.perm==='granted'){try{WF.items=await dirScan(h);WF.src='dir';WF.note=WF.items.length?'':'작업 폴더에 아직 작업 파일이 없어요. \'작업 저장\'을 누르면 이 폴더에 생겨요.';}catch(e){WF.items=[];WF.note='작업 폴더를 읽지 못했어요. 폴더를 다시 정해 주세요.';}}
+      else{WF.items=[];WF.note='작업 폴더를 열려면 위의 \'작업 폴더 열기\'를 눌러 허락해 주세요.';}
+    }else{WF.items=[];WF.note='작업 폴더를 정해 두면, \'작업 저장\'이 그 폴더에 자동으로 정리되고 여기서 바로 열 수 있어요.';}
+  }else if(!WF.items.length)WF.note='\'폴더에서 찾기\'로 작업 파일을 모아 둔 폴더(예: 다운로드)를 고르면, 그 안의 작업 파일만 보여 드려요.';
+  wfDraw();
+}
+function wfDraw(){
+  const bar=$('#wfBar'),info=$('#wfInfo'),L=$('#wfList');if(!bar||!info||!L)return;
+  const h=WF.h;let b='',t='';
+  if(dirOK()){
+    if(h&&WF.perm==='granted'&&WF.src!=='scan'){b+='<button class="btn sm" type="button" data-wf="pick">작업 폴더 바꾸기</button><button class="btn sm" type="button" data-wf="refresh">새로 읽기</button>';t='작업 폴더: <b>'+esc(h.name)+'</b> · \'작업 저장\'을 누르면 이 폴더에 자동으로 정리돼요. 같은 페이지는 같은 파일에 덮어써서 파일이 늘어나지 않아요.';}
+    else if(h&&WF.perm!=='granted'){b+='<button class="btn sm primary" type="button" data-wf="grant">작업 폴더 열기</button><button class="btn sm" type="button" data-wf="pick">작업 폴더 바꾸기</button>';t='작업 폴더: <b>'+esc(h.name)+'</b> (브라우저가 허락을 다시 물어요)';}
+    else if(!h){b+='<button class="btn sm primary" type="button" data-wf="pick">작업 폴더 정하기</button>';}
+    else{b+='<button class="btn sm" type="button" data-wf="refresh">작업 폴더 보기</button><button class="btn sm" type="button" data-wf="pick">작업 폴더 바꾸기</button>';}
+    b+='<button class="btn sm" type="button" data-wf="scan">'+(h?'다른 폴더에서 찾기':'폴더에서 찾기')+'</button>';
+  }else{
+    b+='<button class="btn sm primary" type="button" data-wf="scan">폴더에서 찾기</button>';
+    t='이 화면에서는 브라우저가 폴더를 기억하게 할 수 없어서, 폴더를 한 번 골라 주시면 그 안의 작업 파일만 보여 드려요. 인터넷 주소(github.io)에서 크롬·엣지로 열면 작업 폴더를 기억해 두고, \'작업 저장\'이 거기에 자동으로 정리돼요.';
+  }
+  if(WF.src==='scan'&&WF.items.length)t+=(t?' ':'')+'아래는 방금 고른 폴더에서 찾은 작업 파일이에요.';
+  bar.innerHTML=b;info.innerHTML=t;
+  L.innerHTML=WF.items.length?WF.items.map((x,i)=>{
+    const m=x.meta,body=m
+      ?'<b class="libn" title="'+esc(m.name||x.name)+'">'+esc(m.name||'이름 없는 제품')+'</b><small>'+libFmt(x.at)+' · 사진 '+(m.n||0)+'장</small><small title="'+esc(x.path||x.name)+'">'+esc(x.name)+'</small>'
+      :'<b class="libn" title="'+esc(x.name)+'">'+esc(x.name)+'</b><small>'+libFmt(x.at)+' · 예전 방식으로 저장한 파일(열어 봐야 내용을 알 수 있어요)</small>';
+    return '<div class="libc" data-i="'+i+'"><div class="libm">'+body+'</div><div class="libb"><button class="btn sm primary" type="button" data-wf="open">열기</button></div></div>';
+  }).join(''):'<p class="hint">'+esc(WF.note||'작업 파일을 찾지 못했어요.')+'</p>';
+}
+async function wfClick(e){
+  const b=e.target&&e.target.closest?e.target.closest('[data-wf]'):null;if(!b||WF.busy)return;
+  const act=b.dataset.wf;
+  if(act==='pick'){
+    try{const h=await window.showDirectoryPicker({id:'wj-work',mode:'readwrite'});WF.h=h;WF.perm='granted';WF.src='';await idb.put(WDIR,{h});await wfRefresh(false);toast('작업 폴더를 「'+h.name+'」로 정했어요. 이제 \'작업 저장\'이 이 폴더에 저장돼요.',4500);}
+    catch(err){if(err&&err.name==='AbortError')return;if(err&&err.name==='SecurityError'){WF.blocked=true;WF.note='이 화면에서는 폴더를 정할 수 없어요. \'폴더에서 찾기\'를 써 주세요.';}else WF.note='폴더를 정하지 못했어요. 다시 눌러 주세요.';wfDraw();}
+    return;
+  }
+  if(act==='grant'){await wfRefresh(true);return;}
+  if(act==='refresh'){WF.src='';await wfRefresh(false);return;}
+  if(act==='scan'){$('#wfDir').click();return;}
+  if(act==='open'){
+    const c=b.closest('.libc'),x=c&&WF.items[+c.dataset.i];if(!x)return;
+    WF.busy=true;
+    try{const f=x.handle?await x.handle.getFile():x.file,ok=await loadWork(f);if(ok)veil.hidden=true;}catch(err){toast('이 파일을 열지 못했어요.',3000);}
+    finally{WF.busy=false;}
+  }
+}
+function showWork(){
+  WF.note='';veil.hidden=false;
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="작업 파일 불러오기" style="width:min(680px,100%)"><h2>작업 파일 불러오기</h2>'
+    +'<div class="tip">\'작업 저장\'으로 만든 <b>상세페이지 작업 파일만</b> 골라서 보여 드려요. 다른 파일(사진·영상·다른 zip)은 목록에 나오지 않아요. <b>열기</b>를 누르면 바로 불러와요.</div>'
+    +'<div class="acts" id="wfBar" style="justify-content:flex-start"></div><p class="cost" id="wfInfo"></p>'
+    +'<div id="wfList" class="liblist"></div>'
+    +'<input type="file" id="wfDir" webkitdirectory multiple hidden>'
+    +'<div class="acts"><button class="btn" id="wfOne" type="button">파일 하나 직접 고르기</button><button class="btn primary" id="wfClose" type="button">닫기</button></div></div>';
+  $('#wfClose').onclick=()=>{veil.hidden=true;};
+  $('#wfOne').onclick=()=>$('#loadFile').click();
+  veil.querySelector('.dlg').onclick=wfClick;
+  $('#wfDir').onchange=async ev=>{
+    const fs=[...ev.target.files];ev.target.value='';if(!fs.length)return;
+    WF.busy=true;$('#wfList').innerHTML='<p class="hint">폴더 안을 살펴보는 중이에요…</p>';
+    try{WF.items=await scanFiles(fs);WF.src='scan';const z=fs.filter(x=>/\.zip$/i.test(x.name)).length;WF.note=WF.items.length?'':'고른 폴더에서 작업 파일을 찾지 못했어요(zip '+z+'개를 살펴봤어요).';}
+    catch(err){WF.items=[];WF.note='폴더를 읽지 못했어요.';}
+    WF.busy=false;wfDraw();
+  };
+  return wfRefresh(false);
 }
 
 /* ============ 상세페이지 그리기 ============ */
@@ -4018,8 +4163,8 @@ $('#btnPost').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;
 $('#btnMarket').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy||MK.busy||MS.busy)return;showMarket();};
 $('#btnLib').onclick=()=>{if(libCant())return;showLib();};
 $('#btnSave').onclick=saveWork;
-$('#btnLoad').onclick=()=>$('#loadFile').click();
-$('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
+$('#btnLoad').onclick=()=>{if(libCant())return;showWork();};
+$('#loadFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f&&await loadWork(f)&&veil.querySelector('#wfList'))veil.hidden=true;};   // 목록 창에서 직접 고른 경우에는 불러온 뒤 창을 닫아요
 $('#btnNew').onclick=()=>{
   veil.hidden=false;
   veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="새 제품 시작"><h2>새 제품 시작</h2><div class="msg" style="color:var(--ink)">지금 만든 제품의 이름·사진·글을 비우고 새 제품을 시작해요.</div><div class="tip">회사 소개, 설치 안내, 구매 전 확인, 마지막 문구 같은 <b>공통 글은 그대로</b> 남아요. '+(LIB.ready?'지금 제품은 <b>내 상세페이지</b>에 자동으로 보관돼서 나중에 다시 열 수 있어요.':'지금 제품을 다시 쓸 일이 있으면 먼저 <b>작업 저장</b>을 눌러 두세요.')+'</div><div class="acts"><button class="btn" id="nwNo" type="button">취소</button><button class="btn primary" id="nwGo" type="button">새로 시작</button></div></div>';
@@ -4062,7 +4207,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
