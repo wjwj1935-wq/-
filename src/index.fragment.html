@@ -115,6 +115,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 #m3dJson{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;min-height:150px}
 .cutbox{background:repeating-conic-gradient(#8a8f98 0 25%,#767b84 0 50%) 50%/20px 20px;padding:10px;border-radius:10px}.cutbox img{max-width:100%;display:block;margin:0 auto}
 .capchips{gap:6px}.cchip{display:inline-flex;align-items:center;gap:2px}.cchip .ib{width:26px;height:26px}
+.liblist{display:grid;gap:8px}.libc{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2)}.libc.cur{border-color:var(--accent);background:var(--accent-soft)}
+.libt{width:64px;height:64px;flex:none;border-radius:8px;overflow:hidden;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--mute)}.libt img{width:100%;height:100%;object-fit:cover;display:block}
+.libm{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.libn{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.libm small{color:var(--mute);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.libb{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.libin{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+@media (max-width:560px){.libc{flex-wrap:wrap}.libb{width:100%;justify-content:flex-start}}
 .job details{grid-column:1/-1}
 .job.base{grid-template-columns:1fr;border:2px solid var(--accent,#2b59c3)}
 .job.base.ok{border-color:var(--ok)}
@@ -311,7 +316,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 92</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 93</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -322,8 +327,9 @@ button,input,select,textarea{font:inherit;color:inherit}
       <button class="btn" id="btnPost" type="button">영상 자동 등록</button>
       <button class="btn" id="btnMarket" type="button">쇼핑몰에 올리기</button>
       <button class="btn" id="btnNew" type="button">새 제품</button>
+      <button class="btn" id="btnLib" type="button" title="전에 만든 상세페이지를 목록에서 골라 다시 열어요">내 상세페이지</button>
       <button class="btn" id="btnSave" type="button">작업 저장</button>
-      <button class="btn" id="btnLoad" type="button">불러오기</button>
+      <button class="btn" id="btnLoad" type="button" title="'작업 저장'으로 받아 둔 zip 파일을 열어요">파일 불러오기</button>
       <input type="file" id="loadFile" accept=".zip" hidden>
     </div>
   </header>
@@ -367,6 +373,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v93 (2026-11-10): '내 상세페이지' — 만들던 상세페이지를 이 브라우저에 자동 보관하고 목록에서 골라 다시 열기(이름 바꾸기·🔒 안 지우기·파일 저장·지우기, 최대 20개), 새 제품·다른 페이지 열기·파일 불러오기 전에 지금 페이지를 먼저 보관 */
 /* v92 (2026-11-10): 영상 올릴 때 쓰는 제목·설명·태그를 클로드가 자동으로 씀 — 제목 후보 3개(검색 낱말 앞쪽)·설명·태그·해시태그·고정 댓글·인스타/틱톡 문구, 상세페이지에 없는 숫자·과장·가격 말은 걸러냄, AI 사진이면 안내 문장을 앱이 붙임, 처음 문구로 되돌리기 */
 /* v91 (2026-11-10): 쇼츠 광고 영상 모드 — 상세페이지 훑기 대신 사진을 장면으로 직접 그린 20초 안팎 세로 영상(훅 → 문 색 몽타주 → 확대 3컷 → 규격 큰 숫자 → 마지막 문구), 박자에 맞춘 컷·큰 자막·천천히 확대·배경음 기본 켜짐, 글·숫자는 상세페이지에 있는 것만 */
 /* v90 (2026-11-10): 영상·이미지 저장 전 '만들기 전 점검' — 임시 원본 사진·문 색상 없음·소리 없음·재질 표기·총 폭 비율·글의 색과 사진 색 불일치(무료) + 클로드가 글(색·모양 설명)과 치수 비율이 사진과 맞는지 점검(눌렀을 때만), 다르다고 나오면 확인 체크 전에는 막음 */
@@ -387,7 +394,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=92,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=93,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -499,13 +506,15 @@ function newProduct(){
 }
 
 /* ============ 사진 보관(이 브라우저 안) ============ */
-const PH=new Map(),PENDING=new Set();                 // id -> {blob,url,w,h}
+const PH=new Map(),PENDING=new Set(),LIBIDS=new Set();   // LIBIDS: '내 상세페이지'에 보관 중인 페이지가 쓰는 사진 번호(gc가 보관소에서 지우지 않아요)
+//                 // id -> {blob,url,w,h}
 const idb={db:null,mem:new Map(),
   open(){return new Promise(res=>{try{const r=indexedDB.open('wj-dp',1);r.onupgradeneeded=()=>r.result.createObjectStore('p');r.onsuccess=()=>{this.db=r.result;res()};r.onerror=()=>res();}catch(e){res()}})},
   tx(m){return this.db.transaction('p',m).objectStore('p')},
   put(id,v){this.mem.set(id,v);if(!this.db)return Promise.resolve();return new Promise(r=>{try{const q=this.tx('readwrite').put(v,id);q.onsuccess=q.onerror=()=>r()}catch(e){r()}})},
   get(id){if(this.mem.has(id))return Promise.resolve(this.mem.get(id));if(!this.db)return Promise.resolve(null);return new Promise(r=>{try{const q=this.tx('readonly').get(id);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)}catch(e){r(null)}})},
-  del(id){this.mem.delete(id);if(!this.db)return;try{this.tx('readwrite').delete(id)}catch(e){}}
+  del(id){this.mem.delete(id);if(!this.db)return;try{this.tx('readwrite').delete(id)}catch(e){}},
+  keys(){const m=[...this.mem.keys()];if(!this.db)return Promise.resolve(m);return new Promise(r=>{try{const q=this.tx('readonly').getAllKeys();q.onsuccess=()=>r([...new Set(m.concat(q.result||[]))]);q.onerror=()=>r(m);}catch(e){r(m);}});}
 };
 function remember(id,blob,w,h){PH.set(id,{blob,w,h,url:URL.createObjectURL(blob)});}
 async function ingest(file){
@@ -525,7 +534,7 @@ async function ingest(file){
   return {id,w,h};
 }
 function usedIds(){const s=new Set();const walk=o=>{if(!o||typeof o!=='object')return;if(typeof o.id==='string'&&o.w&&o.h)s.add(o.id);for(const k in o)walk(o[k]);};walk(S);return s;}
-function gc(){const u=usedIds();for(const [id,m] of PH){if(!u.has(id)&&!PENDING.has(id)){try{URL.revokeObjectURL(m.url)}catch(e){}PH.delete(id);idb.del(id);}}}
+function gc(){const u=usedIds();for(const [id,m] of PH){if(!u.has(id)&&!PENDING.has(id)){try{URL.revokeObjectURL(m.url)}catch(e){}PH.delete(id);if(!LIBIDS.has(id))idb.del(id);}}}
 async function setPhoto(path,file,extra){
   const meta=await ingest(file);
   if(path==='src')setP(path,{id:meta.id,w:meta.w,h:meta.h});
@@ -534,9 +543,171 @@ async function setPhoto(path,file,extra){
 }
 const hasPhoto=p=>!!(p&&p.id&&PH.has(p.id));
 
+/* ============ 내 상세페이지 (v93) ============
+   만들던 상세페이지를 이 브라우저에 자동으로 보관하고, 목록에서 골라 다시 열 수 있어요.
+   - 보관하는 것: 글·설정(S)과 쓰인 사진 번호. 사진 파일은 원래 사진 보관소에 그대로 두고, 보관 중인 페이지가 쓰는 사진은 지워지지 않게 표시해 둬요(LIBIDS).
+   - 사진이 한 장이라도 들어간 페이지만 보관해요(빈 화면은 안 남겨요). 글·사진을 고치면 2.5초 뒤 자동으로 갱신돼요.
+   - 새 제품 · 다른 페이지 열기 · 파일 불러오기 전에는 지금 페이지를 먼저 보관해요.
+   - 최대 LIB.max개. 넘으면 가장 오래 안 만진 것부터 지워요('안 지우기' 한 것과 지금 열린 것은 안 지워요).
+   - 사진 보관소와 같은 곳(IndexedDB)에 'lib:번호' 이름으로 넣어요. */
+const LK='lib:';
+const LIB={max:20,list:[],sig:{},q:Promise.resolve(true),ask:'',edit:'',urls:[],t:0,ready:false};   // list: 목록용 요약(글 전체 s는 열 때만 읽어요)
+/* 보관본에는 '이전 작업 되살리기'용 이전 제품 사본(prev)을 넣지 않아요: 이전 제품은 목록에 따로 있고, 넣으면 지운 페이지의 사진이 다른 항목 안에 남아요 */
+function libIdSet(){const s=new Set();const walk=o=>{if(!o||typeof o!=='object')return;if(typeof o.id==='string'&&o.w&&o.h)s.add(o.id);for(const k in o){if(k==='prev')continue;walk(o[k]);}};walk(S);return s;}
+const libWorth=()=>libIdSet().size>0;
+const libCount=()=>libIdSet().size;
+const libName=e=>String(e.label||e.name||'').trim()||'이름 없는 제품';
+function libThumbSrc(){const c=[S.hero&&S.hero.photo,S.concept&&S.concept.photo].concat(((S.colors&&S.colors.items)||[]).map(i=>i.photo),[S.src]);return c.find(p=>hasPhoto(p))||null;}
+async function libMakeThumb(id){
+  const m=PH.get(id);if(!m)return null;
+  try{const b=await createImageBitmap(m.blob),k=Math.min(1,160/Math.max(b.width,b.height)),w=Math.max(1,Math.round(b.width*k)),h=Math.max(1,Math.round(b.height*k)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(b,0,0,w,h);return await new Promise(r=>c.toBlob(r,'image/jpeg',.8));}catch(e){return null;}
+}
+function libReindex(oldIds){   // 보관 중인 사진 표를 다시 만들고, 어느 쪽에도 안 쓰이게 된 사진은 보관소에서 지워요
+  LIBIDS.clear();LIB.list.forEach(e=>e.ids.forEach(i=>LIBIDS.add(i)));
+  const u=usedIds();
+  (oldIds||[]).forEach(id=>{if(LIBIDS.has(id)||u.has(id)||PENDING.has(id))return;const m=PH.get(id);if(m){try{URL.revokeObjectURL(m.url)}catch(e){}PH.delete(id);}idb.del(id);});
+}
+const libChip=()=>{const b=$('#btnLib');if(b)b.textContent=LIB.list.length?'내 상세페이지 '+LIB.list.length:'내 상세페이지';};
+const libRun=fn=>{LIB.q=LIB.q.then(async()=>{try{return await fn();}catch(e){return false;}});return LIB.q;};   // 보관소 일은 한 줄로 차례대로 해요
+async function libDel(id){
+  const e=LIB.list.find(x=>x.id===id);if(!e)return false;
+  await idb.del(LK+id);LIB.list.splice(LIB.list.indexOf(e),1);delete LIB.sig[id];libReindex(e.ids);libChip();return true;
+}
+async function libTrim(){   // 한도를 넘으면 가장 오래 안 만진 것부터(🔒·지금 열린 것은 빼고)
+  const cut=[];
+  while(LIB.list.length>LIB.max){
+    const c=LIB.list.filter(e=>!e.pin&&e.id!==S.libId).sort((a,b)=>a.at-b.at)[0];
+    if(!c)break;
+    cut.push(libName(c));await libDel(c.id);
+  }
+  return cut;
+}
+async function libDoSave(){
+  if(!LIB.ready||!libWorth())return true;
+  try{
+    if(!S.libId)S.libId=uid();
+    // 아래 값은 기다리기 전에 한꺼번에 읽어 둬요(그 사이 화면이 바뀌어도 한 페이지 것만 담기게)
+    const id=S.libId,s=JSON.stringify(Object.assign({},S,{prev:null})),old=LIB.list.find(e=>e.id===id)||null;
+    if(old&&LIB.sig[id]===s)return true;
+    const u=[...libIdSet()],ts=libThumbSrc(),thumbId=ts?ts.id:'',cnt=libCount(),name=String(S.name||'').trim().slice(0,60),sub=String((S.hero&&(S.hero.title||S.hero.badge))||'').replace(/\s+/g,' ').trim().slice(0,40);
+    let thumb=old&&old.thumbId===thumbId&&old.thumb?old.thumb:null;
+    if(!thumb&&thumbId)thumb=await libMakeThumb(thumbId);
+    const e={id,name,sub,label:old?old.label||'':'',pin:old?!!old.pin:false,at:Date.now(),ids:u,n:cnt,thumbId,thumb,s};
+    await idb.put(LK+id,e);
+    const m=Object.assign({},e);delete m.s;
+    const oldIds=old?old.ids:[];
+    if(old)LIB.list[LIB.list.indexOf(old)]=m;else LIB.list.push(m);
+    LIB.sig[id]=s;libReindex(oldIds);
+    const cut=await libTrim();
+    libChip();persist();
+    if(cut.length)toast('보관 한도('+LIB.max+'개)를 넘어서 가장 오래 안 만진 \''+cut.join('\', \'')+'\'을(를) 지웠어요. \'안 지우기\'를 눌러 두면 지워지지 않아요.',6500);
+    return true;
+  }catch(err){return false;}
+}
+function libSaveNow(){clearTimeout(LIB.t);return libRun(libDoSave);}   // 끝나면 true(보관했거나 보관할 게 없음) / false(보관 못 함)
+const libSoon=()=>{clearTimeout(LIB.t);if(!LIB.ready)return;LIB.t=setTimeout(libSaveNow,2500);};
+async function libInit(){
+  try{
+    const ks=(await idb.keys()).filter(k=>typeof k==='string'&&k.indexOf(LK)===0),L=[];
+    for(const k of ks){const e=await idb.get(k);if(e&&typeof e.id==='string'&&Array.isArray(e.ids)&&typeof e.s==='string'){const m=Object.assign({},e);delete m.s;L.push(m);LIB.sig[e.id]=e.s;}}
+    LIB.list=L;libReindex([]);
+  }catch(e){}
+  LIB.ready=true;libChip();libSoon();
+}
+function libPatch(id,o){return libRun(async()=>{const e=await idb.get(LK+id);if(!e)return false;Object.assign(e,o);await idb.put(LK+id,e);const m=LIB.list.find(x=>x.id===id);if(m)Object.assign(m,o);return true;});}
+const libCant=()=>oneBusy||G.busy||EX.busy||VD.busy||YT.busy||MK.busy||MS.busy;
+async function libOpen(id){
+  if(libCant()){toast('만들거나 저장하는 중에는 열 수 없어요. 끝난 뒤에 눌러 주세요.',3500);return false;}
+  if(S.libId===id){veil.hidden=true;libRevoke();toast('이미 열려 있는 페이지예요.');return false;}
+  const e=await idb.get(LK+id);let st=null;
+  try{st=e&&typeof e.s==='string'?fromSaved(JSON.parse(e.s)):null;}catch(x){st=null;}
+  if(!st){toast('이 페이지를 읽지 못했어요.',3500);return false;}
+  if(!(await libSaveNow())){toast('지금 작업을 보관하지 못해서 열지 않았어요. \'작업 저장\'으로 파일을 만든 뒤 다시 눌러 주세요.',6500);return false;}
+  st.libId=id;
+  S=st;dirty=false;PM=null;REF={sig:'',val:null};BREF={id:'',val:null};
+  await loadPhotos();gc();
+  if(zoomUntouched())await autoZoom();else await ensureMask();
+  UI.open.add('p1');veil.hidden=true;libRevoke();setTab('edit');renderSide();refresh();
+  toast('\''+libName(e)+'\' 페이지를 열었어요.'+(LOST>0?' 사진 '+LOST+'장을 찾지 못해 그 칸이 비었어요.':''),LOST>0?7000:3200);
+  return true;
+}
+async function libZip(id){   // 보관된 페이지 하나를 zip 파일로(다른 컴퓨터·다른 주소로 옮기거나 백업할 때)
+  if(!window.JSZip){toast('저장 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.',3000);return;}
+  try{
+    if(S.libId===id)await libSaveNow();
+    const e=await idb.get(LK+id);if(!e||typeof e.s!=='string')throw new Error('x');
+    const z=new JSZip(),idx=[];z.file('state.json',e.s);
+    for(const pid of e.ids){const r=await idb.get(pid);if(r&&r.blob){z.file('photos/'+pid+'.bin',r.blob);idx.push({id:pid,w:r.w,h:r.h,type:r.blob.type});}}
+    z.file('photos/index.json',JSON.stringify(idx));
+    await saveFile(String(libName(e)).replace(/[\\/:*?"<>|\s]+/g,'_').slice(0,40)+'_작업.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast('파일로 저장했어요.');
+  }catch(err){toast(err&&err.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
+}
+function libFmt(t){const d=new Date(t),p=n=>String(n).padStart(2,'0');return (d.getMonth()+1)+'월 '+d.getDate()+'일 '+p(d.getHours())+':'+p(d.getMinutes());}
+function libRevoke(){LIB.urls.forEach(u=>{try{URL.revokeObjectURL(u)}catch(e){}});LIB.urls=[];}
+function libCard(e){
+  const cur=S.libId===e.id;let img='<span>사진 없음</span>';
+  if(e.thumb){try{const u=URL.createObjectURL(e.thumb);LIB.urls.push(u);img='<img alt="" src="'+u+'">';}catch(x){}}
+  const nm='<b class="libn" title="'+esc(libName(e))+'">'+esc(libName(e))+'</b>';
+  let mid,btn;
+  if(LIB.edit===e.id){
+    mid='<div class="libm"><input type="text" class="libin" maxlength="60" value="'+esc(libName(e))+'" aria-label="페이지 이름"><small>비워서 저장하면 제품 이름으로 돌아가요.</small></div>';
+    btn='<button class="btn sm primary" type="button" data-lib="rensave">저장</button><button class="btn sm" type="button" data-lib="rencancel">취소</button>';
+  }else if(LIB.ask===e.id){
+    mid='<div class="libm">'+nm+'<small>지우면 되돌릴 수 없어요. 정말 지울까요?</small></div>';
+    btn='<button class="btn sm primary" type="button" data-lib="delgo">지우기</button><button class="btn sm" type="button" data-lib="delno">취소</button>';
+  }else{
+    mid='<div class="libm">'+nm+(e.sub?'<small>'+esc(e.sub)+'</small>':'')+'<small>'+libFmt(e.at)+' · 사진 '+e.n+'장'+(cur?' · <b>지금 열려 있어요</b>':'')+'</small></div>';
+    btn=(cur?'':'<button class="btn sm primary" type="button" data-lib="open">열기</button>')
+      +'<button class="btn sm" type="button" data-lib="name">이름</button>'
+      +'<button class="btn sm'+(e.pin?' primary':'')+'" type="button" data-lib="pin" aria-pressed="'+(e.pin?'true':'false')+'" title="눌러 두면 목록이 가득 차도 지워지지 않아요">'+(e.pin?'🔒 안 지우는 중':'🔓 안 지우기')+'</button>'
+      +'<button class="btn sm" type="button" data-lib="zip" title="이 페이지를 zip 파일로 받아요(백업·옮기기)">파일</button>'
+      +(cur?'':'<button class="ib" type="button" data-lib="del" aria-label="이 페이지 지우기">✕</button>');
+  }
+  return '<div class="libc'+(cur?' cur':'')+'" data-id="'+esc(e.id)+'"><div class="libt">'+img+'</div>'+mid+'<div class="libb">'+btn+'</div></div>';
+}
+function libRender(){
+  const L=$('#libList');if(!L)return;libRevoke();
+  const a=LIB.list.slice().sort((x,y)=>y.at-x.at);
+  L.innerHTML=a.length?a.map(libCard).join(''):'<p class="hint">아직 보관된 상세페이지가 없어요. 사진을 한 장 이상 넣으면 이 목록에 자동으로 생겨요.</p>';
+  const i=$('.libin',L);if(i){i.focus();i.select();}
+  const n=$('#libN');if(n)n.textContent=LIB.list.length+' / '+LIB.max+'개';
+}
+async function libClick(e){
+  const b=e.target&&e.target.closest?e.target.closest('[data-lib]'):null;if(!b)return;
+  const c=b.closest('.libc'),id=c&&c.dataset.id,act=b.dataset.lib,en=id&&LIB.list.find(x=>x.id===id);
+  if(!en)return;
+  if(act==='open'){await libOpen(id);return;}
+  if(act==='name'){LIB.edit=id;LIB.ask='';libRender();return;}
+  if(act==='rencancel'){LIB.edit='';libRender();return;}
+  if(act==='rensave'){const v=(($('.libin',c)||{}).value||'').trim().slice(0,60);await libPatch(id,{label:v});LIB.edit='';libRender();return;}
+  if(act==='pin'){await libPatch(id,{pin:!en.pin});libRender();return;}
+  if(act==='del'){LIB.ask=id;LIB.edit='';libRender();return;}
+  if(act==='delno'){LIB.ask='';libRender();return;}
+  if(act==='delgo'){LIB.ask='';await libRun(()=>libDel(id));libRender();toast('지웠어요.');return;}
+  if(act==='zip'){await libZip(id);return;}
+}
+function showLib(){
+  LIB.ask='';LIB.edit='';veil.hidden=false;
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="내 상세페이지" style="width:min(660px,100%)"><h2>내 상세페이지 <small id="libN" style="font-weight:600;color:var(--mute);font-size:13px"></small></h2>'
+    +'<div class="tip">만들던 상세페이지는 이 브라우저에 <b>자동으로 보관</b>돼요(사진이 한 장 이상 들어가면요). <b>열기</b>를 누르면 지금 페이지를 먼저 보관한 뒤 그 페이지를 불러와요. '+LIB.max+'개를 넘으면 가장 오래 안 만진 것부터 지워지고, <b>안 지우기</b>를 눌러 둔 것(🔒)은 안 지워져요.</div>'
+    +(idb.db?'':'<div class="msg err">이 브라우저에서는 보관 기능을 쓸 수 없어서, 새로 고침하면 이 목록이 사라져요. \'작업 저장\'으로 파일도 만들어 두세요.</div>')
+    +'<div id="libList" class="liblist"></div><p class="cost" id="libUse"></p>'
+    +'<div class="cost">이 목록은 <b>지금 쓰는 이 주소의 이 브라우저에만</b> 있어요. 다른 컴퓨터나 다른 주소(클로드 화면 ↔ github.io)로 옮기거나 브라우저 데이터를 지우면 볼 수 없으니, 오래 두려면 각 칸의 <b>파일</b> 단추로 zip을 받아 두세요.</div>'
+    +'<div class="acts"><button class="btn" id="libFile" type="button">파일(zip)에서 불러오기</button><button class="btn primary" id="libClose" type="button">닫기</button></div></div>';
+  libRender();
+  $('#libClose').onclick=()=>{veil.hidden=true;libRevoke();};
+  $('#libFile').onclick=()=>{veil.hidden=true;libRevoke();$('#loadFile').click();};
+  const L=$('#libList');L.onclick=libClick;
+  L.onkeydown=ev=>{
+    if(ev.key==='Enter'&&ev.target.classList&&ev.target.classList.contains('libin')){ev.preventDefault();libClick({target:$('[data-lib="rensave"]',L)});}
+    if(ev.key==='Escape'&&LIB.edit){ev.stopPropagation();LIB.edit='';libRender();}
+  };
+  try{navigator.storage.estimate().then(r=>{const el=$('#libUse');if(el&&r&&r.usage!=null)el.textContent='이 브라우저 보관 공간 사용량: 약 '+Math.round(r.usage/1048576)+'MB';}).catch(()=>{});}catch(e){}
+}
+
 /* ============ 저장 / 불러오기 ============ */
 let saveT=0;
-const persist=()=>{clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}},400);};
+const persist=()=>{clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}libSoon();},400);};
 function fromSaved(o){                       // 저장본 → 현재 형식(예전 버전 파일도 읽어요)
   if(!o||(o.v!==2&&o.v!==3))return null;
   const b=defaults(),r=Object.assign(b,o,{v:3});delete r.opv;delete r.opVideo;delete r.opFirst;delete r.opPup;   // 예전 저장 파일의 작동 영상 칸은 읽지 않아요
@@ -580,11 +751,12 @@ async function saveWork(){
 }
 async function loadWork(f){
   if(!window.JSZip){toast('불러오기 도구를 불러오지 못했어요.',3000);return;}
+  if(!(await libSaveNow())){toast('지금 작업을 보관하지 못해서 불러오지 않았어요. \'작업 저장\'으로 파일을 먼저 만들어 두세요.',6500);return;}   // 지금 페이지는 '내 상세페이지'에 먼저 보관해요
   try{
     const z=await JSZip.loadAsync(f),st=fromSaved(JSON.parse(await z.file('state.json').async('string')));if(!st)throw new Error('v');
     const idx=JSON.parse(await z.file('photos/index.json').async('string'));
     for(const it of idx){const fl=z.file('photos/'+it.id+'.bin');if(!fl)continue;const blob=new Blob([await fl.async('blob')],{type:it.type||'image/jpeg'});remember(it.id,blob,it.w,it.h);await idb.put(it.id,{blob,w:it.w,h:it.h});}
-    S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();else await ensureMask();renderSide();refresh();toast('작업을 불러왔어요.');
+    delete st.libId;S=st;dirty=false;gc();if(zoomUntouched())await autoZoom();else await ensureMask();renderSide();refresh();toast('작업을 불러왔어요.'+(LIB.ready?' \'내 상세페이지\'에도 보관돼요.':''));   // 파일에서 불러온 것은 새 페이지로(이미 있는 페이지를 덮어쓰지 않아요)
   }catch(err){toast('이 파일은 불러올 수 없어요. 이 프로그램에서 저장한 zip인지 확인해 주세요.',3500);}
 }
 
@@ -3844,14 +4016,15 @@ $('#btnExport').onclick=()=>{EX.busy=false;EX.cancel=false;showExport();};
 $('#btnVideo').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;showVideo();};
 $('#btnPost').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy)return;showPost();};
 $('#btnMarket').onclick=()=>{if(oneBusy||G.busy||EX.busy||VD.busy||YT.busy||MK.busy||MS.busy)return;showMarket();};
+$('#btnLib').onclick=()=>{if(libCant())return;showLib();};
 $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>$('#loadFile').click();
 $('#loadFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadWork(f);};
 $('#btnNew').onclick=()=>{
   veil.hidden=false;
-  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="새 제품 시작"><h2>새 제품 시작</h2><div class="msg" style="color:var(--ink)">지금 만든 제품의 이름·사진·글을 비우고 새 제품을 시작해요.</div><div class="tip">회사 소개, 설치 안내, 구매 전 확인, 마지막 문구 같은 <b>공통 글은 그대로</b> 남아요. 지금 제품을 다시 쓸 일이 있으면 먼저 <b>작업 저장</b>을 눌러 두세요.</div><div class="acts"><button class="btn" id="nwNo" type="button">취소</button><button class="btn primary" id="nwGo" type="button">새로 시작</button></div></div>';
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="새 제품 시작"><h2>새 제품 시작</h2><div class="msg" style="color:var(--ink)">지금 만든 제품의 이름·사진·글을 비우고 새 제품을 시작해요.</div><div class="tip">회사 소개, 설치 안내, 구매 전 확인, 마지막 문구 같은 <b>공통 글은 그대로</b> 남아요. '+(LIB.ready?'지금 제품은 <b>내 상세페이지</b>에 자동으로 보관돼서 나중에 다시 열 수 있어요.':'지금 제품을 다시 쓸 일이 있으면 먼저 <b>작업 저장</b>을 눌러 두세요.')+'</div><div class="acts"><button class="btn" id="nwNo" type="button">취소</button><button class="btn primary" id="nwGo" type="button">새로 시작</button></div></div>';
   $('#nwNo').onclick=()=>{veil.hidden=true;};
-  $('#nwGo').onclick=()=>{newProduct();UI.open.add('p1');renderSide();refresh();veil.hidden=true;toast('새 제품을 시작했어요. 1단계에서 이름과 사진을 넣어 주세요.'+(S.prev?' 이전 제품은 따로 보관했어요(1단계 \'이전 작업 되살리기\').':''),5200);};
+  $('#nwGo').onclick=async()=>{$('#nwGo').disabled=true;const had=LIB.ready&&libWorth(),ok=await libSaveNow();newProduct();UI.open.add('p1');renderSide();refresh();veil.hidden=true;toast('새 제품을 시작했어요. 1단계에서 이름과 사진을 넣어 주세요.'+(had&&ok?' 이전 제품은 \'내 상세페이지\'에 보관했어요(다시 열 수 있어요).':S.prev?' 이전 제품은 따로 보관했어요(1단계 \'이전 작업 되살리기\').':''),5200);};
 };
 
 /* ============ 자동 업그레이드(인터넷 주소로 열었을 때만) ============
@@ -3889,12 +4062,12 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
   await idb.open();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}   // 브라우저가 사진을 함부로 지우지 않게 부탁해요
-  await restore();
+  await restore();await libInit();
   if(LOST>0)setTimeout(()=>toast('저장소에서 사진 '+LOST+'장을 찾지 못해 그 칸이 비었어요. 3단계에서 「빈 칸 모두 만들기」로 다시 채울 수 있어요.',7000),700);
   renderSide();paper.innerHTML=renderPage(false);fit();chip();
   if(zoomUntouched()&&await autoZoom()){renderSide();refresh();toast('확대 3곳을 제품 위치에 맞췄어요.',2600);}   // 예전 기본 자리가 저장돼 있던 작업도 한 번 맞춰요
