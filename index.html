@@ -314,7 +314,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 90</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 91</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -370,6 +370,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v91 (2026-11-10): 쇼츠 광고 영상 모드 — 상세페이지 훑기 대신 사진을 장면으로 직접 그린 20초 안팎 세로 영상(훅 → 문 색 몽타주 → 확대 3컷 → 규격 큰 숫자 → 마지막 문구), 박자에 맞춘 컷·큰 자막·천천히 확대·배경음 기본 켜짐, 글·숫자는 상세페이지에 있는 것만 */
 /* v90 (2026-11-10): 영상·이미지 저장 전 '만들기 전 점검' — 임시 원본 사진·문 색상 없음·소리 없음·재질 표기·총 폭 비율·글의 색과 사진 색 불일치(무료) + 클로드가 글(색·모양 설명)과 치수 비율이 사진과 맞는지 점검(눌렀을 때만), 다르다고 나오면 확인 체크 전에는 막음 */
 /* v89 (2026-11-09): 3D 모형(실험) — 클로드가 사진과 치수로 받침·목·레버의 3D 모형을 추정하고(사진과 비교해 최대 2번 고침), 앱이 정면·비스듬히·옆으로 렌더링해서 구글 참고 사진에 구조 참고도로 같이 보냄 · 값(JSON)을 고쳐 무료로 다시 렌더링 · 켜고 끄기 */
 /* v88 (2026-11-09): 실물 합성(선택) — 문 사진만 AI가 그리고 제품은 1단계 실제 사진에서 오려 붙임 · 첫 화면·소개는 구글 없이 컴퓨터가 어두운 배경에 실제 제품을 올려 만듦 · 크기·위아래·그림자 조절과 무료 다시 합성 */
@@ -388,7 +389,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=90,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=91,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1365,6 +1366,249 @@ async function regenBad(list,signal){            // 정밀 모델로 한 번 더
   await Promise.all(Array.from({length:Math.min(3,list.length)},wk));
   return {done,err};
 }
+/* ===== 쇼츠 광고 영상 (v91) =====
+   상세페이지를 훑는 녹화가 아니라, 사진을 장면으로 직접 그려 만든 20초 안팎의 세로 영상이에요.
+   훅(문에 단 모습 + 큰 한 줄) → 문 색 몽타주 → 확대 3컷 → 규격 큰 숫자 → 마지막 문구.
+   글·숫자는 상세페이지에 있는 것만 써요(새로 지어내지 않아요). 쇼츠 화면 아래쪽(제목·버튼 자리)은 비워 둬요. */
+const AD={W:1080,H:1920,maxDoor:8};
+const AD_FONT='"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+const adCap=(t,n)=>String(t==null?'':t).replace(/\s+/g,' ').trim().slice(0,n);
+const adEase=u=>1-Math.pow(1-Math.max(0,Math.min(1,u)),3);
+function adDoorItems(){   // 영상에 쓸 문 사진: 검수에서 보류된 칸은 빼고, 손이 나오는 사용 컷은 맨 뒤
+  const a=[],b=[];
+  S.colors.items.forEach((it,i)=>{const p=it.photo;if(!hasPhoto(p)||(p.chk&&!p.chk.ok))return;(isHand(it)?b:a).push({it,i,p});});
+  return a.concat(b).slice(0,AD.maxDoor);
+}
+const adLabel=it=>isHand(it)?'사용하는 모습':adCap(it.label,16);
+function adHookText(){const n=adDoorItems().length;return n>=3?'문에 달면\n이렇게 보여요':n?'문에 단 모습,\n먼저 보세요':'크게 확대해서\n확인하세요';}
+function adRows(){   // 규격 카드: 크기 안내·규격에 적은 값만(없으면 그 줄은 빠져요)
+  const Z=S.size||{},F=S.facts||{},t=v=>String(v==null?'':v).trim();
+  const mmx=v=>{const x=t(v);return !x?'':/^[0-9.]+$/.test(x)?x+'mm':/^[0-9.]+\s*[~\-–]\s*[0-9.]+$/.test(x)?x.replace(/\s+/g,'')+'mm':x;},r=[],b=lenBase(Z);
+  if(t(Z.len))r.push([b==='lever'?'캡 가장자리 ~ 레버 끝':b==='full'?'캡 포함 전체 길이':'캡 중심 ~ 레버 끝',mmx(Z.len)]);
+  const sh=CAP_SHAPES.indexOf(Z.shape)>=0?Z.shape:'round';
+  if(sh==='rect'||sh==='rrect'){if(t(Z.capW)&&t(Z.capH))r.push(['받침(캡) 크기',mmx(Z.capW).replace('mm','')+' × '+mmx(Z.capH)]);}
+  else if(sh==='square'){if(t(Z.capW))r.push(['받침(캡) 한 변',mmx(Z.capW)]);}
+  else if(t(Z.cap))r.push(['받침(캡) 지름',mmx(Z.cap)]);
+  if(t(F.thick))r.push(['적용 문 두께',mmx(F.thick)]);
+  if(t(F.backset))r.push(['백셋',mmx(F.backset)]);
+  if(t(F.bore))r.push(['문 구멍 지름',mmx(F.bore)]);
+  return r.slice(0,4);
+}
+async function adLoad(){
+  const bm=async p=>{const m=p&&p.id&&PH.get(p.id);if(!m)return null;try{return await createImageBitmap(m.blob);}catch(e){return null;}};
+  const A={doors:[],zoom:[],rows:adRows(),hero:null,concept:null,src:null};
+  for(const d of adDoorItems()){const b=await bm(d.p);if(b)A.doors.push({bmp:b,label:adLabel(d.it),hand:isHand(d.it),ai:!!d.p.ai});}
+  const h=await bm(S.hero.photo);if(h)A.hero={bmp:h,ai:!!S.hero.photo.ai};
+  const c=await bm(S.concept.photo);if(c)A.concept={bmp:c,ai:!!S.concept.photo.ai};
+  A.src=await bm(S.src);
+  for(let i=0;i<3;i++){
+    const it=S.zoom.items[i];if(!it)continue;let z=null;const own=await bm(it.photo);
+    if(own)z={bmp:own,crop:{sx:0,sy:0,sw:own.width,sh:own.height}};
+    else if(A.src&&hasPhoto(S.src)){const m=PH.get(S.src.id),g=geom(m,736,560,it),sw=736/g.sw*m.w,sh=560/g.sh*m.h,sx=Math.max(0,Math.min(m.w-sw,-g.x/g.sw*m.w)),sy=Math.max(0,Math.min(m.h-sh,-g.y/g.sh*m.h));z={bmp:A.src,crop:{sx,sy,sw,sh}};}
+    if(z){z.title=adCap(it.title,40);z.body=adCap(String(it.body||'').split('\n')[0],70);z.tag=adCap(it.tag||('확대 '+(i+1)),8);A.zoom.push(z);}
+  }
+  return A;
+}
+/* 장면 시간표: 박자(beat)가 있으면 컷을 박자에 맞춰요 */
+function adPlan(A,beat){
+  const q=x=>beat?Math.max(beat,Math.round(x/beat)*beat):x,cut=beat?q(.95):.9,list=[];let t=0;
+  const add=(kind,dur,extra)=>{const sc=Object.assign({kind,t0:t,t1:t+dur},extra);list.push(sc);t+=dur;return sc;};
+  const doors=A.doors.slice(),hi=Math.max(0,doors.findIndex(d=>!d.hand&&!/화이트|흰/.test(d.label||'')));
+  if(doors.length){
+    add('hook',q(2.4),{img:doors[hi],mode:'cover'});
+    const rest=doors.length>3?doors.filter((d,i)=>i!==hi):doors,n=Math.min(rest.length,Math.max(2,Math.floor(8.5/cut)));
+    rest.slice(0,n).forEach((d,i)=>add('door',cut,{img:d,k:i+1,n}));
+  }else{
+    const first=A.hero||A.concept||(A.src&&{bmp:A.src,ai:false});
+    if(first)add('hook',q(2.4),{img:first,mode:'contain'});
+    if(A.hero&&A.concept)add('still',1.8,{img:A.concept,mode:'contain',title:adCap(S.concept.title,30)});
+  }
+  A.zoom.forEach((z,i)=>add('zoom',1.7,{z,i}));
+  if(A.rows.length>=2)add('rows',Math.min(4.4,1.4+.85*A.rows.length),{});
+  add('cta',2.8,{img:(doors[hi]||A.hero||A.concept||(A.src&&{bmp:A.src}))||null});
+  return {list,total:t,cut};
+}
+function adEst(){
+  const n=adDoorItems().length,z=(S.zoom.items||[]).slice(0,3).filter(it=>it&&(hasPhoto(it.photo)||hasPhoto(S.src))).length,A={doors:Array.from({length:n},()=>({label:'',hand:false})),zoom:Array.from({length:z},()=>({})),rows:adRows(),hero:hasPhoto(S.hero.photo)?{}:null,concept:hasPhoto(S.concept.photo)?{}:null,src:hasPhoto(S.src)?{}:null};
+  if(!n&&!A.hero&&!A.concept&&!A.src)return null;
+  const m=VMOODS[VD.music];return adPlan(A,m?60/m.bpm:0).total;
+}
+function adRound(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function adWrap(g,text,maxW){   // 줄바꿈 표시(\n)를 먼저 지키고, 넘치면 띄어쓰기에서, 그래도 넘치면 글자 단위로 나눠요
+  const out=[];
+  String(text).split('\n').forEach(par=>{
+    let line='';
+    for(const w of par.split(/(\s+)/)){
+      const tt=line+w;
+      if(g.measureText(tt).width<=maxW||!line.trim())line=tt;else{out.push(line.trim());line=w.trim()?w:'';}
+      while(g.measureText(line).width>maxW&&line.length>1){let k=line.length-1;while(k>1&&g.measureText(line.slice(0,k)).width>maxW)k--;out.push(line.slice(0,k));line=line.slice(k);}
+    }
+    if(line.trim())out.push(line.trim());
+  });
+  return out;
+}
+function adText(g,text,o){   // o: x,y,maxW,size,min,weight,color,align,lh,lines,alpha,dy,stroke
+  let size=o.size,lines;const lh=o.lh||1.2,wt=o.weight||800;
+  for(;;){g.font=wt+' '+size+'px '+AD_FONT;lines=adWrap(g,text,o.maxW);if(lines.length<=(o.lines||2)||size<=(o.min||40))break;size-=4;}
+  lines=lines.slice(0,o.lines||2);
+  g.save();g.globalAlpha=o.alpha==null?1:o.alpha;g.textBaseline='top';g.textAlign=o.align||'center';g.lineJoin='round';
+  const x=o.align==='left'?o.x:o.x;
+  lines.forEach((ln,i)=>{const y=o.y+(o.dy||0)+i*size*lh;if(o.stroke!==0){g.lineWidth=size*.14;g.strokeStyle='rgba(6,12,30,.7)';g.strokeText(ln,x,y);}g.fillStyle=(o.colors&&o.colors[i])||o.color||'#fff';g.fillText(ln,x,y);});
+  g.restore();
+  return {h:lines.length*size*lh,size,lines:lines.length};
+}
+const AD_BG=new WeakMap();
+function adBgCanvas(bmp){   // 사진을 작게 줄여 흐리게 만들어 두고 두고두고 써요(매 프레임 흐림 계산을 피해요)
+  if(AD_BG.has(bmp))return AD_BG.get(bmp);
+  const c=document.createElement('canvas');c.width=108;c.height=192;const g=c.getContext('2d'),k=Math.max(108/bmp.width,192/bmp.height);
+  try{g.filter='blur(5px)';}catch(e){}
+  g.drawImage(bmp,(108-bmp.width*k)/2,(192-bmp.height*k)/2,bmp.width*k,bmp.height*k);
+  try{g.filter='none';}catch(e){}
+  AD_BG.set(bmp,c);return c;
+}
+function adBg(g,bmp,navy){
+  const W=AD.W,H=AD.H;
+  if(navy){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#16306b');gr.addColorStop(1,'#071127');g.fillStyle=gr;g.fillRect(0,0,W,H);return;}
+  g.fillStyle='#0a1228';g.fillRect(0,0,W,H);
+  if(bmp){g.imageSmoothingEnabled=true;g.drawImage(adBgCanvas(bmp),0,0,W,H);}
+  const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'rgba(6,11,28,.8)');gr.addColorStop(.45,'rgba(6,11,28,.5)');gr.addColorStop(1,'rgba(6,11,28,.9)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+}
+function adImg(g,bmp,x,y,w,h,mode,u,push,crop){   // 틀 안에 사진을 꽉 채우거나(cover) 통째로(contain) 넣고 천천히 확대해요
+  g.save();g.beginPath();g.rect(x,y,w,h);g.clip();
+  const sx=crop?crop.sx:0,sy=crop?crop.sy:0,sw=crop?crop.sw:bmp.width,sh=crop?crop.sh:bmp.height;
+  const k=mode==='contain'?Math.min(w/sw,h/sh):Math.max(w/sw,h/sh),z=1+(push||0)*u,dw=sw*k*z,dh=sh*k*z;
+  if(mode==='contain'){g.fillStyle='#f3f4f6';g.fillRect(x,y,w,h);}
+  g.imageSmoothingQuality='high';g.drawImage(bmp,sx,sy,sw,sh,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+  g.restore();
+}
+function adChip(g,text,x,y,o){
+  o=o||{};const size=o.size||38;g.save();g.font='700 '+size+'px '+AD_FONT;const tw=g.measureText(text).width,pw=26,h=size+24;
+  g.globalAlpha=o.alpha==null?1:o.alpha;g.fillStyle=o.bg||'rgba(255,255,255,.2)';adRound(g,x,y,tw+pw*2,h,h/2);g.fill();
+  g.fillStyle=o.color||'#fff';g.textBaseline='middle';g.textAlign='left';g.fillText(text,x+pw,y+h/2+2);g.restore();return tw+pw*2;
+}
+function adDrawer(A,plan){
+  const W=AD.W,H=AD.H,PX=90,MAXW=W-PX*2,name=adCap(S.sellName&&S.name?S.name:(S.name||S.sellName),22),hook=String(VD.adHook!=null&&VD.adHook!==''?VD.adHook:adHookText());
+  const aiTag=(g,img,a)=>{if(img&&img.ai)adChip(g,'AI로 만든 연출 사진',PX,1500,{size:30,alpha:.8*a,bg:'rgba(0,0,0,.35)'});};
+  const photoScene=(g,sc,u,lt,cap,capOpt)=>{
+    const img=sc.img,bmp=img.bmp,mode=sc.mode||'cover';
+    adBg(g,bmp);
+    adImg(g,bmp,0,470,W,1080,mode,u,.12);
+    const e=adEase(lt/.22);
+    adText(g,cap,Object.assign({x:W/2,y:170,maxW:MAXW,size:104,min:64,lines:2,alpha:e,dy:(1-e)*28},capOpt||{}));
+    aiTag(g,img,e);
+  };
+  return (g,t)=>{
+    const sc=plan.list.find(s=>t>=s.t0&&t<s.t1)||plan.list[plan.list.length-1],dur=sc.t1-sc.t0,lt=Math.max(0,t-sc.t0),u=Math.min(1,lt/dur);
+    g.globalAlpha=1;g.fillStyle='#000';g.fillRect(0,0,W,H);
+    if(sc.kind==='hook'){
+      photoScene(g,sc,u,lt,hook,{colors:['#fff','#ffd95a']});
+      adChip(g,name,PX,92,{size:36,alpha:adEase(lt/.3)});
+    }else if(sc.kind==='door'){
+      photoScene(g,sc,u,lt,sc.img.label,{size:96,lines:2});
+      adChip(g,sc.k+' / '+sc.n,W-PX-170,98,{size:34,alpha:.9});
+      if(lt<.12){g.globalAlpha=.28*(1-lt/.12);g.fillStyle='#fff';g.fillRect(0,0,W,H);g.globalAlpha=1;}   // 컷이 바뀔 때 살짝 번쩍
+    }else if(sc.kind==='still'){
+      photoScene(g,sc,u,lt,sc.title||'',{size:92});
+    }else if(sc.kind==='zoom'){
+      const z=sc.z;adBg(g,z.bmp);
+      const ch=Math.round(W*z.crop.sh/z.crop.sw),cy=Math.max(470,Math.round((H-ch)/2)-120);
+      adImg(g,z.bmp,0,cy,W,Math.min(ch,1100),'cover',u,.14,z.crop);
+      const e=adEase(lt/.22);
+      adChip(g,z.tag,PX,92,{size:38,alpha:e,bg:'rgba(43,89,195,.92)'});
+      adText(g,z.title,{x:W/2,y:170,maxW:MAXW,size:96,min:60,lines:2,alpha:e,dy:(1-e)*28});
+      if(z.body)adText(g,z.body,{x:W/2,y:cy+Math.min(ch,1100)+40,maxW:MAXW,size:46,min:36,lines:2,weight:600,color:'#dbe6ff',alpha:adEase((lt-.2)/.25),stroke:1});
+    }else if(sc.kind==='rows'){
+      adBg(g,null,true);
+      adText(g,'크기와 규격',{x:W/2,y:200,maxW:MAXW,size:92,lines:1,alpha:adEase(lt/.25)});
+      A.rows.forEach((r,i)=>{
+        const e=adEase((lt-.3-i*.38)/.35),y=470+i*300;
+        g.save();g.globalAlpha=e;g.fillStyle='rgba(255,255,255,.1)';adRound(g,PX-20,y-14+(1-e)*30,W-(PX-20)*2,250,28);g.fill();g.restore();
+        adText(g,r[0],{x:PX+20,y:y+14,maxW:MAXW,size:50,lines:1,align:'left',weight:600,color:'#a9c0f2',alpha:e,dy:(1-e)*30,stroke:0});
+        adText(g,r[1],{x:PX+20,y:y+84,maxW:MAXW-40,size:132,min:70,lines:1,align:'left',weight:900,alpha:e,dy:(1-e)*30,stroke:0});
+      });
+    }else{   // 마지막 문구
+      const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#2b59c3');gr.addColorStop(1,'#10265e');g.fillStyle=gr;g.fillRect(0,0,W,H);
+      const e=adEase(lt/.3);
+      if(sc.img&&sc.img.bmp){g.save();g.globalAlpha=e;g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=40;g.shadowOffsetY=18;adRound(g,160,280,760,760,44);g.fillStyle='#000';g.fill();g.restore();g.save();adRound(g,160,280+(1-e)*30,760,760,44);g.clip();g.globalAlpha=e;adImg(g,sc.img.bmp,160,280+(1-e)*30,760,760,sc.img.mode||'cover',u,.06);g.restore();}
+      adText(g,adCap(S.cta.title,40)||'우리 집 문에 달아 보세요',{x:W/2,y:1110,maxW:MAXW,size:100,min:64,lines:2,alpha:e,dy:(1-e)*30});
+      const sub=adCap(S.cta.sub,60);if(sub)adText(g,sub,{x:W/2,y:1390,maxW:MAXW,size:50,min:38,lines:2,weight:600,color:'#cfe0ff',alpha:adEase((lt-.2)/.3),stroke:0});
+      adChip(g,CO.name,W/2-150,1496,{size:40,alpha:adEase((lt-.4)/.3)});
+    }
+    // 처음엔 어둡게 나타나고, 끝에서 어두워져요
+    const a=t<.3?1-t/.3:t>plan.total-.4?(t-(plan.total-.4))/.4:0;
+    if(a>0){g.globalAlpha=Math.max(0,Math.min(1,a));g.fillStyle='#000';g.fillRect(0,0,W,H);g.globalAlpha=1;}
+  };
+}
+async function runAd(){
+  if(VD.busy)return;
+  if(!(window.MediaRecorder&&HTMLCanvasElement.prototype.captureStream)){vMsg('이 브라우저에서는 영상 파일을 만들 수 없어요. 최신 Chrome이나 Edge에서 열어 주세요.');return;}
+  if(adEst()==null){vMsg('쓸 사진이 없어요. 1단계에 제품 사진을 넣어 주세요.');return;}
+  VD.busy=true;VD.cancel=false;$('#vdGo').disabled=true;$('#vdClose').textContent='멈추기';
+  const pv0=$('#vdPrev');if(pv0)pv0.hidden=true;
+  let snd=null,rec=null,hid=false;
+  try{
+    vMsg('준비하는 중이에요…',2);
+    try{await document.fonts.load('900 40px "Noto Sans KR"','가나다라마바사 0123');await document.fonts.load('600 20px "Noto Sans KR"','가나다라마바사');await document.fonts.ready;}catch(e){}
+    vMsg('사진을 불러오는 중이에요…',10);
+    const A=await adLoad();if(VD.cancel)throw {code:'cancel'};
+    const m=VMOODS[VD.music],plan=adPlan(A,m?60/m.bpm:0);
+    if(!plan.list.length)throw new Error('만들 장면이 없어요. 사진을 넣어 주세요.');
+    const cv=document.createElement('canvas');cv.width=AD.W;cv.height=AD.H;const g=cv.getContext('2d'),draw=adDrawer(A,plan);
+    let buf=null;
+    if(VD.music!=='none'){vMsg('배경음을 만드는 중이에요…',30);try{buf=await vMusic(VD.music,plan.total+.3);}catch(e){buf=null;}}
+    const stream=cv.captureStream(30);
+    if(buf){snd=vPlay(buf);snd.tracks.forEach(tr=>stream.addTrack(tr));}
+    const sup=t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t);
+    const withSound=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus'];
+    const silent=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+    const mime=((snd&&snd.tracks.length)?withSound:silent).find(sup)||'';
+    const vbps=VD.q==='lo'?Math.max(250000,Math.min(8000000,Math.floor(4300000*8/Math.max(4,plan.total)-80000))):8000000;
+    rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:vbps}:{videoBitsPerSecond:vbps});
+    const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+    const stopped=new Promise(r=>{rec.onstop=r;});
+    draw(g,0);rec.start(500);
+    const t0=performance.now();
+    await new Promise(ok=>{
+      const tick=()=>{
+        if(VD.cancel){ok();return;}
+        if(document.hidden)hid=true;
+        const t=(performance.now()-t0)/1000;draw(g,Math.min(t,plan.total));
+        vMsg('영상을 녹화하는 중이에요… '+Math.min(Math.round(t),Math.round(plan.total))+' / '+Math.round(plan.total)+'초 · 이 창을 앞에 두세요',40+Math.round(Math.min(1,t/plan.total)*58));
+        if(t>=plan.total){ok();return;}
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    if(!VD.cancel){draw(g,plan.total);await vSleep(300);}
+    if(rec.state!=='inactive')rec.stop();
+    await stopped;
+    if(VD.cancel)throw {code:'cancel'};
+    const type=(mime||'video/webm').split(';')[0];
+    if(!chunks.length)throw new Error('영상을 만들지 못했어요. 한 번 더 눌러 주세요.');
+    const blob=new Blob(chunks,{type:type});
+    if(VD.url){try{URL.revokeObjectURL(VD.url);}catch(e){}}
+    VD.blob=blob;VD.url=URL.createObjectURL(blob);VD.ext=/mp4/.test(type)?'mp4':'webm';VD.blobFmt='v';VD.blobMode='ad';
+    vMsg('다 만들었어요. (약 '+Math.round(plan.total)+'초 · '+(blob.size/1048576).toFixed(1)+'MB'+((snd&&snd.tracks.length)?' · 배경음 있음':' · 소리 없음')+') 아래에서 확인하고 저장한 뒤, 올릴 곳에서 문구를 복사해 올리세요.'+(hid?' 녹화 중에 창이 가려져서 일부가 끊겼을 수 있어요. 끊겼으면 창을 앞에 두고 다시 만들어 주세요.':''));
+    vShowResult();
+  }catch(e){vMsg(e&&e.code==='cancel'?'멈췄어요.':(e&&e.message)||'영상을 만들지 못했어요. 한 번 더 눌러 주세요.');}
+  finally{
+    try{if(rec&&rec.state!=='inactive')rec.stop();}catch(e){}
+    if(snd)snd.stop();
+    VD.busy=false;const g2=$('#vdGo'),c2=$('#vdClose');if(g2)g2.disabled=false;if(c2)c2.textContent='닫기';vUpdEst();
+  }
+}
+function adModeHtml(){
+  const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
+  return '<div class="opts"><b class="hint">영상 종류</b>'
+    +radio('vmode','ad',VD.mode,'쇼츠 광고 영상 (추천) · 20초 안팎 · 문에 단 모습을 박자에 맞춰 빠르게 넘기고 큰 자막으로 보여 줘요 (세로 전용)')
+    +radio('vmode','scroll',VD.mode,'상세페이지 훑기 · 완성된 상세페이지를 위아래로 천천히 훑어요(정보를 그대로 보여 줘요)')+'</div>';
+}
+function adOptsHtml(){
+  const n=adDoorItems().length,z=(S.zoom.items||[]).slice(0,3).filter(it=>it&&(hasPhoto(it.photo)||hasPhoto(S.src))).length,r=adRows().length;
+  return '<div class="opts"><b class="hint">쇼츠 광고 영상 설정</b>'
+    +'<label class="f"><span>맨 앞 한 줄 글 (처음 2초에 큰 글씨로 나와요 · 줄은 엔터로 나눠요)</span><textarea id="adHook" rows="2" maxlength="40">'+esc(VD.adHook!=null&&VD.adHook!==''?VD.adHook:adHookText())+'</textarea></label>'
+    +'<p class="cost">들어가는 것: 문에 단 사진 '+n+'장 · 확대 '+z+'곳 · 크기·규격 '+r+'줄 · 마지막 문구. 글·숫자는 상세페이지에 적은 것만 써요. 문 사진은 3단계에서 먼저 만들수록 영상이 좋아져요.</p></div>';
+}
 /* ===== 만들기 전 점검 (v90) =====
    영상·이미지를 만들거나 저장하기 전에, 글과 사진이 어긋난 곳을 알려 줘요.
    ⛔ 글과 사진이 다르다(색·모양 설명)고 나온 것: '알고 있어요' 체크 전에는 영상 만들기·이미지 저장이 잠겨요
@@ -1389,7 +1633,7 @@ function preSizeRatio(){   // 입력한 치수로 본 '레버 폭 ÷ 받침의 �
 function preItems(ctx){
   const out=[],add=(lvl,id,text)=>out.push({lvl,id,text}),F=S.facts||{};
   if(ctx==='video'){
-    if(!hasPhoto(S.hero.photo))add('warn','hero','첫 화면 사진이 아직 없어서 영상 첫 장면에 원본 사진(임시)이 나와요. 영상은 첫 1~2초가 중요해요. 3단계에서 첫 화면 사진을 만들거나(실물 합성은 구글 없이 무료) 직접 넣고 만드세요.');
+    if(VD.mode!=='ad'&&!hasPhoto(S.hero.photo))add('warn','hero','첫 화면 사진이 아직 없어서 영상 첫 장면에 원본 사진(임시)이 나와요. 영상은 첫 1~2초가 중요해요. 3단계에서 첫 화면 사진을 만들거나(실물 합성은 구글 없이 무료) 직접 넣고 만드세요.');
     const have=S.colors.items.filter(it=>hasPhoto(it.photo)).length;
     if(!have)add('warn','door','문 색상(문에 단 사진)이 하나도 없어요. 영상에서 가장 눈길을 끄는 장면이 빠져요. 3단계에서 먼저 만들어 보세요.');
     else if(have<S.colors.items.length)add('warn','door2','문 색상 '+(S.colors.items.length-have)+'칸이 비어 있어서 그 칸은 영상에서 빠져요.');
@@ -2510,6 +2754,7 @@ function vMeasure(){   // 영상에 실제로 들어갈 구역(비어 있는 칸
   const h={};$$('[data-slice]',host).forEach(s=>{if(s.offsetHeight>0)h[s.dataset.slice]=s.offsetHeight;});host.remove();return h;
 }
 function vEst(){
+  if(VD.mode==='ad')return adEst();
   const k=VW/PW,names=vNames().filter(n=>VD.sel&&VD.sel[n]&&VD.h&&VD.h[n]);
   if(!names.length)return null;
   let y=0;const secs=names.map(n=>{const h=Math.max(1,Math.round(VD.h[n]*k)),o={y0:y,h};y+=h;return o;});
@@ -2523,6 +2768,8 @@ function vUpdEst(){
 function vMsg(t,pct){const m=$('#vdMsg');if(m)m.textContent=t;const b=$('#vdBar');if(b&&pct!=null){b.hidden=false;b.firstElementChild.style.width=pct+'%';}}
 function showVideo(msg){
   const names=vNames(),nd=needs(),aiN=aiCount();
+  if(!VD.mode)VD.mode=adDoorItems().length>=3?'ad':'scroll';   // 문에 단 사진이 3장 이상이면 쇼츠 광고 영상을 먼저 권해요
+  if(VD.mode==='ad'){VD.fmt='v';if(!VD._adMusic){VD._adMusic=1;if(VD.music==='none')VD.music='bright';}}   // 쇼츠 광고는 세로 전용, 배경음은 기본으로 켜요
   VD.h=vMeasure();if(!VD.sel)VD.sel={};names.forEach(n=>{if(!(n in VD.sel))VD.sel[n]=!VOFF.test(n);});
   const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
   veil.hidden=false;
@@ -2531,9 +2778,10 @@ function showVideo(msg){
    +(nd.length?'<div class="confirm" style="display:block">아직 채울 곳이 '+nd.length+'곳 남아 있어요. 비어 있는 칸은 영상에서 빠져요.</div>':'')
    +(aiN?'<div class="tip">AI로 만든 사진이 '+aiN+'장 들어 있어요. 영상을 올리는 곳(유튜브·인스타그램·틱톡)의 AI 표시 규칙을 확인하세요(바뀔 수 있어요).</div>':'')
    +preBoxHtml('video',true)
+   +adModeHtml()+(VD.mode==='ad'?adOptsHtml():''
    +'<div class="opts"><b class="hint">영상 모양</b>'+Object.keys(VFMT).map(k=>radio('vfmt',k,VD.fmt,VFMT[k].l)).join('')+'</div>'
    +'<div class="opts"><b class="hint">영상에 넣을 장면 (위에서 아래 순서로 나와요)</b>'+names.map(n=>{const has=!!VD.h[n];return '<label class="opt"><input type="checkbox" data-vsec="'+esc(n)+'"'+(has&&VD.sel[n]?' checked':'')+(has?'':' disabled')+'><div><b>'+esc(vName(n))+'</b>'+(has?'':'<div class="hint">비어 있어서 영상에서 빠져요</div>')+'</div></label>';}).join('')+'</div>'
-   +'<div class="opts"><b class="hint">움직이는 속도</b>'+Object.keys(VSPEED).map(k=>radio('vspeed',k,VD.speed,VSPEED[k].l)).join('')+'</div>'
+   +'<div class="opts"><b class="hint">움직이는 속도</b>'+Object.keys(VSPEED).map(k=>radio('vspeed',k,VD.speed,VSPEED[k].l)).join('')+'</div>')
    +'<div class="opts"><b class="hint">용량 (Make로 자동 등록할 때는 "작게"를 고르세요)</b>'+radio('vq','hi',VD.q,'보통 · 화질이 좋아요(파일이 커요)')+radio('vq','lo',VD.q,'작게 · 자동 등록용(약 5MB 이하를 목표로 해요. 영상이 길수록 화질이 낮아져요)')+'</div>'
    +'<div class="opts"><b class="hint">배경음 (이 앱이 직접 만드는 음악이라 저작권 걱정이 없어요)</b>'+radio('vmusic','none',VD.music,'없음 · 올릴 때 앱에서 음악을 따로 고를 거예요')+Object.keys(VMOODS).map(k=>radio('vmusic',k,VD.music,VMOODS[k].l)).join('')+'</div>'
    +'<div class="msg" id="vdEst"></div>'
@@ -2546,6 +2794,8 @@ function showVideo(msg){
   $$('input[name=vq]',veil).forEach(r=>r.onchange=()=>{VD.q=r.value;});
   $$('input[name=vfmt]',veil).forEach(r=>r.onchange=()=>{VD.fmt=r.value;vUpdEst();});
   $$('input[name=vmusic]',veil).forEach(r=>r.onchange=()=>{VD.music=r.value;preBoxRefresh();});
+  $$('input[name=vmode]',veil).forEach(r=>r.onchange=()=>{VD.mode=r.value;showVideo();});
+  const ah=$('#adHook');if(ah)ah.oninput=()=>{VD.adHook=ah.value;};
   preWire('video');
   vUpdEst();
   if(VD.blob)vShowResult();
@@ -2596,7 +2846,7 @@ function vPostHtml(){
 function vShowResult(){
   const pv=$('#vdPrev');if(!pv||!VD.blob)return;
   pv.hidden=false;
-  const ft=VD.blobFmt==='h'?'가로':'세로';
+  const ft=VD.blobFmt==='h'?'가로':VD.blobMode==='ad'?'세로 광고':'세로';
   pv.innerHTML='<div class="hint">완성된 '+ft+' 영상 (재생해서 확인하세요)</div><video controls playsinline src="'+VD.url+'"></video>'
    +(VD.ext==='webm'?'<div class="hint">WebM 파일이에요. 유튜브에는 올라가지만, 인스타그램·틱톡은 MP4가 필요할 수 있어요(최신 Chrome에서 만들면 MP4로 나와요).</div>':'')
    +'<div class="acts"><button class="btn primary" id="vdSave" type="button">영상 저장 (.'+VD.ext+')</button></div>'
@@ -2640,6 +2890,7 @@ function vPlay(buf){   // 녹화 화면에 섞을 소리 줄기(스피커로는 
 }
 async function runVideo(){
   if(!VD.busy&&preLocked('video')){vMsg('⛔ 표시를 확인하고 "그래도 영상을 만들어요"에 체크해 주세요.');return;}
+  if(VD.mode==='ad')return runAd();
   if(VD.busy)return;
   const picked=vNames().filter(n=>VD.sel&&VD.sel[n]&&VD.h&&VD.h[n]);
   if(!picked.length){vMsg('장면을 하나 이상 골라 주세요.');return;}
@@ -3567,7 +3818,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
