@@ -316,7 +316,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 95</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 96</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -373,6 +373,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v96 (2026-11-10): 쇼츠 광고 영상에 임팩트 — 손잡이 확대에서 문 전체로 물러나는 첫 장면·튀어나오는 큰 글·금속에 스치는 빛·옆에서 휙 들어오는 문 색 컷·모든 문 색을 한눈에 모아 보기·숫자가 올라오는 규격·금빛 마지막 장면·컷마다 효과음·훅 글 고르기·녹화 화질 12Mbps */
 /* v95 (2026-11-10): '풀어 둔 작업 폴더'도 찾아서 열기(zip을 풀어 생긴 폴더 — 안에 state.json·photos가 있는 폴더), 못 찾았을 때 무엇을 찾는지 안내, 크롬이 다운로드·문서·바탕화면 폴더 자체는 작업 폴더로 못 쓰게 막는다는 안내 */
 /* v94 (2026-11-10): '작업 파일 찾기' — '작업 저장' 파일에 이름표를 달고, 작업 폴더(크롬·엣지)에 자동 정리·같은 페이지는 같은 파일에 덮어씀, 폴더를 고르면 작업 파일만 목록에 보여 주고 바로 열기 */
 /* v93 (2026-11-10): '내 상세페이지' — 만들던 상세페이지를 이 브라우저에 자동 보관하고 목록에서 골라 다시 열기(이름 바꾸기·🔒 안 지우기·파일 저장·지우기, 최대 20개), 새 제품·다른 페이지 열기·파일 불러오기 전에 지금 페이지를 먼저 보관 */
@@ -396,7 +397,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=95,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=96,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -1791,7 +1792,7 @@ function adDoorItems(){   // 영상에 쓸 문 사진: 검수에서 보류된 �
   return a.concat(b).slice(0,AD.maxDoor);
 }
 const adLabel=it=>isHand(it)?'사용하는 모습':adCap(it.label,16);
-function adHookText(){const n=adDoorItems().length;return n>=3?'문에 달면\n이렇게 보여요':n?'문에 단 모습,\n먼저 보세요':'크게 확대해서\n확인하세요';}
+function adHookText(){const n=adDoorItems().length;return n>=3?AD_HOOKS[0]:n?'문에 단 모습,\n먼저 보세요':'크게 확대해서\n확인하세요';}
 function adRows(){   // 규격 카드: 크기 안내·규격에 적은 값만(없으면 그 줄은 빠져요)
   const Z=S.size||{},F=S.facts||{},t=v=>String(v==null?'':v).trim();
   const mmx=v=>{const x=t(v);return !x?'':/^[0-9.]+$/.test(x)?x+'mm':/^[0-9.]+\s*[~\-–]\s*[0-9.]+$/.test(x)?x.replace(/\s+/g,'')+'mm':x;},r=[],b=lenBase(Z);
@@ -1826,17 +1827,18 @@ function adPlan(A,beat){
   const add=(kind,dur,extra)=>{const sc=Object.assign({kind,t0:t,t1:t+dur},extra);list.push(sc);t+=dur;return sc;};
   const doors=A.doors.slice(),hi=Math.max(0,doors.findIndex(d=>!d.hand&&!/화이트|흰/.test(d.label||'')));
   if(doors.length){
-    add('hook',q(2.4),{img:doors[hi],mode:'cover'});
-    const rest=doors.length>3?doors.filter((d,i)=>i!==hi):doors,n=Math.min(rest.length,Math.max(2,Math.floor(8.5/cut)));
+    add('hook',q(2.6),{img:doors[hi],mode:'cover'});
+    const rest=doors.length>3?doors.filter((d,i)=>i!==hi):doors,cap=doors.length>=6?5:99,n=Math.min(rest.length,cap,Math.max(2,Math.floor(8.5/cut)));   // 문이 많으면 몽타주는 5컷, 나머지는 '한눈에 보기'에서
     rest.slice(0,n).forEach((d,i)=>add('door',cut,{img:d,k:i+1,n}));
+    if(doors.length>=4)add('grid',q(2.2),{imgs:doors});
   }else{
     const first=A.hero||A.concept||(A.src&&{bmp:A.src,ai:false});
-    if(first)add('hook',q(2.4),{img:first,mode:'contain'});
+    if(first)add('hook',q(2.6),{img:first,mode:'contain'});
     if(A.hero&&A.concept)add('still',1.8,{img:A.concept,mode:'contain',title:adCap(S.concept.title,30)});
   }
-  A.zoom.forEach((z,i)=>add('zoom',1.7,{z,i}));
-  if(A.rows.length>=2)add('rows',Math.min(4.4,1.4+.85*A.rows.length),{});
-  add('cta',2.8,{img:(doors[hi]||A.hero||A.concept||(A.src&&{bmp:A.src}))||null});
+  A.zoom.forEach((z,i)=>add('zoom',1.5,{z,i}));
+  if(A.rows.length>=2)add('rows',Math.min(4,1.4+.8*A.rows.length),{rn:A.rows.length});
+  add('cta',2.6,{img:(doors[hi]||A.hero||A.concept||(A.src&&{bmp:A.src}))||null});
   return {list,total:t,cut};
 }
 function adEst(){
@@ -1868,6 +1870,18 @@ function adText(g,text,o){   // o: x,y,maxW,size,min,weight,color,align,lh,lines
   g.restore();
   return {h:lines.length*size*lh,size,lines:lines.length};
 }
+/* ===== 임팩트 장면 (v96) =====
+   사진이 그냥 바뀌는 슬라이드가 아니라, 카메라가 움직이고 글자가 튀어나오고 금속에 빛이 스치는 광고처럼 보이게 그려요.
+   - 훅: 손잡이를 크게 확대한 모습에서 문 전체로 물러나며 보여 주고(영화 첫 장면처럼), 글자가 줄마다 튀어나와요.
+   - 문 색 몽타주: 컷마다 옆에서 휙 들어오고(잔상), 문 색 이름을 색 동그라미와 함께 크게, 몇 번째인지는 점으로 보여 줘요.
+   - 한눈에 보기: 문 색 사진을 한 화면에 모아 차례로 짚어 줘요(문 사진이 4장 이상일 때).
+   - 확대: 어두운 바탕 위의 카드 안에서 천천히 다가가요. 규격: 숫자가 0에서 올라와요. 마지막: 금빛 테두리와 반짝임.
+   - 글·숫자는 여전히 상세페이지에 있는 것만 써요. 쇼츠 화면 아래쪽(제목·버튼 자리)에는 중요한 글을 두지 않아요. */
+const AD_GOLD='#ffd95a';
+const AD_HOOKS=['이 손잡이,\n우리 집 문에 달면?','손잡이 하나로\n문이 달라 보여요','문 색마다\n이렇게 달라요','문에 달면\n이렇게 보여요'];
+const adClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const adLerp=(a,b,u)=>a+(b-a)*u;
+const adPop=u=>{u=adClamp(u,0,1);const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(u-1,3)+c1*Math.pow(u-1,2);};   // 살짝 넘쳤다가 제자리로
 const AD_BG=new WeakMap();
 function adBgCanvas(bmp){   // 사진을 작게 줄여 흐리게 만들어 두고 두고두고 써요(매 프레임 흐림 계산을 피해요)
   if(AD_BG.has(bmp))return AD_BG.get(bmp);
@@ -1877,20 +1891,52 @@ function adBgCanvas(bmp){   // 사진을 작게 줄여 흐리게 만들어 두�
   try{g.filter='none';}catch(e){}
   AD_BG.set(bmp,c);return c;
 }
-function adBg(g,bmp,navy){
+function adBack(g,bmp,navy){   // 배경: 사진을 크게 흐려 깔아서 문 색이 은은하게 번지고, 글자 자리는 어둡게
   const W=AD.W,H=AD.H;
-  if(navy){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#16306b');gr.addColorStop(1,'#071127');g.fillStyle=gr;g.fillRect(0,0,W,H);return;}
-  g.fillStyle='#0a1228';g.fillRect(0,0,W,H);
-  if(bmp){g.imageSmoothingEnabled=true;g.drawImage(adBgCanvas(bmp),0,0,W,H);}
-  const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'rgba(6,11,28,.8)');gr.addColorStop(.45,'rgba(6,11,28,.5)');gr.addColorStop(1,'rgba(6,11,28,.9)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  if(navy||!bmp){
+    const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#17336f');gr.addColorStop(1,'#060d20');g.fillStyle=gr;g.fillRect(0,0,W,H);
+    const rg=g.createRadialGradient(W*.3,H*.26,0,W*.3,H*.26,W*.95);rg.addColorStop(0,'rgba(90,140,255,.30)');rg.addColorStop(1,'rgba(90,140,255,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
+    return;
+  }
+  g.fillStyle='#0a1228';g.fillRect(0,0,W,H);g.imageSmoothingEnabled=true;g.drawImage(adBgCanvas(bmp),0,0,W,H);
+  const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'rgba(5,9,22,.84)');gr.addColorStop(.28,'rgba(5,9,22,.46)');gr.addColorStop(.72,'rgba(5,9,22,.40)');gr.addColorStop(1,'rgba(5,9,22,.88)');g.fillStyle=gr;g.fillRect(0,0,W,H);
 }
-function adImg(g,bmp,x,y,w,h,mode,u,push,crop){   // 틀 안에 사진을 꽉 채우거나(cover) 통째로(contain) 넣고 천천히 확대해요
-  g.save();g.beginPath();g.rect(x,y,w,h);g.clip();
-  const sx=crop?crop.sx:0,sy=crop?crop.sy:0,sw=crop?crop.sw:bmp.width,sh=crop?crop.sh:bmp.height;
-  const k=mode==='contain'?Math.min(w/sw,h/sh):Math.max(w/sw,h/sh),z=1+(push||0)*u,dw=sw*k*z,dh=sh*k*z;
-  if(mode==='contain'){g.fillStyle='#f3f4f6';g.fillRect(x,y,w,h);}
-  g.imageSmoothingQuality='high';g.drawImage(bmp,sx,sy,sw,sh,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+function adFocus(g,bmp,x,y,w,h,o){   // 틀(x,y,w,h) 안에 사진을 꽉 채워 넣되 보고 싶은 곳(fx,fy)을 향해 확대(z)해요. dx: 옆으로 밀기
+  o=o||{};const c=o.crop,sx=c?c.sx:0,sy=c?c.sy:0,sw=c?c.sw:bmp.width,sh=c?c.sh:bmp.height,z=o.z||1,k=Math.max(w/sw,h/sh)*z,dw=sw*k,dh=sh*k;
+  const fx=o.fx==null?.5:o.fx,fy=o.fy==null?.5:o.fy,ax=o.ax==null?.5:o.ax,ay=o.ay==null?.5:o.ay;
+  const ox=adClamp(x+w*ax-fx*dw,x+w-dw,x),oy=adClamp(y+h*ay-fy*dh,y+h-dh,y);
+  g.imageSmoothingQuality='high';g.drawImage(bmp,sx,sy,sw,sh,ox+(o.dx||0),oy,dw,dh);
+}
+function adCard(g,bmp,x,y,w,h,r,z){   // 사진 전체를 통째로(잘리지 않게) 카드 안에
+  g.save();adRound(g,x,y,w,h,r);g.clip();g.fillStyle='#f3f4f6';g.fillRect(x,y,w,h);
+  const k=Math.min(w/bmp.width,h/bmp.height)*(z||1),dw=bmp.width*k,dh=bmp.height*k;g.imageSmoothingQuality='high';g.drawImage(bmp,x+(w-dw)/2,y+(h-dh)/2,dw,dh);g.restore();
+}
+function adSheen(g,x,y,w,h,u,alpha){   // 금속 위를 스치는 빛(u: 0→1)
+  if(u<=0||u>=1)return;
+  g.save();g.beginPath();g.rect(x,y,w,h);g.clip();g.globalCompositeOperation='lighter';
+  const cx=x-w*.25+u*w*1.5,bw=w*.2;g.translate(cx,y+h/2);g.rotate(.4);
+  const gr=g.createLinearGradient(-bw,0,bw,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,'rgba(255,255,255,'+alpha+')');gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr;g.fillRect(-bw,-h,bw*2,h*2);g.restore();
+}
+let AD_VIG=null;
+function adVig(g,a,x,y,w,h){   // 사진 틀의 가장자리를 살짝 어둡게(시선이 가운데로 모여요). 글자 위에는 겹치지 않아요
+  if(!AD_VIG){const c=document.createElement('canvas');c.width=160;c.height=160;const q=c.getContext('2d'),gr=q.createRadialGradient(80,80,40,80,80,118);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.62)');q.fillStyle=gr;q.fillRect(0,0,160,160);AD_VIG=c;}
+  g.globalAlpha=a;g.drawImage(AD_VIG,x,y,w,h);g.globalAlpha=1;
+}
+function adSparks(g,t,a){   // 마지막 장면의 반짝임
+  g.save();g.globalCompositeOperation='lighter';g.fillStyle=AD_GOLD;
+  for(let i=0;i<14;i++){
+    const px=((Math.sin(i*12.9898)*43758.5453)%1+1)%1,py=((Math.sin(i*78.233)*12345.678)%1+1)%1,x=60+px*(AD.W-120),y=230+py*1180,s=7+((i*7)%5)*4,k=.5+.5*Math.sin(t*3.2+i*1.7);
+    if(k<.2)continue;g.globalAlpha=a*k*.8;g.beginPath();g.moveTo(x,y-s*2);g.quadraticCurveTo(x,y,x+s*2,y);g.quadraticCurveTo(x,y,x,y+s*2);g.quadraticCurveTo(x,y,x-s*2,y);g.quadraticCurveTo(x,y,x,y-s*2);g.fill();
+  }
   g.restore();
+}
+const AD_COL=new WeakMap();
+function adDoorColor(bmp){   // 사진 맨 위쪽(문 색)의 평균색
+  if(AD_COL.has(bmp))return AD_COL.get(bmp);
+  let c='#8a8f99';
+  try{const cv=document.createElement('canvas');cv.width=8;cv.height=2;const g=cv.getContext('2d');g.drawImage(bmp,0,0,bmp.width,Math.max(2,bmp.height*.12),0,0,8,2);const d=g.getImageData(0,0,8,2).data;let r=0,gg=0,b=0,n=0;for(let i=0;i<d.length;i+=4){r+=d[i];gg+=d[i+1];b+=d[i+2];n++;}c='rgb('+Math.round(r/n)+','+Math.round(gg/n)+','+Math.round(b/n)+')';}catch(e){}
+  AD_COL.set(bmp,c);return c;
 }
 function adChip(g,text,x,y,o){
   o=o||{};const size=o.size||38;g.save();g.font='700 '+size+'px '+AD_FONT;const tw=g.measureText(text).width,pw=26,h=size+24;
@@ -1898,57 +1944,142 @@ function adChip(g,text,x,y,o){
   g.fillStyle=o.color||'#fff';g.textBaseline='middle';g.textAlign='left';g.fillText(text,x+pw,y+h/2+2);g.restore();return tw+pw*2;
 }
 function adDrawer(A,plan){
-  const W=AD.W,H=AD.H,PX=90,MAXW=W-PX*2,name=adCap(S.sellName&&S.name?S.name:(S.name||S.sellName),22),hook=String(VD.adHook!=null&&VD.adHook!==''?VD.adHook:adHookText());
-  const aiTag=(g,img,a)=>{if(img&&img.ai)adChip(g,'AI로 만든 연출 사진',PX,1500,{size:30,alpha:.8*a,bg:'rgba(0,0,0,.35)'});};
-  const photoScene=(g,sc,u,lt,cap,capOpt)=>{
-    const img=sc.img,bmp=img.bmp,mode=sc.mode||'cover';
-    adBg(g,bmp);
-    adImg(g,bmp,0,470,W,1080,mode,u,.12);
-    const e=adEase(lt/.22);
-    adText(g,cap,Object.assign({x:W/2,y:170,maxW:MAXW,size:104,min:64,lines:2,alpha:e,dy:(1-e)*28},capOpt||{}));
-    aiTag(g,img,e);
+  const W=AD.W,H=AD.H,PX=90,MAXW=W-PX*2,SY=440,name=adCap(S.sellName&&S.name?S.name:(S.name||S.sellName),22),hook=String(VD.adHook!=null&&VD.adHook!==''?VD.adHook:adHookText());
+  const hookLines=hook.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3);
+  const stageH=bmp=>adClamp(Math.round(W*bmp.height/bmp.width),760,1100);
+  const aiTag=(g,img,a,y)=>{if(img&&img.ai)adChip(g,'AI로 만든 연출 사진',PX,y==null?1500:y,{size:30,alpha:.85*a,bg:'rgba(0,0,0,.42)'});};
+  const pop=(g,text,o,pu)=>{   // 글이 튀어나오듯 나타나요(pu: 0→1)
+    if(pu<=0)return;const s=.6+.4*adPop(pu),cx=o.x,cy=o.y+(o.size||100)*.55;
+    g.save();g.translate(cx,cy);g.scale(s,s);g.translate(-cx,-cy);adText(g,text,Object.assign({},o,{alpha:(o.alpha==null?1:o.alpha)*adClamp(pu*5,0,1)}));g.restore();
+  };
+  const dots=(g,k,n,y)=>{const gap=34,x0=W/2-(n-1)*gap/2;for(let i=0;i<n;i++){g.beginPath();g.arc(x0+i*gap,y,i===k-1?12:7,0,7);g.fillStyle=i===k-1?AD_GOLD:'rgba(255,255,255,.4)';g.fill();}};
+  const colorLabel=(g,text,color,lt)=>{   // 색 동그라미 + 문 색 이름
+    const pu=(lt-.02)/.32;if(pu<=0)return;const size=88;
+    g.save();g.font='800 '+size+'px '+AD_FONT;const tw=Math.min(g.measureText(text).width,MAXW-120),total=68+26+tw,x0=(W-total)/2,cy=235,s=.6+.4*adPop(pu);
+    g.translate(W/2,cy);g.scale(s,s);g.translate(-W/2,-cy);g.globalAlpha=adClamp(pu*5,0,1);
+    g.beginPath();g.arc(x0+34,cy,34,0,7);g.fillStyle=color;g.fill();g.lineWidth=6;g.strokeStyle='rgba(255,255,255,.92)';g.stroke();
+    adText(g,text,{x:x0+94,y:cy-size*.58,maxW:MAXW-120,size,min:56,lines:1,align:'left',alpha:adClamp(pu*5,0,1)});
+    g.restore();
   };
   return (g,t)=>{
     const sc=plan.list.find(s=>t>=s.t0&&t<s.t1)||plan.list[plan.list.length-1],dur=sc.t1-sc.t0,lt=Math.max(0,t-sc.t0),u=Math.min(1,lt/dur);
     g.globalAlpha=1;g.fillStyle='#000';g.fillRect(0,0,W,H);
-    if(sc.kind==='hook'){
-      photoScene(g,sc,u,lt,hook,{colors:['#fff','#ffd95a']});
-      adChip(g,name,PX,92,{size:36,alpha:adEase(lt/.3)});
+    const pz=1+.035*(1-adEase(lt/.22));   // 장면이 바뀐 직후 살짝 커졌다가 자리를 잡아요
+    g.save();g.translate(W/2,H/2);g.scale(pz,pz);g.translate(-W/2,-H/2);
+    if(sc.kind==='hook'||sc.kind==='still'){
+      const img=sc.img,bmp=img.bmp,isHook=sc.kind==='hook';
+      if(sc.mode==='contain'){   // 문 사진이 없을 때: 제품 사진을 통째로 카드에
+        adBack(g,bmp,true);adCard(g,bmp,60,SY,W-120,1000,40,adLerp(1.25,1,adEase(lt/1.2))+.05*u);adSheen(g,60,SY,W-120,1000,(lt-.9)/.9,.2);
+      }else{
+        const SH=stageH(bmp);adBack(g,bmp);
+        const e=adEase(lt/1.4),z=isHook?adLerp(2.1,1,e)+.05*u:1+.1*u,fx=isHook?adLerp(.74,.5,e):.5;   // 손잡이 가까이에서 시작해 문 전체로 물러나요
+        g.save();g.beginPath();g.rect(0,SY,W,SH);g.clip();adFocus(g,bmp,0,SY,W,SH,{z,fx,fy:.5});adVig(g,.75,0,SY,W,SH);adSheen(g,0,SY,W,SH,(lt-.95)/.9,.28);g.restore();
+      }
+      if(isHook){
+        adChip(g,name,PX,92,{size:36,alpha:adEase(lt/.3)});
+        const sz=hookLines.length>2?88:104,y0=hookLines.length>2?150:168,lh=sz*1.2;
+        hookLines.forEach((ln,i)=>pop(g,ln,{x:W/2,y:y0+i*lh,maxW:MAXW,size:sz,min:60,lines:1,color:i===hookLines.length-1?AD_GOLD:'#fff'},(lt-.22-i*.16)/.42));
+        const bw=adEase((lt-.8)/.45)*420;if(bw>1){g.fillStyle=AD_GOLD;adRound(g,W/2-bw/2,y0+hookLines.length*lh+4,bw,9,4.5);g.fill();}
+      }else{
+        adText(g,sc.title||'',{x:W/2,y:170,maxW:MAXW,size:92,min:60,lines:2,alpha:adEase(lt/.22),dy:(1-adEase(lt/.22))*28});
+      }
+      aiTag(g,img,adEase(lt/.3),SY+stageH(bmp)-76);
     }else if(sc.kind==='door'){
-      photoScene(g,sc,u,lt,sc.img.label,{size:96,lines:2});
-      adChip(g,sc.k+' / '+sc.n,W-PX-170,98,{size:34,alpha:.9});
-      if(lt<.12){g.globalAlpha=.28*(1-lt/.12);g.fillStyle='#fff';g.fillRect(0,0,W,H);g.globalAlpha=1;}   // 컷이 바뀔 때 살짝 번쩍
-    }else if(sc.kind==='still'){
-      photoScene(g,sc,u,lt,sc.title||'',{size:92});
+      const bmp=sc.img.bmp,SH=stageH(bmp);adBack(g,bmp);
+      const w=adEase(lt/.28),dx=(1-w)*260,z=1+.05*u+(1-w)*.07;
+      g.save();g.beginPath();g.rect(0,SY,W,SH);g.clip();
+      if(lt<.28){[[1,.2],[2,.1]].forEach(a=>{g.globalAlpha=a[1]*(1-lt/.28);adFocus(g,bmp,0,SY,W,SH,{z,fx:.5,fy:.5,dx:dx+a[0]*58});});g.globalAlpha=1;}   // 휙 들어올 때의 잔상
+      adFocus(g,bmp,0,SY,W,SH,{z,fx:.5,fy:.5,dx});adVig(g,.75,0,SY,W,SH);adSheen(g,0,SY,W,SH,(lt-.12)/.5,.22);g.restore();
+      colorLabel(g,sc.img.label,adDoorColor(bmp),lt);
+      dots(g,sc.k,sc.n,SY+SH+58);
+      aiTag(g,sc.img,adEase(lt/.3),SY+SH-76);
+      if(lt<.1){g.globalAlpha=.3*(1-lt/.1);g.fillStyle='#fff';g.fillRect(0,0,W,H);g.globalAlpha=1;}   // 컷이 바뀔 때 살짝 번쩍
+    }else if(sc.kind==='grid'){
+      adBack(g,null,true);
+      const imgs=sc.imgs,n=imgs.length,cols=n<=4?2:3,gap=16,mx=60,tw=Math.floor((W-mx*2-gap*(cols-1))/cols),th=cols===2?tw:Math.round(tw*1.04),rows=Math.ceil(n/cols),gh=rows*th+(rows-1)*gap,gy=Math.round(440+(1000-gh)/2);
+      const e=adEase(lt/.25);
+      adText(g,adCap(S.colors&&S.colors.title,30)||(n+'가지 문 색'),{x:W/2,y:170,maxW:MAXW,size:88,min:56,lines:2,alpha:e,dy:(1-e)*26,colors:['#fff',AD_GOLD]});
+      const hl=lt>.95?Math.floor((lt-.95)/.16)%n:-1;
+      imgs.forEach((im,i)=>{
+        const pu=(lt-.12-i*.075)/.4;if(pu<=0)return;
+        const c=i%cols,r=Math.floor(i/cols),inRow=r<rows-1?cols:n-(rows-1)*cols,x=mx+(cols-inRow)*(tw+gap)/2+c*(tw+gap),y=gy+r*(th+gap),s=.72+.28*adPop(pu),cx=x+tw/2,cy=y+th/2;   // 마지막 줄이 덜 차면 가운데로
+        g.save();g.globalAlpha=adClamp(pu*4,0,1);g.translate(cx,cy);g.scale(s,s);g.translate(-cx,-cy);
+        g.save();adRound(g,x,y,tw,th,24);g.clip();adFocus(g,im.bmp,x,y,tw,th,{z:1.3+.06*u,fx:.56,fy:.5});
+        const sg=g.createLinearGradient(0,y+th-80,0,y+th);sg.addColorStop(0,'rgba(0,0,0,0)');sg.addColorStop(1,'rgba(0,0,0,.72)');g.fillStyle=sg;g.fillRect(x,y+th-80,tw,80);g.restore();
+        adText(g,im.hand?'사용하는 모습':im.label,{x:x+16,y:y+th-(cols===2?58:46),maxW:tw-32,size:cols===2?38:30,min:22,lines:1,align:'left',stroke:0});
+        g.lineWidth=i===hl?7:3;g.strokeStyle=i===hl?AD_GOLD:'rgba(255,255,255,.2)';adRound(g,x,y,tw,th,24);g.stroke();
+        g.restore();
+      });
     }else if(sc.kind==='zoom'){
-      const z=sc.z;adBg(g,z.bmp);
-      const ch=Math.round(W*z.crop.sh/z.crop.sw),cy=Math.max(470,Math.round((H-ch)/2)-120);
-      adImg(g,z.bmp,0,cy,W,Math.min(ch,1100),'cover',u,.14,z.crop);
-      const e=adEase(lt/.22);
+      const z=sc.z;adBack(g,null,true);
+      const cw=1000,cx0=40,ch=Math.round(cw*z.crop.sh/z.crop.sw),cH=Math.min(ch,900),cy=Math.round(470+(900-cH)/2),e=adEase(lt/.25);
       adChip(g,z.tag,PX,92,{size:38,alpha:e,bg:'rgba(43,89,195,.92)'});
-      adText(g,z.title,{x:W/2,y:170,maxW:MAXW,size:96,min:60,lines:2,alpha:e,dy:(1-e)*28});
-      if(z.body)adText(g,z.body,{x:W/2,y:cy+Math.min(ch,1100)+40,maxW:MAXW,size:46,min:36,lines:2,weight:600,color:'#dbe6ff',alpha:adEase((lt-.2)/.25),stroke:1});
+      adText(g,z.title,{x:W/2,y:170,maxW:MAXW,size:94,min:60,lines:2,alpha:e,dy:(1-e)*28});
+      const s=.93+.07*adEase(lt/.35),cx=W/2,cyy=cy+cH/2;
+      g.save();g.globalAlpha=adClamp(lt/.2,0,1);g.translate(cx,cyy);g.scale(s,s);g.translate(-cx,-cyy);
+      g.save();g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=50;g.shadowOffsetY=24;adRound(g,cx0,cy,cw,cH,40);g.fillStyle='#000';g.fill();g.restore();
+      g.save();adRound(g,cx0,cy,cw,cH,40);g.clip();adFocus(g,z.bmp,cx0,cy,cw,cH,{crop:z.crop,z:1+.22*adEase(u),fx:.5,fy:.5});adSheen(g,cx0,cy,cw,cH,(lt-.25)/.8,.3);g.restore();
+      g.restore();
+      if(z.body)adText(g,z.body,{x:W/2,y:cy+cH+40,maxW:MAXW,size:54,min:38,lines:2,weight:700,color:'#e4edff',alpha:adEase((lt-.2)/.25),stroke:1});
     }else if(sc.kind==='rows'){
-      adBg(g,null,true);
-      adText(g,'크기와 규격',{x:W/2,y:200,maxW:MAXW,size:92,lines:1,alpha:adEase(lt/.25)});
+      adBack(g,null,true);
+      adText(g,'크기와 규격',{x:W/2,y:170,maxW:MAXW,size:98,lines:1,alpha:adEase(lt/.25),dy:(1-adEase(lt/.25))*26});
+      const n=A.rows.length,rh=Math.min(n<=2?380:300,Math.floor((1060-(n-1)*22)/n)),big=Math.round(rh*.56),y0=Math.round(400+(1080-(n*rh+(n-1)*22))/2);   // 줄 수에 맞춰 크기를 키우고 가운데에
       A.rows.forEach((r,i)=>{
-        const e=adEase((lt-.3-i*.38)/.35),y=470+i*300;
-        g.save();g.globalAlpha=e;g.fillStyle='rgba(255,255,255,.1)';adRound(g,PX-20,y-14+(1-e)*30,W-(PX-20)*2,250,28);g.fill();g.restore();
-        adText(g,r[0],{x:PX+20,y:y+14,maxW:MAXW,size:50,lines:1,align:'left',weight:600,color:'#a9c0f2',alpha:e,dy:(1-e)*30,stroke:0});
-        adText(g,r[1],{x:PX+20,y:y+84,maxW:MAXW-40,size:132,min:70,lines:1,align:'left',weight:900,alpha:e,dy:(1-e)*30,stroke:0});
+        const e=adEase((lt-.3-i*.38)/.35),y=y0+i*(rh+22);if(e<=0)return;
+        g.save();g.globalAlpha=e;g.fillStyle='rgba(255,255,255,.09)';adRound(g,PX-30,y+(1-e)*30,W-(PX-30)*2,rh,30);g.fill();
+        g.fillStyle=AD_GOLD;adRound(g,PX-30,y+(1-e)*30+24,10,rh-48,5);g.fill();g.restore();
+        adText(g,r[0],{x:PX+20,y:y+rh*.12,maxW:MAXW,size:46,lines:1,align:'left',weight:700,color:'#a9c0f2',alpha:e,dy:(1-e)*30,stroke:0});
+        const m=/^(\d+(?:\.\d+)?)mm$/.exec(String(r[1])),ce=adEase((lt-.45-i*.38)/.8),vy=y+rh*.38;
+        if(m){
+          const dec=(m[1].split('.')[1]||'').length,shown=(parseFloat(m[1])*ce).toFixed(dec);
+          const rr=adText(g,shown,{x:PX+20,y:vy,maxW:MAXW-260,size:big,min:70,lines:1,align:'left',weight:900,alpha:e,dy:(1-e)*30,stroke:0});
+          g.save();g.font='900 '+rr.size+'px '+AD_FONT;const nw=g.measureText(shown).width;g.restore();
+          adText(g,'mm',{x:PX+20+nw+14,y:vy+rr.size*.36,maxW:240,size:Math.round(rr.size*.5),lines:1,align:'left',weight:800,color:AD_GOLD,alpha:e,dy:(1-e)*30,stroke:0});
+        }else adText(g,r[1],{x:PX+20,y:vy,maxW:MAXW-40,size:Math.round(big*.86),min:60,lines:1,align:'left',weight:900,alpha:e,dy:(1-e)*30,stroke:0});
       });
     }else{   // 마지막 문구
-      const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#2b59c3');gr.addColorStop(1,'#10265e');g.fillStyle=gr;g.fillRect(0,0,W,H);
-      const e=adEase(lt/.3);
-      if(sc.img&&sc.img.bmp){g.save();g.globalAlpha=e;g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=40;g.shadowOffsetY=18;adRound(g,160,280,760,760,44);g.fillStyle='#000';g.fill();g.restore();g.save();adRound(g,160,280+(1-e)*30,760,760,44);g.clip();g.globalAlpha=e;adImg(g,sc.img.bmp,160,280+(1-e)*30,760,760,sc.img.mode||'cover',u,.06);g.restore();}
+      const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#2b59c3');gr.addColorStop(1,'#0e2258');g.fillStyle=gr;g.fillRect(0,0,W,H);
+      const rg=g.createRadialGradient(W/2,640,40,W/2,640,900);rg.addColorStop(0,'rgba(255,255,255,.22)');rg.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
+      const e=adEase(lt/.3),CY=250+(1-e)*30;
+      if(sc.img&&sc.img.bmp){
+        g.save();g.globalAlpha=e;g.shadowColor='rgba(255,217,90,.6)';g.shadowBlur=56+16*Math.sin(lt*4);adRound(g,150,CY,780,780,50);g.fillStyle='#10265e';g.fill();g.restore();
+        g.save();g.globalAlpha=e;adRound(g,150,CY,780,780,50);g.clip();adFocus(g,sc.img.bmp,150,CY,780,780,{z:1.02+.08*u,fx:.5,fy:.5});adSheen(g,150,CY,780,780,(lt-.5)/.9,.26);g.restore();
+        g.save();g.globalAlpha=e;g.lineWidth=7;g.strokeStyle=AD_GOLD;adRound(g,150,CY,780,780,50);g.stroke();g.restore();
+      }
+      adSparks(g,lt,e);
       adText(g,adCap(S.cta.title,40)||'우리 집 문에 달아 보세요',{x:W/2,y:1110,maxW:MAXW,size:100,min:64,lines:2,alpha:e,dy:(1-e)*30});
-      const sub=adCap(S.cta.sub,60);if(sub)adText(g,sub,{x:W/2,y:1390,maxW:MAXW,size:50,min:38,lines:2,weight:600,color:'#cfe0ff',alpha:adEase((lt-.2)/.3),stroke:0});
+      const sub=adCap(S.cta.sub,60);if(sub)adText(g,sub,{x:W/2,y:1390,maxW:MAXW,size:50,min:38,lines:2,weight:600,color:'#d8e6ff',alpha:adEase((lt-.2)/.3),stroke:0});
       adChip(g,CO.name,W/2-150,1496,{size:40,alpha:adEase((lt-.4)/.3)});
     }
+    g.restore();
     // 처음엔 어둡게 나타나고, 끝에서 어두워져요
     const a=t<.3?1-t/.3:t>plan.total-.4?(t-(plan.total-.4))/.4:0;
     if(a>0){g.globalAlpha=Math.max(0,Math.min(1,a));g.fillStyle='#000';g.fillRect(0,0,W,H);g.globalAlpha=1;}
   };
+}
+/* 효과음: 배경음 위에 컷마다 작은 소리를 얹어요(쿵·휙·톡·반짝). 소리 줄기는 그대로이고 값만 더해요. */
+function adSfx(buf,plan){
+  try{
+    const sr=buf.sampleRate,ch=[];for(let c=0;c<buf.numberOfChannels;c++)ch.push(buf.getChannelData(c));
+    const n=ch[0].length;let seed=7;const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x3fffffff-1;};
+    const add=(t0,len,fn)=>{const i0=Math.max(0,Math.floor(t0*sr)),i1=Math.min(n,Math.floor((t0+len)*sr));for(let i=i0;i<i1;i++){const v=fn((i-i0)/sr,(i-i0)/Math.max(1,i1-i0));for(const d of ch)d[i]+=v;}};
+    const thump=(t0,vol)=>add(t0,.5,(t,p)=>Math.sin(2*Math.PI*(45*t+90*(1-Math.exp(-18*t))/18))*Math.exp(-t*7)*vol);
+    const swish=(t0,len,vol)=>{let y=0;add(t0,len,(t,p)=>{const f=300+5200*p*p,a=1-Math.exp(-2*Math.PI*f/sr);y+=a*(rnd()-y);return (rnd()-y)*Math.pow(Math.sin(Math.PI*p),1.5)*vol;});};
+    const tick=(t0,vol)=>add(t0,.06,(t,p)=>(Math.sin(2*Math.PI*1800*t)*.6+rnd()*.4)*Math.exp(-t*80)*vol);
+    const ping=(t0,f,vol)=>add(t0,.5,(t,p)=>Math.sin(2*Math.PI*f*t)*Math.exp(-t*9)*vol);
+    const riser=(t0,len,vol)=>{let y=0;add(t0,len,(t,p)=>{const f=500+6000*p*p,a=1-Math.exp(-2*Math.PI*f/sr);y+=a*(rnd()-y);return (rnd()-y)*p*p*vol;});};
+    plan.list.forEach((sc,i)=>{
+      const t0=sc.t0;
+      if(sc.kind==='hook'){thump(t0+.2,.34);swish(t0+.02,.55,.07);}
+      else if(sc.kind==='door'){tick(t0,.13);swish(t0,.2,.05);}
+      else if(sc.kind==='grid'){riser(Math.max(0,t0-.55),.55,.07);thump(t0,.26);(sc.imgs||[]).forEach((im,k)=>ping(t0+.12+k*.075,1568+(k%4)*220,.035));}
+      else if(sc.kind==='zoom'){swish(t0,.32,.07);}
+      else if(sc.kind==='rows'){for(let k=0;k<(sc.rn||2);k++)tick(t0+.3+k*.38,.11);}
+      else if(sc.kind==='cta'){thump(t0,.34);[2093,2637,3136].forEach((f,k)=>ping(t0+.3+k*.16,f,.05));}
+    });
+    for(const d of ch)for(let i=0;i<n;i++)d[i]=Math.tanh(d[i]*1.15)/1.15;   // 넘치지 않게 부드럽게 눌러요
+  }catch(e){}
 }
 async function runAd(){
   if(VD.busy)return;
@@ -1967,13 +2098,14 @@ async function runAd(){
     const cv=document.createElement('canvas');cv.width=AD.W;cv.height=AD.H;const g=cv.getContext('2d'),draw=adDrawer(A,plan);
     let buf=null;
     if(VD.music!=='none'){vMsg('배경음을 만드는 중이에요…',30);try{buf=await vMusic(VD.music,plan.total+.3);}catch(e){buf=null;}}
+    if(buf)adSfx(buf,plan);   // 컷마다 쿵·휙·톡·반짝
     const stream=cv.captureStream(30);
     if(buf){snd=vPlay(buf);snd.tracks.forEach(tr=>stream.addTrack(tr));}
     const sup=t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t);
     const withSound=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus'];
     const silent=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
     const mime=((snd&&snd.tracks.length)?withSound:silent).find(sup)||'';
-    const vbps=VD.q==='lo'?Math.max(250000,Math.min(8000000,Math.floor(4300000*8/Math.max(4,plan.total)-80000))):8000000;
+    const vbps=VD.q==='lo'?Math.max(250000,Math.min(8000000,Math.floor(4300000*8/Math.max(4,plan.total)-80000))):12000000;   // 컷 직후 네모난 깨짐을 줄이려고 목표 화질을 높여요
     rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:vbps}:{videoBitsPerSecond:vbps});
     const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
     const stopped=new Promise(r=>{rec.onstop=r;});
@@ -2011,13 +2143,14 @@ async function runAd(){
 function adModeHtml(){
   const radio=(name,v,cur,t)=>'<label class="opt"><input type="radio" name="'+name+'" value="'+v+'"'+(String(cur)===String(v)?' checked':'')+'><div><b>'+t+'</b></div></label>';
   return '<div class="opts"><b class="hint">영상 종류</b>'
-    +radio('vmode','ad',VD.mode,'쇼츠 광고 영상 (추천) · 20초 안팎 · 문에 단 모습을 박자에 맞춰 빠르게 넘기고 큰 자막으로 보여 줘요 (세로 전용)')
+    +radio('vmode','ad',VD.mode,'쇼츠 광고 영상 (추천) · 20초 안팎 · 손잡이를 크게 보여 주며 문 색을 박자에 맞춰 넘기고, 큰 글씨·움직임·효과음을 넣어요 (세로 전용)')
     +radio('vmode','scroll',VD.mode,'상세페이지 훑기 · 완성된 상세페이지를 위아래로 천천히 훑어요(정보를 그대로 보여 줘요)')+'</div>';
 }
 function adOptsHtml(){
   const n=adDoorItems().length,z=(S.zoom.items||[]).slice(0,3).filter(it=>it&&(hasPhoto(it.photo)||hasPhoto(S.src))).length,r=adRows().length;
   return '<div class="opts"><b class="hint">쇼츠 광고 영상 설정</b>'
     +'<label class="f"><span>맨 앞 한 줄 글 (처음 2초에 큰 글씨로 나와요 · 줄은 엔터로 나눠요)</span><textarea id="adHook" rows="2" maxlength="40">'+esc(VD.adHook!=null&&VD.adHook!==''?VD.adHook:adHookText())+'</textarea></label>'
+    +(n>=3?'<div class="acts" id="adHookPick" style="justify-content:flex-start"><span class="hint">추천 글:</span>'+AD_HOOKS.map((h,i)=>'<button class="btn sm" type="button" data-adh="'+i+'">'+esc(h.replace(/\n/g,' '))+'</button>').join('')+'</div>':'')
     +'<p class="cost">들어가는 것: 문에 단 사진 '+n+'장 · 확대 '+z+'곳 · 크기·규격 '+r+'줄 · 마지막 문구. 글·숫자는 상세페이지에 적은 것만 써요. 문 사진은 3단계에서 먼저 만들수록 영상이 좋아져요.</p></div>';
 }
 /* ===== 만들기 전 점검 (v90) =====
@@ -3207,6 +3340,7 @@ function showVideo(msg){
   $$('input[name=vmusic]',veil).forEach(r=>r.onchange=()=>{VD.music=r.value;preBoxRefresh();});
   $$('input[name=vmode]',veil).forEach(r=>r.onchange=()=>{VD.mode=r.value;showVideo();});
   const ah=$('#adHook');if(ah)ah.oninput=()=>{VD.adHook=ah.value;};
+  $$('[data-adh]',veil).forEach(b=>b.onclick=()=>{const v=AD_HOOKS[+b.dataset.adh];if(v==null)return;VD.adHook=v;const a=$('#adHook');if(a)a.value=v;});
   preWire('video');
   vUpdEst();
   if(VD.blob)vShowResult();
@@ -4236,7 +4370,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh,zipReader,projInfo};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh,zipReader,projInfo,adSfx,adDoorColor,AD_HOOKS};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
