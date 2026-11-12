@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>청소용품 상세페이지 제작기</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand"><h1>청소용품 상세페이지 제작기</h1><small>우진글로벌 · 버전 <span id="verNo"></span> · <a href="../">다른 제품군</a></small></div>
+    <div class="top-actions">
+      <button class="chip" id="updChip" type="button" hidden>새 버전이 나왔어요 · 눌러서 새로고침</button>
+      <button class="btn primary" id="btnExport" type="button">이미지로 저장</button>
+      <button class="btn" id="btnNew" type="button">새 제품</button>
+    </div>
+  </header>
+
+  <div class="work">
+    <aside class="side" id="side">
+
+      <section class="step" id="st1">
+        <h2><i>1</i>제품</h2>
+        <label class="drop" id="drop">
+          <input type="file" id="fPhoto" accept="image/*" multiple hidden>
+          <b>제품 사진 넣기</b>
+          <span>한 장이면 돼요. 다른 각도 사진을 더 넣으면 모양이 더 정확해져요(3장까지 써요).</span>
+        </label>
+        <div class="thumbs" id="thumbs"></div>
+        <label class="fld"><span>제품 이름</span><input type="text" id="fName" placeholder="예: 갈대 빗자루 세트" autocomplete="off"></label>
+        <details class="facts" id="factBox">
+          <summary>확인된 사실 적기 <small>적은 것만 사실로 써요. 비워 두면 그 칸은 빠져요.</small></summary>
+          <div id="factFields"></div>
+        </details>
+      </section>
+
+      <section class="step" id="st2">
+        <h2><i>2</i>구글 AI 키</h2>
+        <div class="row">
+          <input type="password" id="fKey" placeholder="구글 AI 스튜디오 키 붙여 넣기" autocomplete="off" spellcheck="false">
+          <button class="btn sm" id="btnCheck" type="button">연결 확인</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="fRemember"> 이 컴퓨터에 기억하기 <small>(공용 컴퓨터는 빼고)</small></label>
+        <p class="msg" id="gMsg">손잡이 제작기에서 기억해 둔 키가 있으면 그대로 써요. 키는 이 컴퓨터에만 있고 다른 곳으로 보내지 않아요.</p>
+      </section>
+
+      <section class="step" id="st3">
+        <h2><i>3</i>만들기</h2>
+        <p class="cost" id="costLine"></p>
+        <div class="row wrap">
+          <button class="btn primary big" id="btnRun" type="button">한 번에 만들기</button>
+          <button class="btn" id="btnStop" type="button" hidden>멈추기</button>
+        </div>
+        <div class="row wrap">
+          <button class="btn sm" id="btnDemo" type="button">예시로 보기 (무료)</button>
+          <button class="btn sm" id="btnCopy" type="button" hidden>글만 새로 쓰기</button>
+        </div>
+        <p class="msg" id="runMsg"></p>
+      </section>
+
+      <section class="step" id="st4">
+        <h2><i>4</i>사진 확인</h2>
+        <p class="hint">AI가 그린 사진이 원본과 같은 제품인지 봐 주세요. 다르면 그 장만 다시 만들거나 내 사진으로 바꾸세요.</p>
+        <div class="orig" id="origBox"></div>
+        <label class="fld"><span>다시 만들 때 덧붙일 말 <small>(선택)</small></span><input type="text" id="fNote" placeholder="예: 손잡이를 더 길게, 배경을 더 밝게" autocomplete="off"></label>
+        <div class="scenes" id="scenes"></div>
+      </section>
+
+      <section class="step" id="st5">
+        <h2><i>5</i>꾸미기</h2>
+        <label class="fld inline"><span>강조 색 <small>(제품 색에서 골랐어요)</small></span><input type="color" id="fAccent"></label>
+        <label class="chk"><input type="checkbox" id="fAiMark"> AI로 그린 사진에 '연출 이미지' 표시하기</label>
+        <p class="hint">글자는 오른쪽 미리보기에서 눌러서 바로 고쳐요. 노란 칸은 비어 있는 칸이고, 저장할 때는 빠져요.</p>
+      </section>
+
+    </aside>
+
+    <main class="stage" id="stage">
+      <div class="stage-in" id="stageIn"><div class="pg" id="pg"></div></div>
+    </main>
+  </div>
+</div>
+<input type="file" id="fSwap" accept="image/*" hidden>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="veil" hidden><div class="veil-box"><b id="veilTitle">저장하는 중이에요</b><span id="veilMsg"></span></div></div>
+
+<!-- 이미지 저장 도구(html2canvas 1.4.1, JSZip 3.10.1 · MIT). 바깥 주소에 기대지 않게 vendor 폴더에 넣어 뒀어요. -->
+<script src="vendor/html2canvas.min.js" defer></script>
+<script src="vendor/jszip.min.js" defer></script>
+<script src="strategy.js?v=1" defer></script>
+<script src="app.js?v=1" defer></script>
+</body>
+</html>
