@@ -326,7 +326,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 97</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 98</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -383,6 +383,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v98 (2026-11-12): 근거가 필요한 표현 점검 — 글 전체에서 과장 말(최고·최초·완벽·100%·1위…)과 특허·인증·방수·항균·스마트 같은 말을 찾아 저장·영상·쇼핑몰 전에 알려 줌(과장·번호 없는 특허·인증은 확인 체크 필요), 회사 소개의 '등록 특허' 숫자만 있고 번호 카드가 빈 경우 알림 */
 /* v97 (2026-11-11): 사고 싶게 만드는 상세페이지 — 핵심 포인트 구역(작동 각도 그림·문 두께·문 색 수·제조사·마감 카드)·첫 화면과 마지막의 짧은 딱지·'우리 집 문에 맞을까요?' 재는 그림 카드·그림으로 보는 설치 6단계(예시 그림)·규격을 반영한 FAQ 답 */
 /* v96 (2026-11-10): 쇼츠 광고 영상에 임팩트 — 손잡이 확대에서 문 전체로 물러나는 첫 장면·튀어나오는 큰 글·금속에 스치는 빛·옆에서 휙 들어오는 문 색 컷·모든 문 색을 한눈에 모아 보기·숫자가 올라오는 규격·금빛 마지막 장면·컷마다 효과음·훅 글 고르기·녹화 화질 12Mbps */
 /* v95 (2026-11-10): '풀어 둔 작업 폴더'도 찾아서 열기(zip을 풀어 생긴 폴더 — 안에 state.json·photos가 있는 폴더), 못 찾았을 때 무엇을 찾는지 안내, 크롬이 다운로드·문서·바탕화면 폴더 자체는 작업 폴더로 못 쓰게 막는다는 안내 */
@@ -408,7 +409,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=97,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=98,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -2338,6 +2339,79 @@ function preSizeRatio(){   // 입력한 치수로 본 '레버 폭 ÷ 받침의 �
   const sh=ci.shape==='round'?ci.d:ci.shape==='square'?ci.w:Math.min(ci.w||0,ci.h||0);
   return sh>0?{r:wid/sh,wid,short:sh}:null;
 }
+/* ===== 근거가 필요한 표현 점검 (v98) =====
+   상세페이지 글에 쓴 '특허·인증·방수·최고' 같은 말은 근거가 있어야 해요(과장·허위 광고로 보일 수 있어요).
+   저장·영상·쇼핑몰에 올리기 전에 그런 말이 어디에 있는지 알려 줘요. 글을 자동으로 고치지는 않아요.
+   ⛔ 과장 말(최고·최초·유일·완벽·100%·혁신·1위·무조건 …), 그리고 특허·인증을 썼는데 회사 소개·규격에 번호가 없을 때 → 저장·영상 전에 '알고 있어요' 확인
+   ⚠ 방수·항균·내구·보증·스마트·친환경·비교 표현, 번호가 있어도 '이 제품 것이 맞는지'는 사람이 확인
+   회사 소개(특허 카드·숫자)와 규격(facts)은 근거 자료 자체라 검사하지 않아요. */
+const claimHasPat=()=>((S.about&&S.about.patents)||[]).some(p=>p&&String(p.no||'').trim());
+const claimHasCert=()=>!!String((S.facts&&S.facts.cert)||'').trim();
+function claimTexts(){
+  const o=[],add=(lab,v)=>{v=String(v==null?'':v).replace(/\s+/g,' ').trim();if(v)o.push({lab,t:v});},arr=a=>Array.isArray(a)?a:[];
+  add('제품 이름',S.name);add('판매 상품명',S.sellName);
+  const h=S.hero||{};add('첫 화면 딱지',h.badge);add('첫 화면 제목',h.title);add('첫 화면 설명',h.sub);
+  const c=S.concept||{};add('소개 제목',c.title);add('소개 글',c.body);
+  const z=S.zoom||{};add('확대 구역 제목',z.title);add('확대 구역 설명',z.body);
+  arr(z.items).forEach((x,i)=>{add('확대 '+(i+1)+' 제목',x&&x.title);add('확대 '+(i+1)+' 설명',x&&x.body);});
+  const k=S.colors||{};add('문 색상 제목',k.title);add('문 색상 설명',k.body);add('문 색상 안내',k.note);
+  arr(k.items).forEach((x,i)=>add('문 색상 '+(i+1)+' 이름',x&&x.label));
+  const p=S.points||{};add('핵심 포인트 제목',p.title);add('핵심 포인트 글',p.aTitle);add('핵심 포인트 글',p.aBody);
+  arr(p.custom).forEach((x,i)=>add('핵심 포인트 직접 쓴 칸 '+(i+1),[x&&x.big,x&&x.title,x&&x.body].filter(Boolean).join(' ')));
+  const g=S.guide||{};add('설치 안내 제목',g.title);add('설치 안내 사진 설명',g.picNote);
+  arr(g.ps).forEach((x,i)=>add('진행 안내 '+(i+1),[x&&x.t,x&&x.d].filter(Boolean).join(' ')));
+  arr(g.steps).forEach((x,i)=>add('설치 '+(i+1)+'단계',x));
+  const f=S.faq||{};add('자주 묻는 질문 제목',f.title);
+  arr(f.items).forEach((x,i)=>{add('질문 '+(i+1),x&&x.q);let a='';try{a=faqAns(x);}catch(e){a=x&&x.a;}add('질문 '+(i+1)+' 답',a);});
+  const n=S.notice||{};add('구매 전 확인 제목',n.title);arr(n.items).forEach((x,i)=>add('구매 전 확인 '+(i+1),x));
+  const t=S.cta||{};add('마지막 문구 제목',t.title);add('마지막 문구 설명',t.sub);
+  return o;
+}
+const CLAIM_OVER=/최고|최초|최상|최강|유일|완벽|100\s?%|혁신|1\s?[위등]|무조건|역대|기적|독보적|압도적/g;
+const CLAIM_CMP=/타사|경쟁사|다른\s?제품보다|가장\s?(?:좋|튼튼|뛰어|안전|편|강|우수)|제일/g;
+const CLAIM_PAT=/특허|실용신안|디자인\s?등록|등록\s?디자인/g;
+const CLAIM_CERT=/인증|\bKC\b|시험\s?성적|공인|검사\s?합격|테스트\s?통과/g;
+const CLAIM_PERF=/방수|방진|내식|부식|녹슬|녹이\s?슬|항균|살균|내구|평생|영구|반영구|무소음|저소음|소음\s?(?:없|걱정)|무상\s?(?:A\/?S|수리|교환)|보증/g;
+const CLAIM_TECH=/스마트|친환경|에코|저탄소|자동화|첨단|최신\s?기술|독자\s?기술|자체\s?기술|특수\s?기술|인공지능/g;
+function claimRules(){
+  const hp=claimHasPat(),hc=claimHasCert();
+  return [
+    {id:'over',re:CLAIM_OVER,lvl:'bad',ask:'과장으로 보일 수 있어요. 사실 그대로 쓰거나 빼 주세요.'},
+    {id:'pat',re:CLAIM_PAT,lvl:hp?'warn':'bad',ask:hp?'회사 소개의 특허 번호가 이 제품 것이 맞는지 확인하세요(회사 특허와 이 제품 특허는 달라요).':'회사 소개에 특허 번호가 없어요. 번호까지 확인된 것만 쓰고, 아니면 빼 주세요.'},
+    {id:'cert',re:CLAIM_CERT,lvl:hc?'warn':'bad',ask:hc?'규격의 인증·시험 칸에 적은 내용과 같은지 확인하세요.':'규격의 \'인증·시험\' 칸이 비어 있어요. 인증서 번호가 있을 때만 쓰고, 아니면 빼 주세요.'},
+    {id:'perf',re:CLAIM_PERF,lvl:'warn',ask:'시험성적서·보증서 같은 자료가 있을 때만 써 주세요.'},
+    {id:'tech',re:CLAIM_TECH,lvl:'warn',ask:'회사가 실제로 하는 일인지, 자료가 있는지 확인하세요.'},
+    {id:'cmp',re:CLAIM_CMP,lvl:'warn',ask:'다른 제품과 비교하는 말은 비교한 자료가 있을 때만 써 주세요.'}
+  ];
+}
+function claimScan(){
+  const out=[],texts=claimTexts();
+  claimRules().forEach(r=>{
+    const hits=[];
+    texts.forEach(x=>{
+      r.re.lastIndex=0;const ws=[];let m,first=-1;
+      while((m=r.re.exec(x.t))){
+        if(m.index===r.re.lastIndex)r.re.lastIndex++;
+        if(/^1\s?[위등]/.test(m[0])&&m.index>0&&/[0-9]/.test(x.t[m.index-1]))continue;   // 11위·21위처럼 앞에 숫자가 붙은 것은 '1위'가 아니에요
+        const w=m[0].trim();if(first<0)first=m.index;if(w&&!ws.includes(w))ws.push(w);
+      }
+      if(ws.length)hits.push({lab:x.lab,ws,snip:x.t.slice(Math.max(0,first-8),first+18).trim()});
+    });
+    hits.slice(0,3).forEach((h,i)=>out.push({lvl:r.lvl,id:'claim_'+r.id+'_'+i,rule:r.id,lab:h.lab,words:h.ws,text:'"'+h.ws.join('·')+'" — '+h.lab+' 「'+h.snip+'」 · '+r.ask}));
+    if(hits.length>3)out.push({lvl:r.lvl,id:'claim_'+r.id+'_more',rule:r.id,lab:'',words:[],text:'같은 종류의 표현이 '+(hits.length-3)+'곳 더 있어요.'});
+  });
+  return out;
+}
+function claimItems(){
+  const out=claimScan().map(x=>({lvl:x.lvl,id:x.id,text:x.text})),ab=S.about||{};
+  const st=((ab.stats)||[]).find(x=>x&&/특허|디자인/.test(String(x.l||''))&&String(x.v||'').trim());
+  if(st&&!claimHasPat())out.push({lvl:'warn',id:'claim_aboutstat',text:'회사 소개에 "'+String(st.v).trim()+' '+String(st.l).trim()+'"가 나오는데 특허 번호 카드는 비어 있어요. 등록증으로 개수와 번호를 확인해서 4단계 \'회사 소개\'에 넣거나, 확인이 안 되면 숫자를 지워 주세요.'});
+  return out;
+}
+function claimNoteHtml(){
+  const L=claimItems();
+  return L.length?'<div class="tip" id="claimNote"><b>올리기 전에 글의 표현을 확인하세요 ('+L.length+'곳)</b><ul>'+L.map(x=>'<li>'+(x.lvl==='bad'?'⛔ ':'⚠ ')+esc(x.text)+'</li>').join('')+'</ul></div>':'';
+}
 function preItems(ctx){
   const out=[],add=(lvl,id,text)=>out.push({lvl,id,text}),F=S.facts||{};
   if(ctx==='video'){
@@ -2363,6 +2437,7 @@ function preItems(ctx){
     (r.words||[]).forEach(w=>{if(w&&w.ok===false)add('bad','ai_'+w.id,'클로드 점검: '+(w.id==='concept'?'소개':'확대 '+String(w.id).replace('zoom',''))+' 글이 사진의 모양과 달라 보여요. '+(w.why||''));});
     if(r.ratio>0&&sr){const q=sr.r/r.ratio;if(q>1.7||q<1/1.7)add('warn','airatio','클로드 점검: 사진에서 레버 폭은 받침 짧은 변의 약 '+(Math.round(r.ratio*100)/100)+'배로 보이는데, 입력한 치수로는 '+(Math.round(sr.r*100)/100)+'배예요. 총 폭 숫자를 확인해 주세요.');}
   }
+  claimItems().forEach(x=>add(x.lvl,x.id,x.text));   // v98: 근거가 필요한 표현
   return out;
 }
 const preLocked=ctx=>preItems(ctx).some(x=>x.lvl==='bad')&&!PRE.ack;
@@ -3059,7 +3134,7 @@ function planPrompt(){
   +'아래는 이 회사가 이미 만든 두 제품의 글입니다. 말투, 길이, 줄바꿈, 구성을 그대로 따라 하되 문장을 베끼지 마세요. 제품이 다르면 내용도 달라야 합니다.\n\n'+PLAN_EX.map(ex).join('\n\n')+'\n\n'
   +'지켜야 할 것:\n1. 쉬운 한국어, 짧은 문장, "~해요" 말투. 어려운 영어 단어는 쓰지 않습니다.\n'
   +'2. 제품 사양(치수, 백셋, 문 두께, 구멍 간격, 재질 이름, 인증, 방수·내구 수치), 특허 번호, 연도, 날짜, 실적, 가격은 절대 지어내지 마세요. 메모에 적힌 것과 사진에서 보이는 것만 쓰세요.\n'
-  +'3. 과장 표현(최고, 최초, 100%, 완벽, 국내 유일)을 쓰지 마세요.\n4. 호환 여부, 잠금 기능, 교환·반품처럼 확인이 필요한 것은 "판매자에게 확인해 주세요"로 안내하세요.\n'
+  +'3. 과장 표현(최고, 최초, 100%, 완벽, 국내 유일)을 쓰지 마세요. 방수·항균·내구·친환경·스마트처럼 근거가 필요한 말도 메모에 적혀 있을 때만 쓰세요.\n4. 호환 여부, 잠금 기능, 교환·반품처럼 확인이 필요한 것은 "판매자에게 확인해 주세요"로 안내하세요.\n'
   +'5. 줄바꿈이 필요하면 \\n을 쓰세요. 제목은 한두 줄, 설명은 두 줄 안쪽으로 짧게.\n'
   +'6. faq에는 이 제품에만 해당하는 질문 1~2개만 쓰세요(모양, 방향, 손에 닿는 느낌에 대한 걱정 등). 맞는지·잠금·색상·혼자 달기·교환 반품은 이미 공통 질문이 있으니 쓰지 마세요.\n\n'
   +'아래 JSON 하나만 답하세요(다른 글 없이).\n{\n "hero":{"badge":"작은 파란 띠 글(제품 종류)","title":"큰 제목(2줄 이내)","sub":"설명 2줄 이내"},\n "concept":{"title":"제목","body":"설명 2줄 이내"},\n'
@@ -4191,6 +4266,7 @@ function msRender(){
   const t=MKT[MS.tab],b=$('#msBody');if(!b)return;
   const tabs='<div class="mkt-tabs" role="tablist">'+Object.keys(MKT).map(k=>'<button class="btn sm'+(MS.tab===k?' primary':'')+'" type="button" role="tab" aria-selected="'+(MS.tab===k)+'" data-mt="'+k+'">'+esc(MKT[k].n)+(MKT[k].ok?'':' <small>(나중에)</small>')+'</button>').join('')+'</div>';
   b.innerHTML=tabs+(t.ok?msNaverHtml():'<div class="blk"><h3>'+esc(t.n)+' · 나중에 만들어요</h3><div class="hint">'+esc(t.info)+'</div><div class="hint">네이버와 같은 방식(대표 이미지 → 추가 이미지 → 상세 조각 → 올리는 순서 글)으로 맞춰 만들 수 있어요. 올릴 때가 되면 말씀해 주세요. 그때 판매자센터의 최신 규격을 확인하고 만들게요.</div></div>');
+  {const cl=claimNoteHtml(),tp=$('.tip',b);if(cl){if(tp)tp.insertAdjacentHTML('afterend',cl);else b.insertAdjacentHTML('beforeend',cl);}}   // v98: 글 표현 점검 상자(맨 위 '자동으로 올리지는 않아요' 안내와 설명 칸 다음)
   $$('[data-mt]',b).forEach(x=>x.onclick=()=>{if(MS.busy)return;MS.tab=x.dataset.mt;msRender();});
   $$('input[name=msstyle]',b).forEach(x=>x.onchange=()=>{MS.style=x.value;});
   const go=$('#msGo');if(go)go.onclick=msRun;
@@ -4534,7 +4610,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh,zipReader,projInfo,adSfx,adDoorColor,AD_HOOKS,renderPage,pointCards,pointAngle,guideMode,faqAns,fitCards,GUIDE_IMG,GUIDE_STEPS,fromSaved};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh,zipReader,projInfo,adSfx,adDoorColor,AD_HOOKS,renderPage,pointCards,pointAngle,guideMode,faqAns,fitCards,GUIDE_IMG,GUIDE_STEPS,fromSaved,claimScan,claimItems,claimTexts,claimNoteHtml};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
