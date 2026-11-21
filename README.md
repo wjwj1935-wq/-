@@ -13,6 +13,13 @@
 - 저장소의 `손잡이 상세페이지 제작기.url` 파일을 내려받아 바탕화면에 두어도 같은 바로가기입니다.
 - 설치 설정은 `manifest.json`, 아이콘은 `icons/`(`python3 -I tools/make_icons.py`로 다시 만들 수 있어요)입니다.
 
+## 자동몰 상세페이지 제작기 (따로 작동하는 새 앱, 버전 100~)
+- 손잡이 상세페이지 제작기(위, 버전 99)에서 갈라져 나온 **별도 앱**입니다. 주소는 `/-/automall/` 이고 앞으로 상품군(방문 손잡이·강화도어·방충망 …)별 페이지로 키워 갑니다.
+- 폴더 `automall/` 안에 모두 따로 있습니다: `src/index.fragment.html`(원본 조각) → `python3 -I tools/build_automall.py` → `automall/index.html`·`automall/version.json`. 업그레이드하는 법은 위와 같고, `VER=` 숫자는 100부터 올립니다.
+- **저장 공간이 따로입니다**(같은 github.io 주소라도 섞이지 않게): 작업 상태 `am-dp-v1`, 사진·내 상세페이지 보관소 `am-dp`, 키·설정은 `am-…`. 손잡이 제작기는 `wj-…` 그대로입니다.
+- 손잡이 제작기에서 `작업 저장`한 zip 파일은 자동몰의 `파일 불러오기`로 열 수 있습니다.
+- 바로가기: `automall/자동몰 상세페이지 제작기.url`, 설치 설정은 `automall/manifest.json`, 아이콘은 `automall/icons/`(`python3 -I tools/make_icons_automall.py`).
+
 ## 키(API key)
 구글 AI 스튜디오 키와 클로드 키는 사용하는 사람이 화면에 직접 붙여 넣습니다.
 이 저장소에는 키가 들어 있지 않고, 들어가서도 안 됩니다.
