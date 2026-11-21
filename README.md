@@ -18,6 +18,7 @@
 - 폴더 `automall/` 안에 모두 따로 있습니다: `src/index.fragment.html`(원본 조각) → `python3 -I tools/build_automall.py` → `automall/index.html`·`automall/version.json`. 업그레이드하는 법은 위와 같고, `VER=` 숫자는 100부터 올립니다.
 - **저장 공간이 따로입니다**(같은 github.io 주소라도 섞이지 않게): 작업 상태 `am-dp-v1`, 사진·내 상세페이지 보관소 `am-dp`, 키·설정은 `am-…`. 손잡이 제작기는 `wj-…` 그대로입니다.
 - 손잡이 제작기에서 `작업 저장`한 zip 파일은 자동몰의 `파일 불러오기`로 열 수 있습니다.
+- **상품군 고르기(버전 101~)**: 1단계 맨 위에서 방문 손잡이 · 강화도어 손잡이 · 현관 롤 방충망 · 폴딩 방범 방충망 · 방충망 원단 중 고릅니다. 상품군마다 규격 칸·'맞는지 확인' 카드·글 틀·설치 장면 사진 칸이 따로이고(규격 칸 이름은 우진 스튜디오의 상품군별 필수 사양), 값은 한 칸도 미리 채우지 않습니다. 방문 손잡이 외 상품군은 사진을 직접 넣습니다(AI 이미지·쇼츠 광고 영상은 방문 손잡이만).
 - 바로가기: `automall/자동몰 상세페이지 제작기.url`, 설치 설정은 `automall/manifest.json`, 아이콘은 `automall/icons/`(`python3 -I tools/make_icons_automall.py`).
 
 ## 키(API key)

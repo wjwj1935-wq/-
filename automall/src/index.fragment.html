@@ -333,7 +333,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>자동몰 상세페이지 제작기</h1><small>우진글로벌 · 버전 100</small></div>
+    <div class="brand"><h1>자동몰 상세페이지 제작기</h1><small>우진글로벌 · 버전 101</small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -391,6 +391,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v101 (2026-11-21): 상품군 고르기 — 1단계 맨 위에서 방문 손잡이·강화도어 손잡이·현관 롤 방충망·폴딩 방범 방충망·방충망 원단을 고르면 그 상품군의 페이지 틀로 바뀜(상품군별 규격 칸·'맞는지 확인' 카드·글 틀·설치 장면 사진 칸·글로 쓰는 설치 순서, 사진은 직접 넣기). 방문 손잡이는 그대로. 상품군을 바꾸면 지금 페이지는 '내 상세페이지'에 보관 */
 /* v100 (2026-11-21): 자동몰 — 손잡이 상세페이지 제작기(99)에서 갈라져 나와 따로 작동하는 새 앱. 주소(/-/automall/)·저장 공간(am-…)·바로가기 이름을 나눠 99와 섞이지 않음. 99에서 '작업 저장'한 파일은 '파일 불러오기'로 열 수 있음. 이 앱은 앞으로 상품군(방문 손잡이·강화도어·방충망 …)별 페이지로 키워 감 */
 /* v98 (2026-11-12): 근거가 필요한 표현 점검 — 글 전체에서 과장 말(최고·최초·완벽·100%·1위…)과 특허·인증·방수·항균·스마트 같은 말을 찾아 저장·영상·쇼핑몰 전에 알려 줌(과장·번호 없는 특허·인증은 확인 체크 필요), 회사 소개의 '등록 특허' 숫자만 있고 번호 카드가 빈 경우 알림 */
 /* v97 (2026-11-11): 사고 싶게 만드는 상세페이지 — 핵심 포인트 구역(작동 각도 그림·문 두께·문 색 수·제조사·마감 카드)·첫 화면과 마지막의 짧은 딱지·'우리 집 문에 맞을까요?' 재는 그림 카드·그림으로 보는 설치 6단계(예시 그림)·규격을 반영한 FAQ 답 */
@@ -418,7 +419,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='am-dp-v1',VER=100,SITE='https://wjwj1935-wq.github.io/-/automall/';
+const PW=860,LS='am-dp-v1',VER=101,SITE='https://wjwj1935-wq.github.io/-/automall/';
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
@@ -4617,6 +4618,213 @@ $('#btnSave').onclick=saveWork;
 $('#btnLoad').onclick=()=>{if(libCant())return;showWork();};
 $('#btnShortcut').onclick=()=>{if(libCant()){toast('만들거나 저장하는 중에는 열 수 없어요. 끝난 뒤에 눌러 주세요.',3500);return;}showShortcut();};
 $('#loadFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f&&await loadWork(f)&&veil.querySelector('#wfList'))veil.hidden=true;};   // 목록 창에서 직접 고른 경우에는 불러온 뒤 창을 닫아요
+/* ============ 상품군(제품군) 고르기 (v101) ============
+   상품군마다 상세페이지 만드는 방식이 달라서, 1단계 맨 위에서 상품군을 고르면 그 상품군의 페이지 틀로 바뀌어요.
+   - 방문 손잡이: 지금까지와 똑같아요(AI 이미지·영상·치수 그림 등 모든 기능).
+   - 강화도어 손잡이 · 현관 롤 방충망 · 폴딩 방범 방충망 · 방충망 원단: 상품군별 규격 칸과 '맞는지 확인' 카드, 글 틀, 설치 장면 사진 칸.
+     사진은 직접 넣어요(자동 이미지 만들기·쇼츠 광고 영상은 아직 방문 손잡이만).
+   - 규격 칸 이름은 우진 스튜디오 '상품군별 필수 사양'에서 가져왔고, 값은 한 칸도 미리 채우지 않아요(적은 것만 페이지에 나와요).
+   - 규격 값은 S.facts.extra에 칸 순서대로 들어가서 저장·불러오기·내 상세페이지가 그대로 돼요. 상품군 이름은 S.group에 저장돼요.
+   - 기존 함수를 상품군에 맞게 감싸서 쓰고, 방문 손잡이일 때는 원래 함수를 그대로 불러요. */
+const GRP_FAQ_LAST=FAQ_COMMON[FAQ_COMMON.length-1];
+const GRP={
+  lever:{label:'방문 손잡이',note:'레버 손잡이·도어락(AI 이미지·영상)',sell:STD_NAME},
+  glass:{label:'강화도어 손잡이',note:'유리문 손잡이',sell:'강화도어 손잡이',nameEx:'예: 스테인리스 강화도어 양면 손잡이',
+    fitTitle:'우리 유리문에 맞을까요?',specHint:'적용 유리 두께 · 고정 간격(센터) · 재질 · 구성품을 적으면 여기에 규격 표가 들어가요 (적은 것만 나와요)',
+    rows:[{l:'적용 유리 두께',ph:'숫자 또는 숫자~숫자 (mm)',mm:1,fit:'강화유리 단면의 두께'},{l:'고정 간격(센터)',ph:'숫자만 (mm)',mm:1,fit:'두 고정 구멍 가운데 사이'},{l:'길이',ph:'숫자만 (mm)',mm:1},{l:'굵기(파이)',ph:'숫자만 (mm)',mm:1},{l:'재질·마감',ph:'도면·설명서에 적힌 이름 그대로'},{l:'색상',ph:'예: 헤어라인 실버'},{l:'구성품',ph:'예: 손잡이 2개, 볼트 세트'},{l:'제조국',ph:'예: 대한민국'},{l:'인증·시험',ph:'있을 때만, 번호까지'},{l:'기타 규격',spare:1},{l:'기타 규격',spare:1}],
+    tpl:{hero:{badge:'강화도어 손잡이',title:'우리 유리문에 맞는지\n먼저 확인하고 고르세요',sub:'유리 두께와 고정 간격(센터)을 재서\n아래 규격과 비교해 보세요.'},concept:{title:'손잡이 모양은 확대 사진으로 확인해요',body:''},
+      zoom:[{title:'손으로 잡는 부분',body:'손이 닿는 부분의 모양과 마감을 크게 확대했어요.\n가까이에서 확인해 보세요.',fx:.5,fy:.45,z:2},{title:'유리문에 고정하는 부분',body:'유리문에 고정되는 부분이에요.\n연결 모양과 마감을 확인해 보세요.',fx:.5,fy:.15,z:2.2},{title:'끝부분 마감',body:'끝부분 마감도 그대로 보여 드려요.\n가까이에서 확인해 보세요.',fx:.5,fy:.85,z:2}],
+      scenes:['투명 강화유리문','불투명(시트) 유리문','프레임 있는 유리문'],sceneBody:'유리문에 달았을 때의 모습을 미리 보세요.',
+      faq:[{q:'우리 유리문에 맞나요?',a:'적용 유리 두께와 고정 간격(센터)을 먼저 확인해 주세요. 헷갈리면 지금 달린 손잡이 사진과 치수를 판매자에게 보내 주세요. 맞는지 확인해 드려요.'},{q:'혼자 달 수 있나요?',a:'구성품과 필요한 공구는 판매자에게 확인해 주세요.'},{q:'제품 색상 이름이 궁금해요.',a:'정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'}],
+      cta:{title:'우리 유리문에 달아 보세요',sub:'궁금한 점은 지금 달린 손잡이 사진과 함께\n판매자에게 물어보세요.'}}},
+  roll:{label:'현관 롤 방충망',note:'롤·자동 방충망',sell:'현관 롤 방충망',nameEx:'예: 현관문 자동 롤 방충망',
+    fitTitle:'우리 현관에 맞을까요?',specHint:'크기(가로×세로) · 설치 방식 · 프레임 재질 · 구성품을 적으면 여기에 규격 표가 들어가요 (적은 것만 나와요)',
+    rows:[{l:'크기(가로×세로)',ph:'예: 가로 1000 × 세로 2100 mm',fit:'설치할 문틀 안쪽 크기와 비교'},{l:'설치 방식',ph:'설명서에 적힌 그대로',fit:'문틀에 다는 방법'},{l:'프레임·망 색상',ph:'예: 화이트 프레임 + 블랙 망'},{l:'프레임 재질',ph:'도면·설명서에 적힌 이름 그대로'},{l:'구성품',ph:'예: 본체, 손잡이, 나사 세트'},{l:'제조국',ph:'예: 대한민국'},{l:'인증·시험',ph:'있을 때만, 번호까지'},{l:'기타 규격',spare:1},{l:'기타 규격',spare:1}],
+    tpl:{hero:{badge:'현관 롤 방충망',title:'우리 현관에 맞는지\n먼저 확인하고 고르세요',sub:'문틀 크기와 설치 방식을 확인해서\n아래 규격과 비교해 보세요.'},concept:{title:'제품 모양은 확대 사진으로 확인해요',body:''},
+      zoom:[{title:'방충망 면',body:'망의 모양과 촘촘함을 크게 확대했어요.\n가까이에서 확인해 보세요.',fx:.5,fy:.5,z:2},{title:'프레임과 손잡이 부분',body:'프레임과 손잡이 부분의 마감을 확대했어요.\n가까이에서 확인해 보세요.',fx:.3,fy:.4,z:2.2},{title:'문틀에 닿는 부분',body:'문틀에 닿는 부분의 모양이에요.\n가까이에서 확인해 보세요.',fx:.7,fy:.8,z:2}],
+      scenes:['펼친 모습','말아 둔 모습','현관에 설치한 모습'],sceneBody:'현관에 달았을 때의 모습을 미리 보세요.',
+      faq:[{q:'우리 현관에 맞나요?',a:'문틀 안쪽 가로·세로 크기와 설치 방식을 먼저 확인해 주세요. 헷갈리면 현관 사진과 치수를 판매자에게 보내 주세요. 맞는지 확인해 드려요.'},{q:'혼자 달 수 있나요?',a:'구성품과 필요한 공구, 설치 방법은 판매자에게 확인해 주세요.'},{q:'제품 색상 이름이 궁금해요.',a:'정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'}],
+      cta:{title:'우리 현관에 달아 보세요',sub:'궁금한 점은 문틀 사진과 치수를 함께\n판매자에게 물어보세요.'}}},
+  fold:{label:'폴딩 방범 방충망',note:'폴딩·프로젝트창',sell:'폴딩 방충망',nameEx:'예: 현관 폴딩 방충망',
+    fitTitle:'우리 문·창에 맞을까요?',specHint:'크기(가로×세로) · 설치 방식 · 문 열림 방향 · 프레임 재질을 적으면 여기에 규격 표가 들어가요 (적은 것만 나와요)',
+    rows:[{l:'크기(가로×세로)',ph:'예: 가로 1000 × 세로 2100 mm',fit:'설치할 곳 안쪽 크기와 비교'},{l:'설치 방식',ph:'설명서에 적힌 그대로',fit:'다는 방법'},{l:'문 열림 방향',ph:'예: 양문형 / 외문형 (왼쪽·오른쪽)',fit:'열리는 방향'},{l:'프레임 재질',ph:'도면·설명서에 적힌 이름 그대로'},{l:'방충망(메쉬) 종류',ph:'설명서에 적힌 그대로'},{l:'색상',ph:'예: 화이트'},{l:'구성품',ph:'예: 본체, 잠금장치, 나사 세트'},{l:'제조국',ph:'예: 대한민국'},{l:'인증·시험',ph:'있을 때만, 번호까지'},{l:'기타 규격',spare:1},{l:'기타 규격',spare:1}],
+    tpl:{hero:{badge:'폴딩 방충망',title:'우리 문·창에 맞는지\n먼저 확인하고 고르세요',sub:'설치할 곳의 크기와 열리는 방향을 확인해서\n아래 규격과 비교해 보세요.'},concept:{title:'제품 모양은 확대 사진으로 확인해요',body:''},
+      zoom:[{title:'방충망 면',body:'망의 모양과 촘촘함을 크게 확대했어요.\n가까이에서 확인해 보세요.',fx:.5,fy:.5,z:2},{title:'프레임 부분',body:'프레임의 모양과 마감을 확대했어요.\n가까이에서 확인해 보세요.',fx:.3,fy:.3,z:2.2},{title:'잠금·손잡이 부분',body:'열고 닫는 부분의 모양이에요.\n가까이에서 확인해 보세요.',fx:.7,fy:.6,z:2.2}],
+      scenes:['닫은 모습','접어서 연 모습','설치한 모습'],sceneBody:'설치했을 때의 모습을 미리 보세요.',
+      faq:[{q:'우리 문·창에 맞나요?',a:'설치할 곳의 안쪽 가로·세로 크기, 설치 방식, 문이 열리는 방향을 먼저 확인해 주세요. 헷갈리면 사진과 치수를 판매자에게 보내 주세요. 맞는지 확인해 드려요.'},{q:'혼자 달 수 있나요?',a:'구성품과 필요한 공구, 설치 방법은 판매자에게 확인해 주세요.'},{q:'제품 색상 이름이 궁금해요.',a:'정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'}],
+      cta:{title:'우리 집에 달아 보세요',sub:'궁금한 점은 설치할 곳 사진과 치수를 함께\n판매자에게 물어보세요.'}}},
+  net:{label:'방충망 원단·부속',note:'셀프 교체용 망',sell:'방충망 원단',nameEx:'예: 화이트 방충망 원단 1M',
+    fitTitle:'필요한 크기를 먼저 확인하세요',specHint:'폭·길이 · 망 촘촘함(메쉬) · 재질을 적으면 여기에 규격 표가 들어가요 (적은 것만 나와요)',
+    rows:[{l:'폭·길이',ph:'예: 폭 1000 × 길이 1 m',fit:'필요한 크기와 비교'},{l:'망 촘촘함(메쉬)',ph:'설명서에 적힌 그대로',fit:'망 구멍의 촘촘한 정도'},{l:'재질',ph:'도면·설명서에 적힌 이름 그대로'},{l:'색상',ph:'예: 그레이'},{l:'판매 단위',ph:'예: 1m 단위 / 롤'},{l:'제조국',ph:'예: 대한민국'},{l:'인증·시험',ph:'있을 때만, 번호까지'},{l:'기타 규격',spare:1},{l:'기타 규격',spare:1}],
+    tpl:{hero:{badge:'방충망 원단',title:'필요한 크기를\n먼저 확인하고 고르세요',sub:'창에 맞는 폭과 길이, 망 촘촘함을 확인해서\n아래 규격과 비교해 보세요.'},concept:{title:'망 모양은 확대 사진으로 확인해요',body:''},
+      zoom:[{title:'망 모양',body:'망의 짜임을 크게 확대했어요.\n가까이에서 확인해 보세요.',fx:.5,fy:.5,z:2.4},{title:'망 가장자리',body:'가장자리 모양이에요.\n가까이에서 확인해 보세요.',fx:.85,fy:.2,z:2.2},{title:'포장·감긴 모양',body:'받으실 때의 모양이에요.\n가까이에서 확인해 보세요.',fx:.3,fy:.8,z:2}],
+      scenes:['망 질감','창틀에 교체한 모습','포장 모습'],sceneBody:'실제 사진으로 미리 보세요.',
+      faq:[{q:'우리 창에 맞는 크기는 어떻게 정하나요?',a:'창틀(방충망 틀) 안쪽 가로·세로를 재서 필요한 폭과 길이를 정해 주세요. 헷갈리면 사진과 치수를 판매자에게 보내 주세요.'},{q:'혼자 교체할 수 있나요?',a:'구성품과 필요한 공구, 교체 방법은 판매자에게 확인해 주세요.'},{q:'제품 색상 이름이 궁금해요.',a:'정확한 색상 이름과 다른 색상은 판매자에게 문의해 주세요.'}],
+      cta:{title:'우리 집 방충망을 바꿔 보세요',sub:'궁금한 점은 창틀 사진과 치수를 함께\n판매자에게 물어보세요.'}}}
+};
+const grpId=()=>GRP[S&&S.group]?S.group:'lever';
+const grpOn=()=>grpId()!=='lever';
+const grpP=()=>GRP[grpId()];
+if(!S.group)S.group='lever';
+
+/* 글 틀: 이름·사진·회사 소개는 두고, 제품 칸을 고른 상품군의 빈 틀로 채워요(규격 값은 한 칸도 채우지 않아요) */
+function grpFill(g){
+  const P=GRP[g];if(g==='lever'||!P)return;
+  const T=P.tpl,one=(v)=>String(v==null?'':v);
+  S.group=g;S.sellName=P.sell;
+  Object.assign(S.hero,{badge:T.hero.badge,title:T.hero.title,sub:T.hero.sub});
+  Object.assign(S.concept,{title:T.concept.title,body:T.concept.body});
+  S.zoom.items.forEach((z,i)=>{if(T.zoom[i])Object.assign(z,{title:T.zoom[i].title,body:T.zoom[i].body,fx:T.zoom[i].fx,fy:T.zoom[i].fy,z:T.zoom[i].z});});
+  S.points=Object.assign({},S.points,{title:'이 제품을 고르는 이유',angle:'',aTitle:'',aBody:''});
+  S.colors={eyebrow:'SCENES',title:'이렇게 쓰여요',body:T.sceneBody,note:'',sheet:false,items:T.scenes.map(l=>mkColor([l,'','groove','f',0]))};
+  S.facts=Object.assign({},S.facts,{backset:'',thick:'',bore:'',material:'',finish:'',dir:'',lock:'',parts:'',origin:'',cert:'',note:'',extra:P.rows.map(r=>({l:r.l,v:''}))});
+  S.guide=Object.assign({},S.guide,{mode:'text',title:'이렇게 설치해요',time:'',picNote:'',steps:['','','']});
+  const faq=T.faq.map(x=>({q:x.q,a:x.a}));faq.push(Object.assign({},GRP_FAQ_LAST));S.faq=Object.assign({},S.faq,{items:faq});
+  S.cta=Object.assign({},S.cta,{title:T.cta.title,sub:T.cta.sub});
+}
+/* 상품군 바꾸기: 지금 페이지는 '내 상세페이지'에 보관하고, 고른 상품군의 새 페이지로 시작(이름·원본 사진·회사 소개는 그대로) */
+async function grpSwitch(g){
+  if(!GRP[g]||g===grpId())return;
+  const c=S,pv=snapPrev(),had=LIB.ready&&libWorth(),ok=await libSaveNow(),o=defaults();
+  o.group=g;o.about=c.about;o.notice=c.notice;o.name=c.name;o.src=c.src;
+  if(g!=='lever')o.memo='';
+  S=o;o.prev=pv;dirty=false;PM=null;REF={sig:'',val:null};BREF={id:'',val:null};
+  if(g!=='lever')grpFill(g);
+  gc();
+  if(g==='lever'&&S.src&&PH.get(S.src.id)){try{if(zoomUntouched())await autoZoom();else await ensureMask();}catch(e){}}
+  UI.open.add('p1');renderSide();refresh();
+  toast(GRP[g].label+' 페이지로 시작했어요.'+(had&&ok?' 이전 페이지는 \'내 상세페이지\'에 보관했어요.':S.prev?' 이전 페이지는 따로 보관했어요(1단계 \'이전 작업 되살리기\').':''),5200);
+}
+ACT.group=b=>{
+  const g=b&&b.dataset?b.dataset.g:'';if(!GRP[g]||g===grpId())return;
+  if(libCant())return;
+  veil.hidden=false;
+  veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="상품군 바꾸기"><h2>상품군 바꾸기</h2><div class="msg" style="color:var(--ink)"><b>'+esc(GRP[g].label)+'</b> 페이지로 새로 시작해요.</div><div class="tip">'+(LIB.ready?'지금 페이지는 <b>내 상세페이지</b>에 자동으로 보관돼서 나중에 다시 열 수 있어요. ':'지금 페이지를 다시 쓸 일이 있으면 먼저 <b>작업 저장</b>을 눌러 두세요. ')+'제품 이름·원본 사진과 회사 소개는 그대로 가져오고, 글·규격·설치 순서는 이 상품군의 빈 틀로 바뀌어요.</div><div class="acts"><button class="btn" id="gpNo" type="button">취소</button><button class="btn primary" id="gpGo" type="button">바꾸기</button></div></div>';
+  $('#gpNo').onclick=()=>{veil.hidden=true;};
+  $('#gpGo').onclick=async()=>{$('#gpGo').disabled=true;try{await grpSwitch(g);}finally{veil.hidden=true;}};
+};
+
+/* ---- 페이지 그리기(방문 손잡이가 아닐 때만 바꿔요) ---- */
+function grpFit(){
+  const P=grpP(),ex=(S.facts&&S.facts.extra)||[],out=[];
+  (P.rows||[]).forEach((r,i)=>{if(!r.fit)return;const v=String(ex[i]&&ex[i].v||'').trim();if(v)out.push(['ruler',r.l,r.mm?fxMm(v):v,r.fit,'facts.extra.'+i+'.v']);});
+  return out;
+}
+{
+  const o=fitCards;fitCards=function(){return grpOn()?grpFit():o();};
+  const oi=fitImg;fitImg=function(kind){
+    if(kind!=='ruler')return oi(kind);
+    return diaImg('fit-ruler',200,136,(g,W,H)=>{
+      g.fillStyle='#fff';g.fillRect(0,0,W,H);
+      g.fillStyle='#e8edf5';g.strokeStyle='#9aa7c0';g.lineWidth=3;diaRR(g,18,36,164,44,8);g.fill();g.stroke();
+      g.lineWidth=2;for(let i=0;i<=10;i++){const x=30+i*14;g.beginPath();g.moveTo(x,80);g.lineTo(x,i%5?72:64);g.stroke();}
+      diaArrow(g,18,108,182,108,'#2a56a3');
+    });
+  };
+  const oz=sizeBlock;sizeBlock=function(ex){return grpOn()?'':oz(ex);};
+  const og=guideMode;guideMode=function(){return grpOn()?'text':og();};
+  const of=faqAns;faqAns=function(q){return grpOn()?String(q&&q.a||''):of(q);};
+  const op=pointCards;pointCards=function(){
+    if(!grpOn())return op();
+    const P=S.points||{},Hd=P.hide||{},t=v=>String(v==null?'':v).trim(),out=[],st=((S.about&&S.about.stats)||[])[0];
+    if(st&&t(st.v)&&t(st.l)&&!Hd.maker)out.push({k:'maker',icon:'medal',big:t(st.v),title:t(st.l),body:'제조사가 직접 만들어 공급해요. '+CO.name,chip:'제조사 직접 공급'});
+    (Array.isArray(P.custom)?P.custom:[]).forEach((c,i)=>{if(c&&(t(c.big)||t(c.title)))out.push({k:'c'+i,icon:'star',big:t(c.big),title:t(c.title),body:t(c.body),chip:t(c.title)||t(c.big)});});
+    return out;
+  };
+  const opb=pointsBlock;pointsBlock=function(ex){
+    const h=opb(ex);
+    return grpOn()?h.replace('작동 각도·문 두께·마감처럼 확실한 내용을 적으면 여기에 핵심 포인트 카드가 생겨요','핵심 포인트 카드를 직접 쓰면(4단계 \'핵심 포인트\') 여기에 크게 보여 줘요'):h;
+  };
+  const ofb=factsBlock;factsBlock=function(ex){
+    if(!grpOn())return ofb(ex);
+    const P=grpP(),R=factsRows(),F=S.facts||{},J=p=>ex?'':' data-jump="'+p+'"',fc=fitCards();
+    if(!R.length)return ex?'':'<section class="sec white" data-slice="02_규격"><div class="head"><div class="eyebrow">SPEC</div><h2>제품 규격</h2></div><div class="sizeph" data-jump="facts.extra.0.v">'+esc(P.specHint)+'</div></section>';
+    const fit=fc.length?'<div class="fit"><div class="fitg n'+fc.length+'">'+fc.map(c=>'<div class="fitc"'+J(c[4])+'><img alt="" src="'+fitImg(c[0])+'" width="200" height="136"><span>'+esc(c[1])+'</span><b>'+esc(c[2])+'</b><small>'+esc(c[3])+'</small></div>').join('')+'</div></div><h3 class="fxh">제품 규격</h3>':'';
+    return '<section class="sec white" data-slice="02_규격"><div class="head"><div class="eyebrow">'+(fc.length?'FIT CHECK':'SPEC')+'</div><h2>'+(fc.length?esc(P.fitTitle):'제품 규격')+'</h2><p class="lead">'+(fc.length?'구매 전에 아래 '+fc.length+'가지를 확인해서 비교해 보세요.':'구매 전에 아래 규격을 확인해 보세요.')+'</p></div>'
+      +fit+'<div class="fxbox'+(fc.length?' sub':'')+'">'+R.map(r=>'<div class="fxrow"'+J(r[2])+'><b>'+esc(r[0])+'</b><span>'+nl(r[1])+'</span></div>').join('')+'</div>'
+      +(String(F.note||'').trim()?'<p class="note"'+J('facts.note')+'>'+nl(F.note)+'</p>':'')+'</section>';
+  };
+  const orp=renderPage;renderPage=function(ex){
+    let h=orp(ex);
+    if(!grpOn())return h;
+    const has=(S.colors.items||[]).some(it=>hasPhoto(it.photo));
+    if(ex&&!has)h=h.replace(/<section[^>]*data-slice="04_문색상"[^>]*>[\s\S]*?<\/section>/,'');
+    return h.replace('data-slice="04_문색상"','data-slice="04_설치장면"');
+  };
+}
+
+/* ---- 옆 작업 칸 ---- */
+function grpChips(){
+  return '<div class="f"><span>상품군 — 만들 상품에 맞는 페이지를 골라요</span><div class="segpick c2" role="radiogroup" aria-label="상품군">'
+    +Object.keys(GRP).map(k=>'<button type="button" class="sg'+(grpId()===k?' on':'')+'" role="radio" aria-checked="'+(grpId()===k)+'" data-act="group" data-g="'+k+'"><b>'+esc(GRP[k].label)+'</b><small>'+esc(GRP[k].note)+'</small></button>').join('')+'</div>'
+    +'<p class="cost">상품군을 바꾸면 지금 페이지는 \'내 상세페이지\'에 보관하고, 고른 상품군의 새 페이지로 시작해요(제품 이름·원본 사진은 그대로).</p></div>';
+}
+function grpP1(){
+  const m=S.src&&PH.get(S.src.id),P=grpP();
+  return '<p class="hint">제품 이름과 사진 한 장을 넣고, 아래 <b>4단계</b>에서 규격과 글을 적어 주세요. 이 상품군은 <b>사진을 직접 넣어요</b>(자동 이미지 만들기·쇼츠 광고 영상은 아직 방문 손잡이만 돼요).</p>'
+    +fld.text('name','제품 이름',{ph:P.nameEx,req:1})
+    +fld.text('sellName','판매 상품명 (스마트스토어 등)',{ph:P.sell})+'<div><button class="btn sm" type="button" data-act="copysell">상품명 복사</button></div>'
+    +'<div class="f"><span>제품 사진 한 장 (원본)</span><div class="pc" data-pk="src"><div class="pc-top"><div class="thumb" data-drop="src" style="width:96px;height:96px'+(m?';background-image:url('+m.url+');background-size:contain;background-color:#fff':'')+'">'+(m?'':'사진<br>넣기')+'</div><div class="pc-btns"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="src"></label>'+(m?'<button class="btn sm ghost" type="button" data-act="rotl">↺ 왼쪽으로 돌리기</button><button class="btn sm ghost" type="button" data-act="rotr">↻ 오른쪽으로 돌리기</button>':'')+'</div></div></div></div>'
+    +(m&&m.w<1200?'<p class="msg err">사진이 작아요(가로 '+m.w+'px). 확대 컷 품질이 떨어질 수 있어요. 가로 1500px 이상 원본을 권장해요.</p>':'')
+    +(S.prev&&S.prev.s?'<div class="blk"><div class="acts"><button class="btn sm" type="button" data-act="restoreprev">↩ 이전 작업 되살리기</button></div><p class="cost">보관된 이전 작업: '+esc(S.prev.name||'이전 제품')+'</p></div>':'')
+    +fld.area('memo','아는 내용 (선택)',{rows:2,ph:'확실한 것만 적어요. 적지 않은 사양은 글에 넣지 않아요.'});
+}
+function grpP3(){
+  const slot=(key,title,hint)=>{const p=getP(key),m=p&&PH.get(p.id);
+    return '<div class="job" data-pk="'+key+'"><div class="thumb" data-drop="'+key+'"'+(m?' style="background-image:url('+m.url+')"':'')+'>'+(m?'':'끌어다<br>놓기')+'</div><div class="meta"><div class="nm">'+esc(title)+(m?'<span class="done">들어감</span>':'')+'</div><p class="cost">'+esc(hint)+'</p><div class="acts"><label class="btn sm">'+(m?'사진 바꾸기':'사진 넣기')+'<input type="file" accept="image/*" hidden data-file="'+key+'"></label></div></div></div>';};
+  return '<div class="tip">이 상품군은 <b>사진을 직접 넣어요</b>. 넣지 않은 칸은 1단계 제품 사진으로 채우거나(첫 화면·소개) 페이지에서 빠져요(설치 장면). 구글 이미지 만들기는 방문 손잡이에서만 돼요.</div>'
+    +'<div class="list">'+slot('hero.photo','첫 화면 사진 (세로 4:5)','안 넣으면 1단계 제품 사진을 어두운 카드 위에 보여 줘요.')
+    +slot('concept.photo','소개 사진 (가로 3:2)','안 넣으면 1단계 제품 사진을 써요.')
+    +(S.colors.items||[]).map((it,i)=>slot('colors.items.'+i+'.photo',it.label||('설치 장면 '+(i+1)),'실제로 찍은 사진을 넣어요.')).join('')+'</div>';
+}
+function grpPanels(){
+  const P=grpP(),rows=(S.facts&&S.facts.extra)||[],pr=S.points||{},hide=pr.hide||{};
+  const points=subp('s-points','핵심 포인트(POINT) · 사고 싶게 만드는 한 구역','<div class="tip">고객이 <b>왜 이 제품을 골라야 하는지</b> 첫 화면 바로 아래에 크게 보여 줘요. 카드는 <b>확실한 내용만</b> 직접 써 주세요. 비우면 안 나와요.</div>'
+    +fld.text('points.eyebrow','작은 제목')+fld.text('points.title','제목')
+    +'<label class="chk"><input type="checkbox" data-chk="points.hide.maker"'+(hide.maker?' checked':'')+'> 제조사 카드 빼기 (회사 소개의 첫 숫자로 만들어요)</label>'
+    +'<label class="chk"><input type="checkbox" data-chk="points.chips"'+(pr.chips!==false?' checked':'')+'> 첫 화면과 마지막 문구 아래에 짧은 딱지 넣기</label>'
+    +'<b class="hint">직접 쓰는 카드 (확실한 내용만 · 비우면 안 나와요)</b>'+(pr.custom||[]).map((c,i)=>'<div class="row2">'+fld.text('points.custom.'+i+'.big','큰 글 '+(i+1),{ph:'예: 좌우 공용'})+fld.text('points.custom.'+i+'.title','제목 '+(i+1),{ph:'예: 문 방향 상관없이 달 수 있어요'})+'</div>'+fld.area('points.custom.'+i+'.body','설명 '+(i+1),{rows:2})).join(''));
+  const facts=subp('s-facts','제품 규격 ('+esc(P.label)+')','<div class="tip">고객이 "맞나요?"를 가장 많이 물어요. 도면·포장·설명서에 있거나 직접 잰 <b>확실한 값만</b> 적어 주세요. 모르면 비워 두세요(비우면 그 줄은 안 나와요). \'맞는지 확인\' 표시가 붙은 칸은 페이지에 큰 카드로도 나와요.</div>'
+    +P.rows.map((r,i)=>r.spare?'<div class="row2">'+fld.text('facts.extra.'+i+'.l','항목 이름',{ph:'예: 무게'})+fld.text('facts.extra.'+i+'.v','내용')+'</div>':fld.text('facts.extra.'+i+'.v',esc(r.l)+(r.fit?' · 맞는지 확인 카드에도 나와요':''),{ph:r.ph})).join('')
+    +fld.area('facts.note','맨 아래 작은 글 (선택)',{rows:2}));
+  const scenes=subp('s-colors','설치 장면(SCENES)','<p class="hint">제목·설명은 모든 제품이 같이 써요. 사진은 3단계에서 직접 넣어요. 사진이 없는 칸은 저장하는 이미지에서 빠져요.</p>'
+    +fld.text('colors.eyebrow','작은 제목')+fld.text('colors.title','제목',{req:1})+fld.area('colors.body','설명 글',{rows:2})+fld.area('colors.note','맨 아래 작은 글 (선택 · AI로 만든 사진을 넣었다면 그 안내 문구)',{rows:2})
+    +listItems('colors.items',S.colors.items,(it,i,b)=>fld.text(b+'.label','이름',{req:1}),{title:it=>esc(it.label||'설치 장면'),add:'장면 칸 추가'}));
+  const guide=subp('s-guide','설치 안내(GUIDE)',fld.text('guide.eyebrow','작은 제목')+fld.text('guide.title','제목',{req:1})+fld.text('guide.time','설치 시간 (확인된 값만 · 비우면 안 나와요)',{ph:'예: 설치 약 10분'})
+    +'<div class="tip">이 상품군은 그림 없이 <b>글로만</b> 보여 줘요. 설명서에 있는 순서 그대로 적어 주세요. 비운 칸은 페이지에서 빠져요.</div>'
+    +listItems('guide.steps',S.guide.steps,(s,i,b)=>fld.text(b,'순서 글',{req:1}),{title:(s,i)=>(i+1)+'번',add:'순서 추가'}));
+  return {'s-points':points,'s-facts':facts,'s-colors':scenes,'s-guide':guide};
+}
+{
+  const o1=p1;p1=function(){return grpChips()+(grpOn()?grpP1():o1());};
+  const o3=p3;p3=function(){return grpOn()?grpP3():o3();};
+  const o4=p4;p4=function(){
+    const h=o4();if(!grpOn())return h;
+    const box=document.createElement('div');box.innerHTML=h;
+    const pn=grpPanels();Object.keys(pn).forEach(id=>{const el=box.querySelector('#'+id);if(el)el.outerHTML=pn[id];});
+    return box.innerHTML;
+  };
+}
+
+/* ---- 방문 손잡이 전용 기능은 다른 상품군에서 조용히 비켜 줘요 ---- */
+{
+  const oTpl=tplFill;tplFill=function(){if(!grpOn())return oTpl();grpFill(grpId());dirty=false;};
+  const oNp=newProduct;newProduct=function(){const g=grpId();oNp();if(g!=='lever'){grpFill(g);S.hero.photo=null;}};
+  const oRun=runOne;runOne=async function(go){
+    if(!grpOn())return oRun(go);
+    toast('이 상품군은 아직 자동 만들기가 없어요. 3단계에서 사진을 넣고, 4단계에서 규격과 글을 적어 주세요.',5200);
+    UI.open.add('p3');UI.open.add('p4');renderSide();
+  };
+  const oPre=preItems;preItems=function(ctx){const L=oPre(ctx);return grpOn()?L.filter(x=>/^claim_/.test(x.id)||x.id==='silent'):L;};
+  const oGate=gateInfo;gateInfo=function(){
+    if(!grpOn())return oGate();
+    const g={hard:[],soft:[]};preItems('export').forEach(x=>{if(x.lvl==='bad')g.hard.push(x.text);else g.soft.push(x.text);});return g;
+  };
+  const oAd=adModeHtml;adModeHtml=function(){return grpOn()?'':oAd();};
+  const oVid=showVideo;showVideo=function(msg){if(grpOn())VD.mode='scroll';return oVid(msg);};
+  const oDef=defaults;defaults=function(){const d=oDef();d.group='lever';return d;};
+  const oFs=fromSaved;fromSaved=function(o){const st=oFs(o);if(st)st.group=(o&&GRP[o.group])?o.group:'lever';return st;};
+}
 $('#btnNew').onclick=()=>{
   veil.hidden=false;
   veil.innerHTML='<div class="dlg" role="dialog" aria-modal="true" aria-label="새 제품 시작"><h2>새 제품 시작</h2><div class="msg" style="color:var(--ink)">지금 만든 제품의 이름·사진·글을 비우고 새 제품을 시작해요.</div><div class="tip">회사 소개, 설치 안내, 구매 전 확인, 마지막 문구 같은 <b>공통 글은 그대로</b> 남아요. '+(LIB.ready?'지금 제품은 <b>내 상세페이지</b>에 자동으로 보관돼서 나중에 다시 열 수 있어요.':'지금 제품을 다시 쓸 일이 있으면 먼저 <b>작업 저장</b>을 눌러 두세요.')+'</div><div class="acts"><button class="btn" id="nwNo" type="button">취소</button><button class="btn primary" id="nwGo" type="button">새로 시작</button></div></div>';
@@ -4659,7 +4867,7 @@ async function checkUpdate(mode){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate('back');});
 setInterval(()=>{if(!document.hidden)checkUpdate('tick');},60000);
 
-if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh,zipReader,projInfo,adSfx,adDoorColor,AD_HOOKS,renderPage,pointCards,pointAngle,guideMode,faqAns,fitCards,GUIDE_IMG,GUIDE_STEPS,fromSaved,claimScan,claimItems,claimTexts,claimNoteHtml};   // 시험용
+if(location.hash==='#wjdebug')window.__wj={S:()=>S,promptOf,jobs,chkPrompt,buildRefs,capInfo,capLine,capUiLine,plateBox,G,UI,EX,gRun,gateInfo,sane,imgStat,holdOf,capFor,gErr,gList,getP,whiteIdx,PH,TRIES,coolMs,CAPS,capNow,capLocked,capPreset,reachInfo,ratioLine,fixedLine,lvLocked,dirLock,flipPhoto,mmv,getCutout,composeReal,composeStudio,recompAll,doorPrompt,compSet,orientCut,cutProduct,M3D,m3dNorm,m3dMerge,m3dLock,m3dFacts,m3dSdfOf,m3dRender,m3dBuild,model3dFor,m3dDir,PRE,preItems,preRun,preSig,preLocked,VD,showVideo,showExport,adPlan,adLoad,adDrawer,adRows,adDoorItems,adHookText,adEst,AD,setPhoto,postFacts,postNorm,postAllowed,postApply,vPostRun,vPostAuto,vShowResult,vPostDraft,POST_PROMPT,LIB,LIBIDS,idb,libSaveNow,libOpen,libDel,libPatch,libInit,libZip,libCount,showLib,libRender,libWorth,WF,zipMeta,dirScan,dirReady,putWork,showWork,workMeta,scanFiles,wfRefresh,zipReader,projInfo,adSfx,adDoorColor,AD_HOOKS,renderPage,pointCards,pointAngle,guideMode,faqAns,fitCards,GUIDE_IMG,GUIDE_STEPS,fromSaved,claimScan,claimItems,claimTexts,claimNoteHtml,GRP,grpFill,grpSwitch,grpFit};   // 시험용
 /* ============ 시작 ============ */
 (async()=>{
   setTab('edit');renderSide();paper.innerHTML=renderPage(false);fit();chip();
