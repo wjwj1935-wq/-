@@ -1,7 +1,7 @@
 /* 직원에게 보낼 '파일 하나'를 실제로 파일로 열어서 시험한다: 인터넷을 모두 막은 상태(file://), 클로드 안이 아닌 보통 브라우저와 똑같이 */
 const fs = require('fs'), path = require('path'), { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v101.html', PHOTO = B + '/up/white_prod.png', IN = B + '/real_in';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html', PHOTO = B + '/up/white_prod.png', IN = B + '/real_in';
 const JZipN = require(B + '/jz/node_modules/jszip');
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 const URL0 = pathToFileURL(FILE).href;
@@ -18,7 +18,7 @@ const URL0 = pathToFileURL(FILE).href;
   await page.waitForFunction(() => window.__wj, null, { timeout: 8000 });
 
   /* 1. 열린다 · 도구가 파일 안에 들어 있다 */
-  ok(await page.title() === '자동몰 상세페이지 제작기' && /버전 101/.test(await page.textContent('.brand small')), '파일로 열린다(제목 · "버전 101")');
+  ok(await page.title() === '자동몰 상세페이지 제작기' && /버전 102/.test(await page.textContent('.brand small')), '파일로 열린다(제목 · "버전 102")');
   ok(await page.evaluate(() => typeof JSZip === 'function' && typeof html2canvas === 'function'), '인터넷이 막혀 있어도 저장(zip)·이미지 도구가 파일 안에 들어 있다');
   ok(blocked.every((u) => /fonts\.googleapis\.com|fonts\.gstatic\.com/.test(u)), '막힌 요청은 글꼴뿐이다(없으면 컴퓨터의 한글 글꼴로 보인다) → ' + [...new Set(blocked.map((u) => new URL(u).hostname))].join(', '));
   ok(await page.evaluate(() => !window.claude), '클로드 안이 아닌 보통 브라우저로 열린 상태다(window.claude 없음)');

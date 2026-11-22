@@ -1,7 +1,7 @@
 /* v99 바로가기(바탕화면·휴대폰 아이콘) — 인터넷 주소가 아닌 파일로 열었을 때 / 인터넷 주소(github.io)로 열린 것처럼 했을 때 / 아이폰 */
 const fs = require('fs'), { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev'), R = '/home/user/-/automall/';
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v101.html', SITE = 'https://wjwj1935-wq.github.io/-/automall/';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html', SITE = 'https://wjwj1935-wq.github.io/-/automall/';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const browser = await chromium.launch();
@@ -25,7 +25,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   /* A. 파일로 열었을 때(직원용 단일 파일): 설치 단추는 없고, 바탕화면용 바로가기 파일만 나온다 */
   let page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(e.message));
   await page.goto(pathToFileURL(FILE).href + '#wjdebug'); await page.waitForSelector('#paper .sec', { state: 'attached' });
-  ok(/버전 101/.test(await page.textContent('.brand small')) && await page.locator('#btnShortcut').count() === 1, '파일로 열면 "버전 101"이고 윗줄에 "바로가기" 단추가 있다');
+  ok(/버전 102/.test(await page.textContent('.brand small')) && await page.locator('#btnShortcut').count() === 1, '파일로 열면 "버전 102"이고 윗줄에 "바로가기" 단추가 있다');
   await page.click('#btnShortcut'); await page.waitForSelector('#scFile');
   const t1 = await page.textContent('.dlg');
   ok(/바로가기 만들기/.test(t1) && await page.locator('#scInstall').count() === 0 && /아이폰/.test(t1) && /안드로이드/.test(t1), '파일로 연 경우: 설치 단추는 안 보이고 "바로가기 파일 받기"·아이폰·안드로이드 안내가 보인다');

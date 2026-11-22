@@ -1,7 +1,7 @@
-/* 자동몰 v101 — 상품군 고르기. 파일로 열어(인터넷 막음) 시험한다. 규격 값은 시험용 가짜 값이고, 앱은 값을 미리 채우지 않는다. */
+/* 자동몰 v102 — 상품군 고르기. 파일로 열어(인터넷 막음) 시험한다. 규격 값은 시험용 가짜 값이고, 앱은 값을 미리 채우지 않는다. */
 const fs = require('fs'), { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v101.html', PHOTO = B + '/up/white_prod.png';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html', PHOTO = B + '/up/white_prod.png';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const browser = await chromium.launch();
@@ -31,8 +31,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await pickGroup('glass');
   let s = await S();
   ok(s.group === 'glass' && s.name === '시험 제품' && await ev(() => !!window.__wj.PH.has(window.__wj.S().src.id)), '강화도어로 바꾸면 제품 이름과 원본 사진은 그대로 가져온다');
-  ok(s.extra.length === 11 && s.extra[0][0] === '적용 유리 두께' && s.extra[1][0] === '고정 간격(센터)' && s.extra.every((x) => x[1] === ''), '규격 칸이 상품군별(적용 유리 두께 · 고정 간격(센터) …)로 만들어지고, 값은 한 칸도 미리 채워지지 않는다');
-  ok(/유리문/.test(s.hero) && !/우리 집 문에 깔끔하게/.test(s.hero) && s.faq[0] === '우리 유리문에 맞나요?' && s.colors.join() === '투명 강화유리문,불투명(시트) 유리문,프레임 있는 유리문', '첫 화면 글·질문·설치 장면 이름이 강화도어 틀로 바뀐다');
+  ok(s.extra.length === 16 && s.extra[0][0] === '적용 유리 두께' && s.extra[1][0] === '고정 간격(센터)' && s.extra.every((x) => x[1] === ''), '규격 칸이 상품군별(적용 유리 두께 · 고정 간격(센터) …)로 만들어지고, 값은 한 칸도 미리 채워지지 않는다');
+  ok(/유리문/.test(s.hero) && !/우리 집 문에 깔끔하게/.test(s.hero) && s.faq.includes('우리 유리문에 맞나요?') && s.colors.join() === '투명 강화유리문,불투명(시트) 유리문,프레임 있는 유리문', '첫 화면 글·질문·설치 장면 이름이 강화도어 틀로 바뀐다');
   ok(await ev(() => window.__wj.GRP.glass.rows.filter((r) => r.fit).length) === 2 && !/방문 손잡이|레버|백셋|문 색상/.test(await ev(() => document.getElementById('paper').innerText.replace(/\s+/g, ' '))), '페이지에 방문 손잡이 말(레버·백셋·문 색상)이 남아 있지 않다');
   ok(await page.locator('#p3 [data-act="gone"], #p3 [data-act="gtest"]').count() === 0 && /사진을 직접 넣어요/.test(await page.textContent('#p3')), '3단계는 AI 이미지 만들기 대신 "사진을 직접 넣어요" 칸으로 바뀐다');
   ok(await page.locator('[data-k="size.len"], #p1 .cappick').count() === 0, '1단계에서 방문 손잡이 전용 칸(캡 모양·치수)이 사라진다');
@@ -96,7 +96,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   /* 7. 새 제품은 같은 상품군으로 · 오류 없음 */
   await page.click('#btnNew'); await page.waitForSelector('#nwGo'); await page.click('#nwGo'); await page.waitForTimeout(900);
   s = await S();
-  ok(s.group === 'glass' && s.name === '' && s.extra.length === 11 && s.extra.every((x) => x[1] === '') && /유리문/.test(s.hero), '"새 제품"을 누르면 같은 상품군(강화도어)의 빈 틀로 시작한다');
+  ok(s.group === 'glass' && s.name === '' && s.extra.length === 16 && s.extra.every((x) => x[1] === '') && /유리문/.test(s.hero), '"새 제품"을 누르면 같은 상품군(강화도어)의 빈 틀로 시작한다');
   ok(errors.length === 0, '화면 오류가 없다' + (errors.length ? ' → ' + errors.slice(0, 3).join(' | ') : ''));
   await browser.close();
   console.log(fails ? '\n실패 ' + fails + '개' : '\n모두 통과'); process.exit(fails ? 1 : 0);

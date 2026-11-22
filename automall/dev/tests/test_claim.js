@@ -1,7 +1,7 @@
 /* v99 근거가 필요한 표현 점검 — 파일로 열어(인터넷 막음) 시험한다. 클로드·구글은 쓰지 않는다 */
 const fs = require('fs'), { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v101.html';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const browser = await chromium.launch(), ctx = await browser.newContext({ viewport: { width: 1500, height: 1100 } });
@@ -47,11 +47,20 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(c && c.lvl === 'warn', '인증·시험 칸에 적으면 ⚠로 낮아진다');
 
   /* 5. 알려만 주는 말: 방수·항균·스마트·비교 → ⚠ 이고 저장을 막지 않는다 */
-  await reset(); await setS({ concept: { body: '방수 처리와 항균 코팅, 스마트한 친환경 설계예요. 타사보다 가장 튼튼해요.' } });
+  await reset(); await setS({ concept: { body: '방수 처리와 스마트한 설계예요. 타사보다 가장 튼튼해요.' } });
   sc = await scan();
-  ok(['perf', 'tech', 'cmp'].every((r) => sc.some((x) => x.rule === r && x.lvl === 'warn')) && !sc.some((x) => x.lvl === 'bad'), '방수·항균(성능) / 스마트·친환경(기술) / 타사·가장 튼튼(비교)은 ⚠만 나오고 ⛔는 없다');
+  ok(['perf', 'tech', 'cmp'].every((r) => sc.some((x) => x.rule === r && x.lvl === 'warn')) && !sc.some((x) => x.lvl === 'bad'), '방수(성능) / 스마트(기술) / 타사·가장 튼튼(비교)은 ⚠만 나오고 ⛔는 없다');
   let g = await ev(() => { const g = window.__wj.gateInfo(); return { hard: g.hard.length, soft: g.soft.length }; });
   ok(g.hard === 0 && g.soft >= 3, '그래서 이미지 저장 점검표에서는 "확인해 보세요"(soft)에만 들어가고 저장은 막히지 않는다(걸린 곳 ' + g.hard + ' · 확인 ' + g.soft + ')');
+
+  /* 5-2. v102: 항균·살균·무독성·99.9%·친환경은 인증 번호가 없으면 ⛔, 인증·시험 칸에 번호가 있으면 ⚠ */
+  await reset(); await setS({ concept: { body: '항균·살균 처리했고 무독성, 99.9% 차단, 친환경 소재예요.' } });
+  sc = await scan(); c = sc.find((x) => x.rule === 'health');
+  ok(c && c.lvl === 'bad' && ['항균', '살균', '무독성', '친환경'].every((w) => c.words.includes(w)) && c.words.some((w) => /99\.9/.test(w)), '항균·살균·무독성·99.9%·친환경: 인증 번호가 없으면 ⛔');
+  ok(!sc.some((x) => x.rule === 'perf' && x.words.some((w) => /항균|살균/.test(w))) && !sc.some((x) => x.rule === 'tech' && x.words.includes('친환경')), '같은 말이 성능·기술 규칙에서 또 걸리지 않는다(중복 없음)');
+  await setS({ facts: { cert: 'KC 제 CB0000-00-0000호' } });
+  c = (await scan()).find((x) => x.rule === 'health');
+  ok(c && c.lvl === 'warn', '인증·시험 칸에 번호를 적으면 ⚠로 낮아진다');
 
   /* 6. 근거 자료 자체는 검사하지 않는다 */
   await reset(); await setS({ about: { body: '국내 최초 특허 100% 인증 회사', stats: [{ v: '2017~', l: '문 손잡이 최고 기록' }] }, facts: { cert: 'KC 인증 완벽', note: '최고' } });
