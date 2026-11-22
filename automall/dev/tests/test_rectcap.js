@@ -157,7 +157,7 @@ const Z = (o) => ({ v: 3, size: Object.assign({ len: '', wid: '', cap: '', ref: 
     await page.evaluate(() => document.querySelectorAll('#side details').forEach((d) => { d.open = true; }));
     ok(await page.locator('.cappick .cp.on').getAttribute('data-v') === 'rect' && await page.inputValue('[data-k="size.capW"]') === '70' && await page.inputValue('[data-k="size.capH"]') === '54', '화면: 새로고침 후에도 직사각형·70·54가 그대로다');
     ok(await page.locator('#paper .sddia').count() === 1, '화면: 새로고침 후에도 그림이 나온다');
-    ok(/버전 102/.test(await page.locator('.brand small').textContent()), '화면: 윗줄에 "버전 67"이 보인다');
+    ok(/버전 103/.test(await page.locator('.brand small').textContent()), '화면: 윗줄에 "버전 67"이 보인다');
     ok(errors.length === 0, '화면: 오류 없음 ' + JSON.stringify(errors));
     await page.locator('#side').screenshot({ path: SHOT + '/ui_side_rect.png' }).catch(() => {});
     await page.screenshot({ path: SHOT + '/ui_full_rect.png' });

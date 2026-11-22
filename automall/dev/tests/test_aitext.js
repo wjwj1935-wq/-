@@ -1,7 +1,7 @@
-/* v102 — 규격 칸 보강 · FAQ 보강 · AI·검색용 글 복사. 파일로 열어(인터넷 막음) 시험한다. 규격 값은 시험용 가짜 값이다. */
+/* v103 — 규격 칸 보강 · FAQ 보강 · AI·검색용 글 복사. 파일로 열어(인터넷 막음) 시험한다. 규격 값은 시험용 가짜 값이다. */
 const { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v103.html';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const browser = await chromium.launch(), ctx = await browser.newContext({ viewport: { width: 1500, height: 1100 } });

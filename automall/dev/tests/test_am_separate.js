@@ -3,7 +3,7 @@
 const fs = require('fs'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
 const ORIGIN = 'https://wjwj1935-wq.github.io', U99 = ORIGIN + '/-/', UAM = ORIGIN + '/-/automall/';
-const H99 = fs.readFileSync(B + '/staff/상세페이지_제작기_v99.html', 'utf8'), HAM = fs.readFileSync(B + '/staff/자동몰_상세페이지_제작기_v102.html', 'utf8');
+const H99 = fs.readFileSync(B + '/staff/상세페이지_제작기_v99.html', 'utf8'), HAM = fs.readFileSync(B + '/staff/자동몰_상세페이지_제작기_v103.html', 'utf8');
 const PHOTO = B + '/up/white_prod.png';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
@@ -41,7 +41,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   /* 2. 같은 주소·같은 브라우저에서 자동몰(100)을 연다 → 99의 작업이 안 보여야 한다 */
   const b = await open(UAM);
-  ok(/버전 102/.test(await b.textContent('.brand small')) && await b.title() === '자동몰 상세페이지 제작기' && (await b.textContent('.brand h1')) === '자동몰 상세페이지 제작기', '(자동몰) 열린 앱은 "자동몰 상세페이지 제작기 · 버전 102"이다');
+  ok(/버전 103/.test(await b.textContent('.brand small')) && await b.title() === '자동몰 상세페이지 제작기' && (await b.textContent('.brand h1')) === '자동몰 상세페이지 제작기', '(자동몰) 열린 앱은 "자동몰 상세페이지 제작기 · 버전 103"이다');
   ok(await nameOf(b) !== '99번 손잡이' && await libN(b) === 0 && !/내 상세페이지 \d/.test(await b.textContent('#btnLib')), '(자동몰) 99에서 만든 제품(이름·사진·내 상세페이지)이 보이지 않고 처음 상태로 열린다');
   const before = await keys(b);
   await b.locator('input[data-file="src"]').first().setInputFiles(PHOTO); await b.waitForTimeout(2200);

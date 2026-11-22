@@ -1,7 +1,7 @@
 /* 자동몰 v102 — 상품군 고르기. 파일로 열어(인터넷 막음) 시험한다. 규격 값은 시험용 가짜 값이고, 앱은 값을 미리 채우지 않는다. */
 const fs = require('fs'), { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html', PHOTO = B + '/up/white_prod.png';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v103.html', PHOTO = B + '/up/white_prod.png';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const browser = await chromium.launch();
@@ -17,9 +17,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const pageText = () => ev(() => document.getElementById('paper').innerText);
   const pickGroup = async (g) => { await page.click('[data-act="group"][data-g="' + g + '"]'); await page.waitForSelector('#gpGo'); await page.click('#gpGo'); await page.waitForFunction((g) => window.__wj.S().group === g, g, { timeout: 15000 }); await page.waitForTimeout(700); };
 
-  /* 1. 처음: 방문 손잡이, 상품군 단추 5개 */
+  /* 1. 처음: 방문 손잡이, 상품군 단추 6개 */
   const chips = await ev(() => [...document.querySelectorAll('[data-act="group"]')].map((b) => [b.dataset.g, b.classList.contains('on'), b.querySelector('b').textContent]));
-  ok(chips.length === 5 && chips.map((c) => c[0]).join() === 'lever,glass,roll,fold,net' && chips[0][1] && !chips.slice(1).some((c) => c[1]), '1단계 맨 위에 상품군 단추 5개가 있고, 처음은 "방문 손잡이"가 눌려 있다 → ' + chips.map((c) => c[2]).join(' / '));
+  ok(chips.length === 6 && chips.map((c) => c[0]).join() === 'lever,glass,roll,fold,net,auto' && chips[0][1] && !chips.slice(1).some((c) => c[1]), '1단계 맨 위에 상품군 단추 6개가 있고, 처음은 "방문 손잡이"가 눌려 있다 → ' + chips.map((c) => c[2]).join(' / '));
   ok((await S()).group === 'lever' && /우리 집 문에 깔끔하게/.test((await S()).hero) && await page.locator('#p3 [data-act="gone"], #p3 [data-act="gtest"]').count() > 0, '방문 손잡이는 100과 똑같이 AI 이미지 만들기(3단계) 단추와 문 색상 글 틀이 그대로다');
   await page.locator('input[data-file="src"]').first().setInputFiles(PHOTO); await page.waitForTimeout(2200);
   await page.fill('[data-k="name"]', '시험 제품'); await page.waitForTimeout(3200);
@@ -61,8 +61,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok((await S()).group === 'glass' && await page.locator('[data-act="group"][data-g="glass"].on').count() === 1, '새로 고쳐도 상품군이 유지된다');
 
   /* 5. 나머지 상품군(롤·폴딩·원단)과 상품군마다 다른 확인 항목 */
-  const exp = { roll: ['크기(가로×세로)', '설치 방식', '우리 현관에 맞을까요?'], fold: ['크기(가로×세로)', '문 열림 방향', '우리 문·창에 맞을까요?'], net: ['폭·길이', '망 촘촘함(메쉬)', '필요한 크기를 먼저 확인하세요'] };
-  for (const g of ['roll', 'fold', 'net']) {
+  const exp = { roll: ['크기(가로×세로)', '설치 방식', '우리 현관에 맞을까요?'], fold: ['크기(가로×세로)', '문 열림 방향', '우리 문·창에 맞을까요?'], net: ['폭·길이', '망 촘촘함(메쉬)', '필요한 크기를 먼저 확인하세요'], auto: ['설치할 곳 크기(가로×세로)', '작동 방식', '우리 베란다에 맞을까요?'] };
+  for (const g of ['roll', 'fold', 'net', 'auto']) {
     await pickGroup(g);
     const sg = await S(), labels = sg.extra.map((x) => x[0]);
     await page.evaluate(() => { document.querySelector('#p4').open = true; document.querySelector('#s-facts').open = true; });

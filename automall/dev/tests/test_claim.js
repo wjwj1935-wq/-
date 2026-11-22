@@ -1,7 +1,7 @@
 /* v99 근거가 필요한 표현 점검 — 파일로 열어(인터넷 막음) 시험한다. 클로드·구글은 쓰지 않는다 */
 const fs = require('fs'), { pathToFileURL } = require('url'), { chromium } = require('playwright');
 const B = (process.env.AM_DEV || '/tmp/am_dev');
-const FILE = B + '/staff/자동몰_상세페이지_제작기_v102.html';
+const FILE = B + '/staff/자동몰_상세페이지_제작기_v103.html';
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 (async () => {
   const browser = await chromium.launch(), ctx = await browser.newContext({ viewport: { width: 1500, height: 1100 } });
