@@ -291,6 +291,16 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .tl .tt{font-size:24px;line-height:1.6;color:#dbe3f3}
 .pg .foot{margin-top:44px;text-align:center;font-size:26px;font-weight:700}
 .pg .fn{margin:12px auto 0;max-width:720px;text-align:center;font-size:22px;line-height:1.7;color:#93a1c2}
+.pg .trg{margin-top:46px;display:flex;flex-direction:column;gap:16px}
+.pg .trc{display:flex;gap:22px;align-items:center;padding:26px 28px;border-radius:24px;background:var(--pg-soft);border:2px solid var(--pg-line)}
+.pg .trc .seal{width:88px;height:88px;font-size:24px}
+.pg .trc b{display:block;font-size:30px;line-height:1.35;font-weight:800;color:var(--pg-ink)}
+.pg .trc span{display:block;margin-top:6px;font-size:25px;line-height:1.6;color:var(--pg-mute)}
+.pg .trcall{margin-top:30px;padding:36px 24px;border-radius:26px;background:var(--pg-navy);text-align:center;color:#fff}
+.pg .trcall .k{font-size:24px;font-weight:700;letter-spacing:.04em;color:var(--pg-gold)}
+.pg .trcall .n{margin-top:10px;font-size:58px;line-height:1.1;font-weight:900;letter-spacing:.01em}
+.pg .trcall .h{margin-top:12px;font-size:26px;font-weight:700;color:#e8edf7}
+.pg .trcall .m{margin:14px auto 0;max-width:640px;font-size:22px;line-height:1.6;color:#aebad6}
 
 .pg .steps{position:relative;margin-top:50px;display:flex;flex-direction:column;gap:28px}
 .pg .steps::before{content:"";position:absolute;left:27px;top:28px;bottom:28px;width:3px;background:#c8d4ea}
@@ -391,6 +401,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v104 (2026-11-28): 상세페이지에 '믿을 수 있는 회사' 구역(품질 관리·A/S 관리·기술 관리·대표 전화/상담 시간 — 적은 칸만 나옴) · 회사 특허 2건 넣기 단추(특허증으로 확인한 번호만) · 쇼핑몰에 올리기에 쿠팡 입력 시트·이미지 묶음 · '팔린 뒤 · 주문 수거' 안내 탭 */
 /* v98 (2026-11-12): 근거가 필요한 표현 점검 — 글 전체에서 과장 말(최고·최초·완벽·100%·1위…)과 특허·인증·방수·항균·스마트 같은 말을 찾아 저장·영상·쇼핑몰 전에 알려 줌(과장·번호 없는 특허·인증은 확인 체크 필요), 회사 소개의 '등록 특허' 숫자만 있고 번호 카드가 빈 경우 알림 */
 /* v97 (2026-11-11): 사고 싶게 만드는 상세페이지 — 핵심 포인트 구역(작동 각도 그림·문 두께·문 색 수·제조사·마감 카드)·첫 화면과 마지막의 짧은 딱지·'우리 집 문에 맞을까요?' 재는 그림 카드·그림으로 보는 설치 6단계(예시 그림)·규격을 반영한 FAQ 답 */
 /* v96 (2026-11-10): 쇼츠 광고 영상에 임팩트 — 손잡이 확대에서 문 전체로 물러나는 첫 장면·튀어나오는 큰 글·금속에 스치는 빛·옆에서 휙 들어오는 문 색 컷·모든 문 색을 한눈에 모아 보기·숫자가 올라오는 규격·금빛 마지막 장면·컷마다 효과음·훅 글 고르기·녹화 화질 12Mbps */
@@ -417,10 +428,10 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=99,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=104,SITE='https://wjwj1935-wq.github.io/-/';
 
 /* ============ 고정 내용 ============ */
-const CO={name:'우진글로벌 주식회사',place:'전북 익산'};
+const CO={name:'우진글로벌 주식회사',place:'전북 익산',tel:'063-855-3663',hours:'오전 9시 ~ 오후 5시'};
 const STD_NAME='고급스러운 메탈 방문 손잡이';
 /* 글 틀(무료): 모양을 설명하는 말을 빼고 짧게. 디자인은 확대 사진으로 확인하게 해요. */
 const TPL={
@@ -491,6 +502,7 @@ function defaults(){
   points:{eyebrow:'POINT',title:'이 손잡이를 고르는 이유',angle:'',aTitle:'',aBody:'',chips:true,hide:{},custom:[{big:'',title:'',body:''},{big:'',title:'',body:''}]},
   guide:{eyebrow:'GUIDE',title:'이렇게 진행돼요',time:'',mode:'',picNote:GUIDE_NOTE,ps:GUIDE_STEPS.map(x=>({t:x[0],d:x[1]})),steps:['기존 손잡이와 나사를 풀어 떼어 내요.','문 앞면의 받침을 문에 먼저 고정해요.','전체와 바깥쪽 손잡이를 문 구멍에 맞춰 끼워요.','나사를 조여 손잡이를 단단히 고정해요.','레버를 눌러 문이 잘 열리고 닫히는지 확인해요.']},
   faq:{eyebrow:'FAQ',title:'자주 묻는 질문',items:faq},
+  trust:{eyebrow:'TRUST',title:'믿고 맡기실 수 있는 이유',body:'',items:[{badge:'품질',title:'품질 관리',body:''},{badge:'A/S',title:'A/S 관리',body:''},{badge:'기술',title:'기술 관리',body:''},{badge:'수출',title:'수출하는 제조사',body:''}],showTel:true,tel:CO.tel,hours:CO.hours,telNote:''},
   facts:{backset:'',thick:'',bore:'',material:'',finish:'',dir:'',parts:'',origin:'',cert:'',extra:[],note:''},
   sale:{price:'',discount:'',stock:'',model:'',code:'',opts:[{n:'',v:''},{n:'',v:''},{n:'',v:''}]},
   notice:{title:'구매 전 확인해 주세요',items:['모니터 화면에 따라 실제 색상이 다르게 보일 수 있어요.','측정 방법에 따라 약간의 오차가 있을 수 있어요.']},
@@ -526,7 +538,7 @@ async function restorePrev(){
 }
 function newProduct(){
   const o=defaults(),c=S,pv=snapPrev();
-  ['about','guide','notice','cta'].forEach(k=>{o[k]=c[k];});o.sellName=c.sellName;
+  ['about','trust','guide','notice','cta'].forEach(k=>{if(c[k])o[k]=c[k];});o.sellName=c.sellName;
   Object.assign(o.zoom,{eyebrow:c.zoom.eyebrow,title:c.zoom.title,body:c.zoom.body});
   o.colors=Object.assign({},c.colors,{items:c.colors.items.map(i=>Object.assign({},i,{photo:null}))});o.comp=Object.assign({},c.comp);
   o.faq=Object.assign({},c.faq,{items:c.faq.items.filter(q=>!q.p)});
@@ -791,6 +803,8 @@ function fromSaved(o){                       // 저장본 → 현재 형식(예�
     r.points.custom=D.points.custom.map((c,i)=>Object.assign({},c,(Array.isArray(op.custom)&&op.custom[i])||{}));
     r.guide=Object.assign({},D.guide,o.guide||{});if(!Array.isArray(r.guide.steps))r.guide.steps=D.guide.steps;
     r.guide.ps=D.guide.ps.map((p,i)=>Object.assign({},p,(o.guide&&Array.isArray(o.guide.ps)&&o.guide.ps[i])||{}));}
+  {const D=defaults().trust,ot=o.trust&&typeof o.trust==='object'?o.trust:{};   // v104: 믿을 수 있는 회사 구역(예전 저장본에는 없어요)
+    r.trust=Object.assign({},D,ot);r.trust.items=Array.isArray(ot.items)?ot.items.map(x=>Object.assign({badge:'',title:'',body:''},x||{})):D.items;}
   r.facts=Object.assign({},b.facts,o.facts||{});if(!Array.isArray(r.facts.extra))r.facts.extra=[];r.sale=Object.assign({},b.sale,o.sale||{});if(!Array.isArray(r.sale.opts)||r.sale.opts.length<3)r.sale.opts=b.sale.opts.map(x=>Object.assign({},x));   // 예전 저장본에는 제품 규격이 없어요
   r.colors.items=((o.colors&&o.colors.items)||b.colors.items).map(it=>({label:it.label||'',scene:it.scene||'',door:it.door||(it.plate&&it.plate.f)||'groove',view:it.view||'f',flip:it.flip!==undefined?!!it.flip:!!(it.pose&&it.pose.flip),photo:it.photo&&!it.photo.comp?it.photo:null}));
   ['hero','concept'].forEach(k=>{const h=Object.assign({},b[k],o[k]||{});delete h.how;if(h.photo&&h.photo.comp)h.photo=null;r[k]=h;});
@@ -1284,6 +1298,16 @@ function faqAns(q){
   if(a===TPL.faq.a&&t(F.dir))return '이 제품의 좌우 방향: '+t(F.dir)+'\n헷갈리면 문이 열리는 방향을 판매자에게 알려 주세요.';
   return a;
 }
+function trustBlock(ex,J,T){   // v104: 믿을 수 있는 회사 — 적어 둔(확인된) 칸만 나오고, 전부 비어 있으면 연락처 상자만 나와요
+  const R=S.trust||{},t=v=>String(v==null?'':v).trim();
+  const its=(Array.isArray(R.items)?R.items:[]).map((x,i)=>({x,i})).filter(o=>o.x&&(t(o.x.body)||(!ex&&(t(o.x.title)||t(o.x.badge)))));
+  const tel=R.showTel!==false&&t(R.tel);
+  if(ex&&!its.length&&!tel)return '';
+  const cards=its.map(o=>{const b='trust.items.'+o.i+'.',x=o.x;
+    return '<div class="trc"><div class="seal"'+J(b+'badge')+'>'+(t(x.badge)?nl(x.badge):(ex?'':'<span class="need">표시</span>'))+'</div><div><b'+J(b+'title')+'>'+T(b+'title',x.title,{req:1,ph:'제목'})+'</b><span'+J(b+'body')+'>'+T(b+'body',x.body,{req:1,ph:'확인된 내용만 적어 주세요'})+'</span></div></div>';}).join('');
+  const call=tel?'<div class="trcall"><div class="k">상담 · A/S 문의</div><div class="n"'+J('trust.tel')+'>'+esc(t(R.tel))+'</div>'+(t(R.hours)?'<div class="h"'+J('trust.hours')+'>상담 시간 '+esc(t(R.hours))+'</div>':'')+(t(R.telNote)?'<div class="m"'+J('trust.telNote')+'>'+nl(R.telNote)+'</div>':'')+'</div>':'';
+  return '<section class="sec white trust" data-slice="05_신뢰"><div class="head"><div class="eyebrow"'+J('trust.eyebrow')+'>'+esc(R.eyebrow||'TRUST')+'</div><h2'+J('trust.title')+'>'+T('trust.title',R.title,{req:1,ph:'제목'})+'</h2>'+(t(R.body)?'<p class="lead"'+J('trust.body')+'>'+nl(R.body)+'</p>':'')+'</div>'+(cards?'<div class="trg">'+cards+'</div>':'')+call+'</section>';
+}
 function renderPage(ex){
   const J=p=>ex?'':' data-jump="'+p+'"';
   const T=(path,v,o)=>{o=o||{};if(String(v==null?'':v).trim()!=='')return nl(v);return (ex||!o.req)?'':'<span class="need" data-jump="'+path+'">'+esc(o.ph||'입력 필요')+'</span>';};
@@ -1336,6 +1360,7 @@ function renderPage(ex){
     +(grows?'<h3 class="sb"'+J('about.growTitle')+'>'+esc(A.growTitle)+'</h3>'+grows:'')
     +(tls?'<h3 class="sb"'+J('about.tlTitle')+'>'+esc(A.tlTitle)+'</h3>'+tls:'')
     +(A.foot?'<div class="foot"'+J('about.foot')+'>'+nl(A.foot)+'</div>':'')+(A.note?'<p class="fn"'+J('about.note')+'>'+nl(A.note)+'</p>':'')+'</section>');
+  out.push(trustBlock(ex,J,T));   // 5-2 믿을 수 있는 회사
   // 6 설치 안내 · 7 질문 · 8 구매 전 확인 · 9 마지막
   out.push(guideBlock(ex,J,T));
   out.push('<section class="sec soft" data-slice="07_질문" style="padding-top:0"><div class="head"><div class="eyebrow"'+J('faq.eyebrow')+'>'+esc(S.faq.eyebrow)+'</div><h2'+J('faq.title')+'>'+T('faq.title',S.faq.title,{req:1,ph:'제목'})+'</h2></div>'
@@ -1408,12 +1433,12 @@ function listItems(path,items,render,opt){
     +'<button class="ib" type="button" data-act="del" data-l="'+path+'" data-i="'+i+'" aria-label="지우기">✕</button></div>'+render(it,i,path+'.'+i)+'</div>').join('')+'</div>'
     +'<button class="btn sm" type="button" data-act="add" data-l="'+path+'">+ '+(opt.add||'추가')+'</button>';
 }
-const CMN=new Set(['s-about','s-guide','s-notice','s-cta']);
+const CMN=new Set(['s-about','s-trust','s-guide','s-notice','s-cta']);
 const subp=(id,title,body)=>'<details class="sub" id="'+id+'" data-sub="'+id+'"'+open(id)+'><summary>'+title+(CMN.has(id)?' <span class="cmn">공통</span>':'')+' <span class="cnt" data-cnt="'+id+'" hidden></span></summary><div class="body">'+body+'</div></details>';
 function newItem(path,l){
   const T={'zoom.items':()=>({tag:'확대 '+(l.length+1),title:'',body:'',fx:.5,fy:.5,z:2,photo:null}),'colors.items':()=>mkColor(['','','groove','f',0]),
     'size.extra':()=>({l:'',v:''}),'facts.extra':()=>({l:'',v:''}),'about.stats':()=>({v:'',l:''}),'about.patents':()=>({no:'',title:'',meta:'',badge:'등록\n완료'}),'about.grow':()=>({badge:'',title:'',body:''}),
-    'about.tl':()=>({year:'',text:''}),'guide.steps':()=>'','faq.items':()=>({q:'',a:''}),'notice.items':()=>''};
+    'about.tl':()=>({year:'',text:''}),'trust.items':()=>({badge:'',title:'',body:''}),'guide.steps':()=>'','faq.items':()=>({q:'',a:''}),'notice.items':()=>''};
   return (T[path]||(()=>JSON.parse(JSON.stringify(l[l.length-1]))))();
 }
 /* ---------- 지시문(구글에 보내는 글) ---------- */
@@ -1678,10 +1703,16 @@ function p4(){
      +'<b class="hint">방법 2 · 아래 칸에 직접 적기</b>'
      +fld.text('about.eyebrow','작은 제목')+fld.text('about.title','제목',{req:1})+fld.area('about.body','회사 소개 글',{rows:4,req:1})
      +'<b class="hint">숫자 3칸</b>'+listItems('about.stats',a.stats,(s,i,b)=>'<div class="row2">'+fld.text(b+'.v','숫자',{req:1,ph:'예: 11'})+fld.text(b+'.l','이름',{req:1,ph:'예: 등록 특허'})+'</div>',{title:(s,i)=>'숫자 '+(i+1),add:'숫자 칸 추가'})
-     +'<b class="hint">특허 카드</b>'+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1,ph:'예: 방문 손잡이용 …'})+fld.text(b+'.meta','등록일·권리자 (선택)',{ph:'예: 2023.05.12 · 우진글로벌'})+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
+     +'<b class="hint">특허 카드</b><div class="acts"><button class="btn sm" type="button" data-act="patfill">회사 특허 2건 넣기 (특허증으로 확인함)</button></div><p class="hint">제10-2980201호 슬라이딩 폴딩 방충문 · 제10-3025575호 양방향 폴딩도어. <b>손잡이 특허가 아니라 회사가 가진 특허</b>예요. \'회사 보유 특허\'로만 보이게 하고, 이 손잡이의 특허처럼 쓰지 마세요.</p>'+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1,ph:'예: 방문 손잡이용 …'})+fld.text(b+'.meta','등록일·권리자 (선택)',{ph:'예: 2023.05.12 · 우진글로벌'})+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
      +fld.text('about.growTitle','소제목')+listItems('about.grow',a.grow,(g,i,b)=>'<div class="row2">'+fld.text(b+'.badge','동그라미 글(두 글자)',{req:1,ph:'예: 인증'})+fld.text(b+'.title','제목',{req:1,ph:'예: 시험 성적서 보유'})+'</div>'+fld.text(b+'.body','설명',{ph:'확인된 내용만'}),{title:(g,i)=>'실적 '+(i+1),add:'실적 추가'})
      +fld.text('about.tlTitle','연혁 소제목')+listItems('about.tl',a.tl,(t,i,b)=>fld.text(b+'.year','해')+fld.area(b+'.text','그해 등록한 내용 (한 줄에 하나)',{rows:2,req:1,ph:'예: 방문 손잡이 특허 등록'}),{title:(t,i)=>esc(t.year)+'년',add:'연도 추가'})
      +fld.text('about.foot','맨 아래 줄')+fld.area('about.note','작은 주석 (선택)',{rows:2}))
+   +subp('s-trust','믿을 수 있는 회사(TRUST) · 품질·A/S·기술·연락처','<div class="tip">회사 공통 내용이에요. 품질 관리·A/S·기술 칸에는 <b>실제로 하고 있고 증빙이 있는 내용만</b> 적어 주세요(예: 출고 전 확인 방법, A/S 접수 방법과 약속한 기간, 보유한 인증서·특허증). <b>비워 둔 칸은 이미지에서 빠져요.</b> 아무 칸도 적지 않으면 연락처 상자만 나와요. "완벽"·"최고" 같은 말은 올리기 전 점검에서 걸러져요.</div>'
+     +fld.text('trust.eyebrow','작은 제목')+fld.text('trust.title','제목',{req:1})+fld.area('trust.body','설명 글 (선택)',{rows:2})
+     +'<b class="hint">칸 (동그라미 글 · 제목 · 확인된 내용)</b>'+listItems('trust.items',S.trust.items,(it,i,b)=>'<div class="row2">'+fld.text(b+'.badge','동그라미 글(두 글자)',{ph:'예: 품질'})+fld.text(b+'.title','제목',{ph:'예: 품질 관리'})+'</div>'+fld.area(b+'.body','확인된 내용 (비우면 이 칸은 빠져요)',{rows:3,ph:['예: 출고 전에 어떤 항목을 어떻게 확인하는지 (실제로 하는 것만)','예: A/S 접수 방법과 약속할 수 있는 기간','예: 보유한 특허·인증서의 번호와 이름 (4단계 회사 소개와 같게)','예: 수출한 나라 (수출신고필증으로 확인된 것만)'][i]||'실제로 하고 있는 일만 적어 주세요'}),{title:(it,i)=>esc(it.title||'칸 '+(i+1)),add:'칸 추가'})
+     +'<b class="hint">연락처 상자</b><label class="chk"><input type="checkbox" data-chk="trust.showTel"'+(S.trust.showTel!==false?' checked':'')+'> 이미지에 전화번호와 상담 시간 넣기</label>'
+     +fld.text('trust.tel','대표 전화')+fld.text('trust.hours','상담 시간',{ph:'예: 오전 9시 ~ 오후 5시'})+fld.text('trust.telNote','전화 아래 작은 글 (선택)',{ph:'요일·점심시간은 확인한 뒤 적어 주세요'})
+     +'<p class="hint">쇼핑몰(스마트스토어·쿠팡)은 상세 이미지 안의 전화번호 같은 연락처를 제한할 수 있어요. 아직 마켓 규정을 확인하지 못했으니, 올리기 전에 규정을 확인하고 걱정되면 위 체크를 꺼 주세요.</p>')
    +subp('s-guide','설치 안내(GUIDE)',fld.text('guide.eyebrow','작은 제목')+fld.text('guide.title','제목',{req:1})+fld.text('guide.time','설치 시간 (확인된 값만 · 비우면 안 나와요)',{ph:'예: 설치 약 2분'})
      +'<label class="f"><span>보여 주는 방식 (지금: '+(guideMode()==='pics'?'그림 6단계':'글로만')+')</span><select data-k="guide.mode">'+[['','자동 (순서 글을 고친 적이 없으면 그림 6단계)'],['pics','그림 6단계 (추천)'],['text','글로만']].map(o=>'<option value="'+o[0]+'"'+((S.guide.mode||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'
      +'<div class="tip">그림 6단계는 <b>일반적인 레버형 손잡이 설치 순서를 보여 주는 예시 그림</b>이에요(보내 주신 3D 설치 시뮬레이터에서 뽑았어요). 우리 제품과 순서가 다르면 아래 글을 고치거나 \'글로만\'으로 바꿔 주세요.</div>'
@@ -2412,6 +2443,7 @@ function claimTexts(){
   arr(f.items).forEach((x,i)=>{add('질문 '+(i+1),x&&x.q);let a='';try{a=faqAns(x);}catch(e){a=x&&x.a;}add('질문 '+(i+1)+' 답',a);});
   const n=S.notice||{};add('구매 전 확인 제목',n.title);arr(n.items).forEach((x,i)=>add('구매 전 확인 '+(i+1),x));
   const t=S.cta||{};add('마지막 문구 제목',t.title);add('마지막 문구 설명',t.sub);
+  const tr=S.trust||{};add('믿을 수 있는 회사 제목',tr.title);add('믿을 수 있는 회사 설명',tr.body);arr(tr.items).forEach((x,i)=>add('믿을 수 있는 회사 '+(i+1),[x&&x.title,x&&x.body].filter(Boolean).join(' ')));add('연락처 안내 글',tr.telNote);
   return o;
 }
 const CLAIM_OVER=/최고|최초|최상|최강|유일|완벽|100\s?%|혁신|1\s?[위등]|무조건|역대|기적|독보적|압도적/g;
@@ -2453,6 +2485,8 @@ function claimItems(){
   const out=claimScan().map(x=>({lvl:x.lvl,id:x.id,text:x.text})),ab=S.about||{};
   const st=((ab.stats)||[]).find(x=>x&&/특허|디자인/.test(String(x.l||''))&&String(x.v||'').trim());
   if(st&&!claimHasPat())out.push({lvl:'warn',id:'claim_aboutstat',text:'회사 소개에 "'+String(st.v).trim()+' '+String(st.l).trim()+'"가 나오는데 특허 번호 카드는 비어 있어요. 등록증으로 개수와 번호를 확인해서 4단계 \'회사 소개\'에 넣거나, 확인이 안 되면 숫자를 지워 주세요.'});
+  const np=((ab.patents)||[]).filter(p=>p&&String(p.no||'').trim()).length,sp=((ab.stats)||[]).find(x=>x&&/특허/.test(String(x.l||''))&&/^\s*\d+\s*$/.test(String(x.v||'')));
+  if(sp&&np&&Number(sp.v)!==np)out.push({lvl:'warn',id:'claim_aboutstat2',text:'회사 소개 숫자 "'+String(sp.v).trim()+' '+String(sp.l).trim()+'"와 특허 번호 카드 '+np+'건이 달라요. 숫자는 등록증으로 확인한 개수여야 해요. 맞는지 확인하고 4단계 \'회사 소개\'에서 고쳐 주세요.'});   // v104
   return out;
 }
 function claimNoteHtml(){
@@ -4032,11 +4066,12 @@ async function mkSend(){
 /* ============ 쇼핑몰에 올리기: 네이버 쇼핑용 파일 묶음 (쿠팡·11번가·옥션·지마켓은 나중에) ============
    만드는 것(전부 이 브라우저에서, 무료): 대표 이미지 1장(정사각 1000×1000, 글자·로고 없음) · 추가 이미지(정사각, 최대 9장) · 상세페이지 조각(가로 860, 번호순) · 등록 안내 글.
    네이버에 자동으로 올리지는 않아요(네이버 쇼핑 API는 판매자 키와 서버 연결이 필요해요). 크기는 실무에서 많이 쓰는 값이고, 올릴 때는 등록 화면의 안내가 우선이에요. */
-const MS={tab:'naver',style:'auto',busy:false,cancel:false,res:null,urls:[]};
+const MS={tab:'naver',style:'auto',busy:false,cancel:false,res:null,R:{},urls:[]};   // R: 판매처별로 만든 결과(탭을 바꿔도 남아요)
 const MS_SIZE=1000,MS_DW=860,MS_PIECE=2400,MS_MAXX=9;
 const MKT={
-  naver:{n:'네이버 쇼핑',ok:true,url:'https://sell.smartstore.naver.com/'},
-  coupang:{n:'쿠팡',ok:false,info:'이 앱은 쿠팡 대표 이미지에 실물 원본 사진만 쓰도록 안내하고 있어요. 알아본 값: 대표 이미지 500×500 이상, 상세 이미지 가로 780 (블로그·지원 문서 기준이라 공식 값은 아니에요).'},
+  naver:{n:'네이버 쇼핑',ok:true,url:'https://sell.smartstore.naver.com/',center:'스마트스토어센터',dw:860,pre:'naver_images_',who:'네이버용'},
+  coupang:{n:'쿠팡',ok:true,url:'https://wing.coupang.com/',center:'쿠팡 판매자센터(Wing)',dw:780,pre:'coupang_images_',who:'쿠팡용',info:'이 앱은 쿠팡 대표 이미지에 실물 원본 사진만 쓰도록 안내하고 있어요. 알아본 값: 대표 이미지 500×500 이상, 상세 이미지 가로 780 (블로그·지원 문서 기준이라 공식 값은 아니에요).'},
+  orders:{n:'팔린 뒤 · 주문 수거',ok:true,special:'orders'},
   st11:{n:'11번가',ok:false,info:'알아본 값: 대표 이미지 최소 600×600 (카페24 지원 문서), 상세 이미지 가로 800 안팎 (블로그). 공식 값은 아니에요.'},
   auction:{n:'옥션',ok:false,info:'알아본 값: 대표 이미지 최소 600×600 (카페24 지원 문서). 상세 이미지 기준은 찾지 못했어요. 공식 값은 아니에요.'},
   gmarket:{n:'지마켓',ok:false,info:'규격 자료를 찾지 못했어요. 판매자센터 안내를 확인한 뒤 만들어요.'}
@@ -4099,12 +4134,12 @@ async function msExtras(){   // 추가 이미지: 직접 넣은 추가 사진 �
   for(const u of use){if(MS.cancel)throw {code:'cancel'};const c=await u.mk();items.push({label:u.label,ai:u.ai,blob:await msJpg(c,.9),w:MS_SIZE,h:MS_SIZE});}
   return {items,skipped:L.length-use.length};
 }
-async function msDetail(tick){   // 상세페이지 조각: '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 구역 경계에서 높이 약 2400px씩 나눠요
+async function msDetail(tick,dw){   // 상세페이지 조각: '이미지로 저장'과 같은 방식으로 구역을 그린 뒤, 구역 경계에서 높이 약 2400px씩 나눠요
   const host=document.createElement('div');host.className='export-host';host.innerHTML='<div class="pg" id="expRoot">'+renderPage(true)+'</div>';document.body.appendChild(host);
   try{
     try{await document.fonts.load('800 40px "Noto Sans KR"','가나다라마바사 0123');await document.fonts.load('400 20px "Noto Sans KR"','가나다라마바사');await document.fonts.ready;}catch(e){}
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-    const root=$('#expRoot',host),k=MS_DW/PW,secs=$$('[data-slice]',root).filter(x=>x.offsetHeight>0);
+    const root=$('#expRoot',host),k=(dw||MS_DW)/PW,secs=$$('[data-slice]',root).filter(x=>x.offsetHeight>0);
     if(!secs.length)throw new Error('상세페이지에 그릴 내용이 없어요.');
     const cvs=new Array(secs.length);let nx=0,fin=0;
     const wk=async()=>{while(nx<secs.length){if(MS.cancel)throw {code:'cancel'};const i=nx++;
@@ -4128,18 +4163,19 @@ function msFiles(r){   // 묶음에 들어갈 파일(이름은 영문, 설명은
 }
 const msYmd=d=>d.getFullYear()+msNN(d.getMonth()+1)+msNN(d.getDate());
 /* ---- 스마트스토어 입력 시트: 값은 앱에 한 번만 적고, 시트에서 항목마다 복사해 붙여 넣어요(네이버로 보내지 않아요) ---- */
-const ST_KEYS=['catPath','catId','brand','maker','origin','shipHow','shipFee','shipDays','bundle','retFee','exFee','retAddr','asTel','asGuide'];
+const ST_KEYS=['cpCat','catPath','catId','brand','maker','origin','shipHow','shipFee','shipDays','bundle','retFee','exFee','retAddr','asTel','asGuide'];
 const ST=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('wj-store')||'{}')||{};}catch(e){}const r={};ST_KEYS.forEach(k=>{r[k]=typeof o[k]==='string'?o[k]:'';});return r;})();   // 스토어 공통 값(이 컴퓨터에만 저장, 새 제품에도 그대로)
 const stSave=()=>{try{localStorage.setItem('wj-store',JSON.stringify(ST));}catch(e){}};
-function msSheetRows(){
+function msSheetRows(ch){
+  ch=ch||MS.tab;const cp=ch==='coupang';
   const T=ST,A=S.sale||{},F=S.facts||{},tr=v=>String(v==null?'':v).trim(),join=(a,sep)=>a.map(tr).filter(Boolean).join(sep==null?'\n':sep);
   const digits=v=>{const t=tr(v);return /^[0-9,.]+$/.test(t)?t.replace(/,/g,''):t;},money=v=>{const t=tr(v);return /^[0-9,.]+$/.test(t)?t.replace(/,/g,'')+'원':t;},cnt=v=>{const t=tr(v);return /^[0-9,]+$/.test(t)?t.replace(/,/g,'')+'개':t;};
   const nm=tr(S.sellName)||STD_NAME,model=tr(A.model),origin=tr(F.origin)||tr(T.origin),maker=tr(T.maker),cert=tr(F.cert);
   const opts=(A.opts||[]).filter(o=>tr(o.n)&&tr(o.v)).map(o=>tr(o.n)+': '+tr(o.v));
   const notice=[['품명 및 모델명',join([nm,model],' / ')],['법에 의한 인증·허가',cert],['제조국(원산지)',origin],['제조자(수입자)',maker],['재질',tr(F.material)],['색상',tr(F.finish)],['A/S 책임자와 전화번호',tr(T.asTel)]].filter(x=>x[1]).map(x=>x[0]+': '+x[1]);
   return [
-    {k:'상품명',v:nm},
-    {k:'카테고리',v:join([T.catPath,tr(T.catId)&&'카테고리 번호 '+tr(T.catId)],' · ')},
+    {k:cp?'노출상품명':'상품명',v:nm},
+    {k:'카테고리',v:cp?tr(T.cpCat):join([T.catPath,tr(T.catId)&&'카테고리 번호 '+tr(T.catId)],' · ')},
     {k:'판매가',v:money(A.price),c:digits(A.price)},{k:'할인가',v:money(A.discount),c:digits(A.discount)},{k:'재고 수량',v:cnt(A.stock),c:digits(A.stock)},   // c: 복사할 값(네이버 입력칸에는 숫자만 붙여 넣어요)
     {k:'옵션',v:opts.join('\n')},
     {k:'모델명·상품코드',v:join([model&&'모델명 '+model,tr(A.code)&&'판매자 상품코드 '+tr(A.code)],' · ')},
@@ -4148,12 +4184,12 @@ function msSheetRows(){
     {k:'배송',v:join([tr(T.shipHow)&&'배송 방법: '+tr(T.shipHow),tr(T.shipFee)&&'배송비: '+tr(T.shipFee),tr(T.shipDays)&&'출고: '+tr(T.shipDays),tr(T.bundle)&&'묶음배송: '+tr(T.bundle)])},
     {k:'반품·교환',v:join([tr(T.retFee)&&'반품 배송비: '+tr(T.retFee),tr(T.exFee)&&'교환 배송비: '+tr(T.exFee),tr(T.retAddr)&&'반품·교환 주소: '+tr(T.retAddr)])},
     {k:'A/S',v:join([tr(T.asTel)&&'전화번호: '+tr(T.asTel),tr(T.asGuide)&&'안내: '+tr(T.asGuide)])},
-    {k:'태그 후보',v:vPostDraft().yl.g}
+    {k:cp?'검색태그 후보':'태그 후보',v:vPostDraft().yl.g}
   ];
 }
-function msSheetText(){   // 안내 글(README)에 들어가는 시트
-  const o=['[스마트스토어 입력 시트] 앱에 적어 둔 값이에요. 복사해서 등록 화면에 붙여 넣으세요. 비어 있는 항목은 직접 입력해 주세요.'];
-  msSheetRows().forEach(r=>{const v=String(r.v||'').trim();o.push('- '+r.k+': '+(v?v.replace(/\n/g,'\r\n    '):'(앱에 입력 안 됨 · 직접 입력)'));});
+function msSheetText(ch){   // 안내 글(README)에 들어가는 시트
+  const o=['['+(ch==='coupang'?'쿠팡':'스마트스토어')+' 입력 시트] 앱에 적어 둔 값이에요. 복사해서 등록 화면에 붙여 넣으세요. 비어 있는 항목은 직접 입력해 주세요.'];
+  msSheetRows(ch).forEach(r=>{const v=String(r.v||'').trim();o.push('- '+r.k+': '+(v?v.replace(/\n/g,'\r\n    '):'(앱에 입력 안 됨 · 직접 입력)'));});
   o.push('');return o;
 }
 function msSheetInner(){
@@ -4161,6 +4197,12 @@ function msSheetInner(){
   return rows.map((r,i)=>{const v=String(r.v||'').trim();return '<div class="sr'+(v?'':' need')+'"><b>'+esc(r.k)+'</b><div class="sv">'+(v?esc(v):'앱에 입력 안 됨 · 직접 입력')+'</div>'+(v?'<button class="btn sm" type="button" data-mcopy="'+i+'">복사</button>':'<span></span>')+'</div>';}).join('');
 }
 function msWhyHtml(){
+  if(MS.tab==='coupang')return '<details class="blk" id="msWhy"><summary><b>왜 자동으로 안 올라가요? (분석 · 확인 전)</b></summary><ul class="checks">'
+   +'<li><b>쿠팡도 판매자 전용 연동(Open API)이 있는 것으로 알고 있어요(확인 전).</b> 이 작업 환경에서는 쿠팡 공식 문서를 열어 보지 못했어요. 그래서 어떤 항목을 보낼 수 있는지, 키를 어떻게 받는지는 확인하지 못했어요.</li>'
+   +'<li><b>판매자 본인의 키가 있어야 할 가능성이 커요.</b> 스토어 주인만 만들 수 있는 인증 정보라서 제가 대신 만들거나 받을 수 없고, 이 웹페이지에 넣으면 위험해요.</li>'
+   +'<li><b>호출 위치(IP) 제한이 있을 수 있어요(확인 못 함).</b> 정해 둔 곳에서만 부를 수 있다면 고정 IP를 가진 서버나 내 컴퓨터 프로그램이 필요해요.</li>'
+   +'<li><b>잘못 올리면 바로 판매 화면에 나가요.</b> 시험할 수 없는 올리기 코드는 넣지 않았어요. 대신 아래 입력 시트와 이미지 묶음으로 쿠팡 판매자센터에서 직접 올리는 길을 쉽게 만들었어요.</li>'
+   +'</ul><div class="hint">확인 못 한 것: 쿠팡 공식 문서의 필수 항목·인증 방식·IP 규칙. 자동 등록으로 가려면 판매자 쪽에서 연동 신청과 키 발급이 먼저 필요해요.</div></details>';
   return '<details class="blk" id="msWhy"><summary><b>왜 자동으로 안 올라가요? (분석)</b></summary><ul class="checks">'
    +'<li><b>길은 있어요.</b> 네이버는 사람 대신 상품을 올려 주는 공식 방법(커머스API)을 열어 두었고, 이미지·상세 글·카테고리·가격·재고·배송·A/S까지 한 번에 보낼 수 있다고 개발자 토론글에서 확인했어요.</li>'
    +'<li><b>사장님 스토어의 열쇠가 있어야 해요.</b> 커머스API센터에서 스토어 주인이 직접 만드는 "애플리케이션 ID·시크릿"이 필요해요. 판매자 본인 스토어에 직접 연결하는 용도라서 제가 대신 만들거나 받을 수 없어요.</li>'
@@ -4172,20 +4214,21 @@ function msWhyHtml(){
    +'</ul><div class="hint">확인한 것: 개발자 토론글(commerce-api-naver). 확인 못 한 것: 공식 문서의 필수 항목·IP 규칙·CORS. 자동 등록으로 가려면 사장님 쪽에서 애플리케이션을 만들어 주셔야 해요.</div></details>';
 }
 function msSheetBlock(){
-  const A=S.sale||{},o=A.opts||[],inp=(grp,k,label,val,ph)=>'<label class="f"><span>'+label+'</span><input type="text" data-'+grp+'="'+k+'" value="'+esc(val==null?'':val)+'" placeholder="'+esc(ph||'')+'" autocomplete="off"></label>';
+  const cp=MS.tab==='coupang',A=S.sale||{},o=A.opts||[],inp=(grp,k,label,val,ph)=>'<label class="f"><span>'+label+'</span><input type="text" data-'+grp+'="'+k+'" value="'+esc(val==null?'':val)+'" placeholder="'+esc(ph||'')+'" autocomplete="off"></label>';
   const opt=i=>inp('sale','opt'+i+'n','옵션 '+(i+1)+' 이름',(o[i]||{}).n,'예: 색상')+inp('sale','opt'+i+'v','옵션 '+(i+1)+' 값 (쉼표로 나눠요)',(o[i]||{}).v,'예: 블랙, 실버');
-  return '<div class="blk" id="msSheetBlk"><h3>스마트스토어 입력 시트 — 한 번 적어 두고 복사해서 붙여 넣어요</h3>'
-   +'<div class="hint">네이버에 자동으로 올리지 못하는 항목이에요. 값을 앱에 적어 두면 아래 시트에서 항목마다 복사 단추로 붙여 넣을 수 있고, 안내 글(README)에도 같이 들어가요. 적은 값은 이 컴퓨터에만 저장되고 어디로도 보내지 않아요. 적지 않은 값은 채우지 않아요.</div>'
+  return '<div class="blk" id="msSheetBlk"><h3>'+(cp?'쿠팡':'스마트스토어')+' 입력 시트 — 한 번 적어 두고 복사해서 붙여 넣어요</h3>'
+   +'<div class="hint">'+(cp?'쿠팡':'네이버')+'에 자동으로 올리지 못하는 항목이에요. 값을 앱에 적어 두면 아래 시트에서 항목마다 복사 단추로 붙여 넣을 수 있고, 안내 글(README)에도 같이 들어가요. 적은 값은 이 컴퓨터에만 저장되고 어디로도 보내지 않아요. 적지 않은 값은 채우지 않아요.</div>'
    +'<details class="sub" open><summary>이 제품 판매 정보 (제품마다 달라요)</summary><div class="mkt-form">'
    +inp('sale','price','판매가 (원)',A.price,'숫자만')+inp('sale','discount','할인가 (원, 선택)',A.discount,'숫자만')+inp('sale','stock','재고 수량 (개)',A.stock,'숫자만')+inp('sale','model','모델명 (선택)',A.model,'')+inp('sale','code','판매자 상품코드 (선택)',A.code,'')
    +'</div><div class="mkt-form">'+opt(0)+opt(1)+opt(2)+'</div><div class="hint">옵션은 색상·방향(좌/우)처럼 고객이 고르는 것이에요. 상세페이지의 "문 색상" 그림은 연출 사진이라 옵션이 아니에요.</div></details>'
    +'<details class="sub"><summary>스토어 공통 정보 (한 번만 적어요 · 다음 제품에도 그대로 써요)</summary><div class="mkt-form">'
-   +inp('st','catPath','카테고리 (경로)',ST.catPath,'스마트스토어센터에서 고른 경로 그대로')+inp('st','catId','카테고리 번호 (선택)',ST.catId,'알고 있을 때만')
+   +(cp?inp('st','cpCat','카테고리 (쿠팡 카테고리 경로)',ST.cpCat,'쿠팡 판매자센터에서 고른 경로 그대로'):inp('st','catPath','카테고리 (경로)',ST.catPath,'스마트스토어센터에서 고른 경로 그대로')+inp('st','catId','카테고리 번호 (선택)',ST.catId,'알고 있을 때만'))
    +inp('st','brand','브랜드',ST.brand,'')+inp('st','maker','제조사',ST.maker,'')+inp('st','origin','원산지 (제품 규격에 제조국이 있으면 그걸 써요)',ST.origin,'')
    +inp('st','shipHow','배송 방법',ST.shipHow,'')+inp('st','shipFee','배송비',ST.shipFee,'')+inp('st','shipDays','출고 소요일',ST.shipDays,'')+inp('st','bundle','묶음배송',ST.bundle,'')
    +inp('st','retFee','반품 배송비',ST.retFee,'')+inp('st','exFee','교환 배송비',ST.exFee,'')+inp('st','retAddr','반품·교환 주소',ST.retAddr,'')
-   +inp('st','asTel','A/S 책임자·전화번호',ST.asTel,'')+inp('st','asGuide','A/S 안내 문구',ST.asGuide,'')
+   +inp('st','asTel','A/S 책임자·전화번호',ST.asTel,'예: '+CO.tel+' (대표 전화가 A/S 번호일 때만)')+inp('st','asGuide','A/S 안내 문구',ST.asGuide,'')
    +'</div></details>'
+   +'<div class="acts"><button class="btn sm" type="button" id="msCsv">입력표를 CSV로 저장 (엑셀에서 열어요)</button></div><div class="hint">'+(cp?'쿠팡':'네이버')+'의 대량등록 엑셀 양식에 맞춘 파일은 아니에요(공식 양식을 아직 못 봤어요). 항목과 값을 한 줄씩 정리한 표라서 양식에 옮겨 적을 때 참고하세요. 고객 정보는 들어 있지 않아요.</div>'
    +'<div class="mkt-sheet" id="msSheet">'+msSheetInner()+'</div></div>'+msWhyHtml();
 }
 function msSheetCopyWire(){const e=$('#msSheet');if(!e)return;$$('[data-mcopy]',e).forEach(x=>{x.onclick=()=>{const r=MS.sheet[+x.dataset.mcopy]||{};vCopy(String(r.c!=null?r.c:(r.v||'')));};});}
@@ -4194,6 +4237,12 @@ function msSheetWire(){
   const b=$('#msSheetBlk');if(!b)return;
   $$('[data-st]',b).forEach(i=>{i.oninput=()=>{ST[i.dataset.st]=i.value;stSave();msSheetRefresh();};});
   $$('[data-sale]',b).forEach(i=>{i.oninput=()=>{const k=i.dataset.sale,m=k.match(/^opt([0-2])([nv])$/);if(m)S.sale.opts[+m[1]][m[2]]=i.value;else S.sale[k]=i.value;persist();msSheetRefresh();};});
+  const cv=$('#msCsv',b);if(cv)cv.onclick=async()=>{
+    const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"',ch=MS.tab,rows=msSheetRows(ch).map(r=>[r.k,String(r.v||'').trim()||'(앱에 입력 안 됨 · 직접 입력)']);
+    const csv='\ufeff'+[['항목','값']].concat(rows).map(r=>r.map(q).join(',')).join('\r\n')+'\r\n';
+    try{await saveFile((ch==='coupang'?'coupang':'smartstore')+'_sheet_'+msYmd(new Date())+'.csv',new Blob([csv],{type:'text/csv;charset=utf-8'}));toast('입력표를 저장했어요.');}
+    catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
+  };
   msSheetCopyWire();
 }
 const MS_TODO=[   // 이 앱이 해 주지 않는 것(셀러 안내 글에서 확인한 항목이에요. 네이버 공식 문서가 아니라서 등록 화면에서 한 번 더 확인하세요)
@@ -4206,33 +4255,44 @@ const MS_TODO=[   // 이 앱이 해 주지 않는 것(셀러 안내 글에서 �
   ['A/S','A/S 책임자 또는 상담 전화번호를 직접 입력해요.'],
   ['태그·속성','태그 후보는 참고용이에요. 등록 화면에서 검색에 맞는 태그와 속성을 골라요.']
 ];
+const MS_TODO_CP=[   // 쿠팡: 공식 문서를 열어 보지 못해서 일반적인 항목만 적었어요(확인 전)
+  ['카테고리','상품에 맞는 쿠팡 카테고리를 직접 골라요. 카테고리에 따라 입력해야 하는 항목이 달라질 수 있어요.'],
+  ['판매가·재고','가격(할인 전 가격이 있으면 함께)과 재고 수량은 이 앱에 없어요. 직접 입력해요.'],
+  ['옵션','색상·방향(좌/우) 같은 옵션은 직접 입력해요. 옵션을 어떻게 나누는지는 등록 화면의 안내를 따르세요. 상세페이지의 "문 색상" 그림은 연출 사진이에요.'],
+  ['상품주요정보·상품고시정보','제조사·브랜드·원산지, KC 인증 해당 여부(해당하면 인증 번호)를 직접 입력해요. 고시정보는 등록 화면의 항목대로 채워요.'],
+  ['배송·반품·교환','출고지·반품지, 배송비와 출고 소요일, 반품·교환 비용을 직접 입력해요.'],
+  ['A/S','A/S 책임자 또는 상담 전화번호와 안내 문구를 직접 입력해요.'],
+  ['검색태그','태그 후보는 참고용이에요. 등록 화면의 규칙에 맞춰 골라요.']
+];
+const msTodo=ch=>ch==='coupang'?MS_TODO_CP:MS_TODO;
 function msTodoHtml(){
+  const cp=MS.tab==='coupang';
   return '<div class="blk" id="msTodo"><h3>직접 입력해야 하는 항목 (이 앱이 해 주지 않는 것)</h3><ul class="checks">'
-   +MS_TODO.map(x=>'<li><b>'+esc(x[0])+'</b> — '+esc(x[1])+'</li>').join('')+'</ul>'
-   +'<div class="hint">셀러 안내 글에서 확인한 항목이에요. 네이버 공식 문서가 아니라서 등록 화면에서 한 번 더 확인하세요.</div></div>';
+   +msTodo(MS.tab).map(x=>'<li><b>'+esc(x[0])+'</b> — '+esc(x[1])+'</li>').join('')+'</ul>'
+   +'<div class="hint">'+(cp?'쿠팡 공식 문서를 확인하지 못했어요(확인 전). 메뉴·항목 이름은 판매자센터 화면의 안내가 우선이에요.':'셀러 안내 글에서 확인한 항목이에요. 네이버 공식 문서가 아니라서 등록 화면에서 한 번 더 확인하세요.')+'</div></div>';
 }
 function msText(r){
-  const nm=S.sellName||STD_NAME,tags=vPostDraft().yl.g,own=String(S.name||'').replace(/\s+/g,''),ownTag=!!own&&tags.split(', ').indexOf(own)>=0,L=[];
-  L.push('네이버 쇼핑 올리기 안내 · '+(S.name||nm)+' · 만든 날 '+msYmd(r.at),'',
-    '※ 이 묶음은 네이버에 자동으로 올라가지 않아요. 아래 순서대로 스마트스토어센터에서 직접 올려 주세요.','',
-    '[상품명 칸에 붙여 넣기]',nm,'(기본 이름이라 제품마다 같아요. 색상·방향 같은 구분 단어를 넣어 바꿔 쓰세요.)','',
+  const C=MKT[r.ch||'naver']||MKT.naver,cp=C===MKT.coupang,nm=S.sellName||STD_NAME,tags=vPostDraft().yl.g,own=String(S.name||'').replace(/\s+/g,''),ownTag=!!own&&tags.split(', ').indexOf(own)>=0,L=[];
+  L.push(C.n+' 올리기 안내 · '+(S.name||nm)+' · 만든 날 '+msYmd(r.at),'',
+    '※ 이 묶음은 '+C.n+'에 자동으로 올라가지 않아요. 아래 순서대로 '+C.center+'에서 직접 올려 주세요.'+(cp?' (쿠팡 판매자센터의 메뉴·항목 이름과 이미지 규격은 공식 문서를 확인하지 못했어요 · 확인 전)':''),'',
+    '['+(cp?'노출상품명':'상품명')+' 칸에 붙여 넣기]',nm,'(기본 이름이라 제품마다 같아요. 색상·방향 같은 구분 단어를 넣어 바꿔 쓰세요.)','',
     '[태그 후보] 등록 화면의 태그 규칙에 맞춰 골라 쓰세요',tags);
   if(ownTag)L.push('(마지막 태그 "'+own+'"는 사장님이 정한 제품 이름이에요. 고객이 검색하는 말이 아니면 빼세요.)');
   L.push('','[올리는 순서] (메뉴 이름은 바뀔 수 있어요)',
-    '1. 스마트스토어센터에서 상품 등록 화면을 엽니다.',
-    '2. 상품명 칸에 위 상품명을 붙여 넣습니다.',
+    '1. '+C.center+'에서 상품 등록 화면을 엽니다.',
+    '2. '+(cp?'노출상품명':'상품명')+' 칸에 위 상품명을 붙여 넣습니다.',
     '3. 대표 이미지 칸에 01_main.jpg 를 올립니다.',
     '4. 추가 이미지 칸에 02_extra_01.jpg 부터 차례로 올립니다. ('+r.extras.length+'장)',
-    '5. 상세설명에서 사진을 추가해 03_detail_01.jpg 부터 번호 순서대로 올립니다. ('+r.details.length+'조각, 가로 '+MS_DW+'px)',
+    '5. 상세설명에서 사진을 추가해 03_detail_01.jpg 부터 번호 순서대로 올립니다. ('+r.details.length+'조각, 가로 '+r.dw+'px)',
     '6. 아래 [직접 입력해야 하는 항목]을 채우고 등록합니다.','');
   const fr=factsRows();
   if(fr.length){L.push('[앱에 입력해 둔 제품 규격] 상품주요정보·상품정보제공고시를 채울 때 참고하세요. (적어 두신 값 그대로예요)');fr.forEach(r=>L.push('- '+r[0]+': '+r[1]));L.push('');}
-  msSheetText().forEach(x=>L.push(x));
-  L.push('[직접 입력해야 하는 항목] 이 앱이 해 주지 않는 것이에요. 셀러 안내 글에서 확인한 항목이라 등록 화면에서 한 번 더 확인하세요.');
-  MS_TODO.forEach((x,i)=>L.push((i+1)+'. '+x[0]+' — '+x[1]));
+  msSheetText(r.ch).forEach(x=>L.push(x));
+  L.push('[직접 입력해야 하는 항목] 이 앱이 해 주지 않는 것이에요. '+(cp?'쿠팡 공식 문서를 확인하지 못해 일반적인 항목만 적었어요(확인 전). 등록 화면에서 한 번 더 확인하세요.':'셀러 안내 글에서 확인한 항목이라 등록 화면에서 한 번 더 확인하세요.'));
+  msTodo(r.ch).forEach((x,i)=>L.push((i+1)+'. '+x[0]+' — '+x[1]));
   L.push('','[파일 목록]');
   msFiles(r).forEach(f=>L.push(f.name+'  —  '+f.d));
-  L.push('','※ 크기·용량·장수·배경 규정은 등록 화면의 안내가 우선이에요. 이 묶음은 자동으로 네이버에 올라가지 않아요.');
+  L.push('','※ 크기·용량·장수·배경 규정은 등록 화면의 안내가 우선이에요. 이 묶음은 자동으로 '+C.n+'에 올라가지 않아요.');
   return L.join('\r\n');
 }
 function msChecks(r){
@@ -4245,7 +4305,7 @@ function msChecks(r){
   if(r.skipped>0)L.push({ok:false,t:'추가 이미지는 '+MS_MAXX+'장까지만 만들어서 '+r.skipped+'장은 뺐어요.'});
   const ai=r.extras.filter(x=>x.ai).length;
   if(ai)L.push({ok:false,t:'AI로 만든 사진이 추가 이미지에 '+ai+'장 들어 있어요. 판매 채널의 AI 표시 규칙을 확인하세요(규칙은 바뀔 수 있어요).'});
-  L.push({ok:true,t:'상세페이지 '+r.details.length+'조각 (가로 '+MS_DW+', 한 조각 높이는 최대 약 '+MS_PIECE+'px, 구역 경계에서 나눴어요).'});
+  L.push({ok:true,t:'상세페이지 '+r.details.length+'조각 (가로 '+r.dw+', 한 조각 높이는 최대 약 '+MS_PIECE+'px, 구역 경계에서 나눴어요).'});
   const left=needs().length;if(left)L.push({ok:false,t:'상세페이지에 아직 채울 곳이 '+left+'곳 남아 있어요. 비어 있는 칸은 상세 조각에서 빠졌어요.'});
   const all=msFiles(r),tot=all.reduce((a,f)=>a+f.blob.size,0),big=all.reduce((a,f)=>Math.max(a,f.blob.size),0);
   L.push({ok:true,t:'파일 '+all.length+'개 · 모두 '+(tot/1048576).toFixed(1)+'MB · 가장 큰 파일 '+(big/1048576).toFixed(1)+'MB.'});
@@ -4257,16 +4317,17 @@ async function msRun(){
   if(MS.busy)return;
   if(!hasPhoto(S.src)){msSay('제품 사진 한 장을 먼저 넣어 주세요.',null,'err');return;}
   if(!window.html2canvas){msSay('이미지 도구를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 열어 주세요.',null,'err');return;}
+  const ch=MS.tab,CH=MKT[ch];
   MS.busy=true;MS.cancel=false;const go=$('#msGo');if(go)go.disabled=true;const cl=$('#msClose');if(cl)cl.textContent='멈추기';
   try{
     msSay('대표 이미지를 만드는 중이에요…',3);const main=await msMain();if(MS.cancel)throw {code:'cancel'};
     msSay('추가 이미지를 만드는 중이에요…',12);const ex=await msExtras();if(MS.cancel)throw {code:'cancel'};
     msSay('상세페이지를 그리는 중이에요…',22);
-    const det=await msDetail((d,t)=>msSay('상세페이지를 그리는 중이에요… '+d+' / '+t,22+Math.round(d/t*65)));
+    const det=await msDetail((d,t)=>msSay('상세페이지를 그리는 중이에요… '+d+' / '+t,22+Math.round(d/t*65)),CH.dw);
     if(MS.cancel)throw {code:'cancel'};
     msSay('파일로 묶는 중이에요…',92);
-    const r={main,extras:ex.items,skipped:ex.skipped,details:det,at:new Date()};r.text=msText(r);r.checks=msChecks(r);
-    MS.res=r;msRender();msSay('다 만들었어요. 아래에서 확인하고 저장하세요.',100,'ok');
+    const r={main,extras:ex.items,skipped:ex.skipped,details:det,at:new Date(),ch,dw:CH.dw};r.text=msText(r);r.checks=msChecks(r);
+    MS.R[ch]=MS.res=r;msRender();msSay('다 만들었어요. 아래에서 확인하고 저장하세요.',100,'ok');
   }catch(e){msSay(e&&e.code==='cancel'?'멈췄어요.':(e&&e.message)||'만들지 못했어요. 한 번 더 눌러 주세요.',null,'err');}
   finally{MS.busy=false;const g=$('#msGo');if(g)g.disabled=false;const c=$('#msClose');if(c)c.textContent='닫기';}
 }
@@ -4275,7 +4336,7 @@ async function msZip(){
   if(!window.JSZip){toast('저장 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.',3000);return;}
   try{
     const z=new JSZip();msFiles(r).forEach(f=>z.file(f.name,f.blob));z.file('README.txt','﻿'+r.text);
-    await saveFile('naver_images_'+msYmd(r.at)+'.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast('네이버용 파일 묶음을 저장했어요.');
+    await saveFile(MKT[r.ch||'naver'].pre+msYmd(r.at)+'.zip',await z.generateAsync({type:'blob',compression:'STORE'}));toast(MKT[r.ch||'naver'].who+' 파일 묶음을 저장했어요.');
   }catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}
 }
 function msResHtml(){
@@ -4292,36 +4353,56 @@ function msResHtml(){
    +'<ul class="checks">'+r.checks.map(c=>'<li>'+(c.ok?'✓ ':'⚠ ')+esc(c.t)+'</li>').join('')+'</ul>'
    +'<div class="acts"><button class="btn primary" id="msZip" type="button">zip으로 저장 (파일 '+msFiles(r).length+'개 + 올리는 순서 글)</button></div></div>';
 }
-function msNaverHtml(){
-  const has=hasPhoto(S.src),n=needs().length,radio=(v,t,d)=>'<label class="opt"><input type="radio" name="msstyle" value="'+v+'"'+(MS.style===v?' checked':'')+'><div><b>'+t+'</b><div class="hint">'+d+'</div></div></label>';
-  return '<div class="confirm" style="display:block">⚠ 이 창은 네이버에 <b>자동으로 올리지는 않아요.</b> 올릴 파일과 순서 글을 만들어 드려요. 올리는 일과 가격·카테고리 같은 입력은 스마트스토어센터에서 직접 해 주세요.</div>'
-   +'<div class="tip">네이버 쇼핑(스마트스토어)에 직접 올릴 파일을 만들어요. 이 브라우저에서만 만들고 비용은 들지 않아요.<br>① <b>대표 이미지</b> 1장 (정사각 1000×1000, 글자·로고 없이 제품만) ② <b>추가 이미지</b> (정사각, 최대 '+MS_MAXX+'장) ③ <b>상세페이지 조각</b> (가로 '+MS_DW+', 번호 순서) ④ <b>등록 안내 글</b> (상품명·태그·올리는 순서)</div>'
+function msChanHtml(){
+  const t=MKT[MS.tab],cp=MS.tab==='coupang',has=hasPhoto(S.src),n=needs().length,radio=(v,t,d)=>'<label class="opt"><input type="radio" name="msstyle" value="'+v+'"'+(MS.style===v?' checked':'')+'><div><b>'+t+'</b><div class="hint">'+d+'</div></div></label>';
+  return '<div class="confirm" style="display:block">⚠ 이 창은 '+t.n+'에 <b>자동으로 올리지는 않아요.</b> 올릴 파일과 순서 글을 만들어 드려요. 올리는 일과 가격·카테고리 같은 입력은 '+t.center+'에서 직접 해 주세요.</div>'
+   +'<div class="tip">'+(cp?'쿠팡에':'네이버 쇼핑(스마트스토어)에')+' 직접 올릴 파일을 만들어요. 이 브라우저에서만 만들고 비용은 들지 않아요.<br>① <b>대표 이미지</b> 1장 (정사각 1000×1000, 글자·로고 없이 제품만) ② <b>추가 이미지</b> (정사각, 최대 '+MS_MAXX+'장) ③ <b>상세페이지 조각</b> (가로 '+t.dw+', 번호 순서) ④ <b>등록 안내 글</b> (상품명·태그·올리는 순서)</div>'
    +(has?'':'<div class="confirm" style="display:block">제품 사진 한 장(1단계)을 먼저 넣어 주세요. 대표 이미지는 그 원본 사진으로 만들어요.</div>')
    +(has&&n?'<div class="confirm" style="display:block">상세페이지에 아직 채울 곳이 '+n+'곳 남아 있어요. 비어 있는 칸은 상세 조각에서 빠져요.</div>':'')
    +'<div class="opts"><b class="hint">대표 이미지 만드는 방법</b>'
    +radio('auto','자동 (추천)','사진 배경이 한 가지 색이면 그 색 위에 제품을 가운데 놓고, 아니면 제품 둘레를 정사각으로 잘라요.')
    +radio('crop','항상 정사각으로 자르기','배경을 그대로 두고 제품 둘레를 정사각으로 잘라요.')+'</div>'
-   +'<div class="hint">대표 이미지 1000×1000은 실무에서 많이 쓰는 값이고, 상세 이미지 가로 860은 검색에서 네이버 안내로 나온 값이에요. 대표 이미지의 크기·용량·장수·배경 규정은 공식 문서에서 확인하지 못했어요. 올릴 때는 등록 화면의 안내가 우선이에요.</div>'
-   +'<div class="hint">네이버 쇼핑 API(커머스API)로 자동 등록하는 것은 나중에 따로 만들 수 있어요. 판매자 API 키(애플리케이션 ID·시크릿)와 서버 연결이 필요해요.</div>'
-   +'<div class="acts"><a class="btn" href="'+MKT.naver.url+'" target="_blank" rel="noopener noreferrer">스마트스토어센터 열기</a><button class="btn primary" id="msGo" type="button"'+(has?'':' disabled')+'>네이버용 파일 만들기</button></div>'
+   +(cp?'<div class="hint">'+esc(t.info)+' 대표 이미지는 이 앱이 정사각 1000×1000으로 만들어요. 확인 전인 값이라 등록 화면의 안내가 우선이에요.</div>':'<div class="hint">대표 이미지 1000×1000은 실무에서 많이 쓰는 값이고, 상세 이미지 가로 860은 검색에서 네이버 안내로 나온 값이에요. 대표 이미지의 크기·용량·장수·배경 규정은 공식 문서에서 확인하지 못했어요. 올릴 때는 등록 화면의 안내가 우선이에요.</div>')
+   +(cp?'<div class="hint">쿠팡 Open API로 자동 등록하는 것은 아직 확인하지 못했어요(확인 전). 판매자 인증 키와 서버 연결이 필요할 가능성이 있어요.</div>':'<div class="hint">네이버 쇼핑 API(커머스API)로 자동 등록하는 것은 나중에 따로 만들 수 있어요. 판매자 API 키(애플리케이션 ID·시크릿)와 서버 연결이 필요해요.</div>')
+   +'<div class="acts"><a class="btn" href="'+t.url+'" target="_blank" rel="noopener noreferrer">'+t.center+' 열기</a><button class="btn primary" id="msGo" type="button"'+(has?'':' disabled')+'>'+t.who+' 파일 만들기</button></div>'
    +'<div class="bar" id="msBar" hidden><i></i></div><div class="msg" id="msMsg" aria-live="polite"></div>'
    +msSheetBlock()
    +msTodoHtml()
    +msResHtml();
 }
+/* ---- 팔린 뒤 · 주문 수거: 순서 점검표(앱이 주문을 받아 오지는 않아요 · 고객 이름·주소·전화번호는 적지도 저장하지도 않아요) ---- */
+const ORD=[   // [묶음 제목, 설명, [[번호, 글, 확인 전 표시]]]
+  ['공통 흐름 (어느 판매처든 비슷해요)','',[['c1','신규 주문을 확인해요. (판매처 알림이나 판매자센터)'],['c2','결제가 끝난 주문인지, 재고가 있는지 확인해요.'],['c3','제품을 포장해서 택배사에 접수하고 송장번호를 받아요.'],['c4','송장번호를 판매처 주문 화면에 입력해서 발송 처리해요.',1],['c5','취소·반품·교환 요청이 오면 판매처 화면에서 답하고 처리해요.'],['c6','정산 내역이 맞는지 확인해요.']]],
+  ['네이버 스마트스토어에서 팔렸을 때','스마트스토어센터 화면 이름은 바뀔 수 있어요. 아래는 일반적인 흐름이고 공식 문서를 확인하지 못했어요.',[['n1','스마트스토어센터의 주문·배송 관리에서 신규 주문을 확인해요.',1],['n2','주문 확인(발주 확인)을 한 뒤 포장해요.',1],['n3','택배사와 송장번호를 입력해 발송 처리해요. 여러 건은 엑셀로 한꺼번에 넣는 방법이 있는지 센터 안내를 확인하세요.',1],['n4','발송 처리 뒤 배송 상태가 바뀌는지 확인해요.',1]]],
+  ['쿠팡에서 팔렸을 때','우리가 직접 발송하는 방식을 기준으로 적었어요(쿠팡이 물류를 대신하는 방식은 흐름이 달라요). 쿠팡 공식 문서를 확인하지 못했어요.',[['k1','쿠팡 판매자센터(Wing)의 주문·배송 화면에서 신규 주문을 확인해요.',1],['k2','상품 준비 상태로 바꾼 뒤 포장해요.',1],['k3','택배사와 송장번호를 입력해 발송 처리해요. 쿠팡의 발송 기한 규칙은 센터 안내를 확인하세요.',1],['k4','반품·교환 요청은 센터의 안내 순서대로 처리해요.',1]]],
+  ['주문이 많아지면 · 연동 도구','판매처마다 따로 들어가기 힘들어지면 주문을 한 곳에 모아 주는 연동 도구를 쓸 수 있어요. 쓰고 있는 도구가 있으면 그 도구의 절차가 우선이에요.',[['t1','도구에서 판매처 주문을 모아 엑셀로 내려받아요.'],['t2','택배사 접수 화면에 엑셀로 한꺼번에 접수하고 송장번호를 받아요.'],['t3','송장번호를 도구에 올려 판매처로 보내요. 이미 발송 처리된 주문은 바꾸기 어려울 수 있어요(확인 전).',1],['t4','엑셀 파일에는 고객 이름·주소·전화번호가 들어 있어요. 작업이 끝나면 폴더에서 지우세요.']]],
+  ['고객과 이어지는 곳 · 팔린 뒤에도 믿음이 이어지게','',[['r1','문의 전화와 상담 시간이 상세페이지(믿을 수 있는 회사 구역)와 판매처 문의 설정에서 같은지 확인해요.'],['r2','자주 오는 질문이 있으면 상세페이지의 질문 구역에 더해요.'],['r3','반품·교환·A/S 안내가 상세페이지의 구매 전 확인 글과 판매처 설정에서 같은 말인지 확인해요.']]]
+];
+const ordState=()=>{try{return JSON.parse(localStorage.getItem('wj-ord')||'{}')||{};}catch(e){return {};}};
+function msOrdersHtml(){
+  const st=ordState();
+  return '<div class="confirm" style="display:block">이 앱은 주문을 <b>받아 오지 않아요.</b> 고객 이름·주소·전화번호도 적거나 저장하지 않아요. 팔린 뒤에 할 일을 순서대로 확인하는 점검표예요(체크 표시만 이 컴퓨터에 저장돼요).</div>'
+   +ORD.map(g=>'<div class="blk"><h3>'+esc(g[0])+'</h3>'+(g[1]?'<div class="hint">'+esc(g[1])+'</div>':'')+'<div class="opts">'+g[2].map(x=>'<label class="chk"><input type="checkbox" data-ord="'+x[0]+'"'+(st[x[0]]?' checked':'')+'> <span>'+esc(x[1])+(x[2]?' <small>· 확인 전</small>':'')+'</span></label>').join('')+'</div></div>').join('')
+   +'<div class="hint">"확인 전"은 공식 문서를 열어 보지 못해 일반적인 흐름으로 적은 항목이에요. 판매자센터 화면의 안내가 우선이에요. 송장 엑셀의 열 배치나 택배사 양식은 샘플 파일을 받으면 그에 맞춰 만들 수 있어요.</div>'
+   +'<div class="acts"><button class="btn sm" type="button" id="ordReset">체크 모두 지우기</button></div>';
+}
+function msOrdersWire(b){
+  $$('[data-ord]',b).forEach(i=>{i.onchange=()=>{const o=ordState();if(i.checked)o[i.dataset.ord]=1;else delete o[i.dataset.ord];try{localStorage.setItem('wj-ord',JSON.stringify(o));}catch(e){}};});
+  const r=$('#ordReset',b);if(r)r.onclick=()=>{try{localStorage.removeItem('wj-ord');}catch(e){}msRender();};
+}
 function msRender(){
   const t=MKT[MS.tab],b=$('#msBody');if(!b)return;
   const tabs='<div class="mkt-tabs" role="tablist">'+Object.keys(MKT).map(k=>'<button class="btn sm'+(MS.tab===k?' primary':'')+'" type="button" role="tab" aria-selected="'+(MS.tab===k)+'" data-mt="'+k+'">'+esc(MKT[k].n)+(MKT[k].ok?'':' <small>(나중에)</small>')+'</button>').join('')+'</div>';
-  b.innerHTML=tabs+(t.ok?msNaverHtml():'<div class="blk"><h3>'+esc(t.n)+' · 나중에 만들어요</h3><div class="hint">'+esc(t.info)+'</div><div class="hint">네이버와 같은 방식(대표 이미지 → 추가 이미지 → 상세 조각 → 올리는 순서 글)으로 맞춰 만들 수 있어요. 올릴 때가 되면 말씀해 주세요. 그때 판매자센터의 최신 규격을 확인하고 만들게요.</div></div>');
+  b.innerHTML=tabs+(t.special==='orders'?msOrdersHtml():t.ok?msChanHtml():'<div class="blk"><h3>'+esc(t.n)+' · 나중에 만들어요</h3><div class="hint">'+esc(t.info)+'</div><div class="hint">네이버와 같은 방식(대표 이미지 → 추가 이미지 → 상세 조각 → 올리는 순서 글)으로 맞춰 만들 수 있어요. 올릴 때가 되면 말씀해 주세요. 그때 판매자센터의 최신 규격을 확인하고 만들게요.</div></div>');
   {const cl=claimNoteHtml(),tp=$('.tip',b);if(cl){if(tp)tp.insertAdjacentHTML('afterend',cl);else b.insertAdjacentHTML('beforeend',cl);}}   // v98: 글 표현 점검 상자(맨 위 '자동으로 올리지는 않아요' 안내와 설명 칸 다음)
-  $$('[data-mt]',b).forEach(x=>x.onclick=()=>{if(MS.busy)return;MS.tab=x.dataset.mt;msRender();});
+  $$('[data-mt]',b).forEach(x=>x.onclick=()=>{if(MS.busy)return;MS.tab=x.dataset.mt;MS.res=MS.R[MS.tab]||null;msRender();});
   $$('input[name=msstyle]',b).forEach(x=>x.onchange=()=>{MS.style=x.value;});
   const go=$('#msGo');if(go)go.onclick=msRun;
   const z=$('#msZip');if(z)z.onclick=msZip;
-  const ms=$('#msMainSave');if(ms)ms.onclick=async()=>{try{await saveFile('naver_main_1000x1000.jpg',MS.res.main.blob);toast('대표 이미지를 저장했어요.');}catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}};
+  const ms=$('#msMainSave');if(ms)ms.onclick=async()=>{try{await saveFile((MS.res.ch||'naver')+'_main_1000x1000.jpg',MS.res.main.blob);toast('대표 이미지를 저장했어요.');}catch(e){toast(e&&e.code==='declined'?'저장을 취소했어요.':'저장하지 못했어요. 한 번 더 눌러 주세요.',3000);}};
   const cn=$('#msCopyName');if(cn)cn.onclick=()=>vCopy(S.sellName||STD_NAME);
   const ct=$('#msCopyTags');if(ct)ct.onclick=()=>vCopy(vPostDraft().yl.g);
-  msSheetWire();
+  msSheetWire();msOrdersWire(b);
 }
 function showMarket(){
   veil.hidden=false;
@@ -4454,6 +4535,19 @@ const ACT={
   genok(){$('#genConfirm').hidden=true;const f=pendingGen;pendingGen=null;if(f)f();},
   genno(){$('#genConfirm').hidden=true;pendingGen=null;},
   async autozoom(){const ok=await autoZoom(true);UI.open.add('s-zoom');renderSide();refresh();toast(ok?'확대 3곳을 제품 위치에 맞췄어요.':'제품 위치를 찾지 못했어요. 슬라이더로 직접 맞춰 주세요.',3000);},
+  patfill(){   // v104: 특허증(2026.06.16·2026.09.22 등록)으로 확인한 두 건. 이미 있으면 건너뛰고, 빈 카드 자리에 넣어요
+    const A=S.about,L=[{no:'10-2980201',title:'슬라이딩 폴딩 방충문, 그 제작 및 설치 방법',meta:'2026.06.16 등록 · 우진글로벌 주식회사'},{no:'10-3025575',title:'양방향 폴딩도어 및 이의 제작 및 설치방법',meta:'2026.09.22 등록 · 우진글로벌 주식회사'}];
+    let n=0;
+    L.forEach(p=>{
+      if(A.patents.some(x=>String(x.no||'').trim()===p.no))return;
+      const e=A.patents.find(x=>!String(x.no||'').trim()&&!String(x.title||'').trim()),row=Object.assign({badge:'등록\n완료'},p);
+      if(e)Object.assign(e,row);else A.patents.push(row);
+      n++;
+    });
+    UI.open.add('p4');UI.open.add('s-about');renderSide();refresh();
+    const st=(A.stats||[]).find(x=>x&&/특허/.test(String(x.l||''))&&String(x.v||'').trim()&&String(x.v).trim()!=='2');
+    toast(n?'특허 '+n+'건을 넣었어요.'+(st?' 숫자 칸의 "'+String(st.v).trim()+' '+String(st.l).trim()+'"은 확인된 2건과 달라요. 맞는지 확인해 주세요.':''):'이미 들어 있어요.',st?7000:3200);
+  },
   async aboutai(){
     const text=($('#aboutPaste')||{}).value||'',say=(x,c)=>{const m=$('#aboutMsg');if(m){m.textContent=x;m.className='msg'+(c?' '+c:'');}};
     if(!text.trim()){say('자료를 먼저 붙여 넣어 주세요.','err');return;}
