@@ -278,6 +278,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pg .stat span{display:block;margin-top:10px;font-size:24px;font-weight:700;color:#e8edf7}
 .pg .pat{display:flex;gap:20px;align-items:center;margin-top:18px;padding:28px 30px;border-radius:24px;background:var(--pg-cream);border:3px solid #e8cf8c;color:#2a2410}
 .pg .pat:first-of-type{margin-top:30px}
+.pg .patt{margin:36px 0 0;text-align:center;font-size:26px;font-weight:800;color:var(--pg-gold);letter-spacing:.02em}
 .pg .pat .pt{flex:1;min-width:0}
 .pg .pat .no{font-size:28px;font-weight:800}
 .pg .pat .nm{margin-top:6px;font-size:26px;font-weight:700}
@@ -346,7 +347,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 </head><body>
 <div id="app">
   <header class="top">
-    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 99</small></div>
+    <div class="brand"><h1>손잡이 상세페이지 제작기</h1><small>우진글로벌 · 버전 <span id="verTag"></span></small></div>
     <div class="top-actions">
       <button class="chip" id="updChip" type="button" hidden style="background:var(--accent);color:var(--accent-ink)">새 버전이 나왔어요 · 눌러서 새로고침</button>
       <span class="chip" id="keyChip" title="구글·클로드 키 연결 상태" style="background:var(--accent-soft);color:var(--accent);cursor:default"></span>
@@ -404,6 +405,7 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v70 (2026-11-07): 윗줄에 '영상 자동 등록' 버튼: 만든 영상을 유튜브(쇼츠·일반)에 이 브라우저에서 바로 올림(구글 로그인, 비공개가 기본). 릴스·틱톡은 안내만 */
 /* v71 (2026-11-07): 사진 인식(클로드)이 받침(캡)이 원형인지 직사각형인지도 알아보고 크기 안내의 '캡 모양'을 자동으로 맞춤(직접 고른 값은 그대로 둠) */
 /* v72 (2026-11-07): 이미 사진이 들어 있는 작업도 열 때 캡 모양을 한 번 알아보고, 크기 안내에 '사진으로 캡 모양 알아보기' 버튼을 더함 */
+/* v105 (2026-11-28): 특허 카드 위에 '우진글로벌 보유 특허' 제목 — 제품 특허가 아니라 회사가 가진 특허라는 걸 화면에서 밝혀요(고칠 수 있고, 비우면 빠져요) */
 /* v104 (2026-11-28): 상세페이지에 '믿을 수 있는 회사' 구역(품질 관리·A/S 관리·기술 관리·대표 전화/상담 시간 — 적은 칸만 나옴) · 회사 특허 2건 넣기 단추(특허증으로 확인한 번호만) · 쇼핑몰에 올리기에 쿠팡 입력 시트·이미지 묶음 · '팔린 뒤 · 주문 수거' 안내 탭 */
 /* v98 (2026-11-12): 근거가 필요한 표현 점검 — 글 전체에서 과장 말(최고·최초·완벽·100%·1위…)과 특허·인증·방수·항균·스마트 같은 말을 찾아 저장·영상·쇼핑몰 전에 알려 줌(과장·번호 없는 특허·인증은 확인 체크 필요), 회사 소개의 '등록 특허' 숫자만 있고 번호 카드가 빈 경우 알림 */
 /* v97 (2026-11-11): 사고 싶게 만드는 상세페이지 — 핵심 포인트 구역(작동 각도 그림·문 두께·문 색 수·제조사·마감 카드)·첫 화면과 마지막의 짧은 딱지·'우리 집 문에 맞을까요?' 재는 그림 카드·그림으로 보는 설치 6단계(예시 그림)·규격을 반영한 FAQ 답 */
@@ -431,7 +433,8 @@ const setP=(p,v)=>{const ks=p.split('.'),l=ks.pop();ks.reduce((a,k)=>a[k],S)[l]=
 /* v75 (2026-11-07): 쇼핑몰에 올리기 창 맨 위에 '자동으로 올리지는 않아요' 안내를 크게 두고, 직접 입력해야 하는 항목(카테고리·판매가·옵션·상품주요정보·상품정보제공고시·배송·A/S·태그) 체크리스트를 창과 올리는 순서 글에 넣음 */
 /* v74 (2026-11-07): 머리글에 '쇼핑몰에 올리기' 단추와 창을 더함 — 네이버 쇼핑용 대표 이미지(정사각 1000×1000)·추가 이미지·상세페이지 조각(가로 860)·올리는 순서 글을 zip으로 만듦(쿠팡·11번가·옥션·지마켓은 나중에) */
 /* v73 (2026-11-07): 영상 자동 등록 창에 Make 연결(자동화 주소)로 인스타그램 릴스·페이스북·유튜브에 보내기, 영상 용량 '작게'(자동 등록용) 선택을 더함 */
-const PW=860,LS='wj-dp-v3',VER=104,SITE='https://wjwj1935-wq.github.io/-/';
+const PW=860,LS='wj-dp-v3',VER=105,SITE='https://wjwj1935-wq.github.io/-/';
+{const vt=document.getElementById('verTag');if(vt)vt.textContent=VER;}   // v105: 화면 위의 버전 숫자는 VER을 따라가요(예전에는 99로 글자가 고정돼 있어서 새 버전이어도 99로 보였어요)
 
 /* ============ 고정 내용 ============ */
 const CO={name:'우진글로벌 주식회사',place:'전북 익산',tel:'063-855-3663',hours:'오전 9시 ~ 오후 5시'};
@@ -498,7 +501,7 @@ function defaults(){
   about:{eyebrow:'ABOUT US',title:'믿을 수 있는 제조사가 직접 공급합니다',
     body:CO.name+'는 '+CO.place+'에서 문을 지키는 제품을 연구하고 만들어 온 기업이에요.\n집을 지키는 문 하나에도 가족의 안전과 평화를 먼저 생각해요.',
     stats:[{v:'11',l:'등록 특허'},{v:'3',l:'등록 디자인'},{v:'2017~',l:'문 손잡이를 만들어 온 기록'}],
-    patents:[{no:'',title:'',meta:'',badge:'등록\n완료'},{no:'',title:'',meta:'',badge:'등록\n완료'}],
+    patents:[{no:'',title:'',meta:'',badge:'등록\n완료'},{no:'',title:'',meta:'',badge:'등록\n완료'}],patTitle:'우진글로벌 보유 특허',
     growTitle:'성장하는 우진글로벌',grow:[{badge:'',title:'',body:''},{badge:'',title:'',body:''}],
     tlTitle:'이렇게 이어 온 등록 기록',tl:[{year:'2017',text:''},{year:'2018',text:''},{year:'2019',text:''},{year:'2021',text:''},{year:'2026',text:''}],
     foot:CO.name+' · '+CO.place,note:''},
@@ -806,6 +809,7 @@ function fromSaved(o){                       // 저장본 → 현재 형식(예�
     r.points.custom=D.points.custom.map((c,i)=>Object.assign({},c,(Array.isArray(op.custom)&&op.custom[i])||{}));
     r.guide=Object.assign({},D.guide,o.guide||{});if(!Array.isArray(r.guide.steps))r.guide.steps=D.guide.steps;
     r.guide.ps=D.guide.ps.map((p,i)=>Object.assign({},p,(o.guide&&Array.isArray(o.guide.ps)&&o.guide.ps[i])||{}));}
+  r.about=Object.assign({},defaults().about,o.about&&typeof o.about==='object'?o.about:{});   // v105: 특허 카드 제목(예전 저장본에는 없어요)
   {const D=defaults().trust,ot=o.trust&&typeof o.trust==='object'?o.trust:{};   // v104: 믿을 수 있는 회사 구역(예전 저장본에는 없어요)
     r.trust=Object.assign({},D,ot);r.trust.items=Array.isArray(ot.items)?ot.items.map(x=>Object.assign({badge:'',title:'',body:''},x||{})):D.items;}
   r.facts=Object.assign({},b.facts,o.facts||{});if(!Array.isArray(r.facts.extra))r.facts.extra=[];r.sale=Object.assign({},b.sale,o.sale||{});if(!Array.isArray(r.sale.opts)||r.sale.opts.length<3)r.sale.opts=b.sale.opts.map(x=>Object.assign({},x));   // 예전 저장본에는 제품 규격이 없어요
@@ -1359,7 +1363,7 @@ function renderPage(ex){
   const tls=A.tl.map((t,i)=>{if(ex&&!t.text.trim())return '';const b='about.tl.'+i+'.',lines=String(t.text||'').split('\n').map(s=>s.trim()).filter(Boolean);
     return '<div class="tl"><div class="yr"'+J(b+'year')+'>'+esc(t.year)+'</div><div class="tt"'+J(b+'text')+'>'+(lines.length?lines.map(esc).join(' · '):'<span class="need" style="font-size:14px">그해 등록한 내용</span>')+'</div></div>';}).join('');
   out.push('<section class="sec about" data-slice="05_회사소개"><div class="head"><div class="eyebrow"'+J('about.eyebrow')+'>'+esc(A.eyebrow)+'</div><h2'+J('about.title')+'>'+T('about.title',A.title,{req:1,ph:'제목'})+'</h2><p class="lead"'+J('about.body')+'>'+T('about.body',A.body,{req:1,ph:'회사 소개 글'})+'</p></div>'
-    +'<div class="stats">'+stats+'</div>'+pats
+    +'<div class="stats">'+stats+'</div>'+(pats&&String(A.patTitle||'').trim()?'<p class="patt"'+J('about.patTitle')+'>'+esc(A.patTitle)+'</p>':'')+pats
     +(grows?'<h3 class="sb"'+J('about.growTitle')+'>'+esc(A.growTitle)+'</h3>'+grows:'')
     +(tls?'<h3 class="sb"'+J('about.tlTitle')+'>'+esc(A.tlTitle)+'</h3>'+tls:'')
     +(A.foot?'<div class="foot"'+J('about.foot')+'>'+nl(A.foot)+'</div>':'')+(A.note?'<p class="fn"'+J('about.note')+'>'+nl(A.note)+'</p>':'')+'</section>');
@@ -1706,7 +1710,7 @@ function p4(){
      +'<b class="hint">방법 2 · 아래 칸에 직접 적기</b>'
      +fld.text('about.eyebrow','작은 제목')+fld.text('about.title','제목',{req:1})+fld.area('about.body','회사 소개 글',{rows:4,req:1})
      +'<b class="hint">숫자 3칸</b>'+listItems('about.stats',a.stats,(s,i,b)=>'<div class="row2">'+fld.text(b+'.v','숫자',{req:1,ph:'예: 11'})+fld.text(b+'.l','이름',{req:1,ph:'예: 등록 특허'})+'</div>',{title:(s,i)=>'숫자 '+(i+1),add:'숫자 칸 추가'})
-     +'<b class="hint">특허 카드</b><div class="acts"><button class="btn sm" type="button" data-act="patfill">회사 특허 2건 넣기 (특허증으로 확인함)</button></div><p class="hint">제10-2980201호 슬라이딩 폴딩 방충문 · 제10-3025575호 양방향 폴딩도어. <b>손잡이 특허가 아니라 회사가 가진 특허</b>예요. \'회사 보유 특허\'로만 보이게 하고, 이 손잡이의 특허처럼 쓰지 마세요.</p>'+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1,ph:'예: 방문 손잡이용 …'})+fld.text(b+'.meta','등록일·권리자 (선택)',{ph:'예: 2023.05.12 · 우진글로벌'})+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
+     +'<b class="hint">특허 카드</b><div class="acts"><button class="btn sm" type="button" data-act="patfill">회사 특허 2건 넣기 (특허증으로 확인함)</button></div><p class="hint">제10-2980201호 슬라이딩 폴딩 방충문 · 제10-3025575호 양방향 폴딩도어. <b>손잡이 특허가 아니라 회사가 가진 특허</b>예요. \'회사 보유 특허\'로만 보이게 하고, 이 손잡이의 특허처럼 쓰지 마세요.</p>'+fld.text('about.patTitle','특허 카드 위 제목 (비우면 빠져요)',{ph:'예: 우진글로벌 보유 특허'})+listItems('about.patents',a.patents,(p,i,b)=>fld.text(b+'.no','특허 번호 (예: 10-1234567)',{req:1})+fld.text(b+'.title','특허 이름',{req:1,ph:'예: 방문 손잡이용 …'})+fld.text(b+'.meta','등록일·권리자 (선택)',{ph:'예: 2023.05.12 · 우진글로벌'})+fld.area(b+'.badge','동그라미 안 글',{rows:2}),{title:(p,i)=>'특허 '+(i+1),add:'특허 추가'})
      +fld.text('about.growTitle','소제목')+listItems('about.grow',a.grow,(g,i,b)=>'<div class="row2">'+fld.text(b+'.badge','동그라미 글(두 글자)',{req:1,ph:'예: 인증'})+fld.text(b+'.title','제목',{req:1,ph:'예: 시험 성적서 보유'})+'</div>'+fld.text(b+'.body','설명',{ph:'확인된 내용만'}),{title:(g,i)=>'실적 '+(i+1),add:'실적 추가'})
      +fld.text('about.tlTitle','연혁 소제목')+listItems('about.tl',a.tl,(t,i,b)=>fld.text(b+'.year','해')+fld.area(b+'.text','그해 등록한 내용 (한 줄에 하나)',{rows:2,req:1,ph:'예: 방문 손잡이 특허 등록'}),{title:(t,i)=>esc(t.year)+'년',add:'연도 추가'})
      +fld.text('about.foot','맨 아래 줄')+fld.area('about.note','작은 주석 (선택)',{rows:2}))
